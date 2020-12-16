@@ -3,6 +3,11 @@ import express from 'express';
 import 'reflect-metadata';
 import { buildSchema } from 'type-graphql';
 import { createConnection } from 'typeorm';
+// session related
+import session from 'express-session';
+import connectRedis from 'connect-redis';
+import cors from 'cors';
+import { redis } from './redis';
 
 require('dotenv').config();
 
@@ -13,9 +18,38 @@ const main = async () => {
 		resolvers: [__dirname + '/modules/**/*.ts'],
 	});
 
-	const apolloServer = new ApolloServer({ schema });
+	const apolloServer = new ApolloServer({
+		schema,
+		context: ({ req }: any) => ({ req }),
+	});
 
 	const app = express();
+
+	const RedisStore = connectRedis(session);
+
+	app.use(
+		cors({
+			credentials: true,
+			origin: 'https://localhost:3000',
+		})
+	);
+
+	app.use(
+		session({
+			store: new RedisStore({
+				client: redis as any,
+			}),
+			name: 'quizsharecookie',
+			secret: process.env.SESSION_SECRET as string,
+			resave: false,
+			saveUninitialized: false,
+			cookie: {
+				httpOnly: true,
+				secure: process.env.NODE_ENV === 'production',
+				maxAge: 1000 * 60 * 60 * 24 * 365,
+			},
+		})
+	);
 
 	apolloServer.applyMiddleware({ app });
 

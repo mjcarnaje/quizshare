@@ -1,15 +1,26 @@
-import { Length, MinLength } from 'class-validator';
-import { InputType, Field } from 'type-graphql';
+import {
+	IsDate,
+	IsEnum,
+	IsOptional,
+	Length,
+	MaxDate,
+	MinDate,
+	MinLength,
+} from 'class-validator';
+import { Field, InputType } from 'type-graphql';
 import { isEmailAlreadyExist } from './isEmailAlreadyExist';
 import { isPasswordMatched } from './isPasswordMatched';
-import { isUsernameAlreadyExist } from './isUsernameAlreadyExist';
+import { Gender } from '../../../types/Gender';
 
 @InputType()
 export class RegisterInput {
 	@Field()
-	@Length(1, 10)
-	@isUsernameAlreadyExist({ message: 'Username is already exist' })
-	username: string;
+	@Length(1, 32)
+	firstName: string;
+
+	@Field()
+	@Length(1, 23)
+	lastName: string;
 
 	@Field()
 	@Length(1, 72)
@@ -23,4 +34,17 @@ export class RegisterInput {
 	@Field()
 	@isPasswordMatched('password', { message: 'passwords does not match' })
 	confirmPassword: string;
+
+	@Field()
+	@IsDate()
+	@MinDate(new Date('1940-01-01'), {
+		message: 'Please be sure to use your real birthday',
+	})
+	@MaxDate(new Date(), { message: 'Please be sure to suer your real birthday' })
+	birthday: Date;
+
+	@Field()
+	@IsOptional()
+	@IsEnum(Gender)
+	gender: Gender;
 }
