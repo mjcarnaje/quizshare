@@ -20,7 +20,7 @@ const main = async () => {
 
 	const apolloServer = new ApolloServer({
 		schema,
-		context: ({ req }: any) => ({ req }),
+		context: ({ req, res }: any) => ({ req, res }),
 	});
 
 	const app = express();
@@ -39,7 +39,7 @@ const main = async () => {
 			store: new RedisStore({
 				client: redis as any,
 			}),
-			name: 'quizsharecookie',
+			name: process.env.SESSION_NAME as string,
 			secret: process.env.SESSION_SECRET as string,
 			resave: false,
 			saveUninitialized: false,

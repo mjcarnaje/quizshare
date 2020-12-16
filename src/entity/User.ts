@@ -29,9 +29,9 @@ export class User extends BaseEntity {
 	@Column('text', { unique: true })
 	email: string;
 
-	@Field()
+	@Field(() => String)
 	@Column('date')
-	birthday: Date;
+	birthday: Date | string; // temporary
 
 	@Field()
 	@Column('text')
@@ -44,4 +44,7 @@ export class User extends BaseEntity {
 	name(@Root() { firstName, lastName }: User): string {
 		return `${firstName} ${lastName}`;
 	}
+
+	@Column('bool', { default: false })
+	confirmed: boolean;
 }

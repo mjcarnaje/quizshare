@@ -2,6 +2,8 @@ import { Arg, Mutation, Query, Resolver } from 'type-graphql';
 import { User } from '../../entity/User';
 import { RegisterInput } from './register/RegisterInput';
 import * as bcrypt from 'bcryptjs';
+import { sendEmail } from '../utils/sendEmail';
+import { confirmationRegistration } from '../utils/confirmation';
 
 @Resolver(User)
 export class RegisterResovler {
@@ -26,6 +28,8 @@ export class RegisterResovler {
 			birthday,
 			gender,
 		}).save();
+
+		await sendEmail(email, firstName, await confirmationRegistration(user.id));
 
 		return user;
 	}

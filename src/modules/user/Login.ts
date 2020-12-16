@@ -2,6 +2,7 @@ import { Arg, Ctx, Mutation, Resolver } from 'type-graphql';
 import { User } from '../../entity/User';
 import * as bcrypt from 'bcryptjs';
 import { MyContext } from '../../types/MyContext';
+import { AuthenticationError } from 'apollo-server-express';
 
 @Resolver()
 export class LoginResolver {
@@ -21,6 +22,10 @@ export class LoginResolver {
 
 		if (!valid) {
 			throw new Error('Wrong Credentials');
+		}
+
+		if (!user.confirmed) {
+			throw new AuthenticationError('Please confirm you email address');
 		}
 
 		ctx.req.session!.userId = user.id;
