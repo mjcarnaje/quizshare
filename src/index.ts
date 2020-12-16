@@ -1,21 +1,16 @@
-import 'reflect-metadata';
 import { ApolloServer } from 'apollo-server-express';
 import express from 'express';
-import { buildSchema, Resolver, Query } from 'type-graphql';
+import 'reflect-metadata';
+import { buildSchema } from 'type-graphql';
+import { createConnection } from 'typeorm';
 
 require('dotenv').config();
 
 const main = async () => {
-	@Resolver()
-	class HelloResover {
-		@Query(() => String)
-		async helloWord() {
-			return 'Hello world';
-		}
-	}
+	await createConnection();
 
 	const schema = await buildSchema({
-		resolvers: [HelloResover],
+		resolvers: [__dirname + '/modules/**/*.ts'],
 	});
 
 	const apolloServer = new ApolloServer({ schema });
