@@ -15,7 +15,7 @@ export class ForgotPasswordResolver {
 
 		await sendEmail(
 			email,
-			user.firstName,
+			user.username,
 			await confirmationForgotPassword(user.id)
 		);
 

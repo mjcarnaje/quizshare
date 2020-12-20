@@ -1,10 +1,6 @@
 import nodemailer from 'nodemailer';
 
-export const sendEmail = async (
-	email: string,
-	firstName: string,
-	url: string
-) => {
+export const sendEmail = async (email: string, name: string, url: string) => {
 	const testAccount = await nodemailer.createTestAccount();
 
 	const transporter = nodemailer.createTransport({
@@ -21,7 +17,7 @@ export const sendEmail = async (
 		from: 'quizshare@gmail.com',
 		to: email,
 		subject: 'Confirmation',
-		text: `Hello ${firstName}`,
+		text: `Hello ${name}`,
 		html: `${url}`,
 	};
 
@@ -30,7 +26,7 @@ export const sendEmail = async (
 			from: 'quizshare@gmail.com',
 			to: email,
 			subject: 'Forgot Password',
-			text: `Hello ${firstName}`,
+			text: `Hello ${name}`,
 			html: `${url}`,
 		};
 	}

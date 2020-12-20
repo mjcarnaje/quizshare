@@ -1,6 +1,16 @@
-import { Field, ObjectType, ID, Root } from 'type-graphql';
-import { BaseEntity, Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
-import { Gender } from '../types/Gender';
+import { Field, ID, ObjectType } from 'type-graphql';
+import {
+	BaseEntity,
+	Column,
+	CreateDateColumn,
+	Entity,
+	JoinColumn,
+	OneToMany,
+	OneToOne,
+	PrimaryGeneratedColumn,
+} from 'typeorm';
+import { Profile } from './Profile';
+import { Quiz } from './Quiz';
 
 @ObjectType()
 @Entity()
@@ -10,41 +20,32 @@ export class User extends BaseEntity {
 	id: number;
 
 	@Field()
-	@Column()
-	firstName: string;
-
-	@Field()
-	@Column()
-	lastName: string;
-
-	@Field({ nullable: true })
-	@Column('text', { default: null })
-	avatar: string;
-
-	@Field({ nullable: true })
-	@Column('text', { default: null, unique: true })
+	@Column('text', { unique: true })
 	username: string;
 
 	@Field()
 	@Column('text', { unique: true })
 	email: string;
 
-	@Field(() => String)
-	@Column('date')
-	birthday: Date | string; // temporary
-
-	@Field()
-	@Column('text')
-	gender: Gender;
+	@Field({ nullable: true })
+	@Column('text', { default: null })
+	avatar?: string;
 
 	@Column()
 	password: string;
 
-	@Field()
-	name(@Root() { firstName, lastName }: User): string {
-		return `${firstName} ${lastName}`;
-	}
-
 	@Column('bool', { default: false })
 	confirmed: boolean;
+
+	@Field(() => String)
+	@CreateDateColumn()
+	createdAt: Date;
+
+	@OneToMany(() => Quiz, (quiz) => quiz.author)
+	quizzes: Quiz[];
+
+	@Field(() => Profile, { nullable: true })
+	@OneToOne(() => Profile, (profile) => profile.user)
+	@JoinColumn()
+	profile?: Profile;
 }

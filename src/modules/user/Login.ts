@@ -12,7 +12,7 @@ export class LoginResolver {
 		@Arg('password') password: string,
 		@Ctx() ctx: MyContext
 	): Promise<User> {
-		const user = await User.findOne({ email });
+		const user = await User.findOne({ email }, { relations: ['profile'] });
 
 		if (!user) {
 			throw new Error('User not found');

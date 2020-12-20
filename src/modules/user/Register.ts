@@ -1,36 +1,47 @@
-import { Arg, Mutation, Query, Resolver } from 'type-graphql';
+import { Arg, Mutation, Resolver } from 'type-graphql';
 import { User } from '../../entity/User';
 import { RegisterInput } from './register/RegisterInput';
 import * as bcrypt from 'bcryptjs';
 import { sendEmail } from '../utils/sendEmail';
 import { confirmationRegistration } from '../utils/confirmation';
+import { Profile } from '../../entity/Profile';
 
 @Resolver(User)
 export class RegisterResovler {
-	@Query(() => String)
-	async fetchUsers(): Promise<User[]> {
-		const users = await User.find();
-		return users;
-	}
-
 	@Mutation(() => User)
 	async register(
 		@Arg('data')
-		{ firstName, lastName, email, password, birthday, gender }: RegisterInput
+		{
+			username,
+			email,
+			password,
+			birthday,
+			gender,
+			firstName,
+			lastName,
+		}: RegisterInput
 	): Promise<User> {
 		const hashedPassword = await bcrypt.hash(password, 12);
 
-		const user = await User.create({
-			firstName,
-			lastName,
+		const newUser = await User.create({
+			username,
 			email,
 			password: hashedPassword,
+		}).save();
+
+		await Profile.create({
+			firstName,
+			lastName,
 			birthday,
 			gender,
 		}).save();
 
-		await sendEmail(email, firstName, await confirmationRegistration(user.id));
+		await sendEmail(
+			email,
+			firstName,
+			await confirmationRegistration(newUser.id)
+		);
 
-		return user;
+		return newUser;
 	}
 }
