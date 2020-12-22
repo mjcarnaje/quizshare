@@ -1,12 +1,11 @@
 import { Field, ID, ObjectType } from 'type-graphql';
 import {
 	BaseEntity,
-	Entity,
-	PrimaryGeneratedColumn,
 	Column,
-	OneToMany,
+	Entity,
 	ManyToOne,
-	JoinColumn,
+	OneToMany,
+	PrimaryGeneratedColumn,
 } from 'typeorm';
 import { Choice } from './Choice';
 import { Quiz } from './Quiz';
@@ -18,10 +17,9 @@ export class Question extends BaseEntity {
 	@PrimaryGeneratedColumn()
 	id: number;
 
-	@Column()
-	quizId: number;
-	@ManyToOne(() => Quiz, (quiz) => quiz.questions)
-	@JoinColumn({ name: 'quizId' })
+	@ManyToOne(() => Quiz, (quiz) => quiz.questions, {
+		onUpdate: 'CASCADE',
+	})
 	quiz: Quiz;
 
 	@Field()
@@ -30,13 +28,16 @@ export class Question extends BaseEntity {
 
 	@Field({ nullable: true })
 	@Column('text', { default: null })
-	questionPhoto: string;
+	questionPhoto?: string;
 
-	@Field(() => Choice)
-	@OneToMany(() => Choice, (choice) => choice.questionId)
+	@Field(() => [Choice])
+	@OneToMany(() => Choice, (choice) => choice.question, {
+		cascade: true,
+		eager: true,
+	})
 	choices: Choice[];
 
-	@Field(() => ID)
+	@Field()
 	@Column()
 	answer: number;
 

@@ -1,13 +1,18 @@
-import { Arg, Mutation, Resolver } from 'type-graphql';
+import { Arg, Mutation, Query, Resolver } from 'type-graphql';
 import { User } from '../../entity/User';
 import { RegisterInput } from './register/RegisterInput';
 import * as bcrypt from 'bcryptjs';
 import { sendEmail } from '../utils/sendEmail';
 import { confirmationRegistration } from '../utils/confirmation';
-import { Profile } from '../../entity/Profile';
 
 @Resolver(User)
 export class RegisterResovler {
+	@Query(() => [User])
+	async getUsers(): Promise<User[]> {
+		const users = await User.find({ relations: ['profile'] });
+		return users;
+	}
+
 	@Mutation(() => User)
 	async register(
 		@Arg('data')
@@ -15,10 +20,10 @@ export class RegisterResovler {
 			username,
 			email,
 			password,
-			birthday,
-			gender,
 			firstName,
 			lastName,
+			birthday,
+			gender,
 		}: RegisterInput
 	): Promise<User> {
 		const hashedPassword = await bcrypt.hash(password, 12);
@@ -27,13 +32,12 @@ export class RegisterResovler {
 			username,
 			email,
 			password: hashedPassword,
-		}).save();
-
-		await Profile.create({
-			firstName,
-			lastName,
-			birthday,
-			gender,
+			profile: {
+				firstName,
+				lastName,
+				birthday,
+				gender,
+			},
 		}).save();
 
 		await sendEmail(

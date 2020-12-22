@@ -6,11 +6,16 @@ import {
 	Entity,
 	JoinColumn,
 	OneToMany,
+	// OneToMany,
 	OneToOne,
 	PrimaryGeneratedColumn,
+	UpdateDateColumn,
 } from 'typeorm';
 import { Profile } from './Profile';
 import { Quiz } from './Quiz';
+// import { Quiz } from './Quiz';
+// import { Like } from './Like';
+// import { Comment } from './Comment';
 
 @ObjectType()
 @Entity()
@@ -41,11 +46,21 @@ export class User extends BaseEntity {
 	@CreateDateColumn()
 	createdAt: Date;
 
-	@OneToMany(() => Quiz, (quiz) => quiz.author)
-	quizzes: Quiz[];
+	@Field(() => String)
+	@UpdateDateColumn()
+	updatedAt: Date;
 
-	@Field(() => Profile, { nullable: true })
-	@OneToOne(() => Profile, (profile) => profile.user)
+	@Field(() => Profile)
+	@OneToOne(() => Profile, { cascade: true })
 	@JoinColumn()
-	profile?: Profile;
+	profile: Profile;
+
+	@OneToMany(() => Quiz, (quiz) => quiz.author)
+	quizzes: Promise<Quiz[]>;
+
+	// @OneToMany(() => Like, (like) => like.author)
+	// likes: Promise<Like[]>;
+
+	// @OneToMany(() => Comment, (comment) => comment.author)
+	// comments: Promise<Comment[]>;
 }

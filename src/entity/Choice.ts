@@ -1,11 +1,10 @@
 import { Field, ID, ObjectType } from 'type-graphql';
 import {
 	BaseEntity,
-	Entity,
-	PrimaryGeneratedColumn,
 	Column,
+	Entity,
 	ManyToOne,
-	JoinColumn,
+	PrimaryGeneratedColumn,
 } from 'typeorm';
 import { Question } from './Question';
 
@@ -18,11 +17,18 @@ export class Choice extends BaseEntity {
 
 	@Field()
 	@Column()
+	choiceId: number;
+
+	@Field()
+	@Column()
 	text: string;
 
-	@Column()
-	questionId: number;
-	@ManyToOne(() => Question, (question) => question.choices)
-	@JoinColumn({ name: 'questionId' })
+	@Field({ nullable: true })
+	@Column('text', { default: null })
+	choicePhoto?: string;
+
+	@ManyToOne(() => Question, (question) => question.choices, {
+		onUpdate: 'CASCADE',
+	})
 	question: Question;
 }

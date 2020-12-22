@@ -1,14 +1,6 @@
 import { Field, ID, ObjectType, Root } from 'type-graphql';
-import {
-	BaseEntity,
-	Column,
-	Entity,
-	OneToOne,
-	PrimaryGeneratedColumn,
-	UpdateDateColumn,
-} from 'typeorm';
+import { BaseEntity, Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
 import { Gender } from '../types/Gender';
-import { User } from './User';
 
 @ObjectType()
 @Entity()
@@ -32,13 +24,6 @@ export class Profile extends BaseEntity {
 	@Field()
 	@Column('text')
 	gender: Gender;
-
-	@Field(() => String)
-	@UpdateDateColumn()
-	updatedAt: Date;
-
-	@OneToOne(() => User, (user) => user.profile)
-	user: User;
 
 	@Field()
 	name(@Root() { firstName, lastName }: Profile): string {

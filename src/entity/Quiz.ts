@@ -4,13 +4,11 @@ import {
 	Column,
 	CreateDateColumn,
 	Entity,
-	JoinColumn,
 	ManyToOne,
 	OneToMany,
 	PrimaryGeneratedColumn,
+	UpdateDateColumn,
 } from 'typeorm';
-import { Comment } from './Comment';
-import { Like } from './Like';
 import { Question } from './Question';
 import { User } from './User';
 
@@ -22,10 +20,7 @@ export class Quiz extends BaseEntity {
 	id: number;
 
 	@Field(() => User)
-	@Column()
-	authorId: number;
-	@ManyToOne(() => User, (user) => user.quizzes)
-	@JoinColumn({ name: 'authorId' })
+	@ManyToOne(() => User, (user) => user.quizzes, { onDelete: 'CASCADE' })
 	author: User;
 
 	@Field()
@@ -38,18 +33,17 @@ export class Quiz extends BaseEntity {
 
 	@Field({ nullable: true })
 	@Column('text', { default: null })
-	quizPhoto: string;
+	quizPhoto?: string;
 
-	@OneToMany(() => Question, (question) => question.quizId)
+	@Field(() => [Question])
+	@OneToMany(() => Question, (question) => question.quiz, { cascade: true })
 	questions: Question[];
-
-	@OneToMany(() => Like, (like) => like.author)
-	likes: Like[];
-
-	@OneToMany(() => Comment, (comment) => comment.author)
-	comments: Comment[];
 
 	@Field(() => String)
 	@CreateDateColumn()
 	createdAt: Date;
+
+	@Field(() => String)
+	@UpdateDateColumn()
+	updateAt: Date;
 }
