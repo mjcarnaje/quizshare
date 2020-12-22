@@ -9,37 +9,30 @@ export class createQuizResolver {
 	@Mutation(() => Quiz)
 	async updateQuiz(
 		@Arg('quizId') quizId: number,
-		@Arg('forUpdateInputs') forUpdateInputs: QuizInput
+		@Arg('inputs') inputs: QuizInput
 	): Promise<Quiz> {
 		const quiz = await Quiz.findOneOrFail(quizId, { relations: ['questions'] });
 
-		quiz.title = forUpdateInputs.title || quiz.title;
-		quiz.description = forUpdateInputs.description || quiz.description;
-		quiz.quizPhoto = forUpdateInputs?.quizPhoto || quiz.quizPhoto;
+		quiz.title = inputs.title || quiz.title;
+		quiz.description = inputs.description || quiz.description;
+		quiz.quizPhoto = inputs?.quizPhoto || quiz.quizPhoto;
 
 		const newQuestions: any = {};
 
-		forUpdateInputs.questions.forEach(
+		inputs.questions.forEach(
 			(question) =>
 				(newQuestions[question.id ? question.id : 'unknown'] = question)
 		);
 
-		const updatedQuestions = quiz.questions.map((q: any) => {
+		quiz.questions.map((q: any) => {
 			const newQues = newQuestions[q.id];
-			console.log(newQues);
-			console.log('~~~~~~~~~~~~~~~~~~~~~~~~~~~~');
 			if (newQues) {
 				for (const key in newQues) {
 					q[key] = newQues[key];
 				}
 			}
-
 			return q;
 		});
-
-		console.log(forUpdateInputs.questions);
-		console.log('=============================');
-		console.log(updatedQuestions);
 
 		await quiz.save();
 

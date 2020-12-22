@@ -6,6 +6,7 @@
   "author": "mjcarnaje",
   "license": "MIT",
   "dependencies": {
+    "@types/graphql-type-json": "^0.3.2",
     "apollo-server-express": "^2.19.0",
     "bcryptjs": "^2.4.3",
     "class-validator": "^0.12.2",
@@ -15,6 +16,7 @@
     "express": "^4.17.1",
     "express-session": "^1.17.1",
     "graphql": "^15.4.0",
+    "graphql-type-json": "^0.3.2",
     "ioredis": "^4.19.4",
     "nodemailer": "^6.4.17",
     "pg": "^8.5.1",

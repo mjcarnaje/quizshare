@@ -1,13 +1,12 @@
+import { GraphQLJSONObject } from 'graphql-type-json';
 import { Field, ID, ObjectType } from 'type-graphql';
 import {
 	BaseEntity,
 	Column,
 	Entity,
 	ManyToOne,
-	OneToMany,
 	PrimaryGeneratedColumn,
 } from 'typeorm';
-import { Choice } from './Choice';
 import { Quiz } from './Quiz';
 
 @ObjectType()
@@ -30,12 +29,9 @@ export class Question extends BaseEntity {
 	@Column('text', { default: null })
 	questionPhoto?: string;
 
-	@Field(() => [Choice])
-	@OneToMany(() => Choice, (choice) => choice.question, {
-		cascade: true,
-		eager: true,
-	})
-	choices: Choice[];
+	@Field(() => [GraphQLJSONObject])
+	@Column('jsonb')
+	choices: { choiceId: number; text: string; choicePhoto: null | string }[];
 
 	@Field()
 	@Column()
