@@ -14,6 +14,7 @@ export class toggleLikeResolver {
 		@Ctx() { req }: MyContext
 	): Promise<string> {
 		const user = await User.findOneOrFail({ id: req.session.userId });
+
 		const quiz = await Quiz.findOneOrFail({ id: quizId });
 
 		const isLike = await Like.findOne({ author: user, quiz });

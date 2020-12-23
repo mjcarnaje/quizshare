@@ -12,6 +12,7 @@ import {
 import { Question } from './Question';
 import { User } from './User';
 import { Like } from './Like';
+import { Comment } from './Comment';
 
 @ObjectType()
 @Entity()
@@ -42,6 +43,9 @@ export class Quiz extends BaseEntity {
 
 	@OneToMany(() => Like, (like) => like.quiz)
 	likes: Like[];
+
+	@OneToMany(() => Comment, (comment) => comment.quiz)
+	comments: Comment[];
 
 	@Field(() => String)
 	@CreateDateColumn()

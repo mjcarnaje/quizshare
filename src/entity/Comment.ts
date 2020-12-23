@@ -1,35 +1,34 @@
-// import { Field, ID, ObjectType } from 'type-graphql';
-// import {
-// 	BaseEntity,
-// 	Column,
-// 	Entity,
-// 	JoinColumn,
-// 	ManyToOne,
-// 	PrimaryColumn,
-// 	PrimaryGeneratedColumn,
-// } from 'typeorm';
-// import { User } from './User';
-// import { Quiz } from './Quiz';
+import { Field, ID, ObjectType } from 'type-graphql';
+import {
+	BaseEntity,
+	Column,
+	CreateDateColumn,
+	Entity,
+	ManyToOne,
+	PrimaryGeneratedColumn,
+} from 'typeorm';
+import { Quiz } from './Quiz';
+import { User } from './User';
 
-// @ObjectType()
-// @Entity()
-// export class Comment extends BaseEntity {
-// 	@Field(() => ID)
-// 	@PrimaryGeneratedColumn()
-// 	id: number;
+@ObjectType()
+@Entity()
+export class Comment extends BaseEntity {
+	@Field(() => ID)
+	@PrimaryGeneratedColumn()
+	id: number;
 
-// 	@ManyToOne(() => Quiz, (quiz) => quiz.comments)
-// 	quiz: Quiz;
+	@ManyToOne(() => Quiz, (quiz) => quiz.comments)
+	quiz: Quiz;
 
-// 	@PrimaryColumn()
-// 	authorId: number;
+	@Field(() => User)
+	@ManyToOne(() => User, (user) => user.quizzes)
+	author: User;
 
-// 	@Field(() => User)
-// 	@ManyToOne(() => User, (user) => user.quizzes, { primary: true })
-// 	@JoinColumn({ name: 'authorId' })
-// 	author: User;
+	@Field()
+	@Column()
+	text: string;
 
-// 	@Field()
-// 	@Column()
-// 	text: string;
-// }
+	@Field(() => String)
+	@CreateDateColumn()
+	createdAt: Date;
+}
