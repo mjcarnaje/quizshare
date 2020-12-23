@@ -11,6 +11,7 @@ import {
 } from 'typeorm';
 import { Question } from './Question';
 import { User } from './User';
+import { Like } from './Like';
 
 @ObjectType()
 @Entity()
@@ -38,6 +39,9 @@ export class Quiz extends BaseEntity {
 	@Field(() => [Question])
 	@OneToMany(() => Question, (question) => question.quiz, { cascade: true })
 	questions: Question[];
+
+	@OneToMany(() => Like, (like) => like.quiz)
+	likes: Like[];
 
 	@Field(() => String)
 	@CreateDateColumn()

@@ -13,8 +13,7 @@ import {
 } from 'typeorm';
 import { Profile } from './Profile';
 import { Quiz } from './Quiz';
-// import { Quiz } from './Quiz';
-// import { Like } from './Like';
+import { Like } from './Like';
 // import { Comment } from './Comment';
 
 @ObjectType()
@@ -56,10 +55,10 @@ export class User extends BaseEntity {
 	profile: Profile;
 
 	@OneToMany(() => Quiz, (quiz) => quiz.author)
-	quizzes: Promise<Quiz[]>;
+	quizzes: Quiz[];
 
-	// @OneToMany(() => Like, (like) => like.author)
-	// likes: Promise<Like[]>;
+	@OneToMany(() => Like, (like) => like.author)
+	likes: Like[];
 
 	// @OneToMany(() => Comment, (comment) => comment.author)
 	// comments: Promise<Comment[]>;
