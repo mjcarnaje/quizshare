@@ -18,6 +18,7 @@ export class Question extends BaseEntity {
 
 	@ManyToOne(() => Quiz, (quiz) => quiz.questions, {
 		onUpdate: 'CASCADE',
+		onDelete: 'CASCADE',
 	})
 	quiz: Quiz;
 

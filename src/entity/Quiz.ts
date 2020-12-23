@@ -21,6 +21,10 @@ export class Quiz extends BaseEntity {
 	@PrimaryGeneratedColumn()
 	id: number;
 
+	@Field()
+	@Column()
+	authorId: number;
+
 	@Field(() => User)
 	@ManyToOne(() => User, (user) => user.quizzes, { onDelete: 'CASCADE' })
 	author: User;

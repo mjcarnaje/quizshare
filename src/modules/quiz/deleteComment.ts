@@ -1,8 +1,7 @@
 import { Arg, Ctx, Mutation, Resolver, UseMiddleware } from 'type-graphql';
+import { Comment } from '../../entity/Comment';
 import { MyContext } from '../../types/MyContext';
 import { isAuthenticated } from '../middleware/isAuthenticated';
-import { Comment } from '../../entity/Comment';
-import { Quiz } from '../../entity/Quiz';
 
 @Resolver()
 export class deleteCommentResolver {
@@ -13,16 +12,10 @@ export class deleteCommentResolver {
 		@Arg('commentId') commentId: number,
 		@Ctx() { req }: MyContext
 	): Promise<String> {
-		const quiz = await Quiz.findOne({ id: quizId });
-
-		if (!quiz) {
-			throw new Error('Quiz not found');
-		}
-
 		await Comment.delete({
 			id: commentId,
-			author: req.session.userId,
-			quiz,
+			quizId,
+			authorId: req.session.userId,
 		});
 
 		return 'DELETED';

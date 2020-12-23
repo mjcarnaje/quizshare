@@ -17,11 +17,19 @@ export class Comment extends BaseEntity {
 	@PrimaryGeneratedColumn()
 	id: number;
 
-	@ManyToOne(() => Quiz, (quiz) => quiz.comments)
+	@Field()
+	@Column()
+	quizId: number;
+
+	@Field()
+	@Column()
+	authorId: number;
+
+	@ManyToOne(() => Quiz, (quiz) => quiz.comments, { onDelete: 'CASCADE' })
 	quiz: Quiz;
 
 	@Field(() => User)
-	@ManyToOne(() => User, (user) => user.quizzes)
+	@ManyToOne(() => User, (user) => user.quizzes, { onDelete: 'CASCADE' })
 	author: User;
 
 	@Field()

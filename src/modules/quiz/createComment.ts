@@ -1,9 +1,8 @@
 import { Arg, Ctx, Mutation, Resolver, UseMiddleware } from 'type-graphql';
-import { MyContext } from '../../types/MyContext';
-import { isAuthenticated } from '../middleware/isAuthenticated';
 import { Comment } from '../../entity/Comment';
 import { User } from '../../entity/User';
-import { Quiz } from '../../entity/Quiz';
+import { MyContext } from '../../types/MyContext';
+import { isAuthenticated } from '../middleware/isAuthenticated';
 
 @Resolver()
 export class createCommentResolver {
@@ -16,15 +15,9 @@ export class createCommentResolver {
 	): Promise<Comment> {
 		const user = await User.findOne({ id: req.session.userId });
 
-		const quiz = await Quiz.findOne({ id: quizId });
-
-		if (!quiz) {
-			throw new Error('Quiz not found');
-		}
-
 		const comment = await Comment.create({
 			author: user,
-			quiz,
+			quizId,
 			text,
 		}).save();
 

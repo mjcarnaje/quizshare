@@ -1,6 +1,7 @@
 import { Field, ID, ObjectType } from 'type-graphql';
 import {
 	BaseEntity,
+	Column,
 	CreateDateColumn,
 	Entity,
 	ManyToOne,
@@ -16,11 +17,19 @@ export class Like extends BaseEntity {
 	@PrimaryGeneratedColumn()
 	id: number;
 
-	@ManyToOne(() => Quiz, (quiz) => quiz.likes)
+	@Field()
+	@Column()
+	quizId: number;
+
+	@Field()
+	@Column()
+	authorId: number;
+
+	@ManyToOne(() => Quiz, (quiz) => quiz.likes, { onDelete: 'CASCADE' })
 	quiz: Quiz;
 
 	@Field(() => User)
-	@ManyToOne(() => User, (user) => user.quizzes)
+	@ManyToOne(() => User, (user) => user.quizzes, { onDelete: 'CASCADE' })
 	author: User;
 
 	@Field(() => String)
