@@ -1,4 +1,5 @@
-import { Flex, useColorMode, FlexProps } from '@chakra-ui/react';
+import { Flex, FlexProps, useColorMode } from '@chakra-ui/react';
+import NavBar from './NavBar';
 
 export const Container = (props: FlexProps) => {
 	const { colorMode } = useColorMode();
@@ -14,6 +15,9 @@ export const Container = (props: FlexProps) => {
 			bg={bgColor[colorMode]}
 			color={color[colorMode]}
 			{...props}
-		/>
+		>
+			<NavBar />
+			{props?.children}
+		</Flex>
 	);
 };
