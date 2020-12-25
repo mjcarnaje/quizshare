@@ -1,5 +1,6 @@
 import {
 	IsDate,
+	IsEmail,
 	IsEnum,
 	IsOptional,
 	Length,
@@ -22,6 +23,7 @@ export class RegisterInput {
 
 	@Field()
 	@Length(1, 72)
+	@IsEmail()
 	@isEmailAlreadyExist({ message: 'Email is already exist' })
 	email: string;
 
