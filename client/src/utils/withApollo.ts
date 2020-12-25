@@ -13,6 +13,7 @@ const createClient = (ctx: NextPageContext) =>
 					: undefined) || '',
 		},
 		cache: new InMemoryCache(),
+		connectToDevTools: true,
 	});
 
 export const withApollo = createWithApollo(createClient);

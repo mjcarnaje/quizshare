@@ -1,5 +1,29 @@
-mutation Register($registerInput: RegisterInput!) {
-	register(data: $registerInput) {
+mutation Register(
+	$username: String!
+	$email: String!
+	$password: String!
+	$confirmPassword: String!
+	$firstName: String!
+	$lastName: String!
+	$year: DateTime!
+	$month: String!
+	$day: String!
+	$gender: String!
+) {
+	register(
+		data: {
+			username: $username
+			email: $email
+			password: $password
+			confirmPassword: $confirmPassword
+			firstName: $firstName
+			lastName: $lastName
+			year: $year
+			month: $month
+			day: $day
+			gender: $gender
+		}
+	) {
 		id
 		username
 		email

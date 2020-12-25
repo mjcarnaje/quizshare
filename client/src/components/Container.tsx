@@ -1,23 +1,31 @@
-import { Flex, FlexProps, useColorMode } from '@chakra-ui/react';
+import { Flex, FlexProps, Spacer, useColorMode } from '@chakra-ui/react';
 import NavBar from './NavBar';
 
-export const Container = (props: FlexProps) => {
+export const Container = ({
+	justify = 'flex-start',
+	align = 'center',
+	...props
+}: FlexProps) => {
 	const { colorMode } = useColorMode();
 
-	const bgColor = { light: 'gray.50', dark: 'gray.900' };
-
+	const bgColor = { light: 'custom-light', dark: 'gray.900' };
 	const color = { light: 'black', dark: 'white' };
+
 	return (
-		<Flex
-			direction='column'
-			alignItems='center'
-			justifyContent='flex-start'
-			bg={bgColor[colorMode]}
-			color={color[colorMode]}
-			{...props}
-		>
-			<NavBar />
-			{props?.children}
-		</Flex>
+		<>
+			<Flex
+				direction='column'
+				align={align}
+				justify={justify}
+				bg={bgColor[colorMode]}
+				color={color[colorMode]}
+				{...props}
+			>
+				<NavBar />
+				<Spacer />
+				{props?.children}
+				<Spacer />
+			</Flex>
+		</>
 	);
 };

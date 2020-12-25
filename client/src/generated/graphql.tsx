@@ -121,7 +121,9 @@ export type RegisterInput = {
   confirmPassword: Scalars['String'];
   firstName: Scalars['String'];
   lastName: Scalars['String'];
-  birthday: Scalars['DateTime'];
+  year: Scalars['DateTime'];
+  month: Scalars['String'];
+  day: Scalars['String'];
   gender: Scalars['String'];
 };
 
@@ -208,7 +210,16 @@ export type MutationRegisterArgs = {
 };
 
 export type RegisterMutationVariables = Exact<{
-  registerInput: RegisterInput;
+  username: Scalars['String'];
+  email: Scalars['String'];
+  password: Scalars['String'];
+  confirmPassword: Scalars['String'];
+  firstName: Scalars['String'];
+  lastName: Scalars['String'];
+  year: Scalars['DateTime'];
+  month: Scalars['String'];
+  day: Scalars['String'];
+  gender: Scalars['String'];
 }>;
 
 
@@ -222,8 +233,10 @@ export type RegisterMutation = (
 
 
 export const RegisterDocument = gql`
-    mutation Register($registerInput: RegisterInput!) {
-  register(data: $registerInput) {
+    mutation Register($username: String!, $email: String!, $password: String!, $confirmPassword: String!, $firstName: String!, $lastName: String!, $year: DateTime!, $month: String!, $day: String!, $gender: String!) {
+  register(
+    data: {username: $username, email: $email, password: $password, confirmPassword: $confirmPassword, firstName: $firstName, lastName: $lastName, year: $year, month: $month, day: $day, gender: $gender}
+  ) {
     id
     username
     email
@@ -247,7 +260,16 @@ export type RegisterMutationFn = Apollo.MutationFunction<RegisterMutation, Regis
  * @example
  * const [registerMutation, { data, loading, error }] = useRegisterMutation({
  *   variables: {
- *      registerInput: // value for 'registerInput'
+ *      username: // value for 'username'
+ *      email: // value for 'email'
+ *      password: // value for 'password'
+ *      confirmPassword: // value for 'confirmPassword'
+ *      firstName: // value for 'firstName'
+ *      lastName: // value for 'lastName'
+ *      year: // value for 'year'
+ *      month: // value for 'month'
+ *      day: // value for 'day'
+ *      gender: // value for 'gender'
  *   },
  * });
  */

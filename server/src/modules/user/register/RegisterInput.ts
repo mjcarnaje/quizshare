@@ -8,9 +8,9 @@ import {
 	MinLength,
 } from 'class-validator';
 import { Field, InputType } from 'type-graphql';
+import { Gender } from '../../../types/Gender';
 import { isEmailAlreadyExist } from './isEmailAlreadyExist';
 import { isPasswordMatched } from './isPasswordMatched';
-import { Gender } from '../../../types/Gender';
 import { isUsernameAlreadyExist } from './isUsernameAlreadyExist';
 
 @InputType()
@@ -41,13 +41,21 @@ export class RegisterInput {
 	@Length(1, 23)
 	lastName: string;
 
-	@Field()
+	@Field(() => Date)
 	@IsDate()
-	@MinDate(new Date('1940-01-01'), {
+	@MinDate(new Date('1940'), {
 		message: 'Please be sure to use your real birthday',
 	})
-	@MaxDate(new Date(), { message: 'Please be sure to use your real birthday' })
-	birthday: Date;
+	@MaxDate(new Date('2013'), {
+		message: 'Please be sure to use your real birthday',
+	})
+	year: Date;
+
+	@Field() // IsEnum(Month)
+	month: string;
+
+	@Field() // IsEnum(Day)
+	day: string;
 
 	@Field()
 	@IsOptional()

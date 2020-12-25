@@ -22,8 +22,10 @@ export class RegisterResovler {
 			password,
 			firstName,
 			lastName,
-			birthday,
 			gender,
+			year,
+			month,
+			day,
 		}: RegisterInput
 	): Promise<User> {
 		const hashedPassword = await bcrypt.hash(password, 12);
@@ -35,7 +37,7 @@ export class RegisterResovler {
 			profile: {
 				firstName,
 				lastName,
-				birthday,
+				birthday: `${year}-${month}-${day}`,
 				gender,
 			},
 		}).save();
