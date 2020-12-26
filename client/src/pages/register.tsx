@@ -60,9 +60,10 @@ const Register: React.FC = () => {
 				boxShadow={registerBoxShadow[colorMode]}
 				rounded='md'
 				w='40%'
-				px={8}
-				pt={4}
-				pb={16}
+				px='32px'
+				pt='16px'
+				pb='54px	'
+				h='540px'
 				position='relative'
 			>
 				{isSecondStep && (
@@ -96,7 +97,7 @@ const Register: React.FC = () => {
 						<Text fontSize='20px' color='gray.600' textAlign='center'>
 							It's quick and easy.
 						</Text>
-						<VStack spacing='12px' py='24px'>
+						<VStack spacing='10px' py='24px'>
 							<HStack w='full' spacing='6px'>
 								<RegisterLoginInput
 									error={errors.firstName}
@@ -122,6 +123,7 @@ const Register: React.FC = () => {
 										ref={register}
 										placeholder='Gender'
 										isInvalid={!!errors.gender}
+										focusBorderColor='purple.500'
 									>
 										<option value='Male'>Male</option>
 										<option value='Female'>Female</option>
@@ -193,6 +195,7 @@ const Register: React.FC = () => {
 										name='month'
 										ref={register}
 										isInvalid={!!errors.month}
+										focusBorderColor='purple.500'
 									>
 										<Months />
 									</Select>
@@ -203,6 +206,7 @@ const Register: React.FC = () => {
 											name='day'
 											ref={register}
 											isInvalid={!!errors.day}
+											focusBorderColor='purple.500'
 										>
 											<Days />
 										</Select>
@@ -212,6 +216,7 @@ const Register: React.FC = () => {
 											name='year'
 											ref={register}
 											isInvalid={!!errors.year}
+											focusBorderColor='purple.500'
 										>
 											<Years />
 										</Select>
@@ -221,7 +226,7 @@ const Register: React.FC = () => {
 						</VStack>
 					</Box>
 
-					<VStack spacing='8px' display={isSecondStep ? '' : 'none'}>
+					<VStack spacing='10px' py='24px' display={isSecondStep ? '' : 'none'}>
 						<RegisterLoginInput
 							error={errors.username}
 							input='username'

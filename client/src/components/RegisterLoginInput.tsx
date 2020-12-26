@@ -35,6 +35,7 @@ const RegisterLoginInput: React.FC<RegisterLoginInputProps> = ({
 					ref={register}
 					isInvalid={!!error}
 					type={type}
+					focusBorderColor='purple.500'
 				/>
 				{error && (
 					<InputRightElement>

@@ -38,17 +38,18 @@ export class RegisterInput {
 	confirmPassword: string;
 
 	@Field()
-	@MinLength(6, { message: 'First name must be atleast 6 characters' })
-	@MaxLength(36, { message: 'First name must be excedeed to 36 characters' })
+	@MinLength(6)
+	@MaxLength(36)
 	firstName: string;
 
 	@Field()
-	@MinLength(6, { message: 'Last name must be atleast 6 characters' })
-	@MaxLength(36, { message: 'Last name must be excedeed to 36 characters' })
+	@MinLength(6)
+	@MaxLength(36)
 	lastName: string;
 
 	@Field(() => Date)
 	@IsDate({ message: 'Year is required' })
+	@IsNotEmpty({ message: 'Year is required' })
 	@MinDate(new Date('1940'), {
 		message: 'Please be sure to use your real birthday',
 	})
