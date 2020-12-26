@@ -2,14 +2,16 @@ import {
 	IsDate,
 	IsEmail,
 	IsEnum,
+	IsNotEmpty,
 	IsOptional,
 	Length,
 	MaxDate,
+	MaxLength,
 	MinDate,
 	MinLength,
 } from 'class-validator';
 import { Field, InputType } from 'type-graphql';
-import { Gender } from '../../../types/Gender';
+import { Gender } from '../../../types/Type';
 import { isEmailAlreadyExist } from './isEmailAlreadyExist';
 import { isPasswordMatched } from './isPasswordMatched';
 import { isUsernameAlreadyExist } from './isUsernameAlreadyExist';
@@ -36,15 +38,17 @@ export class RegisterInput {
 	confirmPassword: string;
 
 	@Field()
-	@Length(1, 32)
+	@MinLength(6, { message: 'First name must be atleast 6 characters' })
+	@MaxLength(36, { message: 'First name must be excedeed to 36 characters' })
 	firstName: string;
 
 	@Field()
-	@Length(1, 23)
+	@MinLength(6, { message: 'Last name must be atleast 6 characters' })
+	@MaxLength(36, { message: 'Last name must be excedeed to 36 characters' })
 	lastName: string;
 
 	@Field(() => Date)
-	@IsDate()
+	@IsDate({ message: 'Year is required' })
 	@MinDate(new Date('1940'), {
 		message: 'Please be sure to use your real birthday',
 	})
@@ -54,13 +58,15 @@ export class RegisterInput {
 	year: Date;
 
 	@Field() // IsEnum(Month)
+	@IsNotEmpty({ message: 'Month is required' })
 	month: string;
 
 	@Field() // IsEnum(Day)
+	@IsNotEmpty({ message: 'Day is required' })
 	day: string;
 
 	@Field()
 	@IsOptional()
-	@IsEnum(Gender)
+	@IsEnum(Gender, { message: 'Gender is required' })
 	gender: Gender;
 }
