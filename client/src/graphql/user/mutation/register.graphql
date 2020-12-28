@@ -5,7 +5,7 @@ mutation Register(
 	$confirmPassword: String!
 	$firstName: String!
 	$lastName: String!
-	$year: DateTime!
+	$year: String!
 	$month: String!
 	$day: String!
 	$gender: String!
@@ -29,5 +29,13 @@ mutation Register(
 		email
 		avatar
 		createdAt
+		profile {
+			id
+			firstName
+			lastName
+			birthday
+			gender
+			name
+		}
 	}
 }

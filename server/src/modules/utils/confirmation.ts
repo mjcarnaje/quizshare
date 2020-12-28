@@ -3,7 +3,7 @@ import {
 	confirmationPrefix,
 	forgotPasswordPrefix,
 } from '../constant/redisPrefixes';
-import { redis } from './../../redis';
+import { redis } from '../../redis';
 
 export const confirmationRegistration = async (userId: number) => {
 	const token = v4();

@@ -1,0 +1,17 @@
+query Me {
+	me {
+		id
+		username
+		email
+		avatar
+		createdAt
+		profile {
+			id
+			firstName
+			lastName
+			birthday
+			gender
+			name
+		}
+	}
+}

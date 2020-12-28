@@ -2,6 +2,7 @@ import { ArrowBackIcon, WarningIcon } from '@chakra-ui/icons';
 import {
 	Box,
 	Button,
+	Flex,
 	FormControl,
 	FormLabel,
 	HStack,
@@ -17,6 +18,8 @@ import {
 	useColorMode,
 	VStack,
 } from '@chakra-ui/react';
+import { useRouter } from 'next/dist/client/router';
+import Head from 'next/head';
 import React, { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { Days, Months, Years } from '../components/BirthdayDateOptions';
@@ -25,7 +28,6 @@ import RegisterLoginInput from '../components/RegisterLoginInput';
 import { RegisterInput, useRegisterMutation } from '../generated/graphql';
 import errorMapper from '../utils/errorMapper';
 import { withApollo } from '../utils/withApollo';
-import { Flex } from '@chakra-ui/react';
 
 const Register: React.FC = () => {
 	const [isSecondStep, setIsSecondStep] = useState(false);
@@ -35,26 +37,34 @@ const Register: React.FC = () => {
 	const bgColor = { light: 'white', dark: 'gray.800' };
 	const registerBoxShadow = { light: 'md', dark: 'lg' };
 
-	const [registerMutation, { loading }] = useRegisterMutation();
+	const router = useRouter();
+
+	const [registerUser, { loading }] = useRegisterMutation();
 
 	const { register, handleSubmit, errors, setError } = useForm<RegisterInput>();
 
 	const onSumbit = async (values: RegisterInput) => {
 		try {
-			const { data } = await registerMutation({
+			const response = await registerUser({
 				variables: values,
 			});
-			alert(data);
+			if (response.data?.register) {
+				router.push('/');
+			}
 		} catch (err) {
 			const errObj = errorMapper(err);
-			Object.keys(errObj).forEach((key) => {
-				setError(key, { type: 'server', message: errObj[key] });
-			});
+			Object.keys(errObj).forEach((key: any) =>
+				setError(key, { type: 'server', message: errObj[key] })
+			);
 		}
 	};
 
 	return (
 		<Container minHeight='100vh' justify='center'>
+			<Head>
+				<title>Register</title>
+				<meta name='viewport' content='initial-scale=1.0, width=device-width' />
+			</Head>
 			<Box
 				bg={bgColor[colorMode]}
 				boxShadow={registerBoxShadow[colorMode]}

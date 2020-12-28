@@ -30,6 +30,9 @@ export class RegisterResovler {
 	): Promise<User> {
 		const hashedPassword = await bcrypt.hash(password, 12);
 
+		const birthday = new Date(`${year}-${month}-${day}`).toLocaleDateString();
+		console.log(`${year}-${month}-${day}`, birthday);
+
 		const newUser = await User.create({
 			username,
 			email,
@@ -37,7 +40,7 @@ export class RegisterResovler {
 			profile: {
 				firstName,
 				lastName,
-				birthday: `${year}-${month}-${day}`,
+				birthday,
 				gender,
 			},
 		}).save();

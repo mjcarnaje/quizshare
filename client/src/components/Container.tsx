@@ -1,5 +1,5 @@
 import { Flex, FlexProps, Spacer, useColorMode } from '@chakra-ui/react';
-import NavBar from './NavBar';
+import { NavBar } from './NavBar';
 
 export const Container = ({
 	justify = 'flex-start',

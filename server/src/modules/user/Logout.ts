@@ -11,7 +11,7 @@ export class LogoutResolver {
 					console.error(err);
 					return rej(false);
 				}
-				ctx.res.clearCookie('qid');
+				ctx.res.clearCookie(process.env.SESSION_NAME as string);
 				return res(true);
 			})
 		);

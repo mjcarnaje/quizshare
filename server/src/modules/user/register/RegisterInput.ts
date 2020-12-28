@@ -1,13 +1,10 @@
 import {
-	IsDate,
 	IsEmail,
 	IsEnum,
 	IsNotEmpty,
 	IsOptional,
 	Length,
-	MaxDate,
 	MaxLength,
-	MinDate,
 	MinLength,
 } from 'class-validator';
 import { Field, InputType } from 'type-graphql';
@@ -47,22 +44,15 @@ export class RegisterInput {
 	@MaxLength(36)
 	lastName: string;
 
-	@Field(() => Date)
-	@IsDate({ message: 'Year is required' })
+	@Field()
 	@IsNotEmpty({ message: 'Year is required' })
-	@MinDate(new Date('1940'), {
-		message: 'Please be sure to use your real birthday',
-	})
-	@MaxDate(new Date('2013'), {
-		message: 'Please be sure to use your real birthday',
-	})
-	year: Date;
+	year: string;
 
-	@Field() // IsEnum(Month)
+	@Field()
 	@IsNotEmpty({ message: 'Month is required' })
 	month: string;
 
-	@Field() // IsEnum(Day)
+	@Field()
 	@IsNotEmpty({ message: 'Day is required' })
 	day: string;
 
