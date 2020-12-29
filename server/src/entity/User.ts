@@ -47,7 +47,7 @@ export class User extends BaseEntity {
 
 	@Field(() => String)
 	@UpdateDateColumn()
-	updatedAt: Date;
+	updated_at: Date;
 
 	@Field(() => Profile)
 	@OneToOne(() => Profile, { cascade: true })

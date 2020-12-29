@@ -26,8 +26,8 @@ import { Days, Months, Years } from '../components/BirthdayDateOptions';
 import { Container } from '../components/Container';
 import RegisterLoginInput from '../components/RegisterLoginInput';
 import { RegisterInput, useRegisterMutation } from '../generated/graphql';
-import errorMapper from '../utils/errorMapper';
 import { withApollo } from '../utils/withApollo';
+import errorMapper from '../utils/errorMapper';
 
 const Register: React.FC = () => {
 	const [isSecondStep, setIsSecondStep] = useState(false);
@@ -52,10 +52,7 @@ const Register: React.FC = () => {
 				router.push('/');
 			}
 		} catch (err) {
-			const errObj = errorMapper(err);
-			Object.keys(errObj).forEach((key: any) =>
-				setError(key, { type: 'server', message: errObj[key] })
-			);
+			errorMapper(err, setError);
 		}
 	};
 
@@ -203,6 +200,7 @@ const Register: React.FC = () => {
 										size='lg'
 										placeholder='Month'
 										name='month'
+										id='month'
 										ref={register}
 										isInvalid={!!errors.month}
 										focusBorderColor='purple.500'
@@ -214,6 +212,7 @@ const Register: React.FC = () => {
 											size='lg'
 											placeholder='Day'
 											name='day'
+											id='day'
 											ref={register}
 											isInvalid={!!errors.day}
 											focusBorderColor='purple.500'
@@ -224,6 +223,7 @@ const Register: React.FC = () => {
 											size='lg'
 											placeholder='Year'
 											name='year'
+											id='year'
 											ref={register}
 											isInvalid={!!errors.year}
 											focusBorderColor='purple.500'

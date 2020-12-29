@@ -2,7 +2,7 @@ import { Container } from '../components/Container';
 import { Hero } from '../components/Hero';
 import { withApollo } from '../utils/withApollo';
 
-const Index = () => {
+const Index: React.FC = () => {
 	return (
 		<Container height='100vh'>
 			<Hero />

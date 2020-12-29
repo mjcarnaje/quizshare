@@ -1,5 +1,5 @@
 mutation Login($emailOrUsername: String!, $password: String!) {
-	login(emailOrUsername: $emailOrUsername, password: $password) {
+	login(data: { emailOrUsername: $emailOrUsername, password: $password }) {
 		id
 		username
 		email

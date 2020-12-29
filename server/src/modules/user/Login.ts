@@ -1,15 +1,26 @@
 import { AuthenticationError } from 'apollo-server-express';
 import * as bcrypt from 'bcryptjs';
-import { Arg, Ctx, Mutation, Resolver } from 'type-graphql';
+import { IsNotEmpty } from 'class-validator';
+import { Arg, Ctx, Mutation, Resolver, InputType, Field } from 'type-graphql';
 import { User } from '../../entity/User';
 import { MyContext } from '../../types/MyContext';
+
+@InputType()
+export class loginInput {
+	@Field()
+	@IsNotEmpty({ message: 'Email or username should not be empty' })
+	emailOrUsername: string;
+
+	@Field()
+	@IsNotEmpty()
+	password: string;
+}
 
 @Resolver()
 export class LoginResolver {
 	@Mutation(() => User)
 	async login(
-		@Arg('emailOrUsername') emailOrUsername: string,
-		@Arg('password') password: string,
+		@Arg('data') { emailOrUsername, password }: loginInput,
 		@Ctx() ctx: MyContext
 	): Promise<User> {
 		const user = await User.findOne(

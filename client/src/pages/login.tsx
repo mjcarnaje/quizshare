@@ -12,6 +12,7 @@ import {
 	useLoginMutation,
 } from '../generated/graphql';
 import { withApollo } from '../utils/withApollo';
+import errorMapper from '../utils/errorMapper';
 
 const Login: React.FC = () => {
 	const { colorMode } = useColorMode();
@@ -48,14 +49,7 @@ const Login: React.FC = () => {
 				router.push('/');
 			}
 		} catch (err) {
-			setError('emailOrUsername', {
-				type: 'server',
-				message: err.graphQLErrors[0].message,
-			});
-			setError('password', {
-				type: 'server',
-				message: err.graphQLErrors[0].message,
-			});
+			errorMapper(err, setError);
 		}
 	};
 	return (
@@ -87,7 +81,7 @@ const Login: React.FC = () => {
 						<RegisterLoginInput
 							error={errors.emailOrUsername}
 							input='emailOrUsername'
-							name='Email'
+							name='Email or username'
 							register={register}
 							type='text'
 						/>

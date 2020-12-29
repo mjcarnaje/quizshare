@@ -35,12 +35,12 @@ export class RegisterInput {
 	confirm_password: string;
 
 	@Field()
-	@MinLength(6)
+	@MinLength(3)
 	@MaxLength(36)
 	first_name: string;
 
 	@Field()
-	@MinLength(6)
+	@MinLength(3)
 	@MaxLength(36)
 	last_name: string;
 

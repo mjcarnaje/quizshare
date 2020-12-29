@@ -55,7 +55,7 @@ export type User = {
   email: Scalars['String'];
   avatar?: Maybe<Scalars['String']>;
   created_at: Scalars['String'];
-  updatedAt: Scalars['String'];
+  updated_at: Scalars['String'];
   profile: Profile;
 };
 
@@ -109,6 +109,11 @@ export type QuizInput = {
 
 export type ChangePasswordInput = {
   token: Scalars['String'];
+  password: Scalars['String'];
+};
+
+export type LoginInput = {
+  emailOrUsername: Scalars['String'];
   password: Scalars['String'];
 };
 
@@ -203,8 +208,7 @@ export type MutationForgotPasswordArgs = {
 
 
 export type MutationLoginArgs = {
-  password: Scalars['String'];
-  emailOrUsername: Scalars['String'];
+  data: LoginInput;
 };
 
 
@@ -282,7 +286,7 @@ export type MeQuery = (
 
 export const LoginDocument = gql`
     mutation Login($emailOrUsername: String!, $password: String!) {
-  login(emailOrUsername: $emailOrUsername, password: $password) {
+  login(data: {emailOrUsername: $emailOrUsername, password: $password}) {
     id
     username
     email
