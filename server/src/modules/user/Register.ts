@@ -20,8 +20,8 @@ export class RegisterResovler {
 			username,
 			email,
 			password,
-			firstName,
-			lastName,
+			first_name,
+			last_name,
 			gender,
 			year,
 			month,
@@ -38,8 +38,8 @@ export class RegisterResovler {
 			email,
 			password: hashedPassword,
 			profile: {
-				firstName,
-				lastName,
+				first_name,
+				last_name,
 				birthday,
 				gender,
 			},
@@ -47,7 +47,7 @@ export class RegisterResovler {
 
 		await sendEmail(
 			email,
-			firstName,
+			first_name,
 			await confirmationRegistration(newUser.id)
 		);
 

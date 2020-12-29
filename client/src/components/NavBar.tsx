@@ -1,12 +1,5 @@
 import { useApolloClient } from '@apollo/client';
-import {
-	Box,
-	Button,
-	Flex,
-	Heading,
-	HStack,
-	useColorMode,
-} from '@chakra-ui/react';
+import { Button, Flex, Heading, HStack, useColorMode } from '@chakra-ui/react';
 import NextLink from 'next/link';
 import React from 'react';
 import { useLogoutMutation, useMeQuery } from '../generated/graphql';
@@ -30,11 +23,9 @@ export const NavBar: React.FC = () => {
 	let body;
 
 	if (loading) {
-		console.log('..loading');
 	} else if (!data?.me) {
-		console.log('not auth');
 		body = (
-			<HStack spacing={4}>
+			<>
 				<NextLink href='login'>
 					<Button
 						size='sm'
@@ -55,20 +46,25 @@ export const NavBar: React.FC = () => {
 						Sign Up
 					</Button>
 				</NextLink>
-			</HStack>
+			</>
 		);
 	} else {
-		console.log('auth');
 		body = (
-			<Button
-				onClick={() => {
-					apolloClient.resetStore();
-					logout();
-				}}
-				isLoading={logoutLoading}
-			>
-				Logout
-			</Button>
+			<>
+				<Button
+					size='sm'
+					colorScheme={buttonColor[colorMode]}
+					variant='ghost'
+					fontSize={16}
+					onClick={() => {
+						logout();
+						apolloClient.resetStore();
+					}}
+					isLoading={logoutLoading}
+				>
+					Logout
+				</Button>
+			</>
 		);
 	}
 	return (
@@ -92,7 +88,7 @@ export const NavBar: React.FC = () => {
 					QuizShare
 				</Heading>
 			</NextLink>
-			<Box>{body}</Box>
+			<HStack spacing={4}>{body}</HStack>
 			<DarkModeSwitch />
 		</Flex>
 	);

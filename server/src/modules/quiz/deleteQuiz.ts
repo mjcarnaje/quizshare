@@ -5,20 +5,20 @@ import { Quiz } from '../../entity/Quiz';
 import { AuthenticationError } from 'apollo-server-express';
 
 @Resolver()
-export class deleteQuizResolver {
+export class DeleteQuizResolver {
 	@UseMiddleware(isAuthenticated)
 	@Mutation(() => String)
 	async deleteQuiz(
-		@Arg('quizId') quizId: number,
+		@Arg('quiz_id') quiz_id: number,
 		@Ctx() { req }: MyContext
 	): Promise<String> {
-		const quiz = await Quiz.findOneOrFail({ id: quizId });
+		const quiz = await Quiz.findOneOrFail({ id: quiz_id });
 
 		if (!quiz) {
 			throw new Error('Quiz not found');
 		}
 
-		if (quiz.authorId !== req.session.userId) {
+		if (quiz.author_id !== req.session.user_id) {
 			throw new AuthenticationError('Action not allowed');
 		}
 

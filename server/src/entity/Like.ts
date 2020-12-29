@@ -19,11 +19,11 @@ export class Like extends BaseEntity {
 
 	@Field()
 	@Column()
-	quizId: number;
+	quiz_id: number;
 
 	@Field()
 	@Column()
-	authorId: number;
+	author_id: number;
 
 	@ManyToOne(() => Quiz, (quiz) => quiz.likes, { onDelete: 'CASCADE' })
 	quiz: Quiz;
@@ -34,5 +34,5 @@ export class Like extends BaseEntity {
 
 	@Field(() => String)
 	@CreateDateColumn()
-	createdAt: Date;
+	created_at: Date;
 }

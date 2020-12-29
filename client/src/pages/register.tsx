@@ -110,15 +110,15 @@ const Register: React.FC = () => {
 						<VStack spacing='10px' py='24px'>
 							<HStack w='full' spacing='6px'>
 								<RegisterLoginInput
-									error={errors.firstName}
-									input='firstName'
+									error={errors.first_name}
+									input='first_name'
 									name='First Name'
 									register={register}
 									type='text'
 								/>
 								<RegisterLoginInput
-									input='lastName'
-									error={errors.lastName}
+									input='last_name'
+									error={errors.last_name}
 									name='Last Name'
 									register={register}
 									type='text'
@@ -259,8 +259,8 @@ const Register: React.FC = () => {
 							type='password'
 						/>
 						<RegisterLoginInput
-							error={errors.confirmPassword}
-							input='confirmPassword'
+							error={errors.confirm_password}
+							input='confirm_password'
 							name='Confirm Password'
 							register={register}
 							type='password'

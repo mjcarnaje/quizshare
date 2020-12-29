@@ -13,7 +13,7 @@ export class QuestionInput {
 
 	@Field({ nullable: true })
 	@IsBase64({ message: 'Enter valid image file (base64)' })
-	questionPhoto?: string;
+	question_photo?: string;
 
 	@Field(() => [ChoiceInput])
 	choices: ChoiceInput[];
@@ -25,11 +25,11 @@ export class QuestionInput {
 	explanation: string;
 
 	@Field({ defaultValue: false })
-	withExplanation: boolean;
+	with_explanation: boolean;
 
 	@Field({ nullable: true })
 	hint: string;
 
 	@Field({ defaultValue: false })
-	withHint: boolean;
+	with_hint: boolean;
 }

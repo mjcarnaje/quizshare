@@ -11,9 +11,9 @@ import {
 	PrimaryGeneratedColumn,
 	UpdateDateColumn,
 } from 'typeorm';
+import { Like } from './Like';
 import { Profile } from './Profile';
 import { Quiz } from './Quiz';
-import { Like } from './Like';
 // import { Comment } from './Comment';
 
 @ObjectType()
@@ -43,7 +43,7 @@ export class User extends BaseEntity {
 
 	@Field(() => String)
 	@CreateDateColumn()
-	createdAt: Date;
+	created_at: Date;
 
 	@Field(() => String)
 	@UpdateDateColumn()

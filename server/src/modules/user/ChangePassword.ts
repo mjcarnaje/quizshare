@@ -13,13 +13,13 @@ export class ChangePasswordResolver {
 		@Arg('data') { token, password }: ChangePasswordInput,
 		@Ctx() ctx: MyContext
 	): Promise<User | null> {
-		const userId = await redis.get(forgotPasswordPrefix + token);
+		const user_id = await redis.get(forgotPasswordPrefix + token);
 
-		if (!userId) {
+		if (!user_id) {
 			throw new Error('Invalid token');
 		}
 
-		const user = await User.findOne(userId);
+		const user = await User.findOne(user_id);
 
 		if (!user) {
 			throw new Error('User not found');
@@ -31,7 +31,7 @@ export class ChangePasswordResolver {
 
 		await user.save();
 
-		ctx.req.session!.userId = user.id;
+		ctx.req.session!.user_id = user.id;
 
 		return user;
 	}

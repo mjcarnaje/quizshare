@@ -4,7 +4,7 @@ import { Field, InputType } from 'type-graphql';
 @InputType()
 export class ChoiceInput {
 	@Field()
-	choiceId: number;
+	choice_id: number;
 
 	@Field()
 	text: string;

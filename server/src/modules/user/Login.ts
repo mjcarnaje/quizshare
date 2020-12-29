@@ -33,7 +33,7 @@ export class LoginResolver {
 			throw new AuthenticationError('Please confirm you email address');
 		}
 
-		ctx.req.session!.userId = user.id;
+		ctx.req.session!.user_id = user.id;
 
 		return user;
 	}

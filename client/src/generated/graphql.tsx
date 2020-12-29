@@ -19,33 +19,33 @@ export type Question = {
   __typename?: 'Question';
   id: Scalars['ID'];
   question: Scalars['String'];
-  questionPhoto?: Maybe<Scalars['String']>;
+  question_photo?: Maybe<Scalars['String']>;
   choices: Array<Scalars['JSONObject']>;
   answer: Scalars['Float'];
   explanation?: Maybe<Scalars['String']>;
-  withExplanation: Scalars['Boolean'];
+  with_explanation: Scalars['Boolean'];
   hint?: Maybe<Scalars['String']>;
-  withHint: Scalars['Boolean'];
+  with_hint: Scalars['Boolean'];
 };
 
-
-export type Profile = {
-  __typename?: 'Profile';
-  id: Scalars['ID'];
-  firstName: Scalars['String'];
-  lastName: Scalars['String'];
-  birthday: Scalars['String'];
-  gender: Scalars['String'];
-  name: Scalars['String'];
-};
 
 export type Like = {
   __typename?: 'Like';
   id: Scalars['ID'];
-  quizId: Scalars['Float'];
-  authorId: Scalars['Float'];
+  quiz_id: Scalars['Float'];
+  author_id: Scalars['Float'];
   author: User;
-  createdAt: Scalars['String'];
+  created_at: Scalars['String'];
+};
+
+export type Profile = {
+  __typename?: 'Profile';
+  id: Scalars['ID'];
+  first_name: Scalars['String'];
+  last_name: Scalars['String'];
+  birthday: Scalars['String'];
+  gender: Scalars['String'];
+  name: Scalars['String'];
 };
 
 export type User = {
@@ -54,7 +54,7 @@ export type User = {
   username: Scalars['String'];
   email: Scalars['String'];
   avatar?: Maybe<Scalars['String']>;
-  createdAt: Scalars['String'];
+  created_at: Scalars['String'];
   updatedAt: Scalars['String'];
   profile: Profile;
 };
@@ -62,28 +62,28 @@ export type User = {
 export type Quiz = {
   __typename?: 'Quiz';
   id: Scalars['ID'];
-  authorId: Scalars['Float'];
+  author_id: Scalars['Float'];
   author: User;
   title: Scalars['String'];
   description: Scalars['String'];
-  quizPhoto?: Maybe<Scalars['String']>;
+  quiz_photo?: Maybe<Scalars['String']>;
   questions: Array<Question>;
-  createdAt: Scalars['String'];
-  updateAt: Scalars['String'];
+  created_at: Scalars['String'];
+  updated_at: Scalars['String'];
 };
 
 export type Comment = {
   __typename?: 'Comment';
   id: Scalars['ID'];
-  quizId: Scalars['Float'];
-  authorId: Scalars['Float'];
+  quiz_id: Scalars['Float'];
+  author_id: Scalars['Float'];
   author: User;
   text: Scalars['String'];
-  createdAt: Scalars['String'];
+  created_at: Scalars['String'];
 };
 
 export type ChoiceInput = {
-  choiceId: Scalars['Float'];
+  choice_id: Scalars['Float'];
   text: Scalars['String'];
   choicePhoto?: Maybe<Scalars['String']>;
 };
@@ -91,19 +91,19 @@ export type ChoiceInput = {
 export type QuestionInput = {
   question: Scalars['String'];
   id?: Maybe<Scalars['Float']>;
-  questionPhoto?: Maybe<Scalars['String']>;
+  question_photo?: Maybe<Scalars['String']>;
   choices: Array<ChoiceInput>;
   answer: Scalars['Float'];
   explanation?: Maybe<Scalars['String']>;
-  withExplanation?: Maybe<Scalars['Boolean']>;
+  with_explanation?: Maybe<Scalars['Boolean']>;
   hint?: Maybe<Scalars['String']>;
-  withHint?: Maybe<Scalars['Boolean']>;
+  with_hint?: Maybe<Scalars['Boolean']>;
 };
 
 export type QuizInput = {
   title: Scalars['String'];
   description: Scalars['String'];
-  quizPhoto?: Maybe<Scalars['String']>;
+  quiz_photo?: Maybe<Scalars['String']>;
   questions: Array<QuestionInput>;
 };
 
@@ -116,9 +116,9 @@ export type RegisterInput = {
   username: Scalars['String'];
   email: Scalars['String'];
   password: Scalars['String'];
-  confirmPassword: Scalars['String'];
-  firstName: Scalars['String'];
-  lastName: Scalars['String'];
+  confirm_password: Scalars['String'];
+  first_name: Scalars['String'];
+  last_name: Scalars['String'];
   year: Scalars['String'];
   month: Scalars['String'];
   day: Scalars['String'];
@@ -127,8 +127,14 @@ export type RegisterInput = {
 
 export type Query = {
   __typename?: 'Query';
+  quizzes: Array<Quiz>;
   me?: Maybe<User>;
   getUsers: Array<User>;
+};
+
+
+export type QueryQuizzesArgs = {
+  limit: Scalars['Int'];
 };
 
 export type Mutation = {
@@ -150,7 +156,7 @@ export type Mutation = {
 
 export type MutationCreateCommentArgs = {
   text: Scalars['String'];
-  quizId: Scalars['Float'];
+  quiz_id: Scalars['Float'];
 };
 
 
@@ -161,23 +167,23 @@ export type MutationCreateQuizArgs = {
 
 export type MutationDeleteCommentArgs = {
   commentId: Scalars['Float'];
-  quizId: Scalars['Float'];
+  quiz_id: Scalars['Float'];
 };
 
 
 export type MutationDeleteQuizArgs = {
-  quizId: Scalars['Float'];
+  quiz_id: Scalars['Float'];
 };
 
 
 export type MutationToggleLikeArgs = {
-  quizId: Scalars['Float'];
+  quiz_id: Scalars['Float'];
 };
 
 
 export type MutationUpdateQuizArgs = {
   inputs: QuizInput;
-  quizId: Scalars['Float'];
+  quiz_id: Scalars['Float'];
 };
 
 
@@ -216,10 +222,10 @@ export type LoginMutation = (
   { __typename?: 'Mutation' }
   & { login: (
     { __typename?: 'User' }
-    & Pick<User, 'id' | 'username' | 'email' | 'avatar' | 'createdAt'>
+    & Pick<User, 'id' | 'username' | 'email' | 'avatar' | 'created_at'>
     & { profile: (
       { __typename?: 'Profile' }
-      & Pick<Profile, 'id' | 'firstName' | 'lastName' | 'birthday' | 'gender' | 'name'>
+      & Pick<Profile, 'id' | 'first_name' | 'last_name' | 'birthday' | 'gender' | 'name'>
     ) }
   ) }
 );
@@ -236,9 +242,9 @@ export type RegisterMutationVariables = Exact<{
   username: Scalars['String'];
   email: Scalars['String'];
   password: Scalars['String'];
-  confirmPassword: Scalars['String'];
-  firstName: Scalars['String'];
-  lastName: Scalars['String'];
+  confirm_password: Scalars['String'];
+  first_name: Scalars['String'];
+  last_name: Scalars['String'];
   year: Scalars['String'];
   month: Scalars['String'];
   day: Scalars['String'];
@@ -250,10 +256,10 @@ export type RegisterMutation = (
   { __typename?: 'Mutation' }
   & { register: (
     { __typename?: 'User' }
-    & Pick<User, 'id' | 'username' | 'email' | 'avatar' | 'createdAt'>
+    & Pick<User, 'id' | 'username' | 'email' | 'avatar' | 'created_at'>
     & { profile: (
       { __typename?: 'Profile' }
-      & Pick<Profile, 'id' | 'firstName' | 'lastName' | 'birthday' | 'gender' | 'name'>
+      & Pick<Profile, 'id' | 'first_name' | 'last_name' | 'birthday' | 'gender' | 'name'>
     ) }
   ) }
 );
@@ -265,10 +271,10 @@ export type MeQuery = (
   { __typename?: 'Query' }
   & { me?: Maybe<(
     { __typename?: 'User' }
-    & Pick<User, 'id' | 'username' | 'email' | 'avatar' | 'createdAt'>
+    & Pick<User, 'id' | 'username' | 'email' | 'avatar' | 'created_at'>
     & { profile: (
       { __typename?: 'Profile' }
-      & Pick<Profile, 'id' | 'firstName' | 'lastName' | 'birthday' | 'gender' | 'name'>
+      & Pick<Profile, 'id' | 'first_name' | 'last_name' | 'birthday' | 'gender' | 'name'>
     ) }
   )> }
 );
@@ -281,11 +287,11 @@ export const LoginDocument = gql`
     username
     email
     avatar
-    createdAt
+    created_at
     profile {
       id
-      firstName
-      lastName
+      first_name
+      last_name
       birthday
       gender
       name
@@ -349,19 +355,19 @@ export type LogoutMutationHookResult = ReturnType<typeof useLogoutMutation>;
 export type LogoutMutationResult = Apollo.MutationResult<LogoutMutation>;
 export type LogoutMutationOptions = Apollo.BaseMutationOptions<LogoutMutation, LogoutMutationVariables>;
 export const RegisterDocument = gql`
-    mutation Register($username: String!, $email: String!, $password: String!, $confirmPassword: String!, $firstName: String!, $lastName: String!, $year: String!, $month: String!, $day: String!, $gender: String!) {
+    mutation Register($username: String!, $email: String!, $password: String!, $confirm_password: String!, $first_name: String!, $last_name: String!, $year: String!, $month: String!, $day: String!, $gender: String!) {
   register(
-    data: {username: $username, email: $email, password: $password, confirmPassword: $confirmPassword, firstName: $firstName, lastName: $lastName, year: $year, month: $month, day: $day, gender: $gender}
+    data: {username: $username, email: $email, password: $password, confirm_password: $confirm_password, first_name: $first_name, last_name: $last_name, year: $year, month: $month, day: $day, gender: $gender}
   ) {
     id
     username
     email
     avatar
-    createdAt
+    created_at
     profile {
       id
-      firstName
-      lastName
+      first_name
+      last_name
       birthday
       gender
       name
@@ -387,9 +393,9 @@ export type RegisterMutationFn = Apollo.MutationFunction<RegisterMutation, Regis
  *      username: // value for 'username'
  *      email: // value for 'email'
  *      password: // value for 'password'
- *      confirmPassword: // value for 'confirmPassword'
- *      firstName: // value for 'firstName'
- *      lastName: // value for 'lastName'
+ *      confirm_password: // value for 'confirm_password'
+ *      first_name: // value for 'first_name'
+ *      last_name: // value for 'last_name'
  *      year: // value for 'year'
  *      month: // value for 'month'
  *      day: // value for 'day'
@@ -410,11 +416,11 @@ export const MeDocument = gql`
     username
     email
     avatar
-    createdAt
+    created_at
     profile {
       id
-      firstName
-      lastName
+      first_name
+      last_name
       birthday
       gender
       name

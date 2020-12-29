@@ -19,11 +19,11 @@ export class Comment extends BaseEntity {
 
 	@Field()
 	@Column()
-	quizId: number;
+	quiz_id: number;
 
 	@Field()
 	@Column()
-	authorId: number;
+	author_id: number;
 
 	@ManyToOne(() => Quiz, (quiz) => quiz.comments, { onDelete: 'CASCADE' })
 	quiz: Quiz;
@@ -38,5 +38,5 @@ export class Comment extends BaseEntity {
 
 	@Field(() => String)
 	@CreateDateColumn()
-	createdAt: Date;
+	created_at: Date;
 }

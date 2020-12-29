@@ -4,11 +4,11 @@ query Me {
 		username
 		email
 		avatar
-		createdAt
+		created_at
 		profile {
 			id
-			firstName
-			lastName
+			first_name
+			last_name
 			birthday
 			gender
 			name

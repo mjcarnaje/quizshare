@@ -2,9 +2,9 @@ mutation Register(
 	$username: String!
 	$email: String!
 	$password: String!
-	$confirmPassword: String!
-	$firstName: String!
-	$lastName: String!
+	$confirm_password: String!
+	$first_name: String!
+	$last_name: String!
 	$year: String!
 	$month: String!
 	$day: String!
@@ -15,9 +15,9 @@ mutation Register(
 			username: $username
 			email: $email
 			password: $password
-			confirmPassword: $confirmPassword
-			firstName: $firstName
-			lastName: $lastName
+			confirm_password: $confirm_password
+			first_name: $first_name
+			last_name: $last_name
 			year: $year
 			month: $month
 			day: $day
@@ -28,11 +28,11 @@ mutation Register(
 		username
 		email
 		avatar
-		createdAt
+		created_at
 		profile {
 			id
-			firstName
-			lastName
+			first_name
+			last_name
 			birthday
 			gender
 			name

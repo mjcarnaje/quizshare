@@ -3,12 +3,12 @@ import { Request, Response } from 'express';
 export interface MyContext {
 	req: Request & {
 		session: {
-			userId?: any;
+			user_id?: any;
 		};
 	};
 	res: Response & {
 		session: {
-			userId?: any;
+			user_id?: any;
 		};
 	};
 }

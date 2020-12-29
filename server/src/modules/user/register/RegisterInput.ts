@@ -32,17 +32,17 @@ export class RegisterInput {
 
 	@Field()
 	@isPasswordMatched('password', { message: 'Passwords does not match' })
-	confirmPassword: string;
+	confirm_password: string;
 
 	@Field()
 	@MinLength(6)
 	@MaxLength(36)
-	firstName: string;
+	first_name: string;
 
 	@Field()
 	@MinLength(6)
 	@MaxLength(36)
-	lastName: string;
+	last_name: string;
 
 	@Field()
 	@IsNotEmpty({ message: 'Year is required' })

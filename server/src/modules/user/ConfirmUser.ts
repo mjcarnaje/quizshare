@@ -7,13 +7,13 @@ import { redis } from './../../redis';
 export class ConfirmUserResolver {
 	@Mutation(() => Boolean)
 	async confirmUser(@Arg('token') token: string): Promise<Boolean> {
-		const userId = await redis.get(confirmationPrefix + token);
+		const user_id = await redis.get(confirmationPrefix + token);
 
-		if (!userId) {
+		if (!user_id) {
 			return false;
 		}
 
-		await User.update({ id: parseInt(userId, 10) }, { confirmed: true });
+		await User.update({ id: parseInt(user_id, 10) }, { confirmed: true });
 
 		await redis.del(token);
 

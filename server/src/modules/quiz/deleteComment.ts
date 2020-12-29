@@ -4,18 +4,18 @@ import { MyContext } from '../../types/MyContext';
 import { isAuthenticated } from '../middleware/isAuthenticated';
 
 @Resolver()
-export class deleteCommentResolver {
+export class DeleteCommentResolver {
 	@UseMiddleware(isAuthenticated)
 	@Mutation(() => String)
 	async deleteComment(
-		@Arg('quizId') quizId: number,
+		@Arg('quiz_id') quiz_id: number,
 		@Arg('commentId') commentId: number,
 		@Ctx() { req }: MyContext
 	): Promise<String> {
 		await Comment.delete({
 			id: commentId,
-			quizId,
-			authorId: req.session.userId,
+			quiz_id,
+			author_id: req.session.user_id,
 		});
 
 		return 'DELETED';

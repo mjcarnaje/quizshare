@@ -14,7 +14,7 @@ export class QuizInput {
 
 	@Field({ nullable: true })
 	@IsBase64({ message: 'Enter valid image file (base64)' })
-	quizPhoto?: string;
+	quiz_photo?: string;
 
 	@Field(() => [QuestionInput])
 	questions: QuestionInput[];

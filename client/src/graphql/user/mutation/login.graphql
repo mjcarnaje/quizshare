@@ -4,11 +4,11 @@ mutation Login($emailOrUsername: String!, $password: String!) {
 		username
 		email
 		avatar
-		createdAt
+		created_at
 		profile {
 			id
-			firstName
-			lastName
+			first_name
+			last_name
 			birthday
 			gender
 			name

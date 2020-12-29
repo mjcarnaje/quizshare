@@ -6,14 +6,14 @@ import { User } from '../../entity/User';
 import { isAuthenticated } from '../middleware/isAuthenticated';
 
 @Resolver(Quiz)
-export class createQuizResolver {
+export class CreateQuizResolver {
 	@UseMiddleware(isAuthenticated)
 	@Mutation(() => Quiz)
 	async createQuiz(
 		@Arg('data') data: QuizInput,
 		@Ctx() { req }: MyContext
 	): Promise<Quiz> {
-		const user = await User.findOne({ id: req.session.userId });
+		const user = await User.findOne({ id: req.session.user_id });
 		const newQuiz = await Quiz.create({
 			...data,
 			author: user,

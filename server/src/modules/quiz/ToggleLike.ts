@@ -4,23 +4,23 @@ import { MyContext } from '../../types/MyContext';
 import { isAuthenticated } from '../middleware/isAuthenticated';
 
 @Resolver()
-export class toggleLikeResolver {
+export class ToggleLikeResolver {
 	@UseMiddleware(isAuthenticated)
 	@Mutation(() => String)
 	async toggleLike(
-		@Arg('quizId') quizId: number,
+		@Arg('quiz_id') quiz_id: number,
 		@Ctx() { req }: MyContext
 	): Promise<string> {
-		const authorId = req.session.userId;
+		const author_id = req.session.user_id;
 
-		const isLike = await Like.findOne({ authorId, quizId });
+		const isLike = await Like.findOne({ author_id, quiz_id });
 
 		if (isLike) {
 			await Like.remove(isLike);
 			return 'UNLIKED QUIZ';
 		}
 
-		await Like.create({ authorId, quizId }).save();
+		await Like.create({ author_id, quiz_id }).save();
 
 		return 'LIKED QUIZ';
 	}

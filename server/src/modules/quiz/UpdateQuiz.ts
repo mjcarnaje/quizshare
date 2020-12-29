@@ -5,18 +5,20 @@ import { QuizInput } from './createQuiz/CreateQuizInput';
 import { QuestionInput } from './createQuiz/QuestionInput';
 
 @Resolver(Quiz)
-export class createQuizResolver {
+export class UpdateQuiz {
 	@UseMiddleware(isAuthenticated)
 	@Mutation(() => Quiz)
 	async updateQuiz(
-		@Arg('quizId') quizId: number,
+		@Arg('quiz_id') quiz_id: number,
 		@Arg('inputs') inputs: QuizInput
 	): Promise<Quiz> {
-		const quiz = await Quiz.findOneOrFail(quizId, { relations: ['questions'] });
+		const quiz = await Quiz.findOneOrFail(quiz_id, {
+			relations: ['questions'],
+		});
 
 		quiz.title = inputs.title || quiz.title;
 		quiz.description = inputs.description || quiz.description;
-		quiz.quizPhoto = inputs?.quizPhoto || quiz.quizPhoto;
+		quiz.quiz_photo = inputs?.quiz_photo || quiz.quiz_photo;
 
 		const hashKey: Record<number, QuestionInput> = {};
 

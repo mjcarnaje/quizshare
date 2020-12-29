@@ -23,7 +23,7 @@ export class Quiz extends BaseEntity {
 
 	@Field()
 	@Column()
-	authorId: number;
+	author_id: number;
 
 	@Field(() => User)
 	@ManyToOne(() => User, (user) => user.quizzes, { onDelete: 'CASCADE' })
@@ -39,7 +39,7 @@ export class Quiz extends BaseEntity {
 
 	@Field({ nullable: true })
 	@Column('text', { default: null })
-	quizPhoto?: string;
+	quiz_photo?: string;
 
 	@Field(() => [Question])
 	@OneToMany(() => Question, (question) => question.quiz, { cascade: true })
@@ -53,9 +53,9 @@ export class Quiz extends BaseEntity {
 
 	@Field(() => String)
 	@CreateDateColumn()
-	createdAt: Date;
+	created_at: Date;
 
 	@Field(() => String)
 	@UpdateDateColumn()
-	updateAt: Date;
+	updated_at: Date;
 }

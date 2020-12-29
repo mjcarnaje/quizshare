@@ -28,11 +28,11 @@ export class Question extends BaseEntity {
 
 	@Field({ nullable: true })
 	@Column('text', { default: null })
-	questionPhoto?: string;
+	question_photo?: string;
 
 	@Field(() => [GraphQLJSONObject])
 	@Column('jsonb')
-	choices: { choiceId: number; text: string; choicePhoto: null | string }[];
+	choices: { choice_id: number; text: string; choicePhoto: null | string }[];
 
 	@Field()
 	@Column()
@@ -44,7 +44,7 @@ export class Question extends BaseEntity {
 
 	@Field()
 	@Column('bool', { default: false })
-	withExplanation: boolean;
+	with_explanation: boolean;
 
 	@Field({ nullable: true })
 	@Column('text', { default: null })
@@ -52,5 +52,5 @@ export class Question extends BaseEntity {
 
 	@Field()
 	@Column('bool', { default: false })
-	withHint: boolean;
+	with_hint: boolean;
 }

@@ -11,11 +11,11 @@ export class Profile extends BaseEntity {
 
 	@Field()
 	@Column()
-	firstName: string;
+	first_name: string;
 
 	@Field()
 	@Column()
-	lastName: string;
+	last_name: string;
 
 	@Field(() => String)
 	@Column('date')
@@ -26,7 +26,7 @@ export class Profile extends BaseEntity {
 	gender: Gender;
 
 	@Field()
-	name(@Root() { firstName, lastName }: Profile): string {
-		return `${firstName} ${lastName}`;
+	name(@Root() { first_name, last_name }: Profile): string {
+		return `${first_name} ${last_name}`;
 	}
 }
