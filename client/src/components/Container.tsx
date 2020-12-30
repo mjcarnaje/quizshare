@@ -8,7 +8,7 @@ export const Container = ({
 }: FlexProps) => {
 	const { colorMode } = useColorMode();
 
-	const bgColor = { light: 'custom-light', dark: 'gray.900' };
+	const bgColor = { light: 'white', dark: 'gray.900' };
 	const color = { light: 'black', dark: 'white' };
 
 	return (

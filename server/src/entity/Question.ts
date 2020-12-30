@@ -4,6 +4,7 @@ import {
 	BaseEntity,
 	Column,
 	Entity,
+	JoinColumn,
 	ManyToOne,
 	PrimaryGeneratedColumn,
 } from 'typeorm';
@@ -16,10 +17,15 @@ export class Question extends BaseEntity {
 	@PrimaryGeneratedColumn()
 	id: number;
 
+	@Field()
+	@Column()
+	quiz_id: number;
+
 	@ManyToOne(() => Quiz, (quiz) => quiz.questions, {
 		onUpdate: 'CASCADE',
 		onDelete: 'CASCADE',
 	})
+	@JoinColumn({ name: 'quiz_id' })
 	quiz: Quiz;
 
 	@Field()

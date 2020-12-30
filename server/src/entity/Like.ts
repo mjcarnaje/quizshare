@@ -4,6 +4,7 @@ import {
 	Column,
 	CreateDateColumn,
 	Entity,
+	JoinColumn,
 	ManyToOne,
 	PrimaryGeneratedColumn,
 } from 'typeorm';
@@ -26,10 +27,12 @@ export class Like extends BaseEntity {
 	author_id: number;
 
 	@ManyToOne(() => Quiz, (quiz) => quiz.likes, { onDelete: 'CASCADE' })
+	@JoinColumn({ name: 'quiz_id' })
 	quiz: Quiz;
 
 	@Field(() => User)
 	@ManyToOne(() => User, (user) => user.quizzes, { onDelete: 'CASCADE' })
+	@JoinColumn({ name: 'author_id' })
 	author: User;
 
 	@Field(() => String)

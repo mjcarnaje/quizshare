@@ -65,6 +65,9 @@ const Login: React.FC = () => {
 				w='40%'
 				px='32px'
 				py='16px'
+				borderColor='rgb(235, 238, 240)'
+				borderStyle='solid'
+				borderWidth='1px'
 			>
 				<Box mb='20px'>
 					<Text

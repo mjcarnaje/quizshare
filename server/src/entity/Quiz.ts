@@ -4,6 +4,7 @@ import {
 	Column,
 	CreateDateColumn,
 	Entity,
+	JoinColumn,
 	ManyToOne,
 	OneToMany,
 	PrimaryGeneratedColumn,
@@ -27,6 +28,7 @@ export class Quiz extends BaseEntity {
 
 	@Field(() => User)
 	@ManyToOne(() => User, (user) => user.quizzes, { onDelete: 'CASCADE' })
+	@JoinColumn({ name: 'author_id' })
 	author: User;
 
 	@Field()

@@ -1,32 +1,51 @@
+import { Arg, Field, Int, ObjectType, Query, Resolver } from 'type-graphql';
+import { FindManyOptions, LessThan } from 'typeorm';
 import { Quiz } from '../../entity/Quiz';
-import { Arg, Int, Query, Resolver } from 'type-graphql';
 
-// @ObjectType()
-// class PaginatedQuizzes {
-// 	@Field(() => [Quiz])
-// 	posts: Quiz[];
-// 	@Field()
-// 	hasMore: boolean;
-// }
+@ObjectType()
+class PaginatedQuizzes {
+	@Field(() => [Quiz])
+	quizzes: Quiz[];
+	@Field()
+	hasMore: boolean;
+}
 
 @Resolver()
-export class PaginatedQuizzesResolver {
-	@Query(() => [Quiz])
+export class QuizzesResolver {
+	@Query(() => PaginatedQuizzes)
 	async quizzes(
-		@Arg('limit', () => Int) limit: number
-		// @Arg('cursor', () => String, { nullable: true }) cursor: string | null
-	): Promise<Quiz[]> {
+		@Arg('limit', () => Int) limit: number,
+		@Arg('cursor', () => String, { nullable: true }) cursor: string | null
+	): Promise<PaginatedQuizzes> {
 		const realLimit = Math.min(10, limit);
-		// const realLimitPlusOne = realLimit + 1;
+		const realLimitPlusOne = realLimit + 1;
 
-		const quizzes = await Quiz.find({
-			relations: ['author', 'questions'],
-			order: {
-				created_at: 'DESC',
-			},
-			take: realLimit,
-		});
+		let findOption: FindManyOptions;
 
-		return quizzes;
+		if (cursor) {
+			findOption = {
+				relations: ['author', 'questions'],
+				order: {
+					created_at: 'DESC',
+				},
+				take: realLimitPlusOne,
+				where: { created_at: LessThan(new Date(parseInt(cursor))) },
+			};
+		} else {
+			findOption = {
+				relations: ['author', 'questions'],
+				order: {
+					created_at: 'DESC',
+				},
+				take: realLimitPlusOne,
+			};
+		}
+
+		const quizzes = await Quiz.find(findOption);
+
+		return {
+			quizzes: quizzes.slice(0, realLimit),
+			hasMore: quizzes.length === realLimitPlusOne,
+		};
 	}
 }

@@ -1,4 +1,4 @@
-import { IsBase64 } from 'class-validator';
+import { IsString } from 'class-validator';
 import { Field, InputType } from 'type-graphql';
 
 @InputType()
@@ -10,6 +10,7 @@ export class ChoiceInput {
 	text: string;
 
 	@Field({ nullable: true })
-	@IsBase64({ message: 'Enter valid image file (base64)' })
+	@IsString()
+	// @IsBase64({ message: 'Enter valid image file (base64)' })
 	choicePhoto?: string;
 }

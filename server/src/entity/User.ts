@@ -50,7 +50,7 @@ export class User extends BaseEntity {
 	updated_at: Date;
 
 	@Field(() => Profile)
-	@OneToOne(() => Profile, { cascade: true })
+	@OneToOne(() => Profile, { cascade: true, eager: true })
 	@JoinColumn()
 	profile: Profile;
 

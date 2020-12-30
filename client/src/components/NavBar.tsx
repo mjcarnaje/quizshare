@@ -5,6 +5,7 @@ import React from 'react';
 import { useLogoutMutation, useMeQuery } from '../generated/graphql';
 import { isServer } from '../utils/isServer';
 import { DarkModeSwitch } from './DarkModeSwitch';
+import { useRouter } from 'next/dist/client/router';
 
 export const NavBar: React.FC = () => {
 	const { colorMode } = useColorMode();
@@ -14,16 +15,17 @@ export const NavBar: React.FC = () => {
 	const buttonColor = { light: 'purple', dark: 'gray' };
 	const logoColor = { light: 'purple.500', dark: 'purple.300' };
 
+	const router = useRouter();
+
 	const [logout, { loading: logoutLoading }] = useLogoutMutation();
 
 	const apolloClient = useApolloClient();
 
-	const { data, loading } = useMeQuery({ skip: isServer() });
+	const { data } = useMeQuery({ skip: isServer() });
 
 	let body;
 
-	if (loading) {
-	} else if (!data?.me) {
+	if (!data?.me) {
 		body = (
 			<>
 				<NextLink href='login'>
@@ -57,8 +59,12 @@ export const NavBar: React.FC = () => {
 					variant='ghost'
 					fontSize={16}
 					onClick={() => {
-						logout();
-						apolloClient.resetStore();
+						logout({
+							update: () => {
+								router.push('/login');
+								apolloClient.resetStore();
+							},
+						});
 					}}
 					isLoading={logoutLoading}
 				>

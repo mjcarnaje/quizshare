@@ -1,9 +1,8 @@
 import { Arg, Ctx, Mutation, Resolver, UseMiddleware } from 'type-graphql';
 import { Quiz } from '../../entity/Quiz';
 import { MyContext } from '../../types/MyContext';
-import { QuizInput } from './createQuiz/CreateQuizInput';
-import { User } from '../../entity/User';
 import { isAuthenticated } from '../middleware/isAuthenticated';
+import { QuizInput } from './createQuiz/CreateQuizInput';
 
 @Resolver(Quiz)
 export class CreateQuizResolver {
@@ -13,10 +12,9 @@ export class CreateQuizResolver {
 		@Arg('data') data: QuizInput,
 		@Ctx() { req }: MyContext
 	): Promise<Quiz> {
-		const user = await User.findOne({ id: req.session.user_id });
 		const newQuiz = await Quiz.create({
 			...data,
-			author: user,
+			author_id: req.session.user_id,
 		}).save();
 
 		return newQuiz;

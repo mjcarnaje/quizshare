@@ -18,7 +18,7 @@ export class UpdateQuiz {
 
 		quiz.title = inputs.title || quiz.title;
 		quiz.description = inputs.description || quiz.description;
-		quiz.quiz_photo = inputs?.quiz_photo || quiz.quiz_photo;
+		quiz.quiz_photo = inputs?.quiz_photo || undefined;
 
 		const hashKey: Record<number, QuestionInput> = {};
 

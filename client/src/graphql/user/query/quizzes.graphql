@@ -1,0 +1,20 @@
+query Quizzes($limit: Int!, $cursor: String) {
+	quizzes(limit: $limit, cursor: $cursor) {
+		hasMore
+		quizzes {
+			id
+			title
+			description
+			quiz_photo
+			created_at
+			author {
+				username
+				email
+				avatar
+				profile {
+					name
+				}
+			}
+		}
+	}
+}

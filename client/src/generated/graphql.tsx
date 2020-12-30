@@ -18,6 +18,7 @@ export type Scalars = {
 export type Question = {
   __typename?: 'Question';
   id: Scalars['ID'];
+  quiz_id: Scalars['Float'];
   question: Scalars['String'];
   question_photo?: Maybe<Scalars['String']>;
   choices: Array<Scalars['JSONObject']>;
@@ -82,6 +83,12 @@ export type Comment = {
   created_at: Scalars['String'];
 };
 
+export type PaginatedQuizzes = {
+  __typename?: 'PaginatedQuizzes';
+  quizzes: Array<Quiz>;
+  hasMore: Scalars['Boolean'];
+};
+
 export type ChoiceInput = {
   choice_id: Scalars['Float'];
   text: Scalars['String'];
@@ -132,13 +139,14 @@ export type RegisterInput = {
 
 export type Query = {
   __typename?: 'Query';
-  quizzes: Array<Quiz>;
+  quizzes: PaginatedQuizzes;
   me?: Maybe<User>;
   getUsers: Array<User>;
 };
 
 
 export type QueryQuizzesArgs = {
+  cursor?: Maybe<Scalars['String']>;
   limit: Scalars['Int'];
 };
 
@@ -281,6 +289,32 @@ export type MeQuery = (
       & Pick<Profile, 'id' | 'first_name' | 'last_name' | 'birthday' | 'gender' | 'name'>
     ) }
   )> }
+);
+
+export type QuizzesQueryVariables = Exact<{
+  limit: Scalars['Int'];
+  cursor?: Maybe<Scalars['String']>;
+}>;
+
+
+export type QuizzesQuery = (
+  { __typename?: 'Query' }
+  & { quizzes: (
+    { __typename?: 'PaginatedQuizzes' }
+    & Pick<PaginatedQuizzes, 'hasMore'>
+    & { quizzes: Array<(
+      { __typename?: 'Quiz' }
+      & Pick<Quiz, 'id' | 'title' | 'description' | 'quiz_photo' | 'created_at'>
+      & { author: (
+        { __typename?: 'User' }
+        & Pick<User, 'username' | 'email' | 'avatar'>
+        & { profile: (
+          { __typename?: 'Profile' }
+          & Pick<Profile, 'name'>
+        ) }
+      ) }
+    )> }
+  ) }
 );
 
 
@@ -457,3 +491,52 @@ export function useMeLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<MeQuery
 export type MeQueryHookResult = ReturnType<typeof useMeQuery>;
 export type MeLazyQueryHookResult = ReturnType<typeof useMeLazyQuery>;
 export type MeQueryResult = Apollo.QueryResult<MeQuery, MeQueryVariables>;
+export const QuizzesDocument = gql`
+    query Quizzes($limit: Int!, $cursor: String) {
+  quizzes(limit: $limit, cursor: $cursor) {
+    hasMore
+    quizzes {
+      id
+      title
+      description
+      quiz_photo
+      created_at
+      author {
+        username
+        email
+        avatar
+        profile {
+          name
+        }
+      }
+    }
+  }
+}
+    `;
+
+/**
+ * __useQuizzesQuery__
+ *
+ * To run a query within a React component, call `useQuizzesQuery` and pass it any options that fit your needs.
+ * When your component renders, `useQuizzesQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useQuizzesQuery({
+ *   variables: {
+ *      limit: // value for 'limit'
+ *      cursor: // value for 'cursor'
+ *   },
+ * });
+ */
+export function useQuizzesQuery(baseOptions: Apollo.QueryHookOptions<QuizzesQuery, QuizzesQueryVariables>) {
+        return Apollo.useQuery<QuizzesQuery, QuizzesQueryVariables>(QuizzesDocument, baseOptions);
+      }
+export function useQuizzesLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<QuizzesQuery, QuizzesQueryVariables>) {
+          return Apollo.useLazyQuery<QuizzesQuery, QuizzesQueryVariables>(QuizzesDocument, baseOptions);
+        }
+export type QuizzesQueryHookResult = ReturnType<typeof useQuizzesQuery>;
+export type QuizzesLazyQueryHookResult = ReturnType<typeof useQuizzesLazyQuery>;
+export type QuizzesQueryResult = Apollo.QueryResult<QuizzesQuery, QuizzesQueryVariables>;
