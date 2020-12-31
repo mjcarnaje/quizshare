@@ -9,16 +9,24 @@ const fonts = {
 
 const theme = extendTheme({
 	styles: {
-		global: {
+		global: ({ colorMode }) => ({
 			body: {
 				fontFamily: 'Inter, sans-serif',
 			},
-		},
+
+			p: {
+				color: colorMode === 'dark' ? '#BDBDBD' : 'gray.600',
+			},
+			h2: {
+				color: colorMode === 'dark' ? 'white' : 'gray.800',
+			},
+			h3: {
+				color: colorMode === 'dark' ? 'white' : 'gray.800',
+			},
+		}),
 	},
 	colors: {
 		black: '#16161D',
-		'custom-light': '#EBF4FF',
-		'custom-dark': '#1A202C',
 	},
 	fonts,
 });

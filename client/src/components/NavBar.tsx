@@ -1,25 +1,25 @@
-import { useApolloClient } from '@apollo/client';
-import { Button, Flex, Heading, HStack, useColorMode } from '@chakra-ui/react';
+import {
+	Button,
+	Flex,
+	Heading,
+	HStack,
+	useColorModeValue,
+} from '@chakra-ui/react';
 import NextLink from 'next/link';
 import React from 'react';
-import { useLogoutMutation, useMeQuery } from '../generated/graphql';
+import { useMeQuery } from '../generated/graphql';
 import { isServer } from '../utils/isServer';
 import { DarkModeSwitch } from './DarkModeSwitch';
-import { useRouter } from 'next/dist/client/router';
+import { UserMenu } from './UserMenu';
 
 export const NavBar: React.FC = () => {
-	const { colorMode } = useColorMode();
-
-	const bgColor = { light: 'white', dark: 'gray.800' };
-	const navBarShadow = { light: 'sm', dark: 'md' };
-	const buttonColor = { light: 'purple', dark: 'gray' };
-	const logoColor = { light: 'purple.500', dark: 'purple.300' };
-
-	const router = useRouter();
-
-	const [logout, { loading: logoutLoading }] = useLogoutMutation();
-
-	const apolloClient = useApolloClient();
+	const bgColor = useColorModeValue(
+		'rgb(255, 255, 255, .90)',
+		'rgb(32, 32, 32, .90)'
+	);
+	const navBarShadow = useColorModeValue('xs', 'sm');
+	const buttonColorScheme = useColorModeValue('purple', 'gray');
+	const logoColor = useColorModeValue('purple.500', 'purple.400');
 
 	const { data } = useMeQuery({ skip: isServer() });
 
@@ -31,7 +31,7 @@ export const NavBar: React.FC = () => {
 				<NextLink href='login'>
 					<Button
 						size='sm'
-						colorScheme={buttonColor[colorMode]}
+						colorScheme={buttonColorScheme}
 						variant='ghost'
 						fontSize={16}
 					>
@@ -41,7 +41,7 @@ export const NavBar: React.FC = () => {
 				<NextLink href='register'>
 					<Button
 						size='sm'
-						colorScheme={buttonColor[colorMode]}
+						colorScheme={buttonColorScheme}
 						variant='outline'
 						fontSize={16}
 					>
@@ -51,27 +51,7 @@ export const NavBar: React.FC = () => {
 			</>
 		);
 	} else {
-		body = (
-			<>
-				<Button
-					size='sm'
-					colorScheme={buttonColor[colorMode]}
-					variant='ghost'
-					fontSize={16}
-					onClick={() => {
-						logout({
-							update: () => {
-								router.push('/login');
-								apolloClient.resetStore();
-							},
-						});
-					}}
-					isLoading={logoutLoading}
-				>
-					Logout
-				</Button>
-			</>
-		);
+		body = <UserMenu {...data.me} />;
 	}
 	return (
 		<Flex
@@ -79,8 +59,13 @@ export const NavBar: React.FC = () => {
 			w='full'
 			py={4}
 			px={16}
-			bg={bgColor[colorMode]}
-			boxShadow={navBarShadow[colorMode]}
+			bg={bgColor}
+			boxShadow={navBarShadow}
+			position='sticky'
+			left='0'
+			right='0'
+			top='0'
+			zIndex='2'
 		>
 			<NextLink href='/'>
 				<Heading
@@ -88,14 +73,19 @@ export const NavBar: React.FC = () => {
 					fontSize={28}
 					fontWeight='sm'
 					fontFamily='berkshire'
-					color={logoColor[colorMode]}
+					color={logoColor}
 					cursor='pointer'
+					lineHeight='22px'
+					pb='6px'
+					my='auto'
 				>
 					QuizShare
 				</Heading>
 			</NextLink>
-			<HStack spacing={4}>{body}</HStack>
-			<DarkModeSwitch />
+			<HStack spacing={4}>
+				<DarkModeSwitch />
+				{body}
+			</HStack>
 		</Flex>
 	);
 };

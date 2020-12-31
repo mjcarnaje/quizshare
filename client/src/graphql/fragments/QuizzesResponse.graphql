@@ -1,0 +1,15 @@
+fragment QuizzesResponse on Quiz {
+	id
+	title
+	description
+	quiz_photo
+	created_at
+	author {
+		username
+		email
+		avatar
+		profile {
+			name
+		}
+	}
+}

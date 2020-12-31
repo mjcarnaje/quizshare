@@ -1,4 +1,4 @@
-import { Box, Button, Text, useColorMode, VStack } from '@chakra-ui/react';
+import { Box, Button, Text, useColorModeValue, VStack } from '@chakra-ui/react';
 import { useRouter } from 'next/dist/client/router';
 import Head from 'next/head';
 import React from 'react';
@@ -6,32 +6,26 @@ import { useForm } from 'react-hook-form';
 import { Container } from '../components/Container';
 import RegisterLoginInput from '../components/RegisterLoginInput';
 import {
-	LoginMutationVariables,
+	LoginInput,
 	MeDocument,
 	MeQuery,
 	useLoginMutation,
 } from '../generated/graphql';
-import { withApollo } from '../utils/withApollo';
 import errorMapper from '../utils/errorMapper';
+import { withApollo } from '../utils/withApollo';
 
 const Login: React.FC = () => {
-	const { colorMode } = useColorMode();
-
-	const bgColor = { light: 'white', dark: 'gray.800' };
-	const registerBoxShadow = { light: 'md', dark: 'lg' };
+	const bgColor = useColorModeValue('white', '#202020');
+	const registerBoxShadow = useColorModeValue('md', 'lg');
+	const borderColor = useColorModeValue('gray.200', '');
 
 	const [loginUser, { loading }] = useLoginMutation();
 
 	const router = useRouter();
 
-	const {
-		register,
-		handleSubmit,
-		errors,
-		setError,
-	} = useForm<LoginMutationVariables>();
+	const { register, handleSubmit, errors, setError } = useForm<LoginInput>();
 
-	const onSumbit = async (values: LoginMutationVariables) => {
+	const onSumbit = async (values: LoginInput) => {
 		try {
 			const response = await loginUser({
 				variables: values,
@@ -59,15 +53,15 @@ const Login: React.FC = () => {
 				<meta name='viewport' content='initial-scale=1.0, width=device-width' />
 			</Head>
 			<Box
-				bg={bgColor[colorMode]}
-				boxShadow={registerBoxShadow[colorMode]}
+				borderStyle='solid'
+				borderWidth='1px'
+				borderColor={borderColor}
+				bg={bgColor}
+				boxShadow={registerBoxShadow}
 				rounded='md'
 				w='40%'
 				px='32px'
 				py='16px'
-				borderColor='rgb(235, 238, 240)'
-				borderStyle='solid'
-				borderWidth='1px'
 			>
 				<Box mb='20px'>
 					<Text

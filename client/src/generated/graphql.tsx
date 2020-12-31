@@ -224,6 +224,19 @@ export type MutationRegisterArgs = {
   data: RegisterInput;
 };
 
+export type QuizzesResponseFragment = (
+  { __typename?: 'Quiz' }
+  & Pick<Quiz, 'id' | 'title' | 'description' | 'quiz_photo' | 'created_at'>
+  & { author: (
+    { __typename?: 'User' }
+    & Pick<User, 'username' | 'email' | 'avatar'>
+    & { profile: (
+      { __typename?: 'Profile' }
+      & Pick<Profile, 'name'>
+    ) }
+  ) }
+);
+
 export type LoginMutationVariables = Exact<{
   emailOrUsername: Scalars['String'];
   password: Scalars['String'];
@@ -234,7 +247,7 @@ export type LoginMutation = (
   { __typename?: 'Mutation' }
   & { login: (
     { __typename?: 'User' }
-    & Pick<User, 'id' | 'username' | 'email' | 'avatar' | 'created_at'>
+    & Pick<User, 'id' | 'username' | 'email' | 'avatar' | 'created_at' | 'updated_at'>
     & { profile: (
       { __typename?: 'Profile' }
       & Pick<Profile, 'id' | 'first_name' | 'last_name' | 'birthday' | 'gender' | 'name'>
@@ -283,7 +296,7 @@ export type MeQuery = (
   { __typename?: 'Query' }
   & { me?: Maybe<(
     { __typename?: 'User' }
-    & Pick<User, 'id' | 'username' | 'email' | 'avatar' | 'created_at'>
+    & Pick<User, 'id' | 'username' | 'email' | 'avatar' | 'created_at' | 'updated_at'>
     & { profile: (
       { __typename?: 'Profile' }
       & Pick<Profile, 'id' | 'first_name' | 'last_name' | 'birthday' | 'gender' | 'name'>
@@ -304,20 +317,28 @@ export type QuizzesQuery = (
     & Pick<PaginatedQuizzes, 'hasMore'>
     & { quizzes: Array<(
       { __typename?: 'Quiz' }
-      & Pick<Quiz, 'id' | 'title' | 'description' | 'quiz_photo' | 'created_at'>
-      & { author: (
-        { __typename?: 'User' }
-        & Pick<User, 'username' | 'email' | 'avatar'>
-        & { profile: (
-          { __typename?: 'Profile' }
-          & Pick<Profile, 'name'>
-        ) }
-      ) }
+      & QuizzesResponseFragment
     )> }
   ) }
 );
 
-
+export const QuizzesResponseFragmentDoc = gql`
+    fragment QuizzesResponse on Quiz {
+  id
+  title
+  description
+  quiz_photo
+  created_at
+  author {
+    username
+    email
+    avatar
+    profile {
+      name
+    }
+  }
+}
+    `;
 export const LoginDocument = gql`
     mutation Login($emailOrUsername: String!, $password: String!) {
   login(data: {emailOrUsername: $emailOrUsername, password: $password}) {
@@ -326,6 +347,7 @@ export const LoginDocument = gql`
     email
     avatar
     created_at
+    updated_at
     profile {
       id
       first_name
@@ -455,6 +477,7 @@ export const MeDocument = gql`
     email
     avatar
     created_at
+    updated_at
     profile {
       id
       first_name
@@ -496,23 +519,11 @@ export const QuizzesDocument = gql`
   quizzes(limit: $limit, cursor: $cursor) {
     hasMore
     quizzes {
-      id
-      title
-      description
-      quiz_photo
-      created_at
-      author {
-        username
-        email
-        avatar
-        profile {
-          name
-        }
-      }
+      ...QuizzesResponse
     }
   }
 }
-    `;
+    ${QuizzesResponseFragmentDoc}`;
 
 /**
  * __useQuizzesQuery__

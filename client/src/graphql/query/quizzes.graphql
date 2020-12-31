@@ -1,0 +1,8 @@
+query Quizzes($limit: Int!, $cursor: String) {
+	quizzes(limit: $limit, cursor: $cursor) {
+		hasMore
+		quizzes {
+			...QuizzesResponse
+		}
+	}
+}

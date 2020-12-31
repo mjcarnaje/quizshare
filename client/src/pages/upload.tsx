@@ -1,4 +1,4 @@
-import { Box, Center, Text, useToast } from '@chakra-ui/react';
+import { Box, Center, Text } from '@chakra-ui/react';
 import Image from 'next/image';
 import React, { useCallback, useState } from 'react';
 import { useDropzone } from 'react-dropzone';

@@ -5,6 +5,7 @@ query Me {
 		email
 		avatar
 		created_at
+		updated_at
 		profile {
 			id
 			first_name

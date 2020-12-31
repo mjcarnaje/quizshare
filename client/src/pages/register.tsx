@@ -15,7 +15,7 @@ import {
 	Select,
 	Text,
 	Tooltip,
-	useColorMode,
+	useColorModeValue,
 	VStack,
 } from '@chakra-ui/react';
 import { useRouter } from 'next/dist/client/router';
@@ -26,16 +26,15 @@ import { Days, Months, Years } from '../components/BirthdayDateOptions';
 import { Container } from '../components/Container';
 import RegisterLoginInput from '../components/RegisterLoginInput';
 import { RegisterInput, useRegisterMutation } from '../generated/graphql';
-import { withApollo } from '../utils/withApollo';
 import errorMapper from '../utils/errorMapper';
+import { withApollo } from '../utils/withApollo';
 
 const Register: React.FC = () => {
 	const [isSecondStep, setIsSecondStep] = useState(false);
 
-	const { colorMode } = useColorMode();
-
-	const bgColor = { light: 'white', dark: 'gray.800' };
-	const registerBoxShadow = { light: 'md', dark: 'lg' };
+	const bgColor = useColorModeValue('white', '#202020');
+	const registerBoxShadow = useColorModeValue('md', 'lg');
+	const borderColor = useColorModeValue('gray.200', '');
 
 	const router = useRouter();
 
@@ -63,8 +62,11 @@ const Register: React.FC = () => {
 				<meta name='viewport' content='initial-scale=1.0, width=device-width' />
 			</Head>
 			<Box
-				bg={bgColor[colorMode]}
-				boxShadow={registerBoxShadow[colorMode]}
+				borderStyle='solid'
+				borderWidth='1px'
+				borderColor={borderColor}
+				bg={bgColor}
+				boxShadow={registerBoxShadow}
 				rounded='md'
 				w='40%'
 				px='32px'
@@ -101,7 +103,7 @@ const Register: React.FC = () => {
 						<Text fontSize={28} fontWeight='bold' textAlign='center'>
 							Create your account
 						</Text>
-						<Text fontSize='20px' color='gray.600' textAlign='center'>
+						<Text fontSize='20px' textAlign='center'>
 							It's quick and easy.
 						</Text>
 						<VStack spacing='10px' py='24px'>
@@ -146,7 +148,7 @@ const Register: React.FC = () => {
 												<WarningIcon
 													color='red.500'
 													fontSize='20px'
-													bg={bgColor[colorMode]}
+													bg={bgColor}
 													rounded='100px'
 												/>
 											</Tooltip>
@@ -188,7 +190,7 @@ const Register: React.FC = () => {
 												mx='14px'
 												color='red.500'
 												fontSize='20px'
-												bg={bgColor[colorMode]}
+												bg={bgColor}
 												rounded='100px'
 											/>
 										</Tooltip>
