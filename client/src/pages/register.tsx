@@ -62,7 +62,6 @@ const Register: React.FC = () => {
 				<meta name='viewport' content='initial-scale=1.0, width=device-width' />
 			</Head>
 			<Box
-				borderStyle='solid'
 				borderWidth='1px'
 				borderColor={borderColor}
 				bg={bgColor}

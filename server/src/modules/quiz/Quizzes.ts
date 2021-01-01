@@ -24,7 +24,7 @@ export class QuizzesResolver {
 
 		if (cursor) {
 			findOption = {
-				relations: ['author', 'questions'],
+				relations: ['author', 'questions', 'likes'],
 				order: {
 					created_at: 'DESC',
 				},
@@ -33,7 +33,7 @@ export class QuizzesResolver {
 			};
 		} else {
 			findOption = {
-				relations: ['author', 'questions'],
+				relations: ['author', 'questions', 'likes'],
 				order: {
 					created_at: 'DESC',
 				},

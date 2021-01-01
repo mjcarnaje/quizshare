@@ -69,6 +69,7 @@ export type Quiz = {
   description: Scalars['String'];
   quiz_photo?: Maybe<Scalars['String']>;
   questions: Array<Question>;
+  likes: Array<Like>;
   created_at: Scalars['String'];
   updated_at: Scalars['String'];
 };
@@ -227,7 +228,10 @@ export type MutationRegisterArgs = {
 export type QuizzesResponseFragment = (
   { __typename?: 'Quiz' }
   & Pick<Quiz, 'id' | 'title' | 'description' | 'quiz_photo' | 'created_at'>
-  & { author: (
+  & { likes: Array<(
+    { __typename?: 'Like' }
+    & Pick<Like, 'id'>
+  )>, author: (
     { __typename?: 'User' }
     & Pick<User, 'username' | 'email' | 'avatar'>
     & { profile: (
@@ -289,6 +293,16 @@ export type RegisterMutation = (
   ) }
 );
 
+export type ToggleLikeMutationVariables = Exact<{
+  quiz_id: Scalars['Float'];
+}>;
+
+
+export type ToggleLikeMutation = (
+  { __typename?: 'Mutation' }
+  & Pick<Mutation, 'toggleLike'>
+);
+
 export type MeQueryVariables = Exact<{ [key: string]: never; }>;
 
 
@@ -329,6 +343,9 @@ export const QuizzesResponseFragmentDoc = gql`
   description
   quiz_photo
   created_at
+  likes {
+    id
+  }
   author {
     username
     email
@@ -469,6 +486,36 @@ export function useRegisterMutation(baseOptions?: Apollo.MutationHookOptions<Reg
 export type RegisterMutationHookResult = ReturnType<typeof useRegisterMutation>;
 export type RegisterMutationResult = Apollo.MutationResult<RegisterMutation>;
 export type RegisterMutationOptions = Apollo.BaseMutationOptions<RegisterMutation, RegisterMutationVariables>;
+export const ToggleLikeDocument = gql`
+    mutation ToggleLike($quiz_id: Float!) {
+  toggleLike(quiz_id: $quiz_id)
+}
+    `;
+export type ToggleLikeMutationFn = Apollo.MutationFunction<ToggleLikeMutation, ToggleLikeMutationVariables>;
+
+/**
+ * __useToggleLikeMutation__
+ *
+ * To run a mutation, you first call `useToggleLikeMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useToggleLikeMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [toggleLikeMutation, { data, loading, error }] = useToggleLikeMutation({
+ *   variables: {
+ *      quiz_id: // value for 'quiz_id'
+ *   },
+ * });
+ */
+export function useToggleLikeMutation(baseOptions?: Apollo.MutationHookOptions<ToggleLikeMutation, ToggleLikeMutationVariables>) {
+        return Apollo.useMutation<ToggleLikeMutation, ToggleLikeMutationVariables>(ToggleLikeDocument, baseOptions);
+      }
+export type ToggleLikeMutationHookResult = ReturnType<typeof useToggleLikeMutation>;
+export type ToggleLikeMutationResult = Apollo.MutationResult<ToggleLikeMutation>;
+export type ToggleLikeMutationOptions = Apollo.BaseMutationOptions<ToggleLikeMutation, ToggleLikeMutationVariables>;
 export const MeDocument = gql`
     query Me {
   me {

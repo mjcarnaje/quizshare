@@ -1,0 +1,3 @@
+mutation ToggleLike($quiz_id: Float!) {
+	toggleLike(quiz_id: $quiz_id)
+}

@@ -4,6 +4,9 @@ fragment QuizzesResponse on Quiz {
 	description
 	quiz_photo
 	created_at
+	likes {
+		id
+	}
 	author {
 		username
 		email

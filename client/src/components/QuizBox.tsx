@@ -14,8 +14,8 @@ import {
 import Image from 'next/image';
 import React from 'react';
 import { FaComment } from 'react-icons/fa';
-import { IoIosHeart } from 'react-icons/io';
 import { QuizzesResponseFragment } from '../generated/graphql';
+import { LikeButton } from './LikeButton';
 
 interface QuizBoxProps extends QuizzesResponseFragment {
 	date: string;
@@ -26,16 +26,19 @@ export const QuizBox: React.FC<QuizBoxProps> = ({
 	title,
 	date,
 	desc,
+	likes,
 	author,
 	quiz_photo,
 }) => {
-	const outline = useColorModeValue('', 'gray.500');
-	const dividerBorderColor = useColorModeValue('gray.200', 'gray.600');
+	const imageBackgroundColor = useColorModeValue(
+		'gray.100',
+		'rgb(0, 0, 0, .05)'
+	);
 
 	return (
 		<ChakraContainter maxW='820px' my='36px'>
-			<HStack divider={<StackDivider borderColor={dividerBorderColor} />}>
-				<HStack w='full' h='full' align='start'>
+			<HStack divider={<StackDivider borderColor='gray' />}>
+				<HStack flex={1} align='start'>
 					<Box w={quiz_photo ? '60%' : '85%'}>
 						<Heading as='h2' size='lg' mb='10px'>
 							{title}
@@ -63,8 +66,8 @@ export const QuizBox: React.FC<QuizBoxProps> = ({
 							<Center
 								borderRadius='8px'
 								overflow='hidden'
-								borderColor={outline}
-								borderStyle='solid'
+								borderColor='gray'
+								bg={imageBackgroundColor}
 								borderWidth='1px'
 							>
 								<Image src={quiz_photo} height={180} width={320} />
@@ -74,23 +77,7 @@ export const QuizBox: React.FC<QuizBoxProps> = ({
 				</HStack>
 
 				<VStack justify='center' spacing='12px'>
-					<Center>
-						<IconButton
-							variant='outline'
-							colorScheme='gray'
-							aria-label='Like post'
-							isRound
-							color='gray.400'
-							_focus={{ outline: 'none' }}
-							border='none'
-							_hover={{ color: 'gray.500' }}
-							fontSize='24px'
-							icon={<IoIosHeart />}
-						/>
-						<Text fontSize='14px' fontWeight='medium' color='gray.400'>
-							18
-						</Text>
-					</Center>
+					<LikeButton likes={likes} />
 					<Center>
 						<IconButton
 							variant='outline'
