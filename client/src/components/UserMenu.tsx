@@ -36,13 +36,9 @@ export const UserMenu: React.FC<User> = ({
 
 	return (
 		<Menu>
-			<MenuButton
-				as={Avatar}
-				cursor='pointer'
-				size='sm'
-				name={name}
-				src={avatar || undefined}
-			/>
+			<MenuButton>
+				<Avatar size='sm' name={name} src={avatar || ''} />
+			</MenuButton>
 			<MenuList bg={bgColor} color={colorBody}>
 				<MenuItem as={VStack} cursor='pointer'>
 					<Avatar size='xl' name={name} src={avatar || undefined} m='5px' />

@@ -1,6 +1,17 @@
-import { Arg, Field, Int, ObjectType, Query, Resolver } from 'type-graphql';
+import {
+	Arg,
+	Ctx,
+	Field,
+	FieldResolver,
+	Int,
+	ObjectType,
+	Query,
+	Resolver,
+	Root,
+} from 'type-graphql';
 import { FindManyOptions, LessThan } from 'typeorm';
 import { Quiz } from '../../entity/Quiz';
+import { MyContext } from '../../types/MyContext';
 
 @ObjectType()
 class PaginatedQuizzes {
@@ -10,8 +21,24 @@ class PaginatedQuizzes {
 	hasMore: boolean;
 }
 
-@Resolver()
+@Resolver(Quiz)
 export class QuizzesResolver {
+	@FieldResolver(() => Boolean)
+	isLiked(@Root() quiz: Quiz, @Ctx() { req }: MyContext) {
+		const isLiked =
+			quiz.likes.filter((like) => like.author_id === req.session.user_id)
+				.length > 0;
+		if (isLiked) {
+			return true;
+		}
+		return false;
+	}
+
+	@FieldResolver(() => Int)
+	likesCount(@Root() quiz: Quiz) {
+		return quiz.likes.length;
+	}
+
 	@Query(() => PaginatedQuizzes)
 	async quizzes(
 		@Arg('limit', () => Int) limit: number,

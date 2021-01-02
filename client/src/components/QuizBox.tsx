@@ -17,19 +17,14 @@ import { FaComment } from 'react-icons/fa';
 import { QuizzesResponseFragment } from '../generated/graphql';
 import { LikeButton } from './LikeButton';
 
-interface QuizBoxProps extends QuizzesResponseFragment {
+interface QuizBoxProps {
+	quiz: QuizzesResponseFragment;
 	date: string;
 	desc: string;
 }
 
-export const QuizBox: React.FC<QuizBoxProps> = ({
-	title,
-	date,
-	desc,
-	likes,
-	author,
-	quiz_photo,
-}) => {
+export const QuizBox: React.FC<QuizBoxProps> = ({ quiz, date, desc }) => {
+	const { quiz_photo, title, author } = quiz;
 	const imageBackgroundColor = useColorModeValue(
 		'gray.100',
 		'rgb(0, 0, 0, .05)'
@@ -77,7 +72,7 @@ export const QuizBox: React.FC<QuizBoxProps> = ({
 				</HStack>
 
 				<VStack justify='center' spacing='12px'>
-					<LikeButton likes={likes} />
+					<LikeButton quiz={quiz} />
 					<Center>
 						<IconButton
 							variant='outline'
@@ -92,7 +87,7 @@ export const QuizBox: React.FC<QuizBoxProps> = ({
 							icon={<FaComment />}
 						/>
 						<Text fontSize='14px' fontWeight='medium' color='gray.400'>
-							22
+							0
 						</Text>
 					</Center>
 				</VStack>

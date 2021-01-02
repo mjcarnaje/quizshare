@@ -1,4 +1,4 @@
-import { Field, ID, ObjectType } from 'type-graphql';
+import { Field, ID, ObjectType, Int } from 'type-graphql';
 import {
 	BaseEntity,
 	Column,
@@ -50,6 +50,12 @@ export class Quiz extends BaseEntity {
 	@Field(() => [Like])
 	@OneToMany(() => Like, (like) => like.quiz)
 	likes: Like[];
+
+	@Field(() => Boolean)
+	isLiked: boolean;
+
+	@Field(() => Int)
+	likesCount: number;
 
 	@OneToMany(() => Comment, (comment) => comment.quiz)
 	comments: Comment[];

@@ -16,11 +16,11 @@ export class ToggleLikeResolver {
 		const isLike = await Like.findOne({ author_id, quiz_id });
 
 		if (isLike) {
-			await Like.remove(isLike);
+			Like.remove(isLike);
 			return 'UNLIKED QUIZ';
 		}
 
-		await Like.create({ author_id, quiz_id }).save();
+		Like.create({ author_id, quiz_id }).save();
 
 		return 'LIKED QUIZ';
 	}

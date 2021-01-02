@@ -47,7 +47,7 @@ const Index: React.FC = () => {
 					date = `${moment(parsedCreateAt).fromNow(true)} ago`;
 				}
 
-				return <QuizBox key={id} {...quiz} date={date} desc={desc} />;
+				return <QuizBox key={id} quiz={quiz} date={date} desc={desc} />;
 			})}
 			{data && data.quizzes.hasMore && (
 				<Button

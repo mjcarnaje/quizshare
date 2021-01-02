@@ -70,6 +70,8 @@ export type Quiz = {
   quiz_photo?: Maybe<Scalars['String']>;
   questions: Array<Question>;
   likes: Array<Like>;
+  isLiked: Scalars['Boolean'];
+  likesCount: Scalars['Int'];
   created_at: Scalars['String'];
   updated_at: Scalars['String'];
 };
@@ -227,7 +229,7 @@ export type MutationRegisterArgs = {
 
 export type QuizzesResponseFragment = (
   { __typename?: 'Quiz' }
-  & Pick<Quiz, 'id' | 'title' | 'description' | 'quiz_photo' | 'created_at'>
+  & Pick<Quiz, 'id' | 'title' | 'description' | 'quiz_photo' | 'created_at' | 'isLiked' | 'likesCount'>
   & { likes: Array<(
     { __typename?: 'Like' }
     & Pick<Like, 'id'>
@@ -354,6 +356,8 @@ export const QuizzesResponseFragmentDoc = gql`
       name
     }
   }
+  isLiked
+  likesCount
 }
     `;
 export const LoginDocument = gql`
