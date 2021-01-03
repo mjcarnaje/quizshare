@@ -64,7 +64,7 @@ export const UserMenu: React.FC<User> = ({
 					onClick={() => {
 						logout();
 						router.push('/login');
-						apolloClient.resetStore();
+						apolloClient.clearStore();
 					}}
 				>
 					Logout
