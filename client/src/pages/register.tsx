@@ -25,9 +25,14 @@ import { useForm } from 'react-hook-form';
 import { Days, Months, Years } from '../components/BirthdayDateOptions';
 import { Container } from '../components/Container';
 import RegisterLoginInput from '../components/RegisterLoginInput';
-import { RegisterInput, useRegisterMutation } from '../generated/graphql';
+import {
+	RegisterInput,
+	useRegisterMutation,
+	MeQuery,
+} from '../generated/graphql';
 import errorMapper from '../utils/errorMapper';
 import { withApollo } from '../utils/withApollo';
+import { MeDocument } from '../generated/graphql';
 
 const Register: React.FC = () => {
 	const [isSecondStep, setIsSecondStep] = useState(false);
@@ -44,10 +49,19 @@ const Register: React.FC = () => {
 
 	const onSumbit = async (values: RegisterInput) => {
 		try {
-			const response = await registerUser({
+			const { data } = await registerUser({
 				variables: values,
+				update: (cache, { data }) => {
+					cache.writeQuery<MeQuery>({
+						query: MeDocument,
+						data: {
+							__typename: 'Query',
+							me: data?.register,
+						},
+					});
+				},
 			});
-			if (response.data?.register) {
+			if (data?.register) {
 				router.push('/');
 			}
 		} catch (err) {

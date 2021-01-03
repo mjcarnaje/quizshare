@@ -55,7 +55,6 @@ export type User = {
   username: Scalars['String'];
   email: Scalars['String'];
   avatar?: Maybe<Scalars['String']>;
-  confirmed: Scalars['Boolean'];
   created_at: Scalars['String'];
   updated_at: Scalars['String'];
   profile: Profile;
@@ -163,7 +162,7 @@ export type Mutation = {
   toggleLike: Scalars['String'];
   updateQuiz: Quiz;
   changePassword?: Maybe<User>;
-  confirmUser: Scalars['Boolean'];
+  deleteUser: Scalars['String'];
   forgotPassword: Scalars['Boolean'];
   login?: Maybe<User>;
   logout: Scalars['Boolean'];
@@ -209,11 +208,6 @@ export type MutationChangePasswordArgs = {
 };
 
 
-export type MutationConfirmUserArgs = {
-  token: Scalars['String'];
-};
-
-
 export type MutationForgotPasswordArgs = {
   email: Scalars['String'];
 };
@@ -246,7 +240,7 @@ export type QuizzesResponseFragment = (
 
 export type UserResponseFragment = (
   { __typename?: 'User' }
-  & Pick<User, 'id' | 'username' | 'email' | 'avatar' | 'created_at' | 'updated_at' | 'confirmed'>
+  & Pick<User, 'id' | 'username' | 'email' | 'avatar' | 'created_at' | 'updated_at'>
   & { profile: (
     { __typename?: 'Profile' }
     & Pick<Profile, 'id' | 'first_name' | 'last_name' | 'birthday' | 'gender' | 'name'>
@@ -293,11 +287,7 @@ export type RegisterMutation = (
   { __typename?: 'Mutation' }
   & { register: (
     { __typename?: 'User' }
-    & Pick<User, 'id' | 'username' | 'email' | 'avatar' | 'created_at'>
-    & { profile: (
-      { __typename?: 'Profile' }
-      & Pick<Profile, 'id' | 'first_name' | 'last_name' | 'birthday' | 'gender' | 'name'>
-    ) }
+    & UserResponseFragment
   ) }
 );
 
@@ -370,7 +360,6 @@ export const UserResponseFragmentDoc = gql`
   avatar
   created_at
   updated_at
-  confirmed
   profile {
     id
     first_name
@@ -448,22 +437,10 @@ export const RegisterDocument = gql`
   register(
     data: {username: $username, email: $email, password: $password, confirm_password: $confirm_password, first_name: $first_name, last_name: $last_name, year: $year, month: $month, day: $day, gender: $gender}
   ) {
-    id
-    username
-    email
-    avatar
-    created_at
-    profile {
-      id
-      first_name
-      last_name
-      birthday
-      gender
-      name
-    }
+    ...UserResponse
   }
 }
-    `;
+    ${UserResponseFragmentDoc}`;
 export type RegisterMutationFn = Apollo.MutationFunction<RegisterMutation, RegisterMutationVariables>;
 
 /**

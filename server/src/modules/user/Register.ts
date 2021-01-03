@@ -1,9 +1,8 @@
-import { Arg, Mutation, Query, Resolver } from 'type-graphql';
+import { Arg, Ctx, Mutation, Query, Resolver } from 'type-graphql';
 import { User } from '../../entity/User';
 import { RegisterInput } from './register/RegisterInput';
 import * as bcrypt from 'bcryptjs';
-import { sendEmail } from '../utils/sendEmail';
-import { confirmationRegistration } from '../utils/confirmation';
+import { MyContext } from '../../types/MyContext';
 
 @Resolver(User)
 export class RegisterResovler {
@@ -26,14 +25,15 @@ export class RegisterResovler {
 			year,
 			month,
 			day,
-		}: RegisterInput
+		}: RegisterInput,
+		@Ctx() ctx: MyContext
 	): Promise<User> {
 		const hashedPassword = await bcrypt.hash(password, 12);
 
 		const birthday = new Date(`${year}-${month}-${day}`).toLocaleDateString();
 		console.log(`${year}-${month}-${day}`, birthday);
 
-		const newUser = await User.create({
+		const user = await User.create({
 			username,
 			email,
 			password: hashedPassword,
@@ -45,12 +45,8 @@ export class RegisterResovler {
 			},
 		}).save();
 
-		await sendEmail(
-			email,
-			first_name,
-			await confirmationRegistration(newUser.id)
-		);
+		ctx.req.session!.user_id = user.id;
 
-		return newUser;
+		return user;
 	}
 }

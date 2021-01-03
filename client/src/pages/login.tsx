@@ -27,7 +27,7 @@ const Login: React.FC = () => {
 
 	const onSumbit = async (values: LoginInput) => {
 		try {
-			const response = await loginUser({
+			const { data } = await loginUser({
 				variables: values,
 				update: (cache, { data }) => {
 					cache.writeQuery<MeQuery>({
@@ -39,10 +39,8 @@ const Login: React.FC = () => {
 					});
 				},
 			});
-			if (!response.data?.login?.confirmed) {
-				return router.push('/confirmuser');
-			} else if (response.data?.login) {
-				return router.push('/');
+			if (data?.login) {
+				router.push('/');
 			}
 		} catch (err) {
 			errorMapper(err, setError);

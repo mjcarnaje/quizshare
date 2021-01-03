@@ -1,2 +1,2 @@
-export const confirmationPrefix = 'confirmationPrefix';
+// export const confirmationPrefix = 'confirmationPrefix';
 export const forgotPasswordPrefix = 'forgotPasswordPrefix';

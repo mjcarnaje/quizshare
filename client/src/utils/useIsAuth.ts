@@ -10,8 +10,6 @@ export const useIsAuth = () => {
 		if (!loading && !data?.me) {
 			router.replace('/login?next=' + router.pathname);
 			// router.push('/login');
-		} else if (!loading && !data?.me?.confirmed) {
-			router.replace('/confirmuser?next=' + router.pathname);
 		}
 	}, [loading, data, router]);
 };

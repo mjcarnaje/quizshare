@@ -5,7 +5,6 @@ fragment UserResponse on User {
 	avatar
 	created_at
 	updated_at
-	confirmed
 	profile {
 		id
 		first_name

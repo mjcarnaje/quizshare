@@ -1,17 +1,14 @@
 import { v4 } from 'uuid';
-import {
-	confirmationPrefix,
-	forgotPasswordPrefix,
-} from '../constant/redisPrefixes';
+import { forgotPasswordPrefix } from '../constant/redisPrefixes';
 import { redis } from '../../redis';
 
-export const confirmationRegistration = async (user_id: number) => {
-	const token = v4();
+// export const confirmationRegistration = async (user_id: number) => {
+// 	const token = v4();
 
-	await redis.set(confirmationPrefix + token, user_id, 'ex', 60 * 60 * 24);
+// 	await redis.set(confirmationPrefix + token, user_id, 'ex', 60 * 60 * 24);
 
-	return `http://localhost:3000/user/confirm/${token}`;
-};
+// 	return `http://localhost:3000/user/confirm/${token}`;
+// };
 
 export const confirmationForgotPassword = async (user_id: number) => {
 	const token = v4();
