@@ -39,8 +39,10 @@ const Login: React.FC = () => {
 					});
 				},
 			});
-			if (response.data?.login) {
-				router.push('/');
+			if (!response.data?.login?.confirmed) {
+				return router.push('/confirmuser');
+			} else if (response.data?.login) {
+				return router.push('/');
 			}
 		} catch (err) {
 			errorMapper(err, setError);

@@ -10,7 +10,7 @@ export class MeResolver {
 		if (!ctx.req.session!.user_id) {
 			return null;
 		}
-		const user = User.findOne(ctx.req.session!.user_id, {
+		const user = await User.findOne(ctx.req.session!.user_id, {
 			relations: ['profile'],
 		});
 

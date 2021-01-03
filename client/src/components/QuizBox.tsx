@@ -45,7 +45,7 @@ export const QuizBox: React.FC<QuizBoxProps> = ({ quiz, date, desc }) => {
 							{desc}
 						</Text>
 						<HStack align='start' spacing='12px' fontSize='17px'>
-							<Avatar src={author?.avatar || undefined} />
+							<Avatar src={author?.avatar || ''} name={author.profile.name} />
 							<Box>
 								<Heading as='h3' fontSize='17px' fontFamily='inter'>
 									{author.profile.name}

@@ -1,18 +1,5 @@
 mutation Login($emailOrUsername: String!, $password: String!) {
 	login(data: { emailOrUsername: $emailOrUsername, password: $password }) {
-		id
-		username
-		email
-		avatar
-		created_at
-		updated_at
-		profile {
-			id
-			first_name
-			last_name
-			birthday
-			gender
-			name
-		}
+		...UserResponse
 	}
 }

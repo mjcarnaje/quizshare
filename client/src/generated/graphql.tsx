@@ -55,6 +55,7 @@ export type User = {
   username: Scalars['String'];
   email: Scalars['String'];
   avatar?: Maybe<Scalars['String']>;
+  confirmed: Scalars['Boolean'];
   created_at: Scalars['String'];
   updated_at: Scalars['String'];
   profile: Profile;
@@ -164,7 +165,7 @@ export type Mutation = {
   changePassword?: Maybe<User>;
   confirmUser: Scalars['Boolean'];
   forgotPassword: Scalars['Boolean'];
-  login: User;
+  login?: Maybe<User>;
   logout: Scalars['Boolean'];
   register: User;
 };
@@ -243,6 +244,15 @@ export type QuizzesResponseFragment = (
   ) }
 );
 
+export type UserResponseFragment = (
+  { __typename?: 'User' }
+  & Pick<User, 'id' | 'username' | 'email' | 'avatar' | 'created_at' | 'updated_at' | 'confirmed'>
+  & { profile: (
+    { __typename?: 'Profile' }
+    & Pick<Profile, 'id' | 'first_name' | 'last_name' | 'birthday' | 'gender' | 'name'>
+  ) }
+);
+
 export type LoginMutationVariables = Exact<{
   emailOrUsername: Scalars['String'];
   password: Scalars['String'];
@@ -251,14 +261,10 @@ export type LoginMutationVariables = Exact<{
 
 export type LoginMutation = (
   { __typename?: 'Mutation' }
-  & { login: (
+  & { login?: Maybe<(
     { __typename?: 'User' }
-    & Pick<User, 'id' | 'username' | 'email' | 'avatar' | 'created_at' | 'updated_at'>
-    & { profile: (
-      { __typename?: 'Profile' }
-      & Pick<Profile, 'id' | 'first_name' | 'last_name' | 'birthday' | 'gender' | 'name'>
-    ) }
-  ) }
+    & UserResponseFragment
+  )> }
 );
 
 export type LogoutMutationVariables = Exact<{ [key: string]: never; }>;
@@ -312,11 +318,7 @@ export type MeQuery = (
   { __typename?: 'Query' }
   & { me?: Maybe<(
     { __typename?: 'User' }
-    & Pick<User, 'id' | 'username' | 'email' | 'avatar' | 'created_at' | 'updated_at'>
-    & { profile: (
-      { __typename?: 'Profile' }
-      & Pick<Profile, 'id' | 'first_name' | 'last_name' | 'birthday' | 'gender' | 'name'>
-    ) }
+    & UserResponseFragment
   )> }
 );
 
@@ -360,26 +362,32 @@ export const QuizzesResponseFragmentDoc = gql`
   likesCount
 }
     `;
-export const LoginDocument = gql`
-    mutation Login($emailOrUsername: String!, $password: String!) {
-  login(data: {emailOrUsername: $emailOrUsername, password: $password}) {
+export const UserResponseFragmentDoc = gql`
+    fragment UserResponse on User {
+  id
+  username
+  email
+  avatar
+  created_at
+  updated_at
+  confirmed
+  profile {
     id
-    username
-    email
-    avatar
-    created_at
-    updated_at
-    profile {
-      id
-      first_name
-      last_name
-      birthday
-      gender
-      name
-    }
+    first_name
+    last_name
+    birthday
+    gender
+    name
   }
 }
     `;
+export const LoginDocument = gql`
+    mutation Login($emailOrUsername: String!, $password: String!) {
+  login(data: {emailOrUsername: $emailOrUsername, password: $password}) {
+    ...UserResponse
+  }
+}
+    ${UserResponseFragmentDoc}`;
 export type LoginMutationFn = Apollo.MutationFunction<LoginMutation, LoginMutationVariables>;
 
 /**
@@ -523,23 +531,10 @@ export type ToggleLikeMutationOptions = Apollo.BaseMutationOptions<ToggleLikeMut
 export const MeDocument = gql`
     query Me {
   me {
-    id
-    username
-    email
-    avatar
-    created_at
-    updated_at
-    profile {
-      id
-      first_name
-      last_name
-      birthday
-      gender
-      name
-    }
+    ...UserResponse
   }
 }
-    `;
+    ${UserResponseFragmentDoc}`;
 
 /**
  * __useMeQuery__

@@ -1,7 +1,6 @@
-import { AuthenticationError } from 'apollo-server-express';
 import * as bcrypt from 'bcryptjs';
 import { IsNotEmpty } from 'class-validator';
-import { Arg, Ctx, Mutation, Resolver, InputType, Field } from 'type-graphql';
+import { Arg, Ctx, Field, InputType, Mutation, Resolver } from 'type-graphql';
 import { User } from '../../entity/User';
 import { MyContext } from '../../types/MyContext';
 
@@ -18,11 +17,11 @@ export class loginInput {
 
 @Resolver()
 export class LoginResolver {
-	@Mutation(() => User)
+	@Mutation(() => User, { nullable: true })
 	async login(
 		@Arg('data') { emailOrUsername, password }: loginInput,
 		@Ctx() ctx: MyContext
-	): Promise<User> {
+	): Promise<User | null> {
 		const user = await User.findOne(
 			emailOrUsername.includes('@')
 				? { email: emailOrUsername }
@@ -38,10 +37,6 @@ export class LoginResolver {
 
 		if (!valid) {
 			throw new Error('Wrong Credentials');
-		}
-
-		if (!user.confirmed) {
-			throw new AuthenticationError('Please confirm you email address');
 		}
 
 		ctx.req.session!.user_id = user.id;

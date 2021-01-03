@@ -1,0 +1,17 @@
+fragment UserResponse on User {
+	id
+	username
+	email
+	avatar
+	created_at
+	updated_at
+	confirmed
+	profile {
+		id
+		first_name
+		last_name
+		birthday
+		gender
+		name
+	}
+}

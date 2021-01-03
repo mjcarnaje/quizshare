@@ -1,18 +1,5 @@
 query Me {
 	me {
-		id
-		username
-		email
-		avatar
-		created_at
-		updated_at
-		profile {
-			id
-			first_name
-			last_name
-			birthday
-			gender
-			name
-		}
+		...UserResponse
 	}
 }
