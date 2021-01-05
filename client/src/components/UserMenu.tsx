@@ -36,7 +36,10 @@ export const UserMenu: React.FC<User> = ({
 
 	return (
 		<Menu>
-			<MenuButton>
+			<MenuButton
+				_hover={{ bg: 'none' }}
+				_focus={{ bg: 'none', outline: 'none' }}
+			>
 				<Avatar size='sm' name={name} src={avatar || ''} />
 			</MenuButton>
 			<MenuList bg={bgColor} color={colorBody}>

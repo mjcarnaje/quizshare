@@ -12,6 +12,7 @@ import {
 	VStack,
 } from '@chakra-ui/react';
 import Image from 'next/image';
+import Link from 'next/link';
 import React from 'react';
 import { FaComment } from 'react-icons/fa';
 import { QuizzesResponseFragment } from '../generated/graphql';
@@ -24,7 +25,7 @@ interface QuizBoxProps {
 }
 
 export const QuizBox: React.FC<QuizBoxProps> = ({ quiz, date, desc }) => {
-	const { quiz_photo, title, author } = quiz;
+	const { id, quiz_photo, title, author } = quiz;
 	const imageBackgroundColor = useColorModeValue(
 		'gray.100',
 		'rgb(0, 0, 0, .05)'
@@ -36,60 +37,74 @@ export const QuizBox: React.FC<QuizBoxProps> = ({ quiz, date, desc }) => {
 				<HStack flex={1} align='start'>
 					<Box w={quiz_photo ? '60%' : '85%'}>
 						<Heading as='h2' size='lg' mb='10px'>
-							{title}
+							<Link href={`/quiz/${id}`}>{title}</Link>
 						</Heading>
 						<Text mb='10px' fontSize='14px'>
-							{date}
+							<Link href={`/quiz/${id}`}>{date}</Link>
 						</Text>
 						<Text lineHeight='22px' mb='24px'>
-							{desc}
+							<Link href={`/quiz/${id}`}>{desc}</Link>
 						</Text>
 						<HStack align='start' spacing='12px' fontSize='17px'>
-							<Avatar src={author?.avatar || ''} name={author.profile.name} />
+							<Link href={`/user/${author.username}`}>
+								<Avatar
+									src={author?.avatar || ''}
+									name={author.profile.name}
+									cursor='pointer'
+								/>
+							</Link>
 							<Box>
 								<Heading as='h3' fontSize='17px' fontFamily='inter'>
-									{author.profile.name}
+									<Link href={`/user/${author.username}`}>
+										{author.profile.name}
+									</Link>
 								</Heading>
 								<Text fontSize='15px' lineHeight='.9'>
-									{`@${author.email.split('@')[0]}`}
+									<Link href={`/user/${author.username}`}>
+										{`@${author.email.split('@')[0]}`}
+									</Link>
 								</Text>
 							</Box>
 						</HStack>
 					</Box>
 					{quiz_photo && (
-						<Box w='40%' pl='32px'>
-							<Center
-								borderRadius='8px'
-								overflow='hidden'
-								borderColor='gray'
-								bg={imageBackgroundColor}
-								borderWidth='1px'
-							>
-								<Image src={quiz_photo} height={180} width={320} />
-							</Center>
-						</Box>
+						<Link href={`/quiz/${id}`}>
+							<Box w='40%' pl='32px'>
+								<Center
+									borderRadius='8px'
+									overflow='hidden'
+									borderColor='gray'
+									bg={imageBackgroundColor}
+									borderWidth='1px'
+								>
+									<Image src={quiz_photo} height={180} width={320} />
+								</Center>
+							</Box>
+						</Link>
 					)}
 				</HStack>
 
 				<VStack justify='center' spacing='12px'>
 					<LikeButton quiz={quiz} />
-					<Center>
-						<IconButton
-							variant='outline'
-							colorScheme='gray'
-							aria-label='Like post'
-							isRound
-							color='gray.400'
-							_focus={{ outline: 'none' }}
-							border='none'
-							_hover={{ color: 'gray.500' }}
-							fontSize='20px'
-							icon={<FaComment />}
-						/>
-						<Text fontSize='14px' fontWeight='medium' color='gray.400'>
-							0
-						</Text>
-					</Center>
+					<Link href={`/quiz/${id}`}>
+						<Center>
+							<IconButton
+								variant='outline'
+								colorScheme='gray'
+								aria-label='Like post'
+								isRound
+								color='gray.400'
+								_focus={{ outline: 'none' }}
+								border='none'
+								_hover={{ color: 'gray.500' }}
+								fontSize='20px'
+								icon={<FaComment />}
+							/>
+							<Text fontSize='14px' fontWeight='medium' color='gray.400'>
+								0
+							</Text>
+						</Center>
+					</Link>
 				</VStack>
 			</HStack>
 		</ChakraContainter>

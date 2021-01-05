@@ -3,6 +3,7 @@ import {
 	Flex,
 	Heading,
 	HStack,
+	Text,
 	useColorModeValue,
 } from '@chakra-ui/react';
 import NextLink from 'next/link';
@@ -11,8 +12,11 @@ import { useMeQuery } from '../generated/graphql';
 import { isServer } from '../utils/isServer';
 import { DarkModeSwitch } from './DarkModeSwitch';
 import { UserMenu } from './UserMenu';
+import { useRouter } from 'next/dist/client/router';
 
 export const NavBar: React.FC = () => {
+	const router = useRouter();
+
 	const bgColor = useColorModeValue(
 		'rgb(255, 255, 255, .90)',
 		'rgb(32, 32, 32, .90)'
@@ -20,6 +24,8 @@ export const NavBar: React.FC = () => {
 	const navBarShadow = useColorModeValue('xs', 'sm');
 	const buttonColorScheme = useColorModeValue('purple', 'gray');
 	const logoColor = useColorModeValue('purple.500', 'purple.400');
+
+	const linkColorHover = useColorModeValue('#000', '#fff');
 
 	const { data } = useMeQuery({ skip: isServer() });
 
@@ -51,14 +57,40 @@ export const NavBar: React.FC = () => {
 			</>
 		);
 	} else {
-		body = <UserMenu {...data.me} />;
+		body = (
+			<>
+				{[
+					{ path: '/quiz/create', name: 'Create Quiz' },
+					{ path: '/users', name: 'Users' },
+				].map(({ path, name }, i) => {
+					return (
+						<NextLink href={path} key={i}>
+							<Text
+								_hover={{
+									color: router.pathname == path ? '' : linkColorHover,
+								}}
+								px='10px'
+								transition='ease-in-out'
+								transitionDuration='.1s'
+								cursor='pointer'
+								fontWeight={router.pathname == path ? 'semibold' : ''}
+								color={router.pathname == path ? logoColor : ''}
+							>
+								{name}
+							</Text>
+						</NextLink>
+					);
+				})}
+				<UserMenu {...data.me} />
+			</>
+		);
 	}
 	return (
 		<Flex
 			justify='space-between'
 			w='full'
 			py={4}
-			px={16}
+			px={24}
 			bg={bgColor}
 			boxShadow={navBarShadow}
 			position='sticky'
@@ -82,7 +114,7 @@ export const NavBar: React.FC = () => {
 					QuizShare
 				</Heading>
 			</NextLink>
-			<HStack spacing={4}>
+			<HStack spacing={6}>
 				<DarkModeSwitch />
 				{body}
 			</HStack>
