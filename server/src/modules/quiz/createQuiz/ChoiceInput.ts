@@ -1,13 +1,14 @@
-import { IsString } from 'class-validator';
-import { Field, InputType } from 'type-graphql';
+import { IsString, IsUUID } from 'class-validator';
+import { Field, InputType, ID } from 'type-graphql';
 
 @InputType()
 export class ChoiceInput {
-	@Field()
-	choice_id: number;
+	@Field(() => ID)
+	@IsUUID()
+	choice_id: string;
 
 	@Field()
-	text: string;
+	value: string;
 
 	@Field({ nullable: true })
 	@IsString()

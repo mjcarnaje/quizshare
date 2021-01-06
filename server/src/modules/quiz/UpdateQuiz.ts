@@ -23,11 +23,11 @@ export class UpdateQuiz {
 		const hashKey: Record<number, QuestionInput> = {};
 
 		inputs.questions.forEach((q: QuestionInput) => {
-			hashKey[q.id!] = q;
+			hashKey[q.question_id!] = q;
 		});
 
 		quiz.questions.map((q: any) => {
-			const newQues: any = hashKey[q.id]; // to update / replace through id in hashKey
+			const newQues: any = hashKey[q.question_id]; // to update / replace through id in hashKey
 			if (newQues) {
 				for (const key in newQues) {
 					q[key] = newQues[key]; // replace with the same key and merge the rest

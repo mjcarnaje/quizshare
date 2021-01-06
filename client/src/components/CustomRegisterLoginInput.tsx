@@ -10,7 +10,7 @@ import {
 import React from 'react';
 import { FieldError } from 'react-hook-form';
 
-interface RegisterLoginInputProps {
+interface CustomRegisterLoginInputProps {
 	error: FieldError | undefined;
 	input: string;
 	name: string;
@@ -18,7 +18,7 @@ interface RegisterLoginInputProps {
 	type: string;
 }
 
-const RegisterLoginInput: React.FC<RegisterLoginInputProps> = ({
+const CustomRegisterLoginInput: React.FC<CustomRegisterLoginInputProps> = ({
 	error,
 	input,
 	name,
@@ -49,4 +49,4 @@ const RegisterLoginInput: React.FC<RegisterLoginInputProps> = ({
 	);
 };
 
-export default RegisterLoginInput;
+export default CustomRegisterLoginInput;

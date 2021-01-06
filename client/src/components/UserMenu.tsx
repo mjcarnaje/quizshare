@@ -64,8 +64,8 @@ export const UserMenu: React.FC<User> = ({
 				<MenuDivider />
 				<MenuItem
 					icon={<FiLogOut fontSize='18px' color='inherit' />}
-					onClick={() => {
-						logout();
+					onClick={async () => {
+						await logout();
 						router.push('/login');
 						apolloClient.clearStore();
 					}}

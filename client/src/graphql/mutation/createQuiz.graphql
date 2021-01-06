@@ -1,0 +1,17 @@
+mutation CreateQuiz(
+	$title: String!
+	$description: String!
+	$quiz_photo: String
+	$questions: [QuestionInput!]!
+) {
+	createQuiz(
+		data: {
+			title: $title
+			description: $description
+			quiz_photo: $quiz_photo
+			questions: $questions
+		}
+	) {
+		...QuizzesResponse
+	}
+}

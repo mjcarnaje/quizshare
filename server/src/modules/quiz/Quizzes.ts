@@ -12,6 +12,8 @@ import {
 import { FindManyOptions, LessThan } from 'typeorm';
 import { Quiz } from '../../entity/Quiz';
 import { MyContext } from '../../types/MyContext';
+import { isAuthenticated } from '../middleware/isAuthenticated';
+import { UseMiddleware } from 'type-graphql';
 
 @ObjectType()
 class PaginatedQuizzes {
@@ -39,6 +41,7 @@ export class QuizzesResolver {
 		return quiz.likes.length;
 	}
 
+	@UseMiddleware(isAuthenticated)
 	@Query(() => PaginatedQuizzes)
 	async quizzes(
 		@Arg('limit', () => Int) limit: number,

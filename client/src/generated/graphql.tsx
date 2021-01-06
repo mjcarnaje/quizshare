@@ -18,6 +18,7 @@ export type Scalars = {
 export type Question = {
   __typename?: 'Question';
   id: Scalars['ID'];
+  question_id: Scalars['ID'];
   quiz_id: Scalars['Float'];
   question: Scalars['String'];
   question_photo?: Maybe<Scalars['String']>;
@@ -93,17 +94,18 @@ export type PaginatedQuizzes = {
 };
 
 export type ChoiceInput = {
-  choice_id: Scalars['Float'];
-  text: Scalars['String'];
+  choice_id: Scalars['ID'];
+  value: Scalars['String'];
   choicePhoto?: Maybe<Scalars['String']>;
 };
 
 export type QuestionInput = {
+  question_id: Scalars['ID'];
   question: Scalars['String'];
-  id?: Maybe<Scalars['Float']>;
+  quiz_id: Scalars['Float'];
   question_photo?: Maybe<Scalars['String']>;
   choices: Array<ChoiceInput>;
-  answer: Scalars['Float'];
+  answer: Scalars['ID'];
   explanation?: Maybe<Scalars['String']>;
   with_explanation?: Maybe<Scalars['Boolean']>;
   hint?: Maybe<Scalars['String']>;
@@ -247,6 +249,22 @@ export type UserResponseFragment = (
   ) }
 );
 
+export type CreateQuizMutationVariables = Exact<{
+  title: Scalars['String'];
+  description: Scalars['String'];
+  quiz_photo?: Maybe<Scalars['String']>;
+  questions: Array<QuestionInput>;
+}>;
+
+
+export type CreateQuizMutation = (
+  { __typename?: 'Mutation' }
+  & { createQuiz: (
+    { __typename?: 'Quiz' }
+    & QuizzesResponseFragment
+  ) }
+);
+
 export type LoginMutationVariables = Exact<{
   emailOrUsername: Scalars['String'];
   password: Scalars['String'];
@@ -370,6 +388,43 @@ export const UserResponseFragmentDoc = gql`
   }
 }
     `;
+export const CreateQuizDocument = gql`
+    mutation CreateQuiz($title: String!, $description: String!, $quiz_photo: String, $questions: [QuestionInput!]!) {
+  createQuiz(
+    data: {title: $title, description: $description, quiz_photo: $quiz_photo, questions: $questions}
+  ) {
+    ...QuizzesResponse
+  }
+}
+    ${QuizzesResponseFragmentDoc}`;
+export type CreateQuizMutationFn = Apollo.MutationFunction<CreateQuizMutation, CreateQuizMutationVariables>;
+
+/**
+ * __useCreateQuizMutation__
+ *
+ * To run a mutation, you first call `useCreateQuizMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useCreateQuizMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [createQuizMutation, { data, loading, error }] = useCreateQuizMutation({
+ *   variables: {
+ *      title: // value for 'title'
+ *      description: // value for 'description'
+ *      quiz_photo: // value for 'quiz_photo'
+ *      questions: // value for 'questions'
+ *   },
+ * });
+ */
+export function useCreateQuizMutation(baseOptions?: Apollo.MutationHookOptions<CreateQuizMutation, CreateQuizMutationVariables>) {
+        return Apollo.useMutation<CreateQuizMutation, CreateQuizMutationVariables>(CreateQuizDocument, baseOptions);
+      }
+export type CreateQuizMutationHookResult = ReturnType<typeof useCreateQuizMutation>;
+export type CreateQuizMutationResult = Apollo.MutationResult<CreateQuizMutation>;
+export type CreateQuizMutationOptions = Apollo.BaseMutationOptions<CreateQuizMutation, CreateQuizMutationVariables>;
 export const LoginDocument = gql`
     mutation Login($emailOrUsername: String!, $password: String!) {
   login(data: {emailOrUsername: $emailOrUsername, password: $password}) {

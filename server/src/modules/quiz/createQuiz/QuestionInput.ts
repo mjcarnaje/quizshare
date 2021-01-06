@@ -1,15 +1,19 @@
-import { IsString, MinLength } from 'class-validator';
-import { Field, InputType } from 'type-graphql';
+import { IsString, IsUUID, MinLength } from 'class-validator';
+import { Field, ID, InputType } from 'type-graphql';
 import { ChoiceInput } from './ChoiceInput';
 
 @InputType()
 export class QuestionInput {
+	@Field(() => ID)
+	@IsUUID()
+	question_id: number;
+
 	@Field()
 	@MinLength(6)
 	question: string;
 
-	@Field({ nullable: true })
-	id?: number;
+	@Field()
+	quiz_id: number;
 
 	@Field({ nullable: true })
 	// @IsBase64({ message: 'Enter valid image file (base64)' })
@@ -19,7 +23,8 @@ export class QuestionInput {
 	@Field(() => [ChoiceInput])
 	choices: ChoiceInput[];
 
-	@Field()
+	@Field(() => ID)
+	@IsUUID()
 	answer: number;
 
 	@Field({ nullable: true })

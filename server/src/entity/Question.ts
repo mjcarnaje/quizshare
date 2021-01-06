@@ -17,9 +17,9 @@ export class Question extends BaseEntity {
 	@PrimaryGeneratedColumn()
 	id: number;
 
-	@Field()
+	@Field(() => ID)
 	@Column()
-	quiz_id: number;
+	question_id: number;
 
 	@ManyToOne(() => Quiz, (quiz) => quiz.questions, {
 		onUpdate: 'CASCADE',
@@ -27,6 +27,10 @@ export class Question extends BaseEntity {
 	})
 	@JoinColumn({ name: 'quiz_id' })
 	quiz: Quiz;
+
+	@Field()
+	@Column()
+	quiz_id: number;
 
 	@Field()
 	@Column()
@@ -38,7 +42,7 @@ export class Question extends BaseEntity {
 
 	@Field(() => [GraphQLJSONObject])
 	@Column('jsonb')
-	choices: { choice_id: number; text: string; choicePhoto: null | string }[];
+	choices: { choice_id: string; value: string; choicePhoto: null | string }[];
 
 	@Field()
 	@Column()

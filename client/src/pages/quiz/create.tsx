@@ -1,16 +1,71 @@
-import { Center } from '@chakra-ui/react';
+import { Box, Heading } from '@chakra-ui/react';
 import React from 'react';
+import { FormProvider, useForm } from 'react-hook-form';
+import TextareaAutosize from 'react-textarea-autosize';
 import { Container } from '../../components/Container';
+import CustomQuizInput from '../../components/CustomQuizInput';
+import QuestionArray from '../../components/QuestionArray';
+import { QuizInput } from '../../generated/graphql';
 import { withApollo } from '../../utils/withApollo';
 
-interface createQuizProps {}
+const CreateQuiz: React.FC = () => {
+	const methods = useForm<QuizInput>();
 
-const createQuiz: React.FC<createQuizProps> = ({}) => {
+	const { register, handleSubmit } = methods;
+
+	const onSubmit = async (data: unknown) => {
+		console.log(data);
+	};
+
 	return (
-		<Container>
-			<Center>Create sQuiz</Center>
+		<Container minH='100vh'>
+			<Box py='40px'>
+				<Heading
+					as='h1'
+					fontFamily='inter'
+					fontWeight='800'
+					color='gray.700'
+					lineHeight='1'
+					fontSize='54px'
+					pb='40px'
+				>
+					Create an interactive quiz
+				</Heading>
+				<Box
+					w='760px'
+					boxShadow='md'
+					p='20px'
+					borderWidth='1px'
+					borderColor='gray.100'
+					borderRadius='sm'
+				>
+					<FormProvider {...methods}>
+						<form onSubmit={handleSubmit(onSubmit)}>
+							<CustomQuizInput
+								register={register}
+								name='Title'
+								input='title'
+								placeholder='Type the title here...'
+								fontSize='20px'
+								size='lg'
+							/>
+							<CustomQuizInput
+								register={register}
+								name='Description'
+								input='description'
+								placeholder='Type the description here..'
+								as={TextareaAutosize}
+								resize='none'
+								overflow='hidden'
+								py='5px'
+							/>
+							<QuestionArray />
+						</form>
+					</FormProvider>
+				</Box>
+			</Box>
 		</Container>
 	);
 };
 
-export default withApollo({ ssr: false })(createQuiz);
+export default withApollo({ ssr: false })(CreateQuiz);
