@@ -22,7 +22,7 @@ import { useRouter } from 'next/dist/client/router';
 import Head from 'next/head';
 import React, { useState } from 'react';
 import { useForm } from 'react-hook-form';
-import { Days, Months, Years } from '../components/BirthdayDateOptions';
+import { Days, Months, Years } from '../utils/BirthdayDateOptions';
 import { Container } from '../components/Container';
 import CustomRegisterLoginInput from '../components/CustomRegisterLoginInput';
 import {
