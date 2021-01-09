@@ -26,13 +26,13 @@ const ChoiceArray: React.FC<ChoiceArrayProps> = ({ questionIndex }) => {
 		name: `questions[${questionIndex}].choices`,
 	});
 
-	const addChoice = () => {
-		return append({ choice_id: uuid(), value: '' }, false);
+	const addChoice = (shouldFocus: boolean = true) => {
+		append({ choice_id: uuid(), value: '' }, shouldFocus);
 	};
 
 	useEffect(() => {
-		addChoice();
-		addChoice();
+		addChoice(false);
+		addChoice(false);
 	}, []);
 
 	return (
@@ -44,7 +44,7 @@ const ChoiceArray: React.FC<ChoiceArrayProps> = ({ questionIndex }) => {
 					colorScheme='purple'
 					variant='ghost'
 					size='xs'
-					onClick={addChoice}
+					onClick={() => addChoice()}
 				>
 					Add Choice
 				</Button>
@@ -52,12 +52,17 @@ const ChoiceArray: React.FC<ChoiceArrayProps> = ({ questionIndex }) => {
 			<SimpleGrid my='10px' p='2px' columns={2} spacing='10px'>
 				{fields.map((choice, i) => {
 					return (
-						<Box bg='#f7fafc' key={choice.id} borderRadius='md' pos='relative'>
+						<Box
+							bg='#f7fafc'
+							key={choice.choice_id}
+							borderRadius='md'
+							pos='relative'
+						>
 							<input
 								type='hidden'
-								ref={register}
-								value={choice.choice_id}
 								name={`questions[${questionIndex}].choices[${i}].choice_id`}
+								defaultValue={choice.choice_id}
+								ref={register()}
 							/>
 							<CustomQuizInput
 								register={register}
@@ -76,10 +81,7 @@ const ChoiceArray: React.FC<ChoiceArrayProps> = ({ questionIndex }) => {
 									icon={<MdDelete />}
 									size='sm'
 									color='red.300'
-									onClick={() => {
-										remove(i);
-										console.log('clicked');
-									}}
+									onClick={() => remove(i)}
 									isDisabled={fields.length === 1 ? true : false}
 									aria-label='Remove choice input'
 								/>

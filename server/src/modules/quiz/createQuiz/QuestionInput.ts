@@ -23,9 +23,8 @@ export class QuestionInput {
 	@Field(() => [ChoiceInput])
 	choices: ChoiceInput[];
 
-	@Field(() => ID)
-	@IsUUID()
-	answer: number;
+	@Field()
+	answer: string;
 
 	@Field({ nullable: true })
 	explanation: string;

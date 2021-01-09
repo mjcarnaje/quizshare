@@ -1,5 +1,5 @@
 import { Box, Heading } from '@chakra-ui/react';
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { FormProvider, useForm } from 'react-hook-form';
 import TextareaAutosize from 'react-textarea-autosize';
 import { Container } from '../../components/Container';
@@ -11,11 +11,13 @@ import { withApollo } from '../../utils/withApollo';
 const CreateQuiz: React.FC = () => {
 	const methods = useForm<QuizInput>();
 
-	const { register, handleSubmit } = methods;
+	const { register, handleSubmit, watch } = methods;
 
 	const onSubmit = async (data: unknown) => {
 		console.log(data);
 	};
+
+	const datas = watch();
 
 	return (
 		<Container minH='100vh'>
@@ -36,7 +38,6 @@ const CreateQuiz: React.FC = () => {
 					boxShadow='md'
 					p='20px'
 					borderWidth='1px'
-					borderColor='gray.100'
 					borderRadius='sm'
 				>
 					<FormProvider {...methods}>
@@ -64,8 +65,9 @@ const CreateQuiz: React.FC = () => {
 					</FormProvider>
 				</Box>
 			</Box>
+			<pre>{JSON.stringify(datas, null, 2)}</pre>
 		</Container>
 	);
 };
 
-export default withApollo({ ssr: false })(CreateQuiz);
+export default withApollo({ ssr: true })(CreateQuiz);

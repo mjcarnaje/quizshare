@@ -46,7 +46,7 @@ export class Question extends BaseEntity {
 
 	@Field()
 	@Column()
-	answer: number;
+	answer: string;
 
 	@Field({ nullable: true })
 	@Column('text', { default: null })

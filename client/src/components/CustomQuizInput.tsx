@@ -17,7 +17,7 @@ const CustomQuizInput: React.FC<CustomQuizInputProps> = ({
 		<FormControl>
 			{name && <FormLabel>{name}</FormLabel>}
 			<Input
-				ref={register}
+				ref={register()}
 				name={input}
 				variant='filled'
 				bg='#f7fafc'

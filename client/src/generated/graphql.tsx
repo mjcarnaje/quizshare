@@ -23,7 +23,7 @@ export type Question = {
   question: Scalars['String'];
   question_photo?: Maybe<Scalars['String']>;
   choices: Array<Scalars['JSONObject']>;
-  answer: Scalars['Float'];
+  answer: Scalars['String'];
   explanation?: Maybe<Scalars['String']>;
   with_explanation: Scalars['Boolean'];
   hint?: Maybe<Scalars['String']>;
@@ -94,7 +94,7 @@ export type PaginatedQuizzes = {
 };
 
 export type ChoiceInput = {
-  choice_id: Scalars['ID'];
+  choice_id: Scalars['String'];
   value: Scalars['String'];
   choicePhoto?: Maybe<Scalars['String']>;
 };
@@ -105,7 +105,7 @@ export type QuestionInput = {
   quiz_id: Scalars['Float'];
   question_photo?: Maybe<Scalars['String']>;
   choices: Array<ChoiceInput>;
-  answer: Scalars['ID'];
+  answer: Scalars['String'];
   explanation?: Maybe<Scalars['String']>;
   with_explanation?: Maybe<Scalars['Boolean']>;
   hint?: Maybe<Scalars['String']>;

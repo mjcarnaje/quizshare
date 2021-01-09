@@ -1,44 +1,46 @@
-import { Box, Button } from '@chakra-ui/react';
-import React, { useState } from 'react';
+import { Box, Button, Flex, IconButton, Text, Tooltip } from '@chakra-ui/react';
+import React, { useEffect } from 'react';
 import { useFieldArray, useFormContext } from 'react-hook-form';
-import CustomQuizInput from './CustomQuizInput';
+import { MdDelete } from 'react-icons/md';
 import TextareaAutosize from 'react-textarea-autosize';
-import { QuestionInput } from '../generated/graphql';
 import { v4 as uuid } from 'uuid';
-import { useEffect } from 'react';
+import { QuestionInput } from '../generated/graphql';
 import ChoiceArray from './ChoiceArray';
+import CustomQuizInput from './CustomQuizInput';
 
 interface QuestionArrayProps {}
 
 const QuestionArray: React.FC<QuestionArrayProps> = ({}) => {
-	const [data, setData] = useState();
-	const { control, register, getValues } = useFormContext();
-	const { fields, append } = useFieldArray<QuestionInput>({
+	const { control, register } = useFormContext();
+	const { fields, append, remove } = useFieldArray<QuestionInput>({
 		control,
 		name: 'questions',
 	});
 
-	const addQuestion = () => {
-		append({
-			question_id: uuid(),
-			question: '',
-			answer: '',
-			choices: [],
-			with_explanation: false,
-			explanation: '',
-			with_hint: false,
-			hint: '',
-			question_photo: null,
-		});
+	const addQuestion = (shouldFocus: boolean = true) => {
+		append(
+			{
+				question_id: uuid(),
+				question: '',
+				answer: '',
+				choices: [],
+				with_explanation: false,
+				explanation: '',
+				with_hint: false,
+				hint: '',
+				question_photo: null,
+			},
+			shouldFocus
+		);
 	};
 
 	useEffect(() => {
-		addQuestion();
+		addQuestion(false);
 	}, []);
 
 	return (
 		<Box w='full'>
-			{fields.map((question, index) => {
+			{fields.map((question, i) => {
 				return (
 					<Box
 						key={question.id}
@@ -50,29 +52,46 @@ const QuestionArray: React.FC<QuestionArrayProps> = ({}) => {
 					>
 						<input
 							type='hidden'
-							ref={register}
-							name={`questions[${index}].question_id`}
-							value={question.question_id}
+							name={`questions[${i}].question_id`}
+							defaultValue={question.question_id}
+							ref={register()}
 						/>
+						<Flex align='center' justify='space-between' pb='5px'>
+							<Text>{`QUESTION ${i + 1}`}</Text>
+							<Tooltip hasArrow label='Remove question'>
+								<IconButton
+									aria-label='Remove question'
+									size='sm'
+									variant='ghost'
+									colorScheme='purple'
+									fontSize='15px'
+									icon={<MdDelete />}
+									onClick={() => remove(i)}
+									isDisabled={fields.length === 1 ? true : false}
+								/>
+							</Tooltip>
+						</Flex>
 						<CustomQuizInput
 							register={register}
-							input={`questions[${index}].question`}
-							name={`QUESTION ${index + 1}`}
+							input={`questions[${i}].question`}
 							as={TextareaAutosize}
 							placeholder='Type the question here..'
 							resize='none'
 							overflow='hidden'
 							py='7px'
 						/>
-						<ChoiceArray questionIndex={index} />
+						<ChoiceArray questionIndex={i} />
 					</Box>
 				);
 			})}
-			<Button colorScheme='purple' size='lg' w='full' onClick={addQuestion}>
+			<Button
+				colorScheme='purple'
+				size='lg'
+				w='full'
+				onClick={() => addQuestion()}
+			>
 				Add Question
 			</Button>
-			<Button onClick={() => setData(getValues)}>Get Values</Button>
-			<pre>{JSON.stringify(data, null, 2)}</pre>
 		</Box>
 	);
 };
