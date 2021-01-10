@@ -5,7 +5,12 @@ export default class Document extends NextDocument {
 	render() {
 		return (
 			<Html>
-				<Head />
+				<Head>
+					<script
+						src='https://widget.cloudinary.com/v2.0/global/all.js'
+						type='text/javascript'
+					></script>
+				</Head>
 				<body>
 					{/* Make Color mode to persists when you refresh the page. */}
 					<ColorModeScript />

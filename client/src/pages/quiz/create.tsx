@@ -1,5 +1,5 @@
-import { Box, Heading } from '@chakra-ui/react';
-import React, { useEffect, useState } from 'react';
+import { Box, Heading, VStack } from '@chakra-ui/react';
+import React from 'react';
 import { FormProvider, useForm } from 'react-hook-form';
 import TextareaAutosize from 'react-textarea-autosize';
 import { Container } from '../../components/Container';
@@ -34,32 +34,34 @@ const CreateQuiz: React.FC = () => {
 					Create an interactive quiz
 				</Heading>
 				<Box
-					w='760px'
+					w='764px'
 					boxShadow='md'
-					p='20px'
+					p='24px'
 					borderWidth='1px'
-					borderRadius='sm'
+					borderRadius='md'
 				>
 					<FormProvider {...methods}>
 						<form onSubmit={handleSubmit(onSubmit)}>
-							<CustomQuizInput
-								register={register}
-								name='Title'
-								input='title'
-								placeholder='Type the title here...'
-								fontSize='20px'
-								size='lg'
-							/>
-							<CustomQuizInput
-								register={register}
-								name='Description'
-								input='description'
-								placeholder='Type the description here..'
-								as={TextareaAutosize}
-								resize='none'
-								overflow='hidden'
-								py='5px'
-							/>
+							<VStack spacing='16px'>
+								<CustomQuizInput
+									register={register}
+									name='Title'
+									input='title'
+									placeholder='Type the title here...'
+									fontSize='20px'
+									size='lg'
+								/>
+								<CustomQuizInput
+									register={register}
+									name='Description'
+									input='description'
+									placeholder='Type the description here..'
+									as={TextareaAutosize}
+									resize='none'
+									overflow='hidden'
+									py='5px'
+								/>
+							</VStack>
 							<QuestionArray />
 						</form>
 					</FormProvider>

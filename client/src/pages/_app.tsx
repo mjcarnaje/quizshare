@@ -9,5 +9,5 @@ function MyApp({ Component, pageProps }: AppProps) {
 		</ChakraProvider>
 	);
 }
-// wa koy nahimo ron hehe
+
 export default MyApp;

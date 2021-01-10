@@ -57,7 +57,7 @@ const QuestionArray: React.FC<QuestionArrayProps> = ({}) => {
 							ref={register()}
 						/>
 						<Flex align='center' justify='space-between' pb='5px'>
-							<Text>{`QUESTION ${i + 1}`}</Text>
+							<Text fontSize='13px'>{`QUESTION ${i + 1}`}</Text>
 							<Tooltip hasArrow label='Remove question'>
 								<IconButton
 									aria-label='Remove question'

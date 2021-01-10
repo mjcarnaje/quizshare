@@ -15,14 +15,22 @@ const CustomQuizInput: React.FC<CustomQuizInputProps> = ({
 }) => {
 	return (
 		<FormControl>
-			{name && <FormLabel>{name}</FormLabel>}
+			{name && (
+				<FormLabel
+					fontFamily='inter'
+					textTransform='uppercase'
+					fontWeight='400'
+					fontSize='14px'
+				>
+					{name}
+				</FormLabel>
+			)}
 			<Input
 				ref={register()}
 				name={input}
 				variant='filled'
-				bg='#f7fafc'
-				_focus={{ outline: 'none', bg: 'gray.50' }}
-				_hover={{ bg: 'gray.50' }}
+				// bg='#f7fafc'
+				_focus={{ outline: 'none' }}
 				fontFamily='inter'
 				{...props}
 			/>
