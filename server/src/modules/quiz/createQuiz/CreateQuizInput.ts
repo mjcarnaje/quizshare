@@ -13,7 +13,6 @@ export class QuizInput {
 	description: string;
 
 	@Field({ nullable: true })
-	// @IsBase64({ message: 'Enter valid image file (base64)' })
 	@IsString()
 	quiz_photo?: string;
 

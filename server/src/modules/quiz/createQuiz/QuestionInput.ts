@@ -13,7 +13,6 @@ export class QuestionInput {
 	question: string;
 
 	@Field({ nullable: true })
-	// @IsBase64({ message: 'Enter valid image file (base64)' })
 	@IsString()
 	question_photo?: string;
 
@@ -24,13 +23,13 @@ export class QuestionInput {
 	answer: string;
 
 	@Field({ nullable: true })
-	explanation: string;
+	explanation?: string;
 
 	@Field({ defaultValue: false })
 	with_explanation: boolean;
 
 	@Field({ nullable: true })
-	hint: string;
+	hint?: string;
 
 	@Field({ defaultValue: false })
 	with_hint: boolean;

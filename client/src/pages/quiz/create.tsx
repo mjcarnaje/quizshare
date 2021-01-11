@@ -33,7 +33,7 @@ const CreateQuiz: React.FC = () => {
 
 	const methods = useForm<QuizInput>();
 
-	const { register, handleSubmit, watch } = methods;
+	const { register, handleSubmit, watch, errors } = methods;
 
 	const onSubmit = async (values: QuizInput) => {
 		const { errors } = await createQuiz({
@@ -118,15 +118,17 @@ const CreateQuiz: React.FC = () => {
 									)}
 								</Box>
 								<CustomQuizInput
-									register={register}
+									register={register({ required: true })}
 									name='Title'
 									input='title'
 									placeholder='Type the title here...'
 									fontSize='20px'
 									size='lg'
+									error={errors.title}
+									errorMessage='Title is required field.'
 								/>
 								<CustomQuizInput
-									register={register}
+									register={register({ required: true })}
 									name='Description'
 									input='description'
 									placeholder='Type the description here..'
@@ -134,6 +136,8 @@ const CreateQuiz: React.FC = () => {
 									resize='none'
 									overflow='hidden'
 									py='5px'
+									error={errors.description}
+									errorMessage='Description is required field.'
 								/>
 							</VStack>
 							<QuestionArray />
@@ -158,7 +162,7 @@ const CreateQuiz: React.FC = () => {
 					</FormProvider>
 				</Box>
 			</Box>
-			<pre>{JSON.stringify(datas, null, 2)}</pre>
+			<pre>{JSON.stringify(datas, null, 2)}</pre>\{' '}
 		</Container>
 	);
 };

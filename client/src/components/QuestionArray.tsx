@@ -13,7 +13,7 @@ import { useFieldArray, useFormContext } from 'react-hook-form';
 import { MdDelete, MdPhotoSizeSelectActual } from 'react-icons/md';
 import TextareaAutosize from 'react-textarea-autosize';
 import { v4 as uuid } from 'uuid';
-import { QuestionInput } from '../generated/graphql';
+import { QuestionInput, QuizInput } from '../generated/graphql';
 import ChoiceArray from './ChoiceArray';
 import CustomQuizInput from './CustomQuizInput';
 import { Image } from 'cloudinary-react';
@@ -25,7 +25,7 @@ const QuestionArray: React.FC<QuestionArrayProps> = ({}) => {
 	const [images, setImages] = useState<
 		{ question_id: string; public_id: string | 'loading' }[]
 	>([]);
-	const { control, register } = useFormContext();
+	const { control, register, errors } = useFormContext<QuizInput>();
 	const { fields, append, remove } = useFieldArray<QuestionInput>({
 		control,
 		name: 'questions',
@@ -151,13 +151,15 @@ const QuestionArray: React.FC<QuestionArrayProps> = ({}) => {
 						)}
 
 						<CustomQuizInput
-							register={register}
+							register={register({ required: true })}
 							input={`questions[${i}].question`}
 							as={TextareaAutosize}
 							placeholder='Type the question here..'
 							resize='none'
 							overflow='hidden'
 							py='7px'
+							error={errors.questions?.[i]?.question}
+							errorMessage={`Question ${i + 1} is required field`}
 						/>
 						<ChoiceArray questionIndex={i} answer={question.answer!} />
 					</Box>

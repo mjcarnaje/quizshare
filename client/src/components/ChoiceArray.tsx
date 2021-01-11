@@ -1,4 +1,6 @@
 import {
+	Alert,
+	AlertIcon,
 	AspectRatio,
 	Box,
 	Button,
@@ -18,7 +20,7 @@ import { BsPlusSquare } from 'react-icons/bs';
 import { MdDelete, MdPhotoSizeSelectActual } from 'react-icons/md';
 import TextareaAutosize from 'react-textarea-autosize';
 import { v4 as uuid } from 'uuid';
-import { ChoiceInput } from '../generated/graphql';
+import { ChoiceInput, QuizInput } from '../generated/graphql';
 import { uploadCloudinaryImage } from '../utils/uploadImage';
 import CustomQuizInput from './CustomQuizInput';
 
@@ -37,7 +39,7 @@ const ChoiceArray: React.FC<ChoiceArrayProps> = ({ questionIndex, answer }) => {
 		{ choice_id: string; public_id: string | 'loading' }[]
 	>([]);
 
-	const { control, register } = useFormContext();
+	const { control, register, errors } = useFormContext<QuizInput>();
 	const { fields, append, remove } = useFieldArray<ChoiceInput>({
 		control,
 		name: `questions[${questionIndex}].choices`,
@@ -145,18 +147,30 @@ const ChoiceArray: React.FC<ChoiceArrayProps> = ({ questionIndex, answer }) => {
 												</Box>
 											)}
 											<CustomQuizInput
-												register={register}
+												register={register({ required: true })}
 												input={`questions[${questionIndex}].choices[${i}].value`}
 												as={TextareaAutosize}
 												placeholder='Type your answer here...'
 												resize='none'
 												overflow='hidden'
-												py='7px'
 												defaultValue={choice.value}
-												mb='18px'
+												py='7px'
+												error={
+													errors.questions?.[questionIndex]?.choices?.[i]?.value
+												}
+												errorMessage={`Choice ${
+													i + 1
+												} is required field: type or remove it.😉`}
+												isChoiceInput
 											/>
 											<Flex pos='absolute' bottom='2px' left='4px' right='2px'>
-												<Radio value={choice.choice_id} colorScheme='green'>
+												<Radio
+													value={choice.choice_id}
+													colorScheme='green'
+													isInvalid={
+														!!errors.questions?.[questionIndex]?.answer
+													}
+												>
 													correct answer
 												</Radio>
 												<Spacer />
@@ -194,6 +208,14 @@ const ChoiceArray: React.FC<ChoiceArrayProps> = ({ questionIndex, answer }) => {
 					</RadioGroup>
 				)}
 			/>
+			<Box>
+				{errors.questions?.[questionIndex]?.answer && (
+					<Alert status='error' borderRadius='5px'>
+						<AlertIcon />
+						Please select the correct answer to this question
+					</Alert>
+				)}
+			</Box>
 		</Box>
 	);
 };
