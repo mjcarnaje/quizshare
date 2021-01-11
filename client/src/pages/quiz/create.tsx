@@ -7,6 +7,7 @@ import CustomQuizInput from '../../components/CustomQuizInput';
 import QuestionArray from '../../components/QuestionArray';
 import { QuizInput } from '../../generated/graphql';
 import { withApollo } from '../../utils/withApollo';
+import { CloudinaryContext } from 'cloudinary-react';
 
 const CreateQuiz: React.FC = () => {
 	const methods = useForm<QuizInput>();
@@ -42,27 +43,31 @@ const CreateQuiz: React.FC = () => {
 				>
 					<FormProvider {...methods}>
 						<form onSubmit={handleSubmit(onSubmit)}>
-							<VStack spacing='16px'>
-								<CustomQuizInput
-									register={register}
-									name='Title'
-									input='title'
-									placeholder='Type the title here...'
-									fontSize='20px'
-									size='lg'
-								/>
-								<CustomQuizInput
-									register={register}
-									name='Description'
-									input='description'
-									placeholder='Type the description here..'
-									as={TextareaAutosize}
-									resize='none'
-									overflow='hidden'
-									py='5px'
-								/>
-							</VStack>
-							<QuestionArray />
+							<CloudinaryContext
+								cloudName={process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME}
+							>
+								<VStack spacing='16px'>
+									<CustomQuizInput
+										register={register}
+										name='Title'
+										input='title'
+										placeholder='Type the title here...'
+										fontSize='20px'
+										size='lg'
+									/>
+									<CustomQuizInput
+										register={register}
+										name='Description'
+										input='description'
+										placeholder='Type the description here..'
+										as={TextareaAutosize}
+										resize='none'
+										overflow='hidden'
+										py='5px'
+									/>
+								</VStack>
+								<QuestionArray />
+							</CloudinaryContext>
 						</form>
 					</FormProvider>
 				</Box>

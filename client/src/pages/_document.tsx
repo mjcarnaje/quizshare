@@ -9,6 +9,7 @@ export default class Document extends NextDocument {
 					<script
 						src='https://widget.cloudinary.com/v2.0/global/all.js'
 						type='text/javascript'
+						defer
 					></script>
 				</Head>
 				<body>
