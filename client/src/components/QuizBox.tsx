@@ -1,4 +1,5 @@
 import {
+	AspectRatio,
 	Avatar,
 	Box,
 	Center,
@@ -6,17 +7,17 @@ import {
 	Heading,
 	HStack,
 	IconButton,
+	Stack,
 	StackDivider,
 	Text,
-	useColorModeValue,
-	VStack,
 } from '@chakra-ui/react';
-import Image from 'next/image';
+import { Image } from 'cloudinary-react';
 import Link from 'next/link';
 import React from 'react';
 import { FaComment } from 'react-icons/fa';
 import { QuizzesResponseFragment } from '../generated/graphql';
 import { LikeButton } from './LikeButton';
+import { useBreakpointValue } from '@chakra-ui/react';
 
 interface QuizBoxProps {
 	quiz: QuizzesResponseFragment;
@@ -25,18 +26,22 @@ interface QuizBoxProps {
 }
 
 export const QuizBox: React.FC<QuizBoxProps> = ({ quiz, date, desc }) => {
+	const titleSize = useBreakpointValue({ base: 'xl', md: 'lg' });
 	const { id, quiz_photo, title, author } = quiz;
-	const imageBackgroundColor = useColorModeValue(
-		'gray.100',
-		'rgb(0, 0, 0, .05)'
-	);
 
 	return (
-		<ChakraContainter maxW='820px' my='36px'>
-			<HStack divider={<StackDivider borderColor='gray' />}>
-				<HStack flex={1} align='start'>
-					<Box w={quiz_photo ? '60%' : '85%'}>
-						<Heading as='h2' size='lg' mb='10px'>
+		<ChakraContainter maxW={['100%', '460px', '820px']} my='36px'>
+			<Stack
+				direction={['column', 'column', 'row']}
+				divider={<StackDivider borderColor='gray' />}
+			>
+				<Stack
+					direction={['column-reverse', 'column-reverse', 'row']}
+					flex={1}
+					align='start'
+				>
+					<Box w={['100%', '100%', quiz_photo ? '60%' : '85%']}>
+						<Heading as='h2' size={titleSize} mb='10px'>
 							<Link href={`/quiz/${id}`}>{title}</Link>
 						</Heading>
 						<Text mb='10px' fontSize='14px'>
@@ -69,22 +74,26 @@ export const QuizBox: React.FC<QuizBoxProps> = ({ quiz, date, desc }) => {
 					</Box>
 					{quiz_photo && (
 						<Link href={`/quiz/${id}`}>
-							<Box w='40%' pl='32px'>
-								<Center
-									borderRadius='8px'
-									overflow='hidden'
-									borderColor='gray'
-									bg={imageBackgroundColor}
-									borderWidth='1px'
-								>
-									<Image src={quiz_photo} height={180} width={320} />
-								</Center>
+							<Box
+								w={['100%', '100%', '45%']}
+								pl={[0, 0, '32px']}
+								cursor='pointer'
+							>
+								<Box borderRadius='8px' overflow='hidden'>
+									<AspectRatio maxW='full' ratio={16 / 9}>
+										<Image publicId={quiz_photo} />
+									</AspectRatio>
+								</Box>
 							</Box>
 						</Link>
 					)}
-				</HStack>
+				</Stack>
 
-				<VStack justify='center' spacing='12px'>
+				<Stack
+					direction={['row', 'row', 'column']}
+					justify='center'
+					spacing={['36px', '36px', '12px']}
+				>
 					<LikeButton quiz={quiz} />
 					<Link href={`/quiz/${id}`}>
 						<Center>
@@ -105,8 +114,8 @@ export const QuizBox: React.FC<QuizBoxProps> = ({ quiz, date, desc }) => {
 							</Text>
 						</Center>
 					</Link>
-				</VStack>
-			</HStack>
+				</Stack>
+			</Stack>
 		</ChakraContainter>
 	);
 };

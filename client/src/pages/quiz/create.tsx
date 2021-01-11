@@ -3,12 +3,16 @@ import {
 	Box,
 	Button,
 	Center,
+	Flex,
 	Heading,
 	Skeleton,
+	Spacer,
 	useColorModeValue,
 	VStack,
 } from '@chakra-ui/react';
-import { CloudinaryContext, Image } from 'cloudinary-react';
+import { Image } from 'cloudinary-react';
+import { useRouter } from 'next/dist/client/router';
+import NextLink from 'next/link';
 import React, { useState } from 'react';
 import { FormProvider, useForm } from 'react-hook-form';
 import { MdPhotoSizeSelectActual } from 'react-icons/md';
@@ -16,20 +20,31 @@ import TextareaAutosize from 'react-textarea-autosize';
 import { Container } from '../../components/Container';
 import CustomQuizInput from '../../components/CustomQuizInput';
 import QuestionArray from '../../components/QuestionArray';
-import { QuizInput } from '../../generated/graphql';
+import { QuizInput, useCreateQuizMutation } from '../../generated/graphql';
 import { uploadCloudinaryImage } from '../../utils/uploadImage';
 import { withApollo } from '../../utils/withApollo';
 
 const CreateQuiz: React.FC = () => {
+	const router = useRouter();
 	const thumbnailBg = useColorModeValue('gray.50', 'rgba(255, 255, 255, 0.04)');
 	const [image, setImage] = useState<string | 'loading'>();
+
+	const [createQuiz, { loading }] = useCreateQuizMutation();
 
 	const methods = useForm<QuizInput>();
 
 	const { register, handleSubmit, watch } = methods;
 
-	const onSubmit = async (data: unknown) => {
-		console.log(data);
+	const onSubmit = async (values: QuizInput) => {
+		const { errors } = await createQuiz({
+			variables: values,
+			update: (cache) => {
+				cache.evict({ fieldName: 'quizzes: {}' });
+			},
+		});
+		if (!errors) {
+			router.push('/');
+		}
 	};
 
 	const datas = watch();
@@ -71,61 +86,74 @@ const CreateQuiz: React.FC = () => {
 				>
 					<FormProvider {...methods}>
 						<form onSubmit={handleSubmit(onSubmit)}>
-							<CloudinaryContext
-								cloudName={process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME}
-							>
-								{image && (
-									<input
-										type='hidden'
-										name='quiz_photo'
-										ref={register()}
-										defaultValue={image}
-									/>
-								)}
-								<VStack spacing='16px'>
-									<Box w='full'>
-										{image ? (
-											<Skeleton isLoaded={image !== 'loading'}>
-												<Box borderRadius='8px' overflow='hidden'>
-													<AspectRatio maxW='full' ratio={16 / 9}>
-														<Image publicId={image} />
-													</AspectRatio>
-												</Box>
-											</Skeleton>
-										) : (
-											<Center h='200px' bg={thumbnailBg}>
-												<Button
-													leftIcon={<MdPhotoSizeSelectActual />}
-													colorScheme='gray'
-													variant='ghost'
-													onClick={uploadImage}
-												>
-													Upload Thumbnail
-												</Button>
-											</Center>
-										)}
-									</Box>
-									<CustomQuizInput
-										register={register}
-										name='Title'
-										input='title'
-										placeholder='Type the title here...'
-										fontSize='20px'
-										size='lg'
-									/>
-									<CustomQuizInput
-										register={register}
-										name='Description'
-										input='description'
-										placeholder='Type the description here..'
-										as={TextareaAutosize}
-										resize='none'
-										overflow='hidden'
-										py='5px'
-									/>
-								</VStack>
-								<QuestionArray />
-							</CloudinaryContext>
+							{image && (
+								<input
+									type='hidden'
+									name='quiz_photo'
+									ref={register()}
+									defaultValue={image}
+								/>
+							)}
+							<VStack spacing='16px'>
+								<Box w='full'>
+									{image ? (
+										<Skeleton isLoaded={image !== 'loading'}>
+											<Box borderRadius='8px' overflow='hidden'>
+												<AspectRatio maxW='full' ratio={16 / 9}>
+													<Image publicId={image} />
+												</AspectRatio>
+											</Box>
+										</Skeleton>
+									) : (
+										<Center h='200px' bg={thumbnailBg}>
+											<Button
+												leftIcon={<MdPhotoSizeSelectActual />}
+												colorScheme='gray'
+												variant='ghost'
+												onClick={uploadImage}
+											>
+												Upload Thumbnail
+											</Button>
+										</Center>
+									)}
+								</Box>
+								<CustomQuizInput
+									register={register}
+									name='Title'
+									input='title'
+									placeholder='Type the title here...'
+									fontSize='20px'
+									size='lg'
+								/>
+								<CustomQuizInput
+									register={register}
+									name='Description'
+									input='description'
+									placeholder='Type the description here..'
+									as={TextareaAutosize}
+									resize='none'
+									overflow='hidden'
+									py='5px'
+								/>
+							</VStack>
+							<QuestionArray />
+							<Flex w='full' mt='20px'>
+								<Spacer />
+								<NextLink href='/'>
+									<Button variant='outline' colorScheme='purple' px='20px'>
+										Cancel
+									</Button>
+								</NextLink>
+								<Button
+									colorScheme='purple'
+									type='submit'
+									px='20px'
+									ml='10px'
+									isLoading={loading}
+								>
+									Save
+								</Button>
+							</Flex>
 						</form>
 					</FormProvider>
 				</Box>

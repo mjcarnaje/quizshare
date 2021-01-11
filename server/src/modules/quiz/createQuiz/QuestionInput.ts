@@ -6,14 +6,11 @@ import { ChoiceInput } from './ChoiceInput';
 export class QuestionInput {
 	@Field(() => ID)
 	@IsUUID()
-	question_id: number;
+	question_id: string;
 
 	@Field()
 	@MinLength(6)
 	question: string;
-
-	@Field()
-	quiz_id: number;
 
 	@Field({ nullable: true })
 	// @IsBase64({ message: 'Enter valid image file (base64)' })

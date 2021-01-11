@@ -4,6 +4,8 @@ import {
 	Button,
 	Flex,
 	IconButton,
+	Radio,
+	RadioGroup,
 	SimpleGrid,
 	Skeleton,
 	Spacer,
@@ -11,14 +13,14 @@ import {
 } from '@chakra-ui/react';
 import { Image } from 'cloudinary-react';
 import React, { useEffect, useState } from 'react';
-import { useFieldArray, useFormContext } from 'react-hook-form';
+import { Controller, useFieldArray, useFormContext } from 'react-hook-form';
 import { BsPlusSquare } from 'react-icons/bs';
 import { MdDelete, MdPhotoSizeSelectActual } from 'react-icons/md';
 import TextareaAutosize from 'react-textarea-autosize';
 import { v4 as uuid } from 'uuid';
 import { ChoiceInput } from '../generated/graphql';
-import CustomQuizInput from './CustomQuizInput';
 import { uploadCloudinaryImage } from '../utils/uploadImage';
+import CustomQuizInput from './CustomQuizInput';
 
 declare global {
 	interface Window {
@@ -27,9 +29,10 @@ declare global {
 }
 interface ChoiceArrayProps {
 	questionIndex: number;
+	answer: string;
 }
 
-const ChoiceArray: React.FC<ChoiceArrayProps> = ({ questionIndex }) => {
+const ChoiceArray: React.FC<ChoiceArrayProps> = ({ questionIndex, answer }) => {
 	const [images, setImages] = useState<
 		{ choice_id: string; public_id: string | 'loading' }[]
 	>([]);
@@ -89,89 +92,108 @@ const ChoiceArray: React.FC<ChoiceArrayProps> = ({ questionIndex }) => {
 					Add Choice
 				</Button>
 			</Flex>
-			<SimpleGrid my='10px' p='2px' columns={2} spacing='10px'>
-				{fields.map((choice, i) => {
-					const img = images.findIndex((i) => i.choice_id === choice.choice_id);
+			<Controller
+				control={control}
+				name={`questions[${questionIndex}].answer`}
+				rules={{ required: true }}
+				render={({ onChange, onBlur, value }) => (
+					<RadioGroup
+						onChange={onChange}
+						onBlur={onBlur}
+						value={value}
+						defaultValue={answer}
+					>
+						<SimpleGrid my='10px' p='2px' columns={2} spacing='10px'>
+							{fields.map((choice, i) => {
+								const img = images.findIndex(
+									(i) => i.choice_id === choice.choice_id
+								);
 
-					const publicId = images[img]?.public_id || choice.choicePhoto!;
-					return (
-						<Box key={choice.choice_id}>
-							<Box
-								borderRadius='md'
-								pos='relative'
-								overflow='hidden'
-								borderWidth='1px'
-								p='4px'
-							>
-								<input
-									type='hidden'
-									name={`questions[${questionIndex}].choices[${i}].choice_id`}
-									defaultValue={choice.choice_id}
-									ref={register()}
-								/>
-								{img !== -1 && (
-									<input
-										type='hidden'
-										name={`questions[${questionIndex}].choices[${i}].choicePhoto`}
-										value={publicId}
-										ref={register()}
-									/>
-								)}
-								{publicId && (
-									<Box p='4px' mb='2px'>
-										<Skeleton isLoaded={publicId !== 'loading'}>
-											<Box borderRadius='8px' overflow='hidden'>
-												<AspectRatio maxW='full' ratio={16 / 9}>
-													<Image publicId={publicId} />
-												</AspectRatio>
-											</Box>
-										</Skeleton>
+								const publicId = images[img]?.public_id || choice.choicePhoto!;
+								return (
+									<Box key={choice.choice_id}>
+										<Box
+											borderRadius='md'
+											pos='relative'
+											overflow='hidden'
+											borderWidth='1px'
+											p='4px'
+										>
+											<input
+												type='hidden'
+												name={`questions[${questionIndex}].choices[${i}].choice_id`}
+												defaultValue={choice.choice_id}
+												ref={register()}
+											/>
+											{img !== -1 && (
+												<input
+													type='hidden'
+													name={`questions[${questionIndex}].choices[${i}].choicePhoto`}
+													value={publicId}
+													ref={register()}
+												/>
+											)}
+											{publicId && (
+												<Box p='4px' mb='2px'>
+													<Skeleton isLoaded={publicId !== 'loading'}>
+														<Box borderRadius='8px' overflow='hidden'>
+															<AspectRatio maxW='full' ratio={16 / 9}>
+																<Image publicId={publicId} />
+															</AspectRatio>
+														</Box>
+													</Skeleton>
+												</Box>
+											)}
+											<CustomQuizInput
+												register={register}
+												input={`questions[${questionIndex}].choices[${i}].value`}
+												as={TextareaAutosize}
+												placeholder='Type your answer here...'
+												resize='none'
+												overflow='hidden'
+												py='7px'
+												defaultValue={choice.value}
+												mb='18px'
+											/>
+											<Flex pos='absolute' bottom='2px' left='4px' right='2px'>
+												<Radio value={choice.choice_id} colorScheme='green'>
+													correct answer
+												</Radio>
+												<Spacer />
+												<Tooltip hasArrow label='Add choice photo'>
+													<IconButton
+														isRound
+														icon={<MdPhotoSizeSelectActual />}
+														size='xs'
+														variant='ghost'
+														color='gray.400'
+														fontSize='13px'
+														onClick={() => uploadImage(choice.choice_id!)}
+														aria-label='upload choice_photo button'
+													/>
+												</Tooltip>
+												<Tooltip hasArrow label='Remove choice'>
+													<IconButton
+														isRound
+														icon={<MdDelete />}
+														size='xs'
+														variant='ghost'
+														color='gray.400'
+														fontSize='13px'
+														onClick={() => remove(i)}
+														isDisabled={fields.length === 1 ? true : false}
+														aria-label='remove choice'
+													/>
+												</Tooltip>
+											</Flex>
+										</Box>
 									</Box>
-								)}
-								<CustomQuizInput
-									register={register}
-									input={`questions[${questionIndex}].choices[${i}].value`}
-									as={TextareaAutosize}
-									placeholder='Type your answer here...'
-									resize='none'
-									overflow='hidden'
-									py='7px'
-									defaultValue={choice.value}
-									mb='18px'
-								/>
-								<Flex pos='absolute' bottom='2px' left='0' right='2px'>
-									<Spacer />
-									<Tooltip hasArrow label='Add choice photo'>
-										<IconButton
-											isRound
-											icon={<MdPhotoSizeSelectActual />}
-											size='xs'
-											variant='ghost'
-											color='gray.400'
-											fontSize='13px'
-											onClick={() => uploadImage(choice.choice_id!)}
-											aria-label='upload choice_photo button'
-										/>
-									</Tooltip>
-									<Tooltip hasArrow label='Remove choice'>
-										<IconButton
-											isRound
-											icon={<MdDelete />}
-											size='xs'
-											variant='ghost'
-											color='gray.400'
-											fontSize='13px'
-											onClick={() => remove(i)}
-											isDisabled={fields.length === 1 ? true : false}
-											aria-label='remove choice'
-										/>
-									</Tooltip>
-								</Flex>
-							</Box>
-						</Box>
-					);
-				})}
-			</SimpleGrid>
+								);
+							})}
+						</SimpleGrid>
+					</RadioGroup>
+				)}
+			/>
 		</Box>
 	);
 };

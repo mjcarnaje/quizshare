@@ -18,8 +18,7 @@ export type Scalars = {
 export type Question = {
   __typename?: 'Question';
   id: Scalars['ID'];
-  question_id: Scalars['ID'];
-  quiz_id: Scalars['Float'];
+  question_id: Scalars['String'];
   question: Scalars['String'];
   question_photo?: Maybe<Scalars['String']>;
   choices: Array<Scalars['JSONObject']>;
@@ -102,7 +101,6 @@ export type ChoiceInput = {
 export type QuestionInput = {
   question_id: Scalars['ID'];
   question: Scalars['String'];
-  quiz_id: Scalars['Float'];
   question_photo?: Maybe<Scalars['String']>;
   choices: Array<ChoiceInput>;
   answer: Scalars['String'];
@@ -224,6 +222,15 @@ export type MutationRegisterArgs = {
   data: RegisterInput;
 };
 
+export type QuizResponseFragment = (
+  { __typename?: 'Quiz' }
+  & Pick<Quiz, 'id' | 'title' | 'description' | 'quiz_photo' | 'author_id'>
+  & { questions: Array<(
+    { __typename?: 'Question' }
+    & Pick<Question, 'id' | 'question' | 'question_photo' | 'choices' | 'answer' | 'explanation' | 'with_explanation' | 'hint' | 'with_hint'>
+  )> }
+);
+
 export type QuizzesResponseFragment = (
   { __typename?: 'Quiz' }
   & Pick<Quiz, 'id' | 'title' | 'description' | 'quiz_photo' | 'created_at' | 'isLiked' | 'likesCount'>
@@ -261,7 +268,7 @@ export type CreateQuizMutation = (
   { __typename?: 'Mutation' }
   & { createQuiz: (
     { __typename?: 'Quiz' }
-    & QuizzesResponseFragment
+    & QuizResponseFragment
   ) }
 );
 
@@ -348,6 +355,26 @@ export type QuizzesQuery = (
   ) }
 );
 
+export const QuizResponseFragmentDoc = gql`
+    fragment QuizResponse on Quiz {
+  id
+  title
+  description
+  quiz_photo
+  author_id
+  questions {
+    id
+    question
+    question_photo
+    choices
+    answer
+    explanation
+    with_explanation
+    hint
+    with_hint
+  }
+}
+    `;
 export const QuizzesResponseFragmentDoc = gql`
     fragment QuizzesResponse on Quiz {
   id
@@ -393,10 +420,10 @@ export const CreateQuizDocument = gql`
   createQuiz(
     data: {title: $title, description: $description, quiz_photo: $quiz_photo, questions: $questions}
   ) {
-    ...QuizzesResponse
+    ...QuizResponse
   }
 }
-    ${QuizzesResponseFragmentDoc}`;
+    ${QuizResponseFragmentDoc}`;
 export type CreateQuizMutationFn = Apollo.MutationFunction<CreateQuizMutation, CreateQuizMutationVariables>;
 
 /**

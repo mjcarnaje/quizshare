@@ -1,4 +1,8 @@
-import { Button, useColorModeValue } from '@chakra-ui/react';
+import {
+	Button,
+	useBreakpointValue,
+	useColorModeValue,
+} from '@chakra-ui/react';
 import moment from 'moment';
 import React from 'react';
 import { Container } from '../components/Container';
@@ -9,6 +13,7 @@ import { QuizBox } from '../components/QuizBox';
 
 const Index: React.FC = () => {
 	const buttonColorScheme = useColorModeValue('purple', 'gray');
+	const descriptionCharacter = useBreakpointValue({ base: 172, md: 250 });
 
 	useIsAuth();
 
@@ -30,7 +35,7 @@ const Index: React.FC = () => {
 				const moreThan250Characters = description.length > 250;
 
 				if (moreThan250Characters) {
-					desc = `${description.slice(0, 250)}...`;
+					desc = `${description.slice(0, descriptionCharacter)}...`;
 				} else {
 					desc = description;
 				}

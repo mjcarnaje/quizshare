@@ -12,6 +12,6 @@ mutation CreateQuiz(
 			questions: $questions
 		}
 	) {
-		...QuizzesResponse
+		...QuizResponse
 	}
 }

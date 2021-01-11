@@ -17,9 +17,9 @@ export class Question extends BaseEntity {
 	@PrimaryGeneratedColumn()
 	id: number;
 
-	@Field(() => ID)
+	@Field()
 	@Column()
-	question_id: number;
+	question_id: string;
 
 	@ManyToOne(() => Quiz, (quiz) => quiz.questions, {
 		onUpdate: 'CASCADE',
@@ -28,7 +28,6 @@ export class Question extends BaseEntity {
 	@JoinColumn({ name: 'quiz_id' })
 	quiz: Quiz;
 
-	@Field()
 	@Column()
 	quiz_id: number;
 

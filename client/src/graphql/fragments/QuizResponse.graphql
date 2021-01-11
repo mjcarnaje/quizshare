@@ -1,0 +1,18 @@
+fragment QuizResponse on Quiz {
+	id
+	title
+	description
+	quiz_photo
+	author_id
+	questions {
+		id
+		question
+		question_photo
+		choices
+		answer
+		explanation
+		with_explanation
+		hint
+		with_hint
+	}
+}

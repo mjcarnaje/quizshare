@@ -1,5 +1,6 @@
 import { Flex, FlexProps, Spacer, useColorMode } from '@chakra-ui/react';
 import { NavBar } from './NavBar';
+import { CloudinaryContext } from 'cloudinary-react';
 
 export const Container = ({
 	justify = 'flex-start',
@@ -12,7 +13,9 @@ export const Container = ({
 	const color = { light: 'black', dark: 'white' };
 
 	return (
-		<>
+		<CloudinaryContext
+			cloudName={process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME}
+		>
 			<Flex
 				direction='column'
 				align={align}
@@ -26,6 +29,6 @@ export const Container = ({
 				{props?.children}
 				<Spacer />
 			</Flex>
-		</>
+		</CloudinaryContext>
 	);
 };

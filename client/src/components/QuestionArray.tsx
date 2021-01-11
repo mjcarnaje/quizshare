@@ -159,7 +159,7 @@ const QuestionArray: React.FC<QuestionArrayProps> = ({}) => {
 							overflow='hidden'
 							py='7px'
 						/>
-						<ChoiceArray questionIndex={i} />
+						<ChoiceArray questionIndex={i} answer={question.answer!} />
 					</Box>
 				);
 			})}
