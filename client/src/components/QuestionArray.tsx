@@ -1,15 +1,18 @@
 import {
+	Alert,
+	AlertIcon,
 	AspectRatio,
 	Box,
 	Button,
 	Flex,
 	IconButton,
 	Skeleton,
+	Switch,
 	Text,
 	Tooltip,
 } from '@chakra-ui/react';
 import React, { useEffect, useState } from 'react';
-import { useFieldArray, useFormContext } from 'react-hook-form';
+import { Controller, useFieldArray, useFormContext } from 'react-hook-form';
 import { MdDelete, MdPhotoSizeSelectActual } from 'react-icons/md';
 import TextareaAutosize from 'react-textarea-autosize';
 import { v4 as uuid } from 'uuid';
@@ -18,6 +21,7 @@ import ChoiceArray from './ChoiceArray';
 import CustomQuizInput from './CustomQuizInput';
 import { Image } from 'cloudinary-react';
 import { uploadCloudinaryImage } from '../utils/uploadImage';
+import { HStack } from '@chakra-ui/react';
 
 interface QuestionArrayProps {}
 
@@ -25,7 +29,7 @@ const QuestionArray: React.FC<QuestionArrayProps> = ({}) => {
 	const [images, setImages] = useState<
 		{ question_id: string; public_id: string | 'loading' }[]
 	>([]);
-	const { control, register, errors } = useFormContext<QuizInput>();
+	const { control, register, errors, watch } = useFormContext<QuizInput>();
 	const { fields, append, remove } = useFieldArray<QuestionInput>({
 		control,
 		name: 'questions',
@@ -80,10 +84,15 @@ const QuestionArray: React.FC<QuestionArrayProps> = ({}) => {
 	return (
 		<Box w='full'>
 			{fields.map((question, i) => {
-				const img = images.findIndex(
+				const imgIndex = images.findIndex(
 					(i) => i.question_id === question.question_id
 				);
-				const publicId = images[img]?.public_id || question.question_photo!;
+				const publicId =
+					images[imgIndex]?.public_id || question.question_photo!;
+
+				const withExplanation = watch(`questions[${i}].with_explanation`);
+				const withHint = watch(`questions[${i}].with_hint`);
+
 				return (
 					<Box
 						key={question.id}
@@ -99,7 +108,7 @@ const QuestionArray: React.FC<QuestionArrayProps> = ({}) => {
 							defaultValue={question.question_id}
 							ref={register()}
 						/>
-						{img !== -1 && (
+						{imgIndex !== -1 && (
 							<input
 								type='hidden'
 								name={`questions[${i}].question_photo`}
@@ -109,7 +118,45 @@ const QuestionArray: React.FC<QuestionArrayProps> = ({}) => {
 						)}
 						<Flex align='center' justify='space-between' pb='5px'>
 							<Text fontSize='13px'>{`QUESTION ${i + 1}`}</Text>
-							<Box>
+							<HStack spacing='10px'>
+								<Tooltip hasArrow label='Add explanation'>
+									<Controller
+										control={control}
+										name={`questions[${i}].with_explanation`}
+										defaultValue={question.with_explanation}
+										render={({ onChange, value }) => {
+											return (
+												<Switch
+													size='sm'
+													colorScheme='purple'
+													onChange={(e) => {
+														onChange(e.target.checked);
+													}}
+													isChecked={value}
+												/>
+											);
+										}}
+									/>
+								</Tooltip>
+								<Tooltip hasArrow label='Add hint'>
+									<Controller
+										control={control}
+										name={`questions[${i}].with_hint`}
+										defaultValue={question.with_hint}
+										render={({ onChange, value }) => {
+											return (
+												<Switch
+													size='sm'
+													colorScheme='purple'
+													onChange={(e) => {
+														onChange(e.target.checked);
+													}}
+													isChecked={value}
+												/>
+											);
+										}}
+									/>
+								</Tooltip>
 								<Tooltip hasArrow label='Add question photo'>
 									<IconButton
 										isRound
@@ -135,7 +182,7 @@ const QuestionArray: React.FC<QuestionArrayProps> = ({}) => {
 										aria-label='Remove question'
 									/>
 								</Tooltip>
-							</Box>
+							</HStack>
 						</Flex>
 
 						{publicId && (
@@ -162,6 +209,38 @@ const QuestionArray: React.FC<QuestionArrayProps> = ({}) => {
 							errorMessage={`Question ${i + 1} is required field`}
 						/>
 						<ChoiceArray questionIndex={i} answer={question.answer!} />
+						{withExplanation && (
+							<CustomQuizInput
+								register={register({ required: true })}
+								input={`questions[${i}].explanation`}
+								as={TextareaAutosize}
+								placeholder='Type the explanation here..'
+								resize='none'
+								overflow='hidden'
+								py='7px'
+								error={errors.questions?.[i]?.explanation}
+								errorMessage={`Type the explanation or you can just turn it off`}
+							/>
+						)}
+						{withHint && (
+							<CustomQuizInput
+								register={register({ required: true })}
+								input={`questions[${i}].hint`}
+								as={TextareaAutosize}
+								placeholder='Type the hint here..'
+								resize='none'
+								overflow='hidden'
+								py='7px'
+								error={errors.questions?.[i]?.hint}
+								errorMessage={`Type the hint or you can just turn it off`}
+							/>
+						)}
+						{errors.questions?.[i]?.answer && (
+							<Alert status='error' borderRadius='5px'>
+								<AlertIcon />
+								Please select the correct answer to this question
+							</Alert>
+						)}
 					</Box>
 				);
 			})}

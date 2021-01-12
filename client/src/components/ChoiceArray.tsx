@@ -1,6 +1,4 @@
 import {
-	Alert,
-	AlertIcon,
 	AspectRatio,
 	Box,
 	Button,
@@ -208,14 +206,6 @@ const ChoiceArray: React.FC<ChoiceArrayProps> = ({ questionIndex, answer }) => {
 					</RadioGroup>
 				)}
 			/>
-			<Box>
-				{errors.questions?.[questionIndex]?.answer && (
-					<Alert status='error' borderRadius='5px'>
-						<AlertIcon />
-						Please select the correct answer to this question
-					</Alert>
-				)}
-			</Box>
 		</Box>
 	);
 };
