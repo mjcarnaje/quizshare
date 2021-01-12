@@ -57,8 +57,12 @@ export class Quiz extends BaseEntity {
 	@Field(() => Int)
 	likesCount: number;
 
+	@Field(() => [Comment])
 	@OneToMany(() => Comment, (comment) => comment.quiz)
 	comments: Comment[];
+
+	@Field(() => Int)
+	commentsCount: number;
 
 	@Field(() => String)
 	@CreateDateColumn()

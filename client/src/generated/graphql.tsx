@@ -72,6 +72,8 @@ export type Quiz = {
   likes: Array<Like>;
   isLiked: Scalars['Boolean'];
   likesCount: Scalars['Int'];
+  comments: Array<Comment>;
+  commentsCount: Scalars['Int'];
   created_at: Scalars['String'];
   updated_at: Scalars['String'];
 };
@@ -79,8 +81,6 @@ export type Quiz = {
 export type Comment = {
   __typename?: 'Comment';
   id: Scalars['ID'];
-  quiz_id: Scalars['Float'];
-  author_id: Scalars['Float'];
   author: User;
   text: Scalars['String'];
   created_at: Scalars['String'];
@@ -233,10 +233,13 @@ export type QuizResponseFragment = (
 
 export type QuizzesResponseFragment = (
   { __typename?: 'Quiz' }
-  & Pick<Quiz, 'id' | 'title' | 'description' | 'quiz_photo' | 'created_at' | 'isLiked' | 'likesCount'>
+  & Pick<Quiz, 'id' | 'title' | 'description' | 'quiz_photo' | 'created_at' | 'isLiked' | 'likesCount' | 'commentsCount'>
   & { likes: Array<(
     { __typename?: 'Like' }
     & Pick<Like, 'id'>
+  )>, comments: Array<(
+    { __typename?: 'Comment' }
+    & Pick<Comment, 'id'>
   )>, author: (
     { __typename?: 'User' }
     & Pick<User, 'username' | 'email' | 'avatar'>
@@ -253,6 +256,24 @@ export type UserResponseFragment = (
   & { profile: (
     { __typename?: 'Profile' }
     & Pick<Profile, 'id' | 'first_name' | 'last_name' | 'birthday' | 'gender' | 'name'>
+  ) }
+);
+
+export type CreateCommentMutationVariables = Exact<{
+  text: Scalars['String'];
+  quiz_id: Scalars['Float'];
+}>;
+
+
+export type CreateCommentMutation = (
+  { __typename?: 'Mutation' }
+  & { createComment: (
+    { __typename?: 'Comment' }
+    & Pick<Comment, 'id' | 'text' | 'created_at'>
+    & { author: (
+      { __typename?: 'User' }
+      & Pick<User, 'id' | 'username' | 'email' | 'avatar'>
+    ) }
   ) }
 );
 
@@ -385,6 +406,9 @@ export const QuizzesResponseFragmentDoc = gql`
   likes {
     id
   }
+  comments {
+    id
+  }
   author {
     username
     email
@@ -395,6 +419,7 @@ export const QuizzesResponseFragmentDoc = gql`
   }
   isLiked
   likesCount
+  commentsCount
 }
     `;
 export const UserResponseFragmentDoc = gql`
@@ -415,6 +440,47 @@ export const UserResponseFragmentDoc = gql`
   }
 }
     `;
+export const CreateCommentDocument = gql`
+    mutation CreateComment($text: String!, $quiz_id: Float!) {
+  createComment(text: $text, quiz_id: $quiz_id) {
+    id
+    author {
+      id
+      username
+      email
+      avatar
+    }
+    text
+    created_at
+  }
+}
+    `;
+export type CreateCommentMutationFn = Apollo.MutationFunction<CreateCommentMutation, CreateCommentMutationVariables>;
+
+/**
+ * __useCreateCommentMutation__
+ *
+ * To run a mutation, you first call `useCreateCommentMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useCreateCommentMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [createCommentMutation, { data, loading, error }] = useCreateCommentMutation({
+ *   variables: {
+ *      text: // value for 'text'
+ *      quiz_id: // value for 'quiz_id'
+ *   },
+ * });
+ */
+export function useCreateCommentMutation(baseOptions?: Apollo.MutationHookOptions<CreateCommentMutation, CreateCommentMutationVariables>) {
+        return Apollo.useMutation<CreateCommentMutation, CreateCommentMutationVariables>(CreateCommentDocument, baseOptions);
+      }
+export type CreateCommentMutationHookResult = ReturnType<typeof useCreateCommentMutation>;
+export type CreateCommentMutationResult = Apollo.MutationResult<CreateCommentMutation>;
+export type CreateCommentMutationOptions = Apollo.BaseMutationOptions<CreateCommentMutation, CreateCommentMutationVariables>;
 export const CreateQuizDocument = gql`
     mutation CreateQuiz($title: String!, $description: String!, $quiz_photo: String, $questions: [QuestionInput!]!) {
   createQuiz(

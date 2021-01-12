@@ -41,6 +41,11 @@ export class QuizzesResolver {
 		return quiz.likes.length;
 	}
 
+	@FieldResolver(() => Int)
+	commentsCount(@Root() quiz: Quiz) {
+		return quiz.comments.length;
+	}
+
 	@UseMiddleware(isAuthenticated)
 	@Query(() => PaginatedQuizzes)
 	async quizzes(
@@ -54,7 +59,7 @@ export class QuizzesResolver {
 
 		if (cursor) {
 			findOption = {
-				relations: ['author', 'questions', 'likes'],
+				relations: ['author', 'questions', 'likes', 'comments'],
 				order: {
 					created_at: 'DESC',
 				},
@@ -63,7 +68,7 @@ export class QuizzesResolver {
 			};
 		} else {
 			findOption = {
-				relations: ['author', 'questions', 'likes'],
+				relations: ['author', 'questions', 'likes', 'comments'],
 				order: {
 					created_at: 'DESC',
 				},

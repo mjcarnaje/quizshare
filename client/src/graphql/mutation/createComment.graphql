@@ -1,0 +1,13 @@
+mutation CreateComment($text: String!, $quiz_id: Float!) {
+	createComment(text: $text, quiz_id: $quiz_id) {
+		id
+		author {
+			id
+			username
+			email
+			avatar
+		}
+		text
+		created_at
+	}
+}

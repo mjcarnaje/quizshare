@@ -2,22 +2,20 @@ import {
 	AspectRatio,
 	Avatar,
 	Box,
-	Center,
 	Container as ChakraContainter,
 	Heading,
 	HStack,
-	IconButton,
 	Stack,
 	StackDivider,
 	Text,
+	useBreakpointValue,
 } from '@chakra-ui/react';
 import { Image } from 'cloudinary-react';
 import Link from 'next/link';
 import React from 'react';
-import { FaComment } from 'react-icons/fa';
 import { QuizzesResponseFragment } from '../generated/graphql';
+import { CommentButton } from './CommentButton';
 import { LikeButton } from './LikeButton';
-import { useBreakpointValue } from '@chakra-ui/react';
 
 interface QuizBoxProps {
 	quiz: QuizzesResponseFragment;
@@ -95,25 +93,7 @@ export const QuizBox: React.FC<QuizBoxProps> = ({ quiz, date, desc }) => {
 					spacing={['36px', '36px', '12px']}
 				>
 					<LikeButton quiz={quiz} />
-					<Link href={`/quiz/${id}`}>
-						<Center>
-							<IconButton
-								variant='outline'
-								colorScheme='gray'
-								aria-label='Like post'
-								isRound
-								color='gray.400'
-								_focus={{ outline: 'none' }}
-								border='none'
-								_hover={{ color: 'gray.500' }}
-								fontSize='20px'
-								icon={<FaComment />}
-							/>
-							<Text fontSize='14px' fontWeight='medium' color='gray.400'>
-								0
-							</Text>
-						</Center>
-					</Link>
+					<CommentButton quiz={quiz} />
 				</Stack>
 			</Stack>
 		</ChakraContainter>

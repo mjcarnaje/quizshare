@@ -7,6 +7,9 @@ fragment QuizzesResponse on Quiz {
 	likes {
 		id
 	}
+	comments {
+		id
+	}
 	author {
 		username
 		email
@@ -17,4 +20,5 @@ fragment QuizzesResponse on Quiz {
 	}
 	isLiked
 	likesCount
+	commentsCount
 }
