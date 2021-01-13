@@ -12,6 +12,7 @@ import {
 	Tooltip,
 } from '@chakra-ui/react';
 import { Image } from 'cloudinary-react';
+import { useRouter } from 'next/dist/client/router';
 import React, { useEffect, useState } from 'react';
 import { Controller, useFieldArray, useFormContext } from 'react-hook-form';
 import { BsPlusSquare } from 'react-icons/bs';
@@ -30,14 +31,15 @@ declare global {
 interface ChoiceArrayProps {
 	questionIndex: number;
 	answer: string;
-	authoAddChoiceInput?: boolean;
+	autoAddChoiceInput?: boolean;
 }
 
 const ChoiceArray: React.FC<ChoiceArrayProps> = ({
 	questionIndex,
 	answer,
-	authoAddChoiceInput,
+	autoAddChoiceInput,
 }) => {
+	const router = useRouter();
 	const [images, setImages] = useState<
 		{ choice_id: string; public_id: string | 'loading' }[]
 	>([]);
@@ -79,7 +81,7 @@ const ChoiceArray: React.FC<ChoiceArrayProps> = ({
 	};
 
 	useEffect(() => {
-		if (!authoAddChoiceInput) return;
+		if (router.pathname.includes('edit') && !autoAddChoiceInput) return;
 		addChoice(false);
 		addChoice(false);
 	}, []);
@@ -109,7 +111,7 @@ const ChoiceArray: React.FC<ChoiceArrayProps> = ({
 						value={value}
 						defaultValue={answer}
 					>
-						<SimpleGrid my='10px' p='2px' columns={2} spacing='10px'>
+						<SimpleGrid my='10px' p='2px' columns={[1, 2]} spacing='10px'>
 							{fields.map((choice, i) => {
 								const img = images.findIndex(
 									(i) => i.choice_id === choice.choice_id

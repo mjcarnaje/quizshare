@@ -87,10 +87,14 @@ export class QuizzesResolver {
 	@UseMiddleware(isAuthenticated)
 	@Query(() => Quiz)
 	async quizToUpdate(
-		@Arg('quiz_id', () => Int) quiz_id: number
+		@Arg('quiz_id', () => Int) quiz_id: number,
+		@Ctx() { req }: MyContext
 	): Promise<Quiz | null> {
 		const quiz = await Quiz.findOne(quiz_id, { relations: ['questions'] });
 		if (!quiz) {
+			return null;
+		}
+		if (quiz.author_id !== req.session.user_id) {
 			return null;
 		}
 		return quiz;

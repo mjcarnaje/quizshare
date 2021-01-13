@@ -102,7 +102,7 @@ export const NavBar: React.FC = () => {
 			justify='space-between'
 			w='full'
 			py={4}
-			px={[2, 8, 12, 24]}
+			px={[3, 6, 12, 24]}
 			bg={bgColor}
 			boxShadow={navBarShadow}
 			position='sticky'

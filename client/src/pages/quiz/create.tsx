@@ -23,8 +23,10 @@ import QuestionArray from '../../components/QuestionArray';
 import { QuizInput, useCreateQuizMutation } from '../../generated/graphql';
 import { uploadCloudinaryImage } from '../../utils/uploadImage';
 import { withApollo } from '../../utils/withApollo';
+import errorMapper from '../../utils/errorMapper';
 
 const CreateQuiz: React.FC = () => {
+	const colorTitle = useColorModeValue('gray.800', 'white');
 	const router = useRouter();
 	const thumbnailBg = useColorModeValue('gray.50', 'rgba(255, 255, 255, 0.04)');
 	const [image, setImage] = useState<string | 'loading'>();
@@ -33,17 +35,21 @@ const CreateQuiz: React.FC = () => {
 
 	const methods = useForm<QuizInput>();
 
-	const { register, handleSubmit, errors } = methods;
+	const { register, handleSubmit, errors, setError } = methods;
 
 	const onSubmit = async (values: QuizInput) => {
-		const { errors } = await createQuiz({
-			variables: values,
-			update: (cache) => {
-				cache.evict({ fieldName: 'quizzes: {}' });
-			},
-		});
-		if (!errors) {
-			router.push('/');
+		try {
+			const { errors } = await createQuiz({
+				variables: values,
+				update: (cache) => {
+					cache.evict({ fieldName: 'quizzes' });
+				},
+			});
+			if (!errors) {
+				router.push('/');
+			}
+		} catch (err) {
+			errorMapper(err, setError);
 		}
 	};
 
@@ -68,17 +74,20 @@ const CreateQuiz: React.FC = () => {
 					as='h1'
 					fontFamily='inter'
 					fontWeight='800'
-					color='gray.700'
+					color={colorTitle}
 					lineHeight='1'
-					fontSize='54px'
+					fontSize={['30px', '42px', '56px']}
 					pb='40px'
+					textAlign='center'
 				>
 					Create an interactive quiz
 				</Heading>
 				<Box
-					w='764px'
+					maxW='764px'
+					w={['auto', 'auto', '764px']}
+					m='auto'
 					boxShadow='md'
-					p='24px'
+					p={['10px', '10px', '24px']}
 					borderWidth='1px'
 					borderRadius='md'
 				>
@@ -134,7 +143,9 @@ const CreateQuiz: React.FC = () => {
 									fontSize='20px'
 									size='lg'
 									error={errors.title}
-									errorMessage='Title is required field.'
+									errorMessage={
+										errors.title?.message || 'Title is required field.'
+									}
 								/>
 								<CustomQuizInput
 									register={register({ required: true })}
@@ -146,7 +157,10 @@ const CreateQuiz: React.FC = () => {
 									overflow='hidden'
 									py='5px'
 									error={errors.description}
-									errorMessage='Description is required field.'
+									errorMessage={
+										errors.description?.message ||
+										'Description is required field.'
+									}
 								/>
 							</VStack>
 							<QuestionArray />

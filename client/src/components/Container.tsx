@@ -1,4 +1,4 @@
-import { Flex, FlexProps, Spacer, useColorMode } from '@chakra-ui/react';
+import { Box, Flex, FlexProps, Spacer, useColorMode } from '@chakra-ui/react';
 import { NavBar } from './NavBar';
 import { CloudinaryContext } from 'cloudinary-react';
 
@@ -16,19 +16,21 @@ export const Container = ({
 		<CloudinaryContext
 			cloudName={process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME}
 		>
-			<Flex
-				direction='column'
-				align={align}
-				justify={justify}
-				bg={bgColor[colorMode]}
-				color={color[colorMode]}
-				{...props}
-			>
+			<Box bg={bgColor[colorMode]} color={color[colorMode]} {...props}>
 				<NavBar />
-				<Spacer />
-				{props?.children}
-				<Spacer />
-			</Flex>
+				<Flex
+					direction='column'
+					align={align}
+					justify={justify}
+					w='full'
+					h='full'
+					px={['10px', '16px', '24px']}
+				>
+					<Spacer />
+					{props?.children}
+					<Spacer />
+				</Flex>
+			</Box>
 		</CloudinaryContext>
 	);
 };

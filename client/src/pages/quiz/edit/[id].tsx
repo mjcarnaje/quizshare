@@ -29,12 +29,14 @@ import { uploadCloudinaryImage } from '../../../utils/uploadImage';
 import { Image } from 'cloudinary-react';
 import NextLink from 'next/link';
 import TextareaAutosize from 'react-textarea-autosize';
+import errorMapper from '../../../utils/errorMapper';
 
 const EditQuiz = ({}) => {
+	const colorTitle = useColorModeValue('gray.800', 'white');
 	const router = useRouter();
 	const thumbnailBg = useColorModeValue('gray.50', 'rgba(255, 255, 255, 0.04)');
 	const [image, setImage] = useState<string | 'loading'>();
-	const [authoAddChoiceInput, setAutoAddChoiceInput] = useState<boolean>(false);
+	const [autoAddChoiceInput, setAutoAddChoiceInput] = useState<boolean>(false);
 
 	const { data: queryData, loading } = useQuizToUpdateQuery({
 		variables: {
@@ -48,20 +50,24 @@ const EditQuiz = ({}) => {
 
 	const methods = useForm<QuizInput>();
 
-	const { register, handleSubmit, errors, reset } = methods;
+	const { register, handleSubmit, errors, reset, setError } = methods;
 
 	const onSubmit = async (values: QuizInput) => {
-		const { errors } = await updateQuiz({
-			variables: {
-				inputs: values,
-				quiz_id: parseInt(router.query.id as string),
-			},
-			update: (cache) => {
-				cache.evict({ fieldName: 'quizzes: {}' });
-			},
-		});
-		if (!errors) {
-			router.push('/');
+		try {
+			const { errors } = await updateQuiz({
+				variables: {
+					inputs: values,
+					quiz_id: parseInt(router.query.id as string),
+				},
+				update: (cache) => {
+					cache.evict({ fieldName: 'quizzes' });
+				},
+			});
+			if (!errors) {
+				router.push('/');
+			}
+		} catch (err) {
+			errorMapper(errors, setError);
 		}
 	};
 
@@ -99,17 +105,20 @@ const EditQuiz = ({}) => {
 					as='h1'
 					fontFamily='inter'
 					fontWeight='800'
-					color='gray.700'
+					color={colorTitle}
 					lineHeight='1'
-					fontSize='54px'
+					fontSize={['30px', '42px', '56px']}
 					pb='40px'
+					textAlign='center'
 				>
 					Create an interactive quiz
 				</Heading>
 				<Box
-					w='764px'
+					maxW='764px'
+					w={['auto', 'auto', '764px']}
+					m='auto'
 					boxShadow='md'
-					p='24px'
+					p={['10px', '10px', '24px']}
 					borderWidth='1px'
 					borderRadius='md'
 				>
@@ -181,7 +190,7 @@ const EditQuiz = ({}) => {
 								/>
 							</VStack>
 							<QuestionArray
-								authoAddChoiceInput={authoAddChoiceInput}
+								autoAddChoiceInput={autoAddChoiceInput}
 								setAutoAddChoiceInput={setAutoAddChoiceInput}
 							/>
 							<Flex w='full' mt='20px'>

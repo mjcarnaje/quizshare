@@ -67,8 +67,14 @@ export const UserMenu: React.FC<User> = ({
 					>
 						{name}
 					</Text>
-					<Text lineHeight='10px' fontSize='15px'>
-						{email}
+					<Text
+						lineHeight='14px'
+						fontSize='15px'
+						wordBreak='break-all'
+						textAlign='center'
+						px='8px'
+					>
+						{`@${email.split('@')[0]}`}
 					</Text>
 				</MenuItem>
 				<MenuDivider display={['block', 'block', 'none']} />

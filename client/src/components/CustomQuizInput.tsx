@@ -47,7 +47,11 @@ const CustomQuizInput: React.FC<CustomQuizInputProps> = ({
 				isInvalid={!!error}
 				{...props}
 			/>
-			{error && <FormErrorMessage mt='0'>{errorMessage}</FormErrorMessage>}
+			{error && (
+				<FormErrorMessage mt='0'>
+					{`${errorMessage[0].toUpperCase()}${errorMessage.slice(1)}`}
+				</FormErrorMessage>
+			)}
 		</FormControl>
 	);
 };

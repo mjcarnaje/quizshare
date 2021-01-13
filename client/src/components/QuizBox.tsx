@@ -29,7 +29,7 @@ export const QuizBox: React.FC<QuizBoxProps> = ({ quiz, date, desc }) => {
 	const { id, quiz_photo, title, author } = quiz;
 
 	return (
-		<ChakraContainter maxW={['100%', '460px', '820px']} my='36px'>
+		<ChakraContainter maxW={['100%', '460px', '820px']} my='36px' p='0'>
 			<Stack
 				direction={['column', 'column', 'row']}
 				divider={<StackDivider borderColor='gray' />}

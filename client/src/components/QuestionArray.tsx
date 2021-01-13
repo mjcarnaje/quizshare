@@ -25,12 +25,12 @@ import { HStack } from '@chakra-ui/react';
 import { useRouter } from 'next/dist/client/router';
 
 interface QuestionArrayProps {
-	authoAddChoiceInput?: boolean;
+	autoAddChoiceInput?: boolean;
 	setAutoAddChoiceInput?: any;
 }
 
 const QuestionArray: React.FC<QuestionArrayProps> = ({
-	authoAddChoiceInput,
+	autoAddChoiceInput,
 	setAutoAddChoiceInput,
 }) => {
 	const router = useRouter();
@@ -86,7 +86,7 @@ const QuestionArray: React.FC<QuestionArrayProps> = ({
 		);
 	};
 
-	const addQuestionUpdate = (callback: Function) => {
+	const addQuestionForEdit = (callback: Function) => {
 		setAutoAddChoiceInput(true);
 		callback();
 	};
@@ -234,7 +234,7 @@ const QuestionArray: React.FC<QuestionArrayProps> = ({
 						<ChoiceArray
 							questionIndex={i}
 							answer={question.answer!}
-							authoAddChoiceInput={authoAddChoiceInput}
+							autoAddChoiceInput={autoAddChoiceInput}
 						/>
 						{withExplanation && (
 							<CustomQuizInput
@@ -278,7 +278,9 @@ const QuestionArray: React.FC<QuestionArrayProps> = ({
 				size='lg'
 				w='full'
 				onClick={() => {
-					if (!authoAddChoiceInput) return addQuestionUpdate(addQuestion);
+					if (router.pathname.includes('edit') && !autoAddChoiceInput) {
+						return addQuestionForEdit(addQuestion);
+					}
 					addQuestion();
 				}}
 			>
