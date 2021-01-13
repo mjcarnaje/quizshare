@@ -62,8 +62,11 @@ export const NavBar: React.FC = () => {
 		body = (
 			<>
 				{[
-					{ path: '/quiz/create', name: 'Create Quiz' },
-					{ path: '/users', name: 'Users' },
+					{
+						path: '/quiz/create',
+						name: 'Create Quiz',
+					},
+					{ path: '/users', name: 'Users', icon: 'FaUsers' },
 				].map(({ path, name }, i) => {
 					return (
 						<NextLink href={path} key={i}>
@@ -77,6 +80,7 @@ export const NavBar: React.FC = () => {
 								cursor='pointer'
 								fontWeight={router.pathname == path ? 'semibold' : ''}
 								color={router.pathname == path ? logoColor : ''}
+								display={['none', 'none', 'inline-block']}
 							>
 								{name}
 							</Text>
@@ -98,7 +102,7 @@ export const NavBar: React.FC = () => {
 			justify='space-between'
 			w='full'
 			py={4}
-			px={24}
+			px={[2, 8, 12, 24]}
 			bg={bgColor}
 			boxShadow={navBarShadow}
 			position='sticky'
@@ -123,7 +127,10 @@ export const NavBar: React.FC = () => {
 				</Heading>
 			</NextLink>
 			<HStack spacing={6}>
-				<DarkModeSwitch />
+				<DarkModeSwitch
+					aria-label='Toggle color mode'
+					display={['none', 'none', 'inline-block']}
+				/>
 				{body}
 			</HStack>
 		</Flex>

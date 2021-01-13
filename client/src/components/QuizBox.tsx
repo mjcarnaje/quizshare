@@ -15,6 +15,7 @@ import Link from 'next/link';
 import React from 'react';
 import { QuizzesResponseFragment } from '../generated/graphql';
 import { CommentButton } from './CommentButton';
+import { EditDeleteQuizButtons } from './EditDeleteQuizButtons';
 import { LikeButton } from './LikeButton';
 
 interface QuizBoxProps {
@@ -38,10 +39,17 @@ export const QuizBox: React.FC<QuizBoxProps> = ({ quiz, date, desc }) => {
 					flex={1}
 					align='start'
 				>
-					<Box w={['100%', '100%', quiz_photo ? '60%' : '85%']}>
+					<Box w={['100%', '100%', quiz_photo ? '60%' : '85%']} pos='relative'>
 						<Heading as='h2' size={titleSize} mb='10px'>
 							<Link href={`/quiz/${id}`}>{title}</Link>
 						</Heading>
+						<EditDeleteQuizButtons
+							quiz={quiz}
+							pos='absolute'
+							top='2px'
+							right='4px'
+							display={['inline-block', 'inline-block', 'none']}
+						/>
 						<Text mb='10px' fontSize='14px'>
 							<Link href={`/quiz/${id}`}>{date}</Link>
 						</Text>
@@ -91,7 +99,15 @@ export const QuizBox: React.FC<QuizBoxProps> = ({ quiz, date, desc }) => {
 					direction={['row', 'row', 'column']}
 					justify='center'
 					spacing={['36px', '36px', '12px']}
+					pos='relative'
 				>
+					<EditDeleteQuizButtons
+						quiz={quiz}
+						pos='absolute'
+						top='0'
+						left='4px'
+						display={['none', 'none', 'inline-block']}
+					/>
 					<LikeButton quiz={quiz} />
 					<CommentButton quiz={quiz} />
 				</Stack>

@@ -22,10 +22,19 @@ import CustomQuizInput from './CustomQuizInput';
 import { Image } from 'cloudinary-react';
 import { uploadCloudinaryImage } from '../utils/uploadImage';
 import { HStack } from '@chakra-ui/react';
+import { useRouter } from 'next/dist/client/router';
 
-interface QuestionArrayProps {}
+interface QuestionArrayProps {
+	authoAddChoiceInput?: boolean;
+	setAutoAddChoiceInput?: any;
+}
 
-const QuestionArray: React.FC<QuestionArrayProps> = ({}) => {
+const QuestionArray: React.FC<QuestionArrayProps> = ({
+	authoAddChoiceInput,
+	setAutoAddChoiceInput,
+}) => {
+	const router = useRouter();
+
 	const [images, setImages] = useState<
 		{ question_id: string; public_id: string | 'loading' }[]
 	>([]);
@@ -77,7 +86,13 @@ const QuestionArray: React.FC<QuestionArrayProps> = ({}) => {
 		);
 	};
 
+	const addQuestionUpdate = (callback: Function) => {
+		setAutoAddChoiceInput(true);
+		callback();
+	};
+
 	useEffect(() => {
+		if (router.pathname.includes('edit')) return;
 		addQuestion(false);
 	}, []);
 
@@ -157,7 +172,14 @@ const QuestionArray: React.FC<QuestionArrayProps> = ({}) => {
 										}}
 									/>
 								</Tooltip>
-								<Tooltip hasArrow label='Add question photo'>
+								<Tooltip
+									hasArrow
+									label={
+										question?.question_photo
+											? 'Replace question photo'
+											: 'Add question photo'
+									}
+								>
 									<IconButton
 										isRound
 										icon={<MdPhotoSizeSelectActual />}
@@ -207,8 +229,13 @@ const QuestionArray: React.FC<QuestionArrayProps> = ({}) => {
 							py='7px'
 							error={errors.questions?.[i]?.question}
 							errorMessage={`Question ${i + 1} is required field`}
+							defaultValue={question.question}
 						/>
-						<ChoiceArray questionIndex={i} answer={question.answer!} />
+						<ChoiceArray
+							questionIndex={i}
+							answer={question.answer!}
+							authoAddChoiceInput={authoAddChoiceInput}
+						/>
 						{withExplanation && (
 							<CustomQuizInput
 								register={register({ required: true })}
@@ -220,6 +247,7 @@ const QuestionArray: React.FC<QuestionArrayProps> = ({}) => {
 								py='7px'
 								error={errors.questions?.[i]?.explanation}
 								errorMessage={`Type the explanation or you can just turn it off`}
+								defaultValue={question.explanation!}
 							/>
 						)}
 						{withHint && (
@@ -233,6 +261,7 @@ const QuestionArray: React.FC<QuestionArrayProps> = ({}) => {
 								py='7px'
 								error={errors.questions?.[i]?.hint}
 								errorMessage={`Type the hint or you can just turn it off`}
+								defaultValue={question.hint!}
 							/>
 						)}
 						{errors.questions?.[i]?.answer && (
@@ -248,7 +277,10 @@ const QuestionArray: React.FC<QuestionArrayProps> = ({}) => {
 				colorScheme='purple'
 				size='lg'
 				w='full'
-				onClick={() => addQuestion()}
+				onClick={() => {
+					if (!authoAddChoiceInput) return addQuestionUpdate(addQuestion);
+					addQuestion();
+				}}
 			>
 				Add Question
 			</Button>

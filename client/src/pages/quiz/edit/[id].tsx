@@ -1,43 +1,61 @@
-import {
-	AspectRatio,
-	Box,
-	Button,
-	Center,
-	Flex,
-	Heading,
-	Skeleton,
-	Spacer,
-	useColorModeValue,
-	VStack,
-} from '@chakra-ui/react';
-import { Image } from 'cloudinary-react';
 import { useRouter } from 'next/dist/client/router';
-import NextLink from 'next/link';
-import React, { useState } from 'react';
-import { FormProvider, useForm } from 'react-hook-form';
+import React, { useState, useEffect } from 'react';
+import { Container } from '../../../components/Container';
+import {
+	QuizInput,
+	useQuizToUpdateQuery,
+	useUpdateQuizMutation,
+} from '../../../generated/graphql';
+import { withApollo } from '../../../utils/withApollo';
+import { removeTypename } from '../../../utils/removeTypename';
+import {
+	useColorModeValue,
+	Box,
+	Heading,
+	VStack,
+	Skeleton,
+	AspectRatio,
+	Center,
+	Button,
+	Flex,
+	Spacer,
+	Spinner,
+} from '@chakra-ui/react';
+import { useForm, FormProvider } from 'react-hook-form';
 import { MdPhotoSizeSelectActual } from 'react-icons/md';
+import CustomQuizInput from '../../../components/CustomQuizInput';
+import QuestionArray from '../../../components/QuestionArray';
+import { uploadCloudinaryImage } from '../../../utils/uploadImage';
+import { Image } from 'cloudinary-react';
+import NextLink from 'next/link';
 import TextareaAutosize from 'react-textarea-autosize';
-import { Container } from '../../components/Container';
-import CustomQuizInput from '../../components/CustomQuizInput';
-import QuestionArray from '../../components/QuestionArray';
-import { QuizInput, useCreateQuizMutation } from '../../generated/graphql';
-import { uploadCloudinaryImage } from '../../utils/uploadImage';
-import { withApollo } from '../../utils/withApollo';
 
-const CreateQuiz: React.FC = () => {
+const EditQuiz = ({}) => {
 	const router = useRouter();
 	const thumbnailBg = useColorModeValue('gray.50', 'rgba(255, 255, 255, 0.04)');
 	const [image, setImage] = useState<string | 'loading'>();
+	const [authoAddChoiceInput, setAutoAddChoiceInput] = useState<boolean>(false);
 
-	const [createQuiz, { loading }] = useCreateQuizMutation();
+	const { data: queryData, loading } = useQuizToUpdateQuery({
+		variables: {
+			quiz_id: parseInt(router.query.id as string),
+		},
+	});
+
+	const [updateQuiz, { loading: updateLoading }] = useUpdateQuizMutation();
+
+	const data = removeTypename(queryData?.quizToUpdate!);
 
 	const methods = useForm<QuizInput>();
 
-	const { register, handleSubmit, errors } = methods;
+	const { register, handleSubmit, errors, reset } = methods;
 
 	const onSubmit = async (values: QuizInput) => {
-		const { errors } = await createQuiz({
-			variables: values,
+		const { errors } = await updateQuiz({
+			variables: {
+				inputs: values,
+				quiz_id: parseInt(router.query.id as string),
+			},
 			update: (cache) => {
 				cache.evict({ fieldName: 'quizzes: {}' });
 			},
@@ -60,6 +78,19 @@ const CreateQuiz: React.FC = () => {
 			}
 		);
 	};
+
+	useEffect(() => {
+		if (!data) return;
+		reset(data);
+	}, [queryData]);
+
+	if (loading) {
+		return (
+			<Container h='101vh'>
+				<Spinner color='purple.500' />
+			</Container>
+		);
+	}
 
 	return (
 		<Container minH='100vh'>
@@ -84,21 +115,21 @@ const CreateQuiz: React.FC = () => {
 				>
 					<FormProvider {...methods}>
 						<form onSubmit={handleSubmit(onSubmit)}>
-							{image && (
+							{(image || data?.quiz_photo) && (
 								<input
 									type='hidden'
 									name='quiz_photo'
 									ref={register()}
-									defaultValue={image}
+									defaultValue={image || data.quiz_photo!}
 								/>
 							)}
 							<VStack spacing='16px'>
 								<Box w='full'>
-									{image ? (
+									{data?.quiz_photo || image ? (
 										<Skeleton isLoaded={image !== 'loading'}>
 											<Box borderRadius='8px' overflow='hidden'>
 												<AspectRatio maxW='full' ratio={16 / 9}>
-													<Image publicId={image} />
+													<Image publicId={image || data?.quiz_photo!} />
 												</AspectRatio>
 											</Box>
 										</Skeleton>
@@ -115,7 +146,7 @@ const CreateQuiz: React.FC = () => {
 										</Center>
 									)}
 								</Box>
-								{image && (
+								{(data?.quiz_photo || image) && (
 									<Center>
 										<Button
 											leftIcon={<MdPhotoSizeSelectActual />}
@@ -149,7 +180,10 @@ const CreateQuiz: React.FC = () => {
 									errorMessage='Description is required field.'
 								/>
 							</VStack>
-							<QuestionArray />
+							<QuestionArray
+								authoAddChoiceInput={authoAddChoiceInput}
+								setAutoAddChoiceInput={setAutoAddChoiceInput}
+							/>
 							<Flex w='full' mt='20px'>
 								<Spacer />
 								<NextLink href='/'>
@@ -162,7 +196,7 @@ const CreateQuiz: React.FC = () => {
 									type='submit'
 									px='20px'
 									ml='10px'
-									isLoading={loading}
+									isLoading={updateLoading}
 								>
 									Save
 								</Button>
@@ -175,4 +209,4 @@ const CreateQuiz: React.FC = () => {
 	);
 };
 
-export default withApollo({ ssr: true })(CreateQuiz);
+export default withApollo({ ssr: false })(EditQuiz);

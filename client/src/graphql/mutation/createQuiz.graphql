@@ -12,6 +12,19 @@ mutation CreateQuiz(
 			questions: $questions
 		}
 	) {
-		...QuizResponse
+		title
+		description
+		quiz_photo
+		questions {
+			question_id
+			question
+			question_photo
+			choices
+			answer
+			explanation
+			with_explanation
+			hint
+			with_hint
+		}
 	}
 }

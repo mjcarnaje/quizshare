@@ -7,15 +7,15 @@ import {
 	Input,
 	Modal,
 	ModalBody,
-	ModalCloseButton,
 	ModalContent,
 	ModalFooter,
 	ModalHeader,
 	ModalOverlay,
 	Text,
+	ModalCloseButton,
 	useDisclosure,
 } from '@chakra-ui/react';
-import React, { useState } from 'react';
+import React, { useState, useRef, RefObject } from 'react';
 import { FaComment } from 'react-icons/fa';
 import TextareaAutosize from 'react-textarea-autosize';
 import { useUserContext } from '../context/context';
@@ -42,6 +42,8 @@ export const CommentButton: React.FC<CommentButtonProps> = ({
 	const { isOpen, onOpen, onClose } = useDisclosure();
 	const [createComment, { loading }] = useCreateCommentMutation();
 
+	const initialRef: RefObject<any> = useRef();
+
 	return (
 		<>
 			<Modal
@@ -49,15 +51,19 @@ export const CommentButton: React.FC<CommentButtonProps> = ({
 				onClose={onClose}
 				isOpen={isOpen}
 				motionPreset='slideInBottom'
+				initialFocusRef={initialRef}
 			>
 				<ModalOverlay />
 				<ModalContent>
-					<ModalHeader>{`Replying to @${email.split('@')[0]}`}</ModalHeader>
+					<ModalHeader fontSize='17px' fontWeight='500'>
+						{`Replying to @${email.split('@')[0]}`}
+					</ModalHeader>
 					<ModalCloseButton />
 					<ModalBody display='flex'>
 						<Avatar name={user?.profile.name} src={user?.avatar || ''} />
 						<FormControl>
 							<Input
+								ref={initialRef}
 								type='text'
 								placeholder='Comment your reply'
 								bg='none'
@@ -89,9 +95,6 @@ export const CommentButton: React.FC<CommentButtonProps> = ({
 												fragment _ on Quiz {
 													id
 													commentsCount
-                          comments {
-                            
-                          }
 												}
 											`,
 											data: { commentsCount: commentsCount + 1 },

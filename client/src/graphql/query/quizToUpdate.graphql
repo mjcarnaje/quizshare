@@ -1,0 +1,18 @@
+query QuizToUpdate($quiz_id: Int!) {
+	quizToUpdate(quiz_id: $quiz_id) {
+		title
+		description
+		quiz_photo
+		questions {
+			question_id
+			question
+			question_photo
+			choices
+			answer
+			explanation
+			with_explanation
+			hint
+			with_hint
+		}
+	}
+}

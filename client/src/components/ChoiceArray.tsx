@@ -30,9 +30,14 @@ declare global {
 interface ChoiceArrayProps {
 	questionIndex: number;
 	answer: string;
+	authoAddChoiceInput?: boolean;
 }
 
-const ChoiceArray: React.FC<ChoiceArrayProps> = ({ questionIndex, answer }) => {
+const ChoiceArray: React.FC<ChoiceArrayProps> = ({
+	questionIndex,
+	answer,
+	authoAddChoiceInput,
+}) => {
 	const [images, setImages] = useState<
 		{ choice_id: string; public_id: string | 'loading' }[]
 	>([]);
@@ -74,6 +79,7 @@ const ChoiceArray: React.FC<ChoiceArrayProps> = ({ questionIndex, answer }) => {
 	};
 
 	useEffect(() => {
+		if (!authoAddChoiceInput) return;
 		addChoice(false);
 		addChoice(false);
 	}, []);
@@ -172,7 +178,14 @@ const ChoiceArray: React.FC<ChoiceArrayProps> = ({ questionIndex, answer }) => {
 													correct answer
 												</Radio>
 												<Spacer />
-												<Tooltip hasArrow label='Add choice photo'>
+												<Tooltip
+													hasArrow
+													label={
+														choice?.choicePhoto
+															? 'Replace choice photo'
+															: 'Add choice photo'
+													}
+												>
 													<IconButton
 														isRound
 														icon={<MdPhotoSizeSelectActual />}

@@ -1,4 +1,4 @@
-import { Arg, Ctx, Mutation, Resolver, UseMiddleware } from 'type-graphql';
+import { Arg, Ctx, Mutation, Resolver, UseMiddleware, Int } from 'type-graphql';
 import { MyContext } from '../../types/MyContext';
 import { isAuthenticated } from '../middleware/isAuthenticated';
 import { Quiz } from '../../entity/Quiz';
@@ -9,7 +9,7 @@ export class DeleteQuizResolver {
 	@UseMiddleware(isAuthenticated)
 	@Mutation(() => String)
 	async deleteQuiz(
-		@Arg('quiz_id') quiz_id: number,
+		@Arg('quiz_id', () => Int) quiz_id: number,
 		@Ctx() { req }: MyContext
 	): Promise<String> {
 		const quiz = await Quiz.findOneOrFail({ id: quiz_id });

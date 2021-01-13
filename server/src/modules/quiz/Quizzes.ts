@@ -79,8 +79,20 @@ export class QuizzesResolver {
 		const quizzes = await Quiz.find(findOption);
 
 		return {
-			quizzes: quizzes.slice(0, realLimit),
-			hasMore: quizzes.length === realLimitPlusOne,
+			quizzes: (quizzes as [Quiz]).slice(0, realLimit),
+			hasMore: (quizzes as [Quiz]).length === realLimitPlusOne,
 		};
+	}
+
+	@UseMiddleware(isAuthenticated)
+	@Query(() => Quiz)
+	async quizToUpdate(
+		@Arg('quiz_id', () => Int) quiz_id: number
+	): Promise<Quiz | null> {
+		const quiz = await Quiz.findOne(quiz_id, { relations: ['questions'] });
+		if (!quiz) {
+			return null;
+		}
+		return quiz;
 	}
 }
