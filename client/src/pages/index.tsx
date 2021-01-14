@@ -34,7 +34,7 @@ const Index: React.FC = () => {
 			</div>
 		);
 	}
-
+	// no code for today :(
 	return (
 		<Container minH='100vh'>
 			{!data && loading ? (
