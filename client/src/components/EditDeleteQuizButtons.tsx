@@ -23,7 +23,7 @@ import {
 	QuizzesResponseFragment,
 	useDeleteQuizMutation,
 } from '../generated/graphql';
-import { useUserContext } from '../context/context';
+import { useUserContext } from '../store/context';
 import NextLink from 'next/link';
 
 type EditDeleteQuizButtonsProps = {

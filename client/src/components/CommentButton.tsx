@@ -18,7 +18,7 @@ import {
 import React, { useState, useRef, RefObject } from 'react';
 import { FaComment } from 'react-icons/fa';
 import TextareaAutosize from 'react-textarea-autosize';
-import { useUserContext } from '../context/context';
+import { useUserContext } from '../store/context';
 import { gql } from '@apollo/client';
 import {
 	QuizzesResponseFragment,

@@ -13,7 +13,7 @@ import { isServer } from '../utils/isServer';
 import { DarkModeSwitch } from './DarkModeSwitch';
 import { UserMenu } from './UserMenu';
 import { useRouter } from 'next/dist/client/router';
-import { useUserContext } from '../context/context';
+import { useUserContext } from '../store/context';
 
 export const NavBar: React.FC = () => {
 	const { setUser } = useUserContext();

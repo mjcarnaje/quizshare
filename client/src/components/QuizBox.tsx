@@ -85,7 +85,7 @@ export const QuizBox: React.FC<QuizBoxProps> = ({ quiz, date, desc }) => {
 								pl={[0, 0, '32px']}
 								cursor='pointer'
 							>
-								<Box borderRadius='8px' overflow='hidden'>
+								<Box borderRadius='8px' overflow='hidden' bg='gray.100'>
 									<AspectRatio maxW='full' ratio={16 / 9}>
 										<Image publicId={quiz_photo} />
 									</AspectRatio>
