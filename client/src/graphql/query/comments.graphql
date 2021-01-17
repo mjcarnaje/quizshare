@@ -1,0 +1,8 @@
+query Comments($limit: Int!, $cursor: String, $quiz_id: Int!) {
+	comments(limit: $limit, cursor: $cursor, quiz_id: $quiz_id) {
+		hasMore
+		comments {
+			...CommentResponse
+		}
+	}
+}

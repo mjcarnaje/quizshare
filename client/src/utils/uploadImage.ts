@@ -1,5 +1,5 @@
 export const uploadCloudinaryImage = (callback: Function) => {
-	window.cloudinary.openUploadWidget(
+	window.cloudinary?.openUploadWidget(
 		{
 			cloudName: process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME,
 			uploadPreset: process.env.NEXT_PUBLIC_UPLOAD_PRESET,

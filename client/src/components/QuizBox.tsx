@@ -1,10 +1,8 @@
 import {
 	AspectRatio,
-	Avatar,
 	Box,
 	Container as ChakraContainter,
 	Heading,
-	HStack,
 	Stack,
 	StackDivider,
 	Text,
@@ -17,6 +15,7 @@ import { QuizzesResponseFragment } from '../generated/graphql';
 import { CommentButton } from './CommentButton';
 import { EditDeleteQuizButtons } from './EditDeleteQuizButtons';
 import { LikeButton } from './LikeButton';
+import { UserAvatar } from './UserAvatar';
 
 interface QuizBoxProps {
 	quiz: QuizzesResponseFragment;
@@ -56,27 +55,7 @@ export const QuizBox: React.FC<QuizBoxProps> = ({ quiz, date, desc }) => {
 						<Text lineHeight='22px' mb='24px'>
 							<Link href={`/quiz/${id}`}>{desc}</Link>
 						</Text>
-						<HStack align='start' spacing='12px' fontSize='17px'>
-							<Link href={`/user/${author.username}`}>
-								<Avatar
-									src={author?.avatar || ''}
-									name={author.profile.name}
-									cursor='pointer'
-								/>
-							</Link>
-							<Box>
-								<Heading as='h3' fontSize='17px' fontFamily='inter'>
-									<Link href={`/user/${author.username}`}>
-										{author.profile.name}
-									</Link>
-								</Heading>
-								<Text fontSize='15px' lineHeight='.9'>
-									<Link href={`/user/${author.username}`}>
-										{`@${author.email.split('@')[0]}`}
-									</Link>
-								</Text>
-							</Box>
-						</HStack>
+						<UserAvatar author={author} />
 					</Box>
 					{quiz_photo && (
 						<Link href={`/quiz/${id}`}>

@@ -1,0 +1,22 @@
+query SingleQuiz($quiz_id: Int!) {
+	singleQuiz(quiz_id: $quiz_id) {
+		id
+		quiz_photo
+		title
+		description
+		author {
+			id
+			username
+			avatar
+			email
+			profile {
+				name
+			}
+		}
+		isLiked
+		likesCount
+		commentsCount
+		created_at
+		questionsCount
+	}
+}

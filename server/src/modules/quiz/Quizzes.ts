@@ -11,6 +11,7 @@ import {
 } from 'type-graphql';
 import { FindManyOptions, LessThan } from 'typeorm';
 import { Quiz } from '../../entity/Quiz';
+import { Comment } from '../../entity/Comment';
 import { MyContext } from '../../types/MyContext';
 import { isAuthenticated } from '../middleware/isAuthenticated';
 import { UseMiddleware } from 'type-graphql';
@@ -19,6 +20,13 @@ import { UseMiddleware } from 'type-graphql';
 class PaginatedQuizzes {
 	@Field(() => [Quiz])
 	quizzes: Quiz[];
+	@Field()
+	hasMore: boolean;
+}
+@ObjectType()
+class PaginatedComments {
+	@Field(() => [Comment])
+	comments: Comment[];
 	@Field()
 	hasMore: boolean;
 }
@@ -44,6 +52,11 @@ export class QuizzesResolver {
 	@FieldResolver(() => Int)
 	commentsCount(@Root() quiz: Quiz) {
 		return quiz.comments.length;
+	}
+
+	@FieldResolver(() => Int)
+	questionsCount(@Root() quiz: Quiz) {
+		return quiz.questions.length;
 	}
 
 	@UseMiddleware(isAuthenticated)
@@ -98,5 +111,58 @@ export class QuizzesResolver {
 			return null;
 		}
 		return quiz;
+	}
+
+	@UseMiddleware(isAuthenticated)
+	@Query(() => Quiz, { nullable: true })
+	async singleQuiz(
+		@Arg('quiz_id', () => Int) quiz_id: number
+	): Promise<Quiz | null> {
+		const quiz = await Quiz.findOne(quiz_id, {
+			relations: ['likes', 'comments', 'questions', 'author'],
+		});
+		if (!quiz) {
+			return null;
+		}
+		return quiz;
+	}
+
+	@UseMiddleware(isAuthenticated)
+	@Query(() => PaginatedComments, { nullable: true })
+	async comments(
+		@Arg('quiz_id', () => Int) quiz_id: number,
+		@Arg('limit', () => Int) limit: number,
+		@Arg('cursor', () => String, { nullable: true }) cursor: string | null
+	): Promise<PaginatedComments | null> {
+		const realLimit = Math.min(10, limit);
+		const realLimitPlusOne = realLimit + 1;
+
+		let findOption: FindManyOptions;
+
+		if (cursor) {
+			findOption = {
+				take: realLimitPlusOne,
+				where: {
+					quiz_id: quiz_id,
+					created_at: LessThan(new Date(parseInt(cursor))),
+				},
+			};
+		} else {
+			findOption = {
+				where: { quiz_id: quiz_id },
+				take: realLimitPlusOne,
+			};
+		}
+
+		const comments = await Comment.find(findOption);
+
+		if (!comments) {
+			return null;
+		}
+
+		return {
+			comments: (comments as [Comment]).slice(0, realLimit),
+			hasMore: (comments as [Comment]).length === realLimitPlusOne,
+		};
 	}
 }

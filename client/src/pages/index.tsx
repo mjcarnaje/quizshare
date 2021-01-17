@@ -20,11 +20,19 @@ const Index: React.FC = () => {
 
 	const { data, loading, fetchMore, variables, error } = useQuizzesQuery({
 		variables: {
-			limit: 3,
+			limit: 4,
 			cursor: null,
 		},
 		notifyOnNetworkStatusChange: true,
 	});
+
+	if (!data && loading) {
+		return (
+			<Container h='100vh' justify='center'>
+				<Spinner color='purple.500' />;
+			</Container>
+		);
+	}
 
 	if (!loading && !data) {
 		return (
@@ -37,60 +45,54 @@ const Index: React.FC = () => {
 
 	return (
 		<Container minH='100vh'>
-			{!data && loading ? (
-				<Spinner color='purple.500' />
-			) : (
-				<>
-					{data?.quizzes.quizzes.map((quiz) => {
-						const { description, created_at, id } = quiz;
+			{data?.quizzes.quizzes.map((quiz) => {
+				const { description, created_at, id } = quiz;
 
-						let date, desc;
+				let date, desc;
 
-						const moreThan250Characters = description.length > 250;
+				const moreThan250Characters = description.length > 250;
 
-						if (moreThan250Characters) {
-							desc = `${description.slice(0, descriptionCharacter)}...`;
-						} else {
-							desc = description;
-						}
+				if (moreThan250Characters) {
+					desc = `${description.slice(0, descriptionCharacter)}...`;
+				} else {
+					desc = description;
+				}
 
-						const parsedCreateAt = new Date(parseInt(created_at));
+				const parsedCreateAt = new Date(parseInt(created_at));
 
-						const oneDayAgo = moment(parsedCreateAt)
-							.fromNow(true)
-							.includes('day' || 'week' || 'month' || 'year');
+				const oneDayAgo = moment(parsedCreateAt)
+					.fromNow(true)
+					.includes('day' || 'week' || 'month' || 'year');
 
-						if (oneDayAgo) {
-							date = moment(parsedCreateAt).format('ll');
-						} else {
-							date = `${moment(parsedCreateAt).fromNow(true)} ago`;
-						}
+				if (oneDayAgo) {
+					date = moment(parsedCreateAt).format('ll');
+				} else {
+					date = `${moment(parsedCreateAt).fromNow(true)} ago`;
+				}
 
-						return <QuizBox key={id} quiz={quiz} date={date} desc={desc} />;
-					})}
-					{data && data.quizzes.hasMore && (
-						<Button
-							size='sm'
-							colorScheme={buttonColorScheme}
-							variant='ghost'
-							fontSize={16}
-							my='20px'
-							onClick={() => {
-								fetchMore({
-									variables: {
-										limit: variables?.limit,
-										cursor:
-											data.quizzes.quizzes[data.quizzes.quizzes.length - 1]
-												.created_at,
-									},
-								});
-							}}
-							isLoading={loading}
-						>
-							Load more
-						</Button>
-					)}
-				</>
+				return <QuizBox key={id} quiz={quiz} date={date} desc={desc} />;
+			})}
+			{data && data.quizzes.hasMore && (
+				<Button
+					size='sm'
+					colorScheme={buttonColorScheme}
+					variant='ghost'
+					fontSize={16}
+					my='20px'
+					onClick={() => {
+						fetchMore({
+							variables: {
+								limit: variables?.limit,
+								cursor:
+									data.quizzes.quizzes[data.quizzes.quizzes.length - 1]
+										.created_at,
+							},
+						});
+					}}
+					isLoading={loading}
+				>
+					Load more
+				</Button>
 			)}
 		</Container>
 	);

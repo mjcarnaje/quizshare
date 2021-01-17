@@ -7,8 +7,8 @@ fragment QuizzesResponse on Quiz {
 	likes {
 		id
 	}
-	author_id
 	author {
+		id
 		username
 		email
 		avatar

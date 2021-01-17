@@ -1,0 +1,14 @@
+fragment CommentResponse on Comment {
+	id
+	author {
+		id
+		username
+		email
+		avatar
+		profile {
+			name
+		}
+	}
+	text
+	created_at
+}

@@ -90,7 +90,7 @@ const EditQuiz = ({}) => {
 		reset(data);
 	}, [queryData]);
 
-	if (loading) {
+	if (loading && !data) {
 		return (
 			<Container h='101vh'>
 				<Spinner color='purple.500' />

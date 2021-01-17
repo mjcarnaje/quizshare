@@ -2,17 +2,21 @@ import { gql } from '@apollo/client';
 import { Center, IconButton, Text } from '@chakra-ui/react';
 import React from 'react';
 import { IoIosHeart } from 'react-icons/io';
-import {
-	QuizzesResponseFragment,
-	useToggleLikeMutation,
-} from '../generated/graphql';
+import { useToggleLikeMutation } from '../generated/graphql';
 
 interface LikeButtonProps {
-	quiz: QuizzesResponseFragment;
+	quiz: {
+		isLiked?: boolean;
+		id: string;
+		likesCount: number;
+		questionsCount?: number;
+	} & any;
+	withoutCount?: boolean;
 }
 
 export const LikeButton: React.FC<LikeButtonProps> = ({
 	quiz: { isLiked, id, likesCount },
+	withoutCount,
 }) => {
 	const [toggleLike] = useToggleLikeMutation();
 
@@ -74,9 +78,11 @@ export const LikeButton: React.FC<LikeButtonProps> = ({
 					})
 				}
 			/>
-			<Text fontSize='14px' fontWeight='medium' color='gray.400'>
-				{likesCount}
-			</Text>
+			{!withoutCount && (
+				<Text fontSize='14px' fontWeight='medium' color='gray.400'>
+					{likesCount}
+				</Text>
+			)}
 		</Center>
 	);
 };

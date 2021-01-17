@@ -76,6 +76,7 @@ export type Quiz = {
   commentsCount: Scalars['Int'];
   created_at: Scalars['String'];
   updated_at: Scalars['String'];
+  questionsCount: Scalars['Int'];
 };
 
 export type Comment = {
@@ -89,6 +90,12 @@ export type Comment = {
 export type PaginatedQuizzes = {
   __typename?: 'PaginatedQuizzes';
   quizzes: Array<Quiz>;
+  hasMore: Scalars['Boolean'];
+};
+
+export type PaginatedComments = {
+  __typename?: 'PaginatedComments';
+  comments: Array<Comment>;
   hasMore: Scalars['Boolean'];
 };
 
@@ -144,6 +151,8 @@ export type Query = {
   __typename?: 'Query';
   quizzes: PaginatedQuizzes;
   quizToUpdate: Quiz;
+  singleQuiz?: Maybe<Quiz>;
+  comments?: Maybe<PaginatedComments>;
   me?: Maybe<User>;
   getUsers: Array<User>;
 };
@@ -156,6 +165,18 @@ export type QueryQuizzesArgs = {
 
 
 export type QueryQuizToUpdateArgs = {
+  quiz_id: Scalars['Int'];
+};
+
+
+export type QuerySingleQuizArgs = {
+  quiz_id: Scalars['Int'];
+};
+
+
+export type QueryCommentsArgs = {
+  cursor?: Maybe<Scalars['String']>;
+  limit: Scalars['Int'];
   quiz_id: Scalars['Int'];
 };
 
@@ -228,6 +249,19 @@ export type MutationRegisterArgs = {
   data: RegisterInput;
 };
 
+export type CommentResponseFragment = (
+  { __typename?: 'Comment' }
+  & Pick<Comment, 'id' | 'text' | 'created_at'>
+  & { author: (
+    { __typename?: 'User' }
+    & Pick<User, 'id' | 'username' | 'email' | 'avatar'>
+    & { profile: (
+      { __typename?: 'Profile' }
+      & Pick<Profile, 'name'>
+    ) }
+  ) }
+);
+
 export type QuizResponseFragment = (
   { __typename?: 'Quiz' }
   & Pick<Quiz, 'id' | 'title' | 'description' | 'quiz_photo' | 'author_id'>
@@ -239,13 +273,13 @@ export type QuizResponseFragment = (
 
 export type QuizzesResponseFragment = (
   { __typename?: 'Quiz' }
-  & Pick<Quiz, 'id' | 'title' | 'description' | 'quiz_photo' | 'created_at' | 'author_id' | 'isLiked' | 'likesCount' | 'commentsCount'>
+  & Pick<Quiz, 'id' | 'title' | 'description' | 'quiz_photo' | 'created_at' | 'isLiked' | 'likesCount' | 'commentsCount'>
   & { likes: Array<(
     { __typename?: 'Like' }
     & Pick<Like, 'id'>
   )>, author: (
     { __typename?: 'User' }
-    & Pick<User, 'username' | 'email' | 'avatar'>
+    & Pick<User, 'id' | 'username' | 'email' | 'avatar'>
     & { profile: (
       { __typename?: 'Profile' }
       & Pick<Profile, 'name'>
@@ -382,6 +416,25 @@ export type UpdateQuizMutation = (
   ) }
 );
 
+export type CommentsQueryVariables = Exact<{
+  limit: Scalars['Int'];
+  cursor?: Maybe<Scalars['String']>;
+  quiz_id: Scalars['Int'];
+}>;
+
+
+export type CommentsQuery = (
+  { __typename?: 'Query' }
+  & { comments?: Maybe<(
+    { __typename?: 'PaginatedComments' }
+    & Pick<PaginatedComments, 'hasMore'>
+    & { comments: Array<(
+      { __typename?: 'Comment' }
+      & CommentResponseFragment
+    )> }
+  )> }
+);
+
 export type MeQueryVariables = Exact<{ [key: string]: never; }>;
 
 
@@ -428,6 +481,43 @@ export type QuizzesQuery = (
   ) }
 );
 
+export type SingleQuizQueryVariables = Exact<{
+  quiz_id: Scalars['Int'];
+}>;
+
+
+export type SingleQuizQuery = (
+  { __typename?: 'Query' }
+  & { singleQuiz?: Maybe<(
+    { __typename?: 'Quiz' }
+    & Pick<Quiz, 'id' | 'quiz_photo' | 'title' | 'description' | 'isLiked' | 'likesCount' | 'commentsCount' | 'created_at' | 'questionsCount'>
+    & { author: (
+      { __typename?: 'User' }
+      & Pick<User, 'id' | 'username' | 'avatar' | 'email'>
+      & { profile: (
+        { __typename?: 'Profile' }
+        & Pick<Profile, 'name'>
+      ) }
+    ) }
+  )> }
+);
+
+export const CommentResponseFragmentDoc = gql`
+    fragment CommentResponse on Comment {
+  id
+  author {
+    id
+    username
+    email
+    avatar
+    profile {
+      name
+    }
+  }
+  text
+  created_at
+}
+    `;
 export const QuizResponseFragmentDoc = gql`
     fragment QuizResponse on Quiz {
   id
@@ -458,8 +548,8 @@ export const QuizzesResponseFragmentDoc = gql`
   likes {
     id
   }
-  author_id
   author {
+    id
     username
     email
     avatar
@@ -792,6 +882,44 @@ export function useUpdateQuizMutation(baseOptions?: Apollo.MutationHookOptions<U
 export type UpdateQuizMutationHookResult = ReturnType<typeof useUpdateQuizMutation>;
 export type UpdateQuizMutationResult = Apollo.MutationResult<UpdateQuizMutation>;
 export type UpdateQuizMutationOptions = Apollo.BaseMutationOptions<UpdateQuizMutation, UpdateQuizMutationVariables>;
+export const CommentsDocument = gql`
+    query Comments($limit: Int!, $cursor: String, $quiz_id: Int!) {
+  comments(limit: $limit, cursor: $cursor, quiz_id: $quiz_id) {
+    hasMore
+    comments {
+      ...CommentResponse
+    }
+  }
+}
+    ${CommentResponseFragmentDoc}`;
+
+/**
+ * __useCommentsQuery__
+ *
+ * To run a query within a React component, call `useCommentsQuery` and pass it any options that fit your needs.
+ * When your component renders, `useCommentsQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useCommentsQuery({
+ *   variables: {
+ *      limit: // value for 'limit'
+ *      cursor: // value for 'cursor'
+ *      quiz_id: // value for 'quiz_id'
+ *   },
+ * });
+ */
+export function useCommentsQuery(baseOptions: Apollo.QueryHookOptions<CommentsQuery, CommentsQueryVariables>) {
+        return Apollo.useQuery<CommentsQuery, CommentsQueryVariables>(CommentsDocument, baseOptions);
+      }
+export function useCommentsLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<CommentsQuery, CommentsQueryVariables>) {
+          return Apollo.useLazyQuery<CommentsQuery, CommentsQueryVariables>(CommentsDocument, baseOptions);
+        }
+export type CommentsQueryHookResult = ReturnType<typeof useCommentsQuery>;
+export type CommentsLazyQueryHookResult = ReturnType<typeof useCommentsLazyQuery>;
+export type CommentsQueryResult = Apollo.QueryResult<CommentsQuery, CommentsQueryVariables>;
 export const MeDocument = gql`
     query Me {
   me {
@@ -907,3 +1035,53 @@ export function useQuizzesLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<Qu
 export type QuizzesQueryHookResult = ReturnType<typeof useQuizzesQuery>;
 export type QuizzesLazyQueryHookResult = ReturnType<typeof useQuizzesLazyQuery>;
 export type QuizzesQueryResult = Apollo.QueryResult<QuizzesQuery, QuizzesQueryVariables>;
+export const SingleQuizDocument = gql`
+    query SingleQuiz($quiz_id: Int!) {
+  singleQuiz(quiz_id: $quiz_id) {
+    id
+    quiz_photo
+    title
+    description
+    author {
+      id
+      username
+      avatar
+      email
+      profile {
+        name
+      }
+    }
+    isLiked
+    likesCount
+    commentsCount
+    created_at
+    questionsCount
+  }
+}
+    `;
+
+/**
+ * __useSingleQuizQuery__
+ *
+ * To run a query within a React component, call `useSingleQuizQuery` and pass it any options that fit your needs.
+ * When your component renders, `useSingleQuizQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useSingleQuizQuery({
+ *   variables: {
+ *      quiz_id: // value for 'quiz_id'
+ *   },
+ * });
+ */
+export function useSingleQuizQuery(baseOptions: Apollo.QueryHookOptions<SingleQuizQuery, SingleQuizQueryVariables>) {
+        return Apollo.useQuery<SingleQuizQuery, SingleQuizQueryVariables>(SingleQuizDocument, baseOptions);
+      }
+export function useSingleQuizLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<SingleQuizQuery, SingleQuizQueryVariables>) {
+          return Apollo.useLazyQuery<SingleQuizQuery, SingleQuizQueryVariables>(SingleQuizDocument, baseOptions);
+        }
+export type SingleQuizQueryHookResult = ReturnType<typeof useSingleQuizQuery>;
+export type SingleQuizLazyQueryHookResult = ReturnType<typeof useSingleQuizLazyQuery>;
+export type SingleQuizQueryResult = Apollo.QueryResult<SingleQuizQuery, SingleQuizQueryVariables>;

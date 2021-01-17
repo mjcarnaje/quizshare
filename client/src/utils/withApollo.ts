@@ -1,6 +1,6 @@
 import { ApolloClient, InMemoryCache } from '@apollo/client';
 import { NextPageContext } from 'next';
-import { PaginatedQuizzes } from '../generated/graphql';
+import { PaginatedComments, PaginatedQuizzes } from '../generated/graphql';
 import { createWithApollo } from './createWithApollo';
 import { isServer } from './isServer';
 
@@ -27,10 +27,26 @@ const createClient = (ctx: NextPageContext) =>
 								};
 							},
 						},
+						comments: {
+							keyArgs: [],
+							merge(
+								existing: PaginatedComments | undefined,
+								incoming: PaginatedComments
+							): PaginatedComments {
+								return {
+									...incoming,
+									comments: [
+										...(existing?.comments || []),
+										...incoming.comments,
+									],
+								};
+							},
+						},
 					},
 				},
 			},
 		}),
+		connectToDevTools: true,
 	});
 
 export const withApollo = createWithApollo(createClient);

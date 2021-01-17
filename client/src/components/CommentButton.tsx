@@ -1,3 +1,4 @@
+import { gql } from '@apollo/client';
 import {
 	Avatar,
 	Button,
@@ -7,26 +8,29 @@ import {
 	Input,
 	Modal,
 	ModalBody,
+	ModalCloseButton,
 	ModalContent,
 	ModalFooter,
 	ModalHeader,
 	ModalOverlay,
 	Text,
-	ModalCloseButton,
 	useDisclosure,
 } from '@chakra-ui/react';
-import React, { useState, useRef, RefObject } from 'react';
+import React, { RefObject, useRef, useState } from 'react';
 import { FaComment } from 'react-icons/fa';
 import TextareaAutosize from 'react-textarea-autosize';
+import { useCreateCommentMutation } from '../generated/graphql';
 import { useUserContext } from '../store/context';
-import { gql } from '@apollo/client';
-import {
-	QuizzesResponseFragment,
-	useCreateCommentMutation,
-} from '../generated/graphql';
 
 interface CommentButtonProps {
-	quiz: QuizzesResponseFragment;
+	quiz: {
+		id: string;
+		commentsCount: number;
+		author: {
+			email: string;
+		};
+	} & any;
+	withoutCount?: boolean;
 }
 
 export const CommentButton: React.FC<CommentButtonProps> = ({
@@ -35,6 +39,7 @@ export const CommentButton: React.FC<CommentButtonProps> = ({
 		commentsCount,
 		author: { email },
 	},
+	withoutCount,
 }) => {
 	const [text, setText] = useState('');
 	const { user } = useUserContext();
@@ -125,9 +130,11 @@ export const CommentButton: React.FC<CommentButtonProps> = ({
 					icon={<FaComment />}
 					onClick={onOpen}
 				/>
-				<Text fontSize='14px' fontWeight='medium' color='gray.400'>
-					{commentsCount}
-				</Text>
+				{!withoutCount && (
+					<Text fontSize='14px' fontWeight='medium' color='gray.400'>
+						{commentsCount}
+					</Text>
+				)}
 			</Center>
 		</>
 	);
