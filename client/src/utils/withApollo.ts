@@ -28,7 +28,7 @@ const createClient = (ctx: NextPageContext) =>
 							},
 						},
 						comments: {
-							keyArgs: [],
+							keyArgs: ['quiz_id'],
 							merge(
 								existing: PaginatedComments | undefined,
 								incoming: PaginatedComments
