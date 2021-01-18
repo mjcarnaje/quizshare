@@ -9,7 +9,7 @@ import {
 	Resolver,
 	Root,
 } from 'type-graphql';
-import { FindManyOptions, LessThan } from 'typeorm';
+import { FindManyOptions, LessThan, MoreThan } from 'typeorm';
 import { Quiz } from '../../entity/Quiz';
 import { Comment } from '../../entity/Comment';
 import { MyContext } from '../../types/MyContext';
@@ -144,7 +144,7 @@ export class QuizzesResolver {
 				take: realLimitPlusOne,
 				where: {
 					quiz_id: quiz_id,
-					created_at: LessThan(new Date(parseInt(cursor))),
+					created_at: MoreThan(new Date(parseInt(cursor))),
 				},
 			};
 		} else {

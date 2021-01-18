@@ -1,4 +1,3 @@
-import { Box } from '@chakra-ui/react';
 import { useRouter } from 'next/dist/client/router';
 import React from 'react';
 import { Container } from '../../components/Container';
@@ -30,9 +29,7 @@ const Quiz: React.FC<QuizProps> = ({}) => {
 		<Container>
 			<SingleQuizHead data={quizData?.singleQuiz} quizLoading={quizLoading} />
 
-			<Box mb='36px' w={['100%', '100%', '820px']}>
-				<SingleQuizComments quiz_id={parseInt(router.query.id as string)} />
-			</Box>
+			<SingleQuizComments quiz_id={parseInt(router.query.id as string)} />
 		</Container>
 	);
 };
