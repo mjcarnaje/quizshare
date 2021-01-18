@@ -2,12 +2,18 @@ import {
 	Avatar,
 	Box,
 	Button,
+	Flex,
+	HStack,
+	SkeletonCircle,
+	SkeletonText,
 	Spinner,
 	Text,
 	useColorModeValue,
+	VStack,
 } from '@chakra-ui/react';
 import React from 'react';
 import { useCommentsQuery } from '../generated/graphql';
+import moment from 'moment';
 
 interface SingleQuizCommentsProps {
 	quiz_id: number;
@@ -33,44 +39,88 @@ const SingleQuizComments: React.FC<SingleQuizCommentsProps> = ({ quiz_id }) => {
 	}
 
 	if (!data && loading) {
-		return <Spinner />;
+		return (
+			<VStack spacing='15px' w='full'>
+				<Flex p='10px' borderWidth='1px' borderRadius='8px' w='full'>
+					<SkeletonCircle size='10' />
+					<Box ml='10px' py='2px' w='64%'>
+						<SkeletonText mt='2' noOfLines={3} spacing='2' />
+					</Box>
+				</Flex>
+				<Flex p='10px' borderWidth='1px' borderRadius='8px' w='full'>
+					<SkeletonCircle size='10' />
+					<Box ml='10px' py='2px' w='64%'>
+						<SkeletonText mt='2' noOfLines={3} spacing='2' />
+					</Box>
+				</Flex>
+				<Flex p='10px' borderWidth='1px' borderRadius='8px' w='full'>
+					<SkeletonCircle size='10' />
+					<Box ml='10px' py='2px' w='64%'>
+						<SkeletonText mt='2' noOfLines={3} spacing='2' />
+					</Box>
+				</Flex>
+			</VStack>
+		);
 	}
 
 	return (
-		<>
-			{data &&
-				data.comments!.comments.map((comment) => {
-					const { text, author } = comment;
-					return (
-						<Box>
-							<Avatar src={author.avatar || ''} name={author.profile.name} />
-							<Text>{text}</Text>
-						</Box>
-					);
-				})}
-			{data && data.comments?.hasMore && (
-				<Button
-					size='sm'
-					colorScheme={buttonColorScheme}
-					variant='ghost'
-					fontSize={16}
-					my='20px'
-					onClick={() => {
-						fetchMore({
-							variables: {
-								limit: variables?.limit,
-								cursor:
-									data.comments?.comments[data.comments?.comments.length - 1]
-										.created_at,
+		<VStack spacing='15px' w='full'>
+			<>
+				{data &&
+					data.comments!.comments.map((comment) => {
+						const {
+							text,
+							author: {
+								username,
+								email,
+								avatar,
+								profile: { name },
 							},
-						});
-					}}
-					isLoading={loading}
-				>
-					Load more
-				</Button>
-			)}
-		</>
+							created_at,
+						} = comment;
+
+						return (
+							<Flex p='10px' borderWidth='1px' borderRadius='8px' w='full'>
+								<Avatar src={avatar || ''} name={name} />
+								<Box ml='10px'>
+									<HStack>
+										<Text fontWeight='bold'>{username}</Text>
+										<Text fontSize='14px'>{email}</Text>
+										<Text>&#183;</Text>
+										<Text fontSize='14px'>
+											{moment(parseInt(created_at)).fromNow(true)} ago
+										</Text>
+									</HStack>
+									<Text mt='5px'>{text}</Text>
+								</Box>
+							</Flex>
+						);
+					})}
+
+				{data && data.comments?.hasMore && (
+					<Button
+						size='sm'
+						colorScheme={buttonColorScheme}
+						variant='ghost'
+						fontSize={16}
+						my='20px'
+						onClick={() => {
+							fetchMore({
+								variables: {
+									limit: variables?.limit,
+									cursor:
+										data.comments?.comments[data.comments?.comments.length - 1]
+											.created_at,
+								},
+							});
+						}}
+						isLoading={loading}
+					>
+						Load more
+					</Button>
+				)}
+			</>
+		</VStack>
 	);
 };
 export default SingleQuizComments;

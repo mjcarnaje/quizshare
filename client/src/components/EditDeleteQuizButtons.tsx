@@ -44,7 +44,7 @@ export const EditDeleteQuizButtons: React.FC<EditDeleteQuizButtonsProps> = ({
 	const { isOpen, onOpen, onClose } = useDisclosure();
 	const cancelRef: RefObject<any> = useRef();
 
-	if (parseInt(user?.id!) !== quiz.author_id) {
+	if (user?.id! !== quiz.author.id) {
 		return null;
 	}
 	return (

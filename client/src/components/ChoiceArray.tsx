@@ -104,6 +104,7 @@ const ChoiceArray: React.FC<ChoiceArrayProps> = ({
 				control={control}
 				name={`questions[${questionIndex}].answer`}
 				rules={{ required: true }}
+				defaultValue={answer}
 				render={({ onChange, onBlur, value }) => (
 					<RadioGroup
 						onChange={onChange}
