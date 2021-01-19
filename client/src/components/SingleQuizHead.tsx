@@ -32,6 +32,7 @@ const SingleQuizHead: React.FC<SingleQuizHeadProps> = ({
 	quizLoading,
 }) => {
 	if (quizLoading && !data) {
+		// loading skeleton
 		return (
 			<ChakraContainter
 				borderRadius='8px'

@@ -1,6 +1,6 @@
 import { useRouter } from 'next/dist/client/router';
 import React from 'react';
-import { Container } from '../../components/Container';
+import { MainContainer } from '../../layouts/MainContainer';
 import SingleQuizComments from '../../components/SingleQuizComments';
 import SingleQuizHead from '../../components/SingleQuizHead';
 import { useSingleQuizQuery } from '../../generated/graphql';
@@ -26,11 +26,10 @@ const Quiz: React.FC<QuizProps> = ({}) => {
 	}
 
 	return (
-		<Container>
+		<MainContainer>
 			<SingleQuizHead data={quizData?.singleQuiz} quizLoading={quizLoading} />
-
 			<SingleQuizComments quiz_id={parseInt(router.query.id as string)} />
-		</Container>
+		</MainContainer>
 	);
 };
 

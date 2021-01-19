@@ -15,11 +15,7 @@ import React from 'react';
 import { useCommentsQuery } from '../generated/graphql';
 import moment from 'moment';
 
-interface SingleQuizCommentsProps {
-	quiz_id: number;
-}
-
-const Loading: React.FC = () => {
+const LoadingSkeleton: React.FC = () => {
 	return (
 		<VStack spacing='15px' w='full'>
 			<Flex p='10px' borderWidth='1px' borderRadius='8px' w='full'>
@@ -43,6 +39,9 @@ const Loading: React.FC = () => {
 		</VStack>
 	);
 };
+interface SingleQuizCommentsProps {
+	quiz_id: number;
+}
 
 const SingleQuizComments: React.FC<SingleQuizCommentsProps> = ({ quiz_id }) => {
 	const buttonColorScheme = useColorModeValue('purple', 'gray');
@@ -55,26 +54,26 @@ const SingleQuizComments: React.FC<SingleQuizCommentsProps> = ({ quiz_id }) => {
 		},
 		notifyOnNetworkStatusChange: true,
 	});
+
 	if (!loading && !data) {
 		return (
 			<Box>
-				<Text>There is an error</Text>
+				<Text>There is an error </Text>
 				<Text>{error?.message}</Text>
 			</Box>
 		);
 	}
 
-	if (!data && loading) {
-		return <Loading />;
-	}
-
 	return (
 		<ChakraContainter maxW={['100%', '100%', '820px']} mb='36px' p='0'>
+			{!loading && !data && <LoadingSkeleton />}
+
 			<VStack spacing='15px' w='full'>
 				<>
 					{data &&
 						data.comments!.comments.map((comment) => {
 							const {
+								id,
 								text,
 								author: {
 									username,
@@ -86,7 +85,13 @@ const SingleQuizComments: React.FC<SingleQuizCommentsProps> = ({ quiz_id }) => {
 							} = comment;
 
 							return (
-								<Flex p='10px' borderWidth='1px' borderRadius='8px' w='full'>
+								<Flex
+									key={id}
+									p='10px'
+									borderWidth='1px'
+									borderRadius='8px'
+									w='full'
+								>
 									<Avatar src={avatar || ''} name={name} />
 									<Box ml='10px'>
 										<HStack>
@@ -103,7 +108,8 @@ const SingleQuizComments: React.FC<SingleQuizCommentsProps> = ({ quiz_id }) => {
 							);
 						})}
 
-					{loading && <Loading />}
+					{loading && <LoadingSkeleton />}
+
 					{data && data.comments?.hasMore && (
 						<Button
 							size='sm'

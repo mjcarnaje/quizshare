@@ -6,7 +6,7 @@ import {
 } from '@chakra-ui/react';
 import moment from 'moment';
 import React from 'react';
-import { Container } from '../components/Container';
+import { MainContainer } from '../layouts/MainContainer';
 import { QuizBox } from '../components/QuizBox';
 import { useQuizzesQuery } from '../generated/graphql';
 import { useIsAuth } from '../utils/useIsAuth';
@@ -28,9 +28,14 @@ const Index: React.FC = () => {
 
 	if (!data && loading) {
 		return (
-			<Container h='100vh' justify='center'>
+			<MainContainer
+				flexGrow={1}
+				display='flex'
+				justifyContent='center'
+				alignItems='center'
+			>
 				<Spinner color='purple.500' />;
-			</Container>
+			</MainContainer>
 		);
 	}
 
@@ -44,7 +49,7 @@ const Index: React.FC = () => {
 	}
 
 	return (
-		<Container minH='100vh'>
+		<MainContainer display='grid' justifyItems='center'>
 			{data?.quizzes.quizzes.map((quiz) => {
 				const { description, created_at, id } = quiz;
 
@@ -79,7 +84,7 @@ const Index: React.FC = () => {
 					variant='ghost'
 					fontSize={16}
 					my='20px'
-					onClick={() => {
+					onClick={() =>
 						fetchMore({
 							variables: {
 								limit: variables?.limit,
@@ -87,14 +92,14 @@ const Index: React.FC = () => {
 									data.quizzes.quizzes[data.quizzes.quizzes.length - 1]
 										.created_at,
 							},
-						});
-					}}
+						})
+					}
 					isLoading={loading}
 				>
 					Load more
 				</Button>
 			)}
-		</Container>
+		</MainContainer>
 	);
 };
 

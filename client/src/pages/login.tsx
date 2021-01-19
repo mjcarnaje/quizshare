@@ -3,7 +3,7 @@ import { useRouter } from 'next/dist/client/router';
 import Head from 'next/head';
 import React from 'react';
 import { useForm } from 'react-hook-form';
-import { Container } from '../components/Container';
+import { MainContainer } from '../layouts/MainContainer';
 import CustomRegisterLoginInput from '../components/CustomRegisterLoginInput';
 import {
 	LoginInput,
@@ -47,7 +47,12 @@ const Login: React.FC = () => {
 		}
 	};
 	return (
-		<Container height='100vh'>
+		<MainContainer
+			flexGrow={1}
+			display='flex'
+			justifyContent='center'
+			alignItems='center'
+		>
 			<Head>
 				<title>Login</title>
 				<meta name='viewport' content='initial-scale=1.0, width=device-width' />
@@ -104,7 +109,7 @@ const Login: React.FC = () => {
 					</Box>
 				</form>
 			</Box>
-		</Container>
+		</MainContainer>
 	);
 };
 

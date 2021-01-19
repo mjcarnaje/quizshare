@@ -13,12 +13,11 @@ import {
 	VStack,
 } from '@chakra-ui/react';
 import { useRouter } from 'next/dist/client/router';
-import NextLink from 'next/link';
 import React from 'react';
-import { FaUsers } from 'react-icons/fa';
-import { FiLogOut } from 'react-icons/fi';
+import { AiOutlineUser } from 'react-icons/ai';
+import { FiLogOut, FiUsers } from 'react-icons/fi';
 import { IoDocumentsOutline } from 'react-icons/io5';
-import { MdCreateNewFolder } from 'react-icons/md';
+import { TiDocumentAdd } from 'react-icons/ti';
 import { useLogoutMutation, User } from '../generated/graphql';
 
 export const UserMenu: React.FC<User> = ({
@@ -95,29 +94,40 @@ export const UserMenu: React.FC<User> = ({
 					{
 						path: '/quiz/create',
 						name: 'Create Quiz',
-						icon: 'MdCreateNewFolder',
+						icon: <TiDocumentAdd fontSize='18px' color='inherit' />,
 					},
-					{ path: '/users', name: 'Users', icon: 'FaUsers' },
+					{
+						path: '/users',
+						name: 'Users',
+						icon: <FiUsers fontSize='18px' color='inherit' />,
+					},
 				].map(({ path, name, icon }, i) => (
-					<NextLink href={path} key={i}>
-						<MenuItem
-							display={['inline-flex', 'inline-flex', 'none']}
-							icon={
-								icon === 'MdCreateNewFolder' ? (
-									<MdCreateNewFolder fontSize='18px' color='inherit' />
-								) : (
-									<FaUsers fontSize='18px' color='inherit' />
-								)
-							}
-						>
-							{name}
-						</MenuItem>
-					</NextLink>
+					<MenuItem
+						key={i}
+						onClick={() => router.push(path)}
+						display={['inline-flex', 'inline-flex', 'none']}
+						icon={icon}
+					>
+						{name}
+					</MenuItem>
 				))}
 				<MenuDivider />
-				<MenuItem icon={<IoDocumentsOutline fontSize='18px' color='inherit' />}>
-					Quizzes
-				</MenuItem>
+				{[
+					{
+						path: '/dashboard/quizzes',
+						name: 'Quizzes',
+						icon: <IoDocumentsOutline fontSize='18px' color='inherit' />,
+					},
+					{
+						path: '/dashboard/profile',
+						name: 'Profile',
+						icon: <AiOutlineUser fontSize='18px' color='inherit' />,
+					},
+				].map(({ path, name, icon }, i) => (
+					<MenuItem key={i} onClick={() => router.push(path)} icon={icon}>
+						{name}
+					</MenuItem>
+				))}
 				<MenuDivider />
 				<MenuItem
 					icon={<FiLogOut fontSize='18px' color='inherit' />}

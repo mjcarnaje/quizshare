@@ -23,7 +23,7 @@ import Head from 'next/head';
 import React, { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { Days, Months, Years } from '../utils/BirthdayDateOptions';
-import { Container } from '../components/Container';
+import { MainContainer } from '../layouts/MainContainer';
 import CustomRegisterLoginInput from '../components/CustomRegisterLoginInput';
 import {
 	RegisterInput,
@@ -70,7 +70,13 @@ const Register: React.FC = () => {
 	};
 
 	return (
-		<Container minHeight='100vh' justify='center'>
+		<MainContainer
+			flexGrow={1}
+			display='flex'
+			justifyContent='center'
+			alignItems='center'
+			my='50px'
+		>
 			<Head>
 				<title>Register</title>
 				<meta name='viewport' content='initial-scale=1.0, width=device-width' />
@@ -306,7 +312,7 @@ const Register: React.FC = () => {
 					</Button>
 				</form>
 			</Box>
-		</Container>
+		</MainContainer>
 	);
 };
 

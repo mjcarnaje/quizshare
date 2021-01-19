@@ -2,7 +2,7 @@ import { Box, Center, Text } from '@chakra-ui/react';
 import Image from 'next/image';
 import React, { useCallback, useState } from 'react';
 import { useDropzone } from 'react-dropzone';
-import { Container } from '../components/Container';
+import { MainContainer } from '../layouts/MainContainer';
 import { withApollo } from '../utils/withApollo';
 
 const Upload: React.FC = () => {
@@ -37,7 +37,7 @@ const Upload: React.FC = () => {
 	});
 
 	return (
-		<Container minHeight='100vh'>
+		<MainContainer>
 			<Box>
 				<Text color='gray.800' fontSize='48px' fontWeight='extrabold'>
 					Upload Picture Testing
@@ -59,7 +59,7 @@ const Upload: React.FC = () => {
 			{photos.map((photo) => (
 				<Image src={photo} height={180} width={320} />
 			))}
-		</Container>
+		</MainContainer>
 	);
 };
 

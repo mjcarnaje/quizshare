@@ -1,15 +1,15 @@
 import { Heading } from '@chakra-ui/react';
 import React from 'react';
-import { Container } from '../components/Container';
+import { MainContainer } from '../layouts/MainContainer';
 import { withApollo } from '../utils/withApollo';
 
 interface usersProps {}
 
 const Users: React.FC<usersProps> = ({}) => {
 	return (
-		<Container>
+		<MainContainer>
 			<Heading>Users</Heading>
-		</Container>
+		</MainContainer>
 	);
 };
 

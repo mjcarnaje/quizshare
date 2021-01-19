@@ -19,7 +19,11 @@ import {
 import React, { RefObject, useRef, useState } from 'react';
 import { FaComment } from 'react-icons/fa';
 import TextareaAutosize from 'react-textarea-autosize';
-import { useCreateCommentMutation } from '../generated/graphql';
+import {
+	CommentsDocument,
+	useCreateCommentMutation,
+	useMeQuery,
+} from '../generated/graphql';
 import { useUserContext } from '../store/context';
 
 interface CommentButtonProps {
@@ -42,13 +46,21 @@ export const CommentButton: React.FC<CommentButtonProps> = ({
 	withoutCount,
 }) => {
 	const [text, setText] = useState('');
-	const { user } = useUserContext();
+
+	const { data, loading: loadingMe, error } = useMeQuery();
 
 	const { isOpen, onOpen, onClose } = useDisclosure();
 	const [createComment, { loading }] = useCreateCommentMutation();
 
 	const initialRef: RefObject<any> = useRef();
 
+	if (loadingMe) {
+		<Text>...loading</Text>;
+	}
+
+	if (!data && !loadingMe) {
+		return <Text>Error {error?.message}</Text>;
+	}
 	return (
 		<>
 			<Modal
@@ -65,7 +77,10 @@ export const CommentButton: React.FC<CommentButtonProps> = ({
 					</ModalHeader>
 					<ModalCloseButton />
 					<ModalBody display='flex'>
-						<Avatar name={user?.profile.name} src={user?.avatar || ''} />
+						<Avatar
+							name={data?.me?.profile.name}
+							src={data?.me?.avatar || ''}
+						/>
 						<FormControl>
 							<Input
 								ref={initialRef}
@@ -93,7 +108,7 @@ export const CommentButton: React.FC<CommentButtonProps> = ({
 										quiz_id: parseInt(id),
 										text: text,
 									},
-									update: (cache) => {
+									update: (cache, { data }) => {
 										cache.writeFragment({
 											id: 'Quiz:' + id,
 											fragment: gql`
@@ -104,6 +119,7 @@ export const CommentButton: React.FC<CommentButtonProps> = ({
 											`,
 											data: { commentsCount: commentsCount + 1 },
 										});
+
 										setText('');
 										onClose();
 									},
