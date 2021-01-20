@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React from 'react';
 import {
 	BoxProps,
 	Center,
@@ -65,6 +65,7 @@ interface DashboardContainerProps extends BoxProps {}
 
 export const DashboardContainer: React.FC<DashboardContainerProps> = ({
 	children,
+	...props
 }) => {
 	return (
 		<Grid templateColumns='repeat(12, 1fr)' gap={6} px='64px'>
@@ -79,7 +80,9 @@ export const DashboardContainer: React.FC<DashboardContainerProps> = ({
 					))}
 				</List>
 			</GridItem>
-			<GridItem colSpan={9}>{children}</GridItem>
+			<GridItem colSpan={9} px='5px' {...props}>
+				{children}
+			</GridItem>
 		</Grid>
 	);
 };

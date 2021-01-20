@@ -46,6 +46,9 @@ export type Profile = {
   last_name: Scalars['String'];
   birthday: Scalars['String'];
   gender: Scalars['String'];
+  country?: Maybe<Scalars['String']>;
+  bio?: Maybe<Scalars['String']>;
+  social?: Maybe<Scalars['JSONObject']>;
   name: Scalars['String'];
 };
 
@@ -91,6 +94,12 @@ export type PaginatedQuizzes = {
   __typename?: 'PaginatedQuizzes';
   quizzes: Array<Quiz>;
   hasMore: Scalars['Boolean'];
+};
+
+export type PaginatedMeQuizzes = {
+  __typename?: 'PaginatedMeQuizzes';
+  meQuizzes: Array<Quiz>;
+  meHasMore: Scalars['Boolean'];
 };
 
 export type PaginatedComments = {
@@ -150,6 +159,7 @@ export type RegisterInput = {
 export type Query = {
   __typename?: 'Query';
   quizzes: PaginatedQuizzes;
+  meQuizzes: PaginatedMeQuizzes;
   quizToUpdate: Quiz;
   singleQuiz?: Maybe<Quiz>;
   comments?: Maybe<PaginatedComments>;
@@ -159,6 +169,12 @@ export type Query = {
 
 
 export type QueryQuizzesArgs = {
+  cursor?: Maybe<Scalars['String']>;
+  limit: Scalars['Int'];
+};
+
+
+export type QueryMeQuizzesArgs = {
   cursor?: Maybe<Scalars['String']>;
   limit: Scalars['Int'];
 };
@@ -292,7 +308,7 @@ export type UserResponseFragment = (
   & Pick<User, 'id' | 'username' | 'email' | 'avatar' | 'created_at' | 'updated_at'>
   & { profile: (
     { __typename?: 'Profile' }
-    & Pick<Profile, 'id' | 'first_name' | 'last_name' | 'birthday' | 'gender' | 'name'>
+    & Pick<Profile, 'id' | 'first_name' | 'last_name' | 'birthday' | 'gender' | 'name' | 'country' | 'bio' | 'social'>
   ) }
 );
 
@@ -446,6 +462,24 @@ export type MeQuery = (
   )> }
 );
 
+export type MeQuizzesQueryVariables = Exact<{
+  limit: Scalars['Int'];
+  cursor?: Maybe<Scalars['String']>;
+}>;
+
+
+export type MeQuizzesQuery = (
+  { __typename?: 'Query' }
+  & { meQuizzes: (
+    { __typename?: 'PaginatedMeQuizzes' }
+    & Pick<PaginatedMeQuizzes, 'meHasMore'>
+    & { meQuizzes: Array<(
+      { __typename?: 'Quiz' }
+      & QuizzesResponseFragment
+    )> }
+  ) }
+);
+
 export type QuizToUpdateQueryVariables = Exact<{
   quiz_id: Scalars['Int'];
 }>;
@@ -577,6 +611,9 @@ export const UserResponseFragmentDoc = gql`
     birthday
     gender
     name
+    country
+    bio
+    social
   }
 }
     `;
@@ -952,6 +989,43 @@ export function useMeLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<MeQuery
 export type MeQueryHookResult = ReturnType<typeof useMeQuery>;
 export type MeLazyQueryHookResult = ReturnType<typeof useMeLazyQuery>;
 export type MeQueryResult = Apollo.QueryResult<MeQuery, MeQueryVariables>;
+export const MeQuizzesDocument = gql`
+    query MeQuizzes($limit: Int!, $cursor: String) {
+  meQuizzes(limit: $limit, cursor: $cursor) {
+    meHasMore
+    meQuizzes {
+      ...QuizzesResponse
+    }
+  }
+}
+    ${QuizzesResponseFragmentDoc}`;
+
+/**
+ * __useMeQuizzesQuery__
+ *
+ * To run a query within a React component, call `useMeQuizzesQuery` and pass it any options that fit your needs.
+ * When your component renders, `useMeQuizzesQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useMeQuizzesQuery({
+ *   variables: {
+ *      limit: // value for 'limit'
+ *      cursor: // value for 'cursor'
+ *   },
+ * });
+ */
+export function useMeQuizzesQuery(baseOptions: Apollo.QueryHookOptions<MeQuizzesQuery, MeQuizzesQueryVariables>) {
+        return Apollo.useQuery<MeQuizzesQuery, MeQuizzesQueryVariables>(MeQuizzesDocument, baseOptions);
+      }
+export function useMeQuizzesLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<MeQuizzesQuery, MeQuizzesQueryVariables>) {
+          return Apollo.useLazyQuery<MeQuizzesQuery, MeQuizzesQueryVariables>(MeQuizzesDocument, baseOptions);
+        }
+export type MeQuizzesQueryHookResult = ReturnType<typeof useMeQuizzesQuery>;
+export type MeQuizzesLazyQueryHookResult = ReturnType<typeof useMeQuizzesLazyQuery>;
+export type MeQuizzesQueryResult = Apollo.QueryResult<MeQuizzesQuery, MeQuizzesQueryVariables>;
 export const QuizToUpdateDocument = gql`
     query QuizToUpdate($quiz_id: Int!) {
   quizToUpdate(quiz_id: $quiz_id) {

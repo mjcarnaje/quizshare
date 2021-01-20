@@ -1,0 +1,8 @@
+query MeQuizzes($limit: Int!, $cursor: String) {
+	meQuizzes(limit: $limit, cursor: $cursor) {
+		meHasMore
+		meQuizzes {
+			...QuizzesResponse
+		}
+	}
+}

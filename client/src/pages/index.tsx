@@ -1,20 +1,13 @@
-import {
-	Button,
-	Spinner,
-	useBreakpointValue,
-	useColorModeValue,
-} from '@chakra-ui/react';
-import moment from 'moment';
+import { Button, Spinner, useColorModeValue } from '@chakra-ui/react';
 import React from 'react';
-import { MainContainer } from '../layouts/MainContainer';
 import { QuizBox } from '../components/QuizBox';
 import { useQuizzesQuery } from '../generated/graphql';
+import { MainContainer } from '../layouts/MainContainer';
 import { useIsAuth } from '../utils/useIsAuth';
 import { withApollo } from '../utils/withApollo';
 
 const Index: React.FC = () => {
 	const buttonColorScheme = useColorModeValue('purple', 'gray');
-	const descriptionCharacter = useBreakpointValue({ base: 172, md: 250 });
 
 	useIsAuth();
 
@@ -51,31 +44,7 @@ const Index: React.FC = () => {
 	return (
 		<MainContainer display='grid' justifyItems='center'>
 			{data?.quizzes.quizzes.map((quiz) => {
-				const { description, created_at, id } = quiz;
-
-				let date, desc;
-
-				const moreThan250Characters = description.length > 250;
-
-				if (moreThan250Characters) {
-					desc = `${description.slice(0, descriptionCharacter)}...`;
-				} else {
-					desc = description;
-				}
-
-				const parsedCreateAt = new Date(parseInt(created_at));
-
-				const oneDayAgo = moment(parsedCreateAt)
-					.fromNow(true)
-					.includes('day' || 'week' || 'month' || 'year');
-
-				if (oneDayAgo) {
-					date = moment(parsedCreateAt).format('ll');
-				} else {
-					date = `${moment(parsedCreateAt).fromNow(true)} ago`;
-				}
-
-				return <QuizBox key={id} quiz={quiz} date={date} desc={desc} />;
+				return <QuizBox key={quiz.id} quiz={quiz} />;
 			})}
 			{data && data.quizzes.hasMore && (
 				<Button

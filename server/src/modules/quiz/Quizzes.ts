@@ -24,6 +24,13 @@ class PaginatedQuizzes {
 	hasMore: boolean;
 }
 @ObjectType()
+class PaginatedMeQuizzes {
+	@Field(() => [Quiz])
+	meQuizzes: Quiz[];
+	@Field()
+	meHasMore: boolean;
+}
+@ObjectType()
 class PaginatedComments {
 	@Field(() => [Comment])
 	comments: Comment[];
@@ -94,6 +101,49 @@ export class QuizzesResolver {
 		return {
 			quizzes: (quizzes as [Quiz]).slice(0, realLimit),
 			hasMore: (quizzes as [Quiz]).length === realLimitPlusOne,
+		};
+	}
+
+	@UseMiddleware(isAuthenticated)
+	@Query(() => PaginatedMeQuizzes)
+	async meQuizzes(
+		@Arg('limit', () => Int) limit: number,
+		@Arg('cursor', () => String, { nullable: true }) cursor: string | null,
+		@Ctx() { req }: MyContext
+	): Promise<PaginatedMeQuizzes> {
+		const realLimit = Math.min(10, limit);
+		const realLimitPlusOne = realLimit + 1;
+
+		let findOption: FindManyOptions;
+
+		if (cursor) {
+			findOption = {
+				relations: ['author', 'questions', 'likes', 'comments'],
+				order: {
+					created_at: 'DESC',
+				},
+				take: realLimitPlusOne,
+				where: {
+					author_id: req.session.user_id,
+					created_at: LessThan(new Date(parseInt(cursor))),
+				},
+			};
+		} else {
+			findOption = {
+				relations: ['author', 'questions', 'likes', 'comments'],
+				order: {
+					created_at: 'DESC',
+				},
+				take: realLimitPlusOne,
+				where: { author_id: req.session.user_id },
+			};
+		}
+
+		const quizzes = await Quiz.find(findOption);
+
+		return {
+			meQuizzes: (quizzes as [Quiz]).slice(0, realLimit),
+			meHasMore: (quizzes as [Quiz]).length === realLimitPlusOne,
 		};
 	}
 

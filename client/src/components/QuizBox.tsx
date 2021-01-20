@@ -16,14 +16,38 @@ import { CommentButton } from './CommentButton';
 import { EditDeleteQuizButtons } from './EditDeleteQuizButtons';
 import { LikeButton } from './LikeButton';
 import { UserAvatar } from './UserAvatar';
+import moment from 'moment';
 
 interface QuizBoxProps {
 	quiz: QuizzesResponseFragment;
-	date: string;
-	desc: string;
 }
 
-export const QuizBox: React.FC<QuizBoxProps> = ({ quiz, date, desc }) => {
+export const QuizBox: React.FC<QuizBoxProps> = ({ quiz }) => {
+	const { description, created_at } = quiz;
+	const descriptionCharacter = useBreakpointValue({ base: 172, md: 250 });
+
+	let date, desc;
+
+	const moreThan250Characters = description.length > 250;
+
+	if (moreThan250Characters) {
+		desc = `${description.slice(0, descriptionCharacter)}...`;
+	} else {
+		desc = description;
+	}
+
+	const parsedCreateAt = new Date(parseInt(created_at));
+
+	const oneDayAgo = moment(parsedCreateAt)
+		.fromNow(true)
+		.includes('day' || 'week' || 'month' || 'year');
+
+	if (oneDayAgo) {
+		date = moment(parsedCreateAt).format('ll');
+	} else {
+		date = `${moment(parsedCreateAt).fromNow(true)} ago`;
+	}
+
 	const titleSize = useBreakpointValue({ base: 'xl', md: 'lg' });
 	const { id, quiz_photo, title, author } = quiz;
 

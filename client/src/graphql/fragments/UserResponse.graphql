@@ -12,5 +12,8 @@ fragment UserResponse on User {
 		birthday
 		gender
 		name
+		country
+		bio
+		social
 	}
 }
