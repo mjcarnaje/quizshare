@@ -58,6 +58,7 @@ export type User = {
   username: Scalars['String'];
   email: Scalars['String'];
   avatar?: Maybe<Scalars['String']>;
+  cover_photo?: Maybe<Scalars['String']>;
   created_at: Scalars['String'];
   updated_at: Scalars['String'];
   profile: Profile;
@@ -305,7 +306,7 @@ export type QuizzesResponseFragment = (
 
 export type UserResponseFragment = (
   { __typename?: 'User' }
-  & Pick<User, 'id' | 'username' | 'email' | 'avatar' | 'created_at' | 'updated_at'>
+  & Pick<User, 'id' | 'username' | 'email' | 'avatar' | 'cover_photo' | 'created_at' | 'updated_at'>
   & { profile: (
     { __typename?: 'Profile' }
     & Pick<Profile, 'id' | 'first_name' | 'last_name' | 'birthday' | 'gender' | 'name' | 'country' | 'bio' | 'social'>
@@ -602,6 +603,7 @@ export const UserResponseFragmentDoc = gql`
   username
   email
   avatar
+  cover_photo
   created_at
   updated_at
   profile {

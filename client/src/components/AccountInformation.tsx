@@ -2,19 +2,27 @@ import {
 	AspectRatio,
 	Avatar,
 	Button,
+	Center,
 	Divider,
 	GridItem,
 	Image,
 	Spinner,
 	Text,
+	useColorModeValue,
 } from '@chakra-ui/react';
 import React from 'react';
 import { FiEdit } from 'react-icons/fi';
+import { MdPictureInPictureAlt, MdPhotoSizeSelectActual } from 'react-icons/md';
 import { useMeQuery } from '../generated/graphql';
 
 interface AccountInformationProps {}
 
 export const AccountInformation: React.FC<AccountInformationProps> = ({}) => {
+	const coverPhotoBg = useColorModeValue(
+		'gray.50',
+		'rgba(255, 255, 255, 0.04)'
+	);
+
 	const { data, loading, error } = useMeQuery();
 
 	if (!data && loading) {
@@ -29,6 +37,7 @@ export const AccountInformation: React.FC<AccountInformationProps> = ({}) => {
 		email,
 		avatar,
 		username,
+		cover_photo,
 		profile: { name },
 	} = data!.me!;
 
@@ -52,11 +61,19 @@ export const AccountInformation: React.FC<AccountInformationProps> = ({}) => {
 			</GridItem>
 			<GridItem colSpan={10} p='5px'>
 				<AspectRatio maxW='full' ratio={16 / 5}>
-					<Image
-						src='https://bit.ly/naruto-sage'
-						alt='naruto'
-						objectFit='cover'
-					/>
+					{cover_photo ? (
+						<Image src={cover_photo} alt='naruto' objectFit='cover' />
+					) : (
+						<Center bg={coverPhotoBg}>
+							<Button
+								leftIcon={<MdPhotoSizeSelectActual />}
+								colorScheme='gray'
+								variant='ghost'
+							>
+								Upload cover photo
+							</Button>
+						</Center>
+					)}
 				</AspectRatio>
 			</GridItem>
 			<GridItem colSpan={10}>

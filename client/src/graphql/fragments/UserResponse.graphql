@@ -3,6 +3,7 @@ fragment UserResponse on User {
 	username
 	email
 	avatar
+	cover_photo
 	created_at
 	updated_at
 	profile {
