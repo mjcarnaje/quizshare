@@ -12,7 +12,7 @@ import {
 } from '@chakra-ui/react';
 import React from 'react';
 import { FiEdit } from 'react-icons/fi';
-import { MdPictureInPictureAlt, MdPhotoSizeSelectActual } from 'react-icons/md';
+import { MdPhotoSizeSelectActual } from 'react-icons/md';
 import { useMeQuery } from '../generated/graphql';
 
 interface AccountInformationProps {}

@@ -35,6 +35,10 @@ export class User extends BaseEntity {
 	@Column('text', { default: null })
 	avatar?: string;
 
+	@Field({ nullable: true })
+	@Column('text', { default: null })
+	cover_photo?: string;
+
 	@Column()
 	password: string;
 
