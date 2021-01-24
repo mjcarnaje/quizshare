@@ -24,7 +24,7 @@ import React, { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { Days, Months, Years } from '../utils/BirthdayDateOptions';
 import { MainContainer } from '../layouts/MainContainer';
-import CustomRegisterLoginInput from '../components/CustomRegisterLoginInput';
+import MainInputUI from '../components/custom-inputs/MainInputUI';
 import {
 	RegisterInput,
 	useRegisterMutation,
@@ -127,14 +127,14 @@ const Register: React.FC = () => {
 						</Text>
 						<VStack spacing='10px' py='24px'>
 							<HStack w='full' spacing='6px'>
-								<CustomRegisterLoginInput
+								<MainInputUI
 									error={errors.first_name}
 									input='first_name'
 									name='First Name'
 									register={register}
 									type='text'
 								/>
-								<CustomRegisterLoginInput
+								<MainInputUI
 									input='last_name'
 									error={errors.last_name}
 									name='Last Name'
@@ -258,28 +258,28 @@ const Register: React.FC = () => {
 					</Box>
 
 					<VStack spacing='10px' py='24px' display={isSecondStep ? '' : 'none'}>
-						<CustomRegisterLoginInput
+						<MainInputUI
 							error={errors.username}
 							input='username'
 							name='Username'
 							register={register}
 							type='text'
 						/>
-						<CustomRegisterLoginInput
+						<MainInputUI
 							error={errors.email}
 							input='email'
 							name='Email'
 							register={register}
 							type='text'
 						/>
-						<CustomRegisterLoginInput
+						<MainInputUI
 							error={errors.password}
 							input='password'
 							name='Password'
 							register={register}
 							type='password'
 						/>
-						<CustomRegisterLoginInput
+						<MainInputUI
 							error={errors.confirm_password}
 							input='confirm_password'
 							name='Confirm Password'

@@ -25,7 +25,7 @@ const Quizzes: React.FC = () => {
 				justifyContent='center'
 				alignItems='center'
 			>
-				<DashboardContainer display='grid' justifyItems='center'>
+				<DashboardContainer display='grid' justifyItems='center' w='full'>
 					<Spinner color='purple.500' />;
 				</DashboardContainer>
 			</MainContainer>

@@ -52,7 +52,7 @@ export class User extends BaseEntity {
 
 	@Field(() => Profile)
 	@OneToOne(() => Profile, { cascade: true, eager: true })
-	@JoinColumn()
+	@JoinColumn({ name: 'profile_id' })
 	profile: Profile;
 
 	@OneToMany(() => Quiz, (quiz) => quiz.author)

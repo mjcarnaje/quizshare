@@ -1,4 +1,7 @@
-export const uploadCloudinaryImage = (callback: Function) => {
+export const uploadCloudinaryImage = (
+	callback: Function,
+	cropRatio: number = 16 / 9
+) => {
 	window.cloudinary?.openUploadWidget(
 		{
 			cloudName: process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME,
@@ -10,7 +13,7 @@ export const uploadCloudinaryImage = (callback: Function) => {
 			maxImageFileSize: 1000000,
 			multiple: false,
 			showSkipCropButton: false,
-			croppingAspectRatio: 1.77777777778,
+			croppingAspectRatio: cropRatio,
 			croppingShowDimensions: true,
 		},
 		callback

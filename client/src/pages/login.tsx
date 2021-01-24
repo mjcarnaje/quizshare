@@ -4,7 +4,7 @@ import Head from 'next/head';
 import React from 'react';
 import { useForm } from 'react-hook-form';
 import { MainContainer } from '../layouts/MainContainer';
-import CustomRegisterLoginInput from '../components/CustomRegisterLoginInput';
+import MainInputUI from '../components/custom-inputs/MainInputUI';
 import {
 	LoginInput,
 	MeDocument,
@@ -79,14 +79,14 @@ const Login: React.FC = () => {
 				</Box>
 				<form onSubmit={handleSubmit(onSumbit)}>
 					<VStack spacing='10px' py='24px'>
-						<CustomRegisterLoginInput
+						<MainInputUI
 							error={errors.emailOrUsername}
 							input='emailOrUsername'
 							name='Email or username'
 							register={register}
 							type='text'
 						/>
-						<CustomRegisterLoginInput
+						<MainInputUI
 							error={errors.password}
 							input='password'
 							name='Password'

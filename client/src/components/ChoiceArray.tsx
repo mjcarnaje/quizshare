@@ -21,7 +21,7 @@ import TextareaAutosize from 'react-textarea-autosize';
 import { v4 as uuid } from 'uuid';
 import { ChoiceInput, QuizInput } from '../generated/graphql';
 import { uploadCloudinaryImage } from '../utils/uploadImage';
-import CustomQuizInput from './CustomQuizInput';
+import QuizInputUI from './custom-inputs/QuizInputUI';
 
 declare global {
 	interface Window {
@@ -153,7 +153,7 @@ const ChoiceArray: React.FC<ChoiceArrayProps> = ({
 													</Skeleton>
 												</Box>
 											)}
-											<CustomQuizInput
+											<QuizInputUI
 												register={register({ required: true })}
 												input={`questions[${questionIndex}].choices[${i}].value`}
 												as={TextareaAutosize}

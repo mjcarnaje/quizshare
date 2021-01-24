@@ -7,7 +7,7 @@ import {
 } from '@chakra-ui/react';
 import React from 'react';
 
-type CustomQuizInputProps = {
+type QuizInputUIProps = {
 	input: string;
 	name?: string;
 	register: any;
@@ -16,7 +16,7 @@ type CustomQuizInputProps = {
 	isChoiceInput?: boolean;
 } & InputProps;
 
-const CustomQuizInput: React.FC<CustomQuizInputProps> = ({
+const QuizInputUI: React.FC<QuizInputUIProps> = ({
 	input,
 	name,
 	register,
@@ -56,4 +56,4 @@ const CustomQuizInput: React.FC<CustomQuizInputProps> = ({
 	);
 };
 
-export default CustomQuizInput;
+export default QuizInputUI;

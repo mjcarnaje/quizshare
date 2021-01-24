@@ -17,7 +17,7 @@ import React, { useState } from 'react';
 import { FormProvider, useForm } from 'react-hook-form';
 import { MdPhotoSizeSelectActual } from 'react-icons/md';
 import TextareaAutosize from 'react-textarea-autosize';
-import CustomQuizInput from '../../components/CustomQuizInput';
+import QuizInputUI from '../../components/custom-inputs/QuizInputUI';
 import QuestionArray from '../../components/QuestionArray';
 import { QuizInput, useCreateQuizMutation } from '../../generated/graphql';
 import { uploadCloudinaryImage } from '../../utils/uploadImage';
@@ -134,7 +134,7 @@ const CreateQuiz: React.FC = () => {
 									</Button>
 								</Center>
 							)}
-							<CustomQuizInput
+							<QuizInputUI
 								register={register({ required: true })}
 								name='Title'
 								input='title'
@@ -146,7 +146,7 @@ const CreateQuiz: React.FC = () => {
 									errors.title?.message || 'Title is required field.'
 								}
 							/>
-							<CustomQuizInput
+							<QuizInputUI
 								register={register({ required: true })}
 								name='Description'
 								input='description'

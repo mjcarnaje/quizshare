@@ -1,5 +1,4 @@
 import {
-	Grid,
 	GridItem,
 	Button,
 	Divider,
@@ -12,7 +11,7 @@ import {
 	Text,
 	Spinner,
 } from '@chakra-ui/react';
-import React from 'react';
+import React, { useState } from 'react';
 import {
 	FaFacebookSquare,
 	FaTwitterSquare,
@@ -20,10 +19,13 @@ import {
 } from 'react-icons/fa';
 import { FiEdit } from 'react-icons/fi';
 import { useMeQuery } from '../generated/graphql';
+import { ProfileInformationEdit } from './ProfileInformationEdit';
 
 interface ProfileInformationProps {}
 
 export const ProfileInformation: React.FC<ProfileInformationProps> = ({}) => {
+	const [editMode, setEditMode] = useState(false);
+
 	const { data, loading, error } = useMeQuery();
 
 	if (!data && loading) {
@@ -32,6 +34,15 @@ export const ProfileInformation: React.FC<ProfileInformationProps> = ({}) => {
 
 	if (!data && !loading) {
 		return <div>error: {error?.message}</div>;
+	}
+
+	if (editMode) {
+		return (
+			<ProfileInformationEdit
+				profInfoProps={data!.me!}
+				setEditMode={setEditMode}
+			/>
+		);
 	}
 
 	const {
@@ -49,7 +60,12 @@ export const ProfileInformation: React.FC<ProfileInformationProps> = ({}) => {
 				px='6px'
 			>
 				<Text px='16px'>Profile Information</Text>
-				<Button rightIcon={<FiEdit />} colorScheme='purple' variant='ghost'>
+				<Button
+					onClick={() => setEditMode(true)}
+					rightIcon={<FiEdit />}
+					colorScheme='purple'
+					variant='ghost'
+				>
 					Edit
 				</Button>
 			</GridItem>
@@ -81,7 +97,12 @@ export const ProfileInformation: React.FC<ProfileInformationProps> = ({}) => {
 				{bio ? (
 					bio
 				) : (
-					<Button variant='ghost' colorScheme='purple' size='sm'>
+					<Button
+						onClick={() => setEditMode(true)}
+						variant='ghost'
+						colorScheme='purple'
+						size='sm'
+					>
 						Add bio
 					</Button>
 				)}
@@ -96,7 +117,7 @@ export const ProfileInformation: React.FC<ProfileInformationProps> = ({}) => {
 				Birthday
 			</GridItem>
 			<GridItem colStart={4} colEnd={11} color='purple' py='16px'>
-				{birthday || ''}
+				{birthday ?? ''}
 			</GridItem>
 			<GridItem
 				colStart={1}
@@ -111,7 +132,12 @@ export const ProfileInformation: React.FC<ProfileInformationProps> = ({}) => {
 				{country ? (
 					country
 				) : (
-					<Button variant='ghost' colorScheme='purple' size='sm'>
+					<Button
+						onClick={() => setEditMode(true)}
+						variant='ghost'
+						colorScheme='purple'
+						size='sm'
+					>
 						Add country
 					</Button>
 				)}
@@ -133,7 +159,12 @@ export const ProfileInformation: React.FC<ProfileInformationProps> = ({}) => {
 							{social?.facebook ? (
 								<Text>{social.facebook}</Text>
 							) : (
-								<Button variant='ghost' colorScheme='purple' size='sm'>
+								<Button
+									onClick={() => setEditMode(true)}
+									variant='ghost'
+									colorScheme='purple'
+									size='sm'
+								>
 									Add facebook information
 								</Button>
 							)}
@@ -145,7 +176,12 @@ export const ProfileInformation: React.FC<ProfileInformationProps> = ({}) => {
 							{social?.twitter ? (
 								<Text>{social.twitter}</Text>
 							) : (
-								<Button variant='ghost' colorScheme='purple' size='sm'>
+								<Button
+									onClick={() => setEditMode(true)}
+									variant='ghost'
+									colorScheme='purple'
+									size='sm'
+								>
 									Add twitter information
 								</Button>
 							)}
@@ -163,7 +199,12 @@ export const ProfileInformation: React.FC<ProfileInformationProps> = ({}) => {
 							{social?.instagram ? (
 								<Text>{social.instagram}</Text>
 							) : (
-								<Button variant='ghost' colorScheme='purple' size='sm'>
+								<Button
+									onClick={() => setEditMode(true)}
+									variant='ghost'
+									colorScheme='purple'
+									size='sm'
+								>
 									Add instagram information
 								</Button>
 							)}
@@ -175,7 +216,12 @@ export const ProfileInformation: React.FC<ProfileInformationProps> = ({}) => {
 							{social?.youtube ? (
 								<Text>{social.youtube}</Text>
 							) : (
-								<Button variant='ghost' colorScheme='purple' size='sm'>
+								<Button
+									onClick={() => setEditMode(true)}
+									variant='ghost'
+									colorScheme='purple'
+									size='sm'
+								>
 									Add youtube information
 								</Button>
 							)}

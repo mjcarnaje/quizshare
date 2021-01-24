@@ -31,7 +31,6 @@ export class RegisterResovler {
 		const hashedPassword = await bcrypt.hash(password, 12);
 
 		const birthday = new Date(`${year}-${month}-${day}`).toLocaleDateString();
-		console.log(`${year}-${month}-${day}`, birthday);
 
 		const user = await User.create({
 			username,

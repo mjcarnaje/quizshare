@@ -5,19 +5,22 @@ import {
 	Center,
 	Divider,
 	GridItem,
-	Image,
 	Spinner,
 	Text,
 	useColorModeValue,
 } from '@chakra-ui/react';
-import React from 'react';
+import React, { useState } from 'react';
 import { FiEdit } from 'react-icons/fi';
 import { MdPhotoSizeSelectActual } from 'react-icons/md';
 import { useMeQuery } from '../generated/graphql';
+import { AccountInformationEdit } from './AccountInformationEdit';
+import { Image } from 'cloudinary-react';
 
 interface AccountInformationProps {}
 
 export const AccountInformation: React.FC<AccountInformationProps> = ({}) => {
+	const [editMode, setEditMode] = useState(false);
+
 	const coverPhotoBg = useColorModeValue(
 		'gray.50',
 		'rgba(255, 255, 255, 0.04)'
@@ -31,6 +34,15 @@ export const AccountInformation: React.FC<AccountInformationProps> = ({}) => {
 
 	if (!data && !loading) {
 		return <div>error: {error?.message}</div>;
+	}
+
+	if (editMode) {
+		return (
+			<AccountInformationEdit
+				accInfoProps={data!.me!}
+				setEditMode={setEditMode}
+			/>
+		);
 	}
 
 	const {
@@ -52,7 +64,12 @@ export const AccountInformation: React.FC<AccountInformationProps> = ({}) => {
 				px='6px'
 			>
 				<Text px='16px'>Account Information</Text>
-				<Button rightIcon={<FiEdit />} colorScheme='purple' variant='ghost'>
+				<Button
+					onClick={() => setEditMode(true)}
+					rightIcon={<FiEdit />}
+					colorScheme='purple'
+					variant='ghost'
+				>
 					Edit
 				</Button>
 			</GridItem>
@@ -62,15 +79,16 @@ export const AccountInformation: React.FC<AccountInformationProps> = ({}) => {
 			<GridItem colSpan={10} p='5px'>
 				<AspectRatio maxW='full' ratio={16 / 5}>
 					{cover_photo ? (
-						<Image src={cover_photo} alt='naruto' objectFit='cover' />
+						<Image publicId={cover_photo} alt='cover photo' />
 					) : (
 						<Center bg={coverPhotoBg}>
 							<Button
+								onClick={() => setEditMode(true)}
 								leftIcon={<MdPhotoSizeSelectActual />}
 								colorScheme='gray'
 								variant='ghost'
 							>
-								Upload cover photo
+								Edit
 							</Button>
 						</Center>
 					)}

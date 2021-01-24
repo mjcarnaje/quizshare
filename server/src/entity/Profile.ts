@@ -20,7 +20,7 @@ export class Profile extends BaseEntity {
 
 	@Field(() => String)
 	@Column('date')
-	birthday: Date;
+	birthday: string;
 
 	@Field()
 	@Column('text')

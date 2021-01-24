@@ -18,7 +18,7 @@ import TextareaAutosize from 'react-textarea-autosize';
 import { v4 as uuid } from 'uuid';
 import { QuestionInput, QuizInput } from '../generated/graphql';
 import ChoiceArray from './ChoiceArray';
-import CustomQuizInput from './CustomQuizInput';
+import QuizInputUI from './custom-inputs/QuizInputUI';
 import { Image } from 'cloudinary-react';
 import { uploadCloudinaryImage } from '../utils/uploadImage';
 import { HStack } from '@chakra-ui/react';
@@ -219,7 +219,7 @@ const QuestionArray: React.FC<QuestionArrayProps> = ({
 							</Box>
 						)}
 
-						<CustomQuizInput
+						<QuizInputUI
 							register={register({ required: true })}
 							input={`questions[${i}].question`}
 							as={TextareaAutosize}
@@ -237,7 +237,7 @@ const QuestionArray: React.FC<QuestionArrayProps> = ({
 							autoAddChoiceInput={autoAddChoiceInput}
 						/>
 						{withExplanation && (
-							<CustomQuizInput
+							<QuizInputUI
 								register={register({ required: true })}
 								input={`questions[${i}].explanation`}
 								as={TextareaAutosize}
@@ -251,7 +251,7 @@ const QuestionArray: React.FC<QuestionArrayProps> = ({
 							/>
 						)}
 						{withHint && (
-							<CustomQuizInput
+							<QuizInputUI
 								register={register({ required: true })}
 								input={`questions[${i}].hint`}
 								as={TextareaAutosize}

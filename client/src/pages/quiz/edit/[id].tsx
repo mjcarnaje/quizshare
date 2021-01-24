@@ -23,7 +23,7 @@ import {
 } from '@chakra-ui/react';
 import { useForm, FormProvider } from 'react-hook-form';
 import { MdPhotoSizeSelectActual } from 'react-icons/md';
-import CustomQuizInput from '../../../components/CustomQuizInput';
+import QuizInputUI from '../../../components/custom-inputs/QuizInputUI';
 import QuestionArray from '../../../components/QuestionArray';
 import { uploadCloudinaryImage } from '../../../utils/uploadImage';
 import { Image } from 'cloudinary-react';
@@ -165,7 +165,7 @@ const EditQuiz = ({}) => {
 									</Button>
 								</Center>
 							)}
-							<CustomQuizInput
+							<QuizInputUI
 								register={register({ required: true })}
 								name='Title'
 								input='title'
@@ -175,7 +175,7 @@ const EditQuiz = ({}) => {
 								error={errors.title}
 								errorMessage='Title is required field.'
 							/>
-							<CustomQuizInput
+							<QuizInputUI
 								register={register({ required: true })}
 								name='Description'
 								input='description'
