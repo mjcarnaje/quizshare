@@ -1,6 +1,7 @@
-import { Button, Spinner, useColorModeValue } from '@chakra-ui/react';
+import { Button, useColorModeValue } from '@chakra-ui/react';
 import React from 'react';
 import { QuizBox } from '../components/QuizBox';
+import { QuizBoxLoading } from '../components/QuizBoxLoading';
 import { useQuizzesQuery } from '../generated/graphql';
 import { MainContainer } from '../layouts/MainContainer';
 import { useIsAuth } from '../utils/useIsAuth';
@@ -27,7 +28,9 @@ const Index: React.FC = () => {
 				justifyContent='center'
 				alignItems='center'
 			>
-				<Spinner color='purple.500' />;
+				<QuizBoxLoading />
+				<QuizBoxLoading />
+				<QuizBoxLoading />
 			</MainContainer>
 		);
 	}
@@ -67,6 +70,13 @@ const Index: React.FC = () => {
 				>
 					Load more
 				</Button>
+			)}
+			{loading && (
+				<>
+					<QuizBoxLoading />
+					<QuizBoxLoading />
+					<QuizBoxLoading />
+				</>
 			)}
 		</MainContainer>
 	);

@@ -5,6 +5,7 @@ import { withApollo } from '../../utils/withApollo';
 import { useMeQuizzesQuery } from '../../generated/graphql';
 import { Button, Spinner, useColorModeValue } from '@chakra-ui/react';
 import { QuizBox } from '../../components/QuizBox';
+import { QuizBoxLoading } from '../../components/QuizBoxLoading';
 
 const Quizzes: React.FC = () => {
 	const buttonColorScheme = useColorModeValue('purple', 'gray');
@@ -26,7 +27,9 @@ const Quizzes: React.FC = () => {
 				alignItems='center'
 			>
 				<DashboardContainer display='grid' justifyItems='center' w='full'>
-					<Spinner color='purple.500' />;
+					<QuizBoxLoading />
+					<QuizBoxLoading />
+					<QuizBoxLoading />
 				</DashboardContainer>
 			</MainContainer>
 		);
@@ -69,6 +72,13 @@ const Quizzes: React.FC = () => {
 					>
 						Load more
 					</Button>
+				)}
+				{loading && (
+					<>
+						<QuizBoxLoading />
+						<QuizBoxLoading />
+						<QuizBoxLoading />
+					</>
 				)}
 			</DashboardContainer>
 		</MainContainer>
