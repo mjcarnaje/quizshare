@@ -1,0 +1,5 @@
+mutation UpdateAccount($data: UpdateAccountInput!) {
+	updateAccount(data: $data) {
+		...UserResponse
+	}
+}

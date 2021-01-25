@@ -152,6 +152,15 @@ export type RegisterInput = {
   gender: Scalars['String'];
 };
 
+export type UpdateAccountInput = {
+  username?: Maybe<Scalars['String']>;
+  email?: Maybe<Scalars['String']>;
+  password?: Maybe<Scalars['String']>;
+  confirm_password?: Maybe<Scalars['String']>;
+  avatar?: Maybe<Scalars['String']>;
+  cover_photo?: Maybe<Scalars['String']>;
+};
+
 export type SocialInput = {
   facebook: Scalars['String'];
   twitter: Scalars['String'];
@@ -222,6 +231,7 @@ export type Mutation = {
   login?: Maybe<User>;
   logout: Scalars['Boolean'];
   register: User;
+  updateAccount: User;
   updateProfile?: Maybe<User>;
 };
 
@@ -266,6 +276,11 @@ export type MutationLoginArgs = {
 
 export type MutationRegisterArgs = {
   data: RegisterInput;
+};
+
+
+export type MutationUpdateAccountArgs = {
+  data: UpdateAccountInput;
 };
 
 
@@ -420,6 +435,19 @@ export type ToggleLikeMutationVariables = Exact<{
 export type ToggleLikeMutation = (
   { __typename?: 'Mutation' }
   & Pick<Mutation, 'toggleLike'>
+);
+
+export type UpdateAccountMutationVariables = Exact<{
+  data: UpdateAccountInput;
+}>;
+
+
+export type UpdateAccountMutation = (
+  { __typename?: 'Mutation' }
+  & { updateAccount: (
+    { __typename?: 'User' }
+    & UserResponseFragment
+  ) }
 );
 
 export type UpdateProfileMutationVariables = Exact<{
@@ -895,6 +923,38 @@ export function useToggleLikeMutation(baseOptions?: Apollo.MutationHookOptions<T
 export type ToggleLikeMutationHookResult = ReturnType<typeof useToggleLikeMutation>;
 export type ToggleLikeMutationResult = Apollo.MutationResult<ToggleLikeMutation>;
 export type ToggleLikeMutationOptions = Apollo.BaseMutationOptions<ToggleLikeMutation, ToggleLikeMutationVariables>;
+export const UpdateAccountDocument = gql`
+    mutation UpdateAccount($data: UpdateAccountInput!) {
+  updateAccount(data: $data) {
+    ...UserResponse
+  }
+}
+    ${UserResponseFragmentDoc}`;
+export type UpdateAccountMutationFn = Apollo.MutationFunction<UpdateAccountMutation, UpdateAccountMutationVariables>;
+
+/**
+ * __useUpdateAccountMutation__
+ *
+ * To run a mutation, you first call `useUpdateAccountMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useUpdateAccountMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [updateAccountMutation, { data, loading, error }] = useUpdateAccountMutation({
+ *   variables: {
+ *      data: // value for 'data'
+ *   },
+ * });
+ */
+export function useUpdateAccountMutation(baseOptions?: Apollo.MutationHookOptions<UpdateAccountMutation, UpdateAccountMutationVariables>) {
+        return Apollo.useMutation<UpdateAccountMutation, UpdateAccountMutationVariables>(UpdateAccountDocument, baseOptions);
+      }
+export type UpdateAccountMutationHookResult = ReturnType<typeof useUpdateAccountMutation>;
+export type UpdateAccountMutationResult = Apollo.MutationResult<UpdateAccountMutation>;
+export type UpdateAccountMutationOptions = Apollo.BaseMutationOptions<UpdateAccountMutation, UpdateAccountMutationVariables>;
 export const UpdateProfileDocument = gql`
     mutation UpdateProfile($data: UpdateProfileInput!) {
   updateProfile(data: $data) {

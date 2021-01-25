@@ -1,7 +1,7 @@
 import { Grid } from '@chakra-ui/react';
 import React from 'react';
-import { AccountInformation } from '../../components/AccountInformation';
-import { ProfileInformation } from '../../components/ProfileInformation';
+import { AccountInformation } from '../../components/dasboard/AccountInformation';
+import { ProfileInformation } from '../../components/dasboard/ProfileInformation';
 import { DashboardContainer } from '../../layouts/DashboardContainer';
 import { MainContainer } from '../../layouts/MainContainer';
 import { withApollo } from '../../utils/withApollo';

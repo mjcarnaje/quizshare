@@ -12,9 +12,9 @@ import {
 import React, { useState } from 'react';
 import { FiEdit } from 'react-icons/fi';
 import { MdPhotoSizeSelectActual } from 'react-icons/md';
-import { useMeQuery } from '../generated/graphql';
+import { useMeQuery } from '../../generated/graphql';
 import { AccountInformationEdit } from './AccountInformationEdit';
-import { Image } from 'cloudinary-react';
+import Image from 'next/image';
 
 interface AccountInformationProps {}
 
@@ -79,7 +79,7 @@ export const AccountInformation: React.FC<AccountInformationProps> = ({}) => {
 			<GridItem colSpan={10} p='5px'>
 				<AspectRatio maxW='full' ratio={16 / 5}>
 					{cover_photo ? (
-						<Image publicId={cover_photo} alt='cover photo' />
+						<Image src={cover_photo} alt='Cover Photo' layout='fill' />
 					) : (
 						<Center bg={coverPhotoBg}>
 							<Button
@@ -143,7 +143,7 @@ export const AccountInformation: React.FC<AccountInformationProps> = ({}) => {
 				Password
 			</GridItem>
 			<GridItem colStart={4} colEnd={11} color='purple' py='16px'>
-				Example
+				******
 			</GridItem>
 		</>
 	);

@@ -14,11 +14,18 @@ import {
 import React, { useState, useEffect } from 'react';
 import { FiEdit } from 'react-icons/fi';
 import { MdPhotoSizeSelectActual } from 'react-icons/md';
-import { UserResponseFragment } from '../generated/graphql';
+import {
+	UserResponseFragment,
+	useUpdateAccountMutation,
+	UpdateAccountInput,
+	MeQuery,
+	MeDocument,
+} from '../../generated/graphql';
 import { useForm } from 'react-hook-form';
-import MainInputUI from './custom-inputs/MainInputUI';
-import { Image } from 'cloudinary-react';
-import { uploadCloudinaryImage } from '../utils/uploadImage';
+import MainInputUI from '../custom-inputs/MainInputUI';
+import { uploadCloudinaryImage } from '../../utils/uploadImage';
+import errorMapper from '../../utils/errorMapper';
+import Image from 'next/image';
 
 interface AccountInformationEditProps {
 	accInfoProps: UserResponseFragment;
@@ -43,19 +50,52 @@ export const AccountInformationEdit: React.FC<AccountInformationEditProps> = ({
 	const [coverPhoto, setCoverPhoto] = useState<string | 'loading'>();
 	const [profilePhoto, setProfilePhoto] = useState<string | 'loading'>();
 
-	const { register, handleSubmit, errors } = useForm();
+	const [updateAccount, { loading }] = useUpdateAccountMutation();
 
-	const onSumbit = async (values: any) => {
-		console.log(values);
+	const {
+		register,
+		handleSubmit,
+		errors,
+		setError,
+	} = useForm<UpdateAccountInput>();
+
+	const onSumbit = async (values: UpdateAccountInput) => {
+		try {
+			const { data } = await updateAccount({
+				variables: {
+					data: {
+						...values,
+						username: values.username === username ? null : values.username,
+						email: values.email === email ? null : values.email,
+						cover_photo: coverPhoto ?? null,
+						avatar: profilePhoto ?? null,
+					},
+				},
+				update: (cache, { data }) => {
+					cache.writeQuery<MeQuery>({
+						query: MeDocument,
+						data: {
+							__typename: 'Query',
+							me: data?.updateAccount,
+						},
+					});
+				},
+			});
+			if (data?.updateAccount) {
+				setEditMode(false);
+			}
+		} catch (err) {
+			errorMapper(err, setError);
+		}
 	};
 
 	const uploadCoverPhoto = () => {
 		uploadCloudinaryImage(
-			(error: any, photos: { event: string; info: { public_id: any } }) => {
+			(error: any, photos: { event: string; info: { url: string } }) => {
 				if (!error && photos.event === 'queues-start') {
 					setCoverPhoto('loading');
 				} else if (!error && photos.event === 'success') {
-					setCoverPhoto(photos.info.public_id);
+					setCoverPhoto(photos.info.url);
 				} else if (error) {
 					console.error(error);
 				}
@@ -66,11 +106,11 @@ export const AccountInformationEdit: React.FC<AccountInformationEditProps> = ({
 
 	const uploadProfilePhoto = () => {
 		uploadCloudinaryImage(
-			(error: any, photos: { event: string; info: { public_id: any } }) => {
+			(error: any, photos: { event: string; info: { url: string } }) => {
 				if (!error && photos.event === 'queues-start') {
 					setProfilePhoto('loading');
 				} else if (!error && photos.event === 'success') {
-					setProfilePhoto(photos.info.public_id);
+					setProfilePhoto(photos.info.url);
 				} else if (error) {
 					console.error(error);
 				}
@@ -109,10 +149,10 @@ export const AccountInformationEdit: React.FC<AccountInformationEditProps> = ({
 			</GridItem>
 			<GridItem colSpan={10}>
 				<form onSubmit={handleSubmit(onSumbit)}>
-					<Box p='5px'>
+					<Box p='5px' textAlign='center'>
 						<AspectRatio maxW='full' ratio={16 / 5}>
-							{coverPhoto ? (
-								<Image publicId={coverPhoto} alt='cover photo' />
+							{coverPhoto && coverPhoto !== 'loading' ? (
+								<Image src={coverPhoto} alt='Cover Photo' layout='fill' />
 							) : (
 								<Center bg={coverPhotoBg}>
 									<Button
@@ -126,6 +166,17 @@ export const AccountInformationEdit: React.FC<AccountInformationEditProps> = ({
 								</Center>
 							)}
 						</AspectRatio>
+						{coverPhoto && (
+							<Button
+								mt='10px'
+								onClick={uploadCoverPhoto}
+								leftIcon={<MdPhotoSizeSelectActual />}
+								colorScheme='gray'
+								variant='ghost'
+							>
+								Upload cover photo
+							</Button>
+						)}
 					</Box>
 					<VStack pl='32px' spacing='10px' py='20px' align='flex-start' w='60%'>
 						<VStack spacing='12px' align='flex-start'>
@@ -168,7 +219,7 @@ export const AccountInformationEdit: React.FC<AccountInformationEditProps> = ({
 							error={errors.password}
 							input='password'
 							name='Password'
-							placeholder='Enter new password'
+							placeholder='Enter new password (optional)'
 							register={register}
 							type='password'
 							forDashboard
@@ -181,12 +232,14 @@ export const AccountInformationEdit: React.FC<AccountInformationEditProps> = ({
 							error={errors.confirm_password}
 							input='confirm_password'
 							name='Confirm password'
-							placeholder='Confirm new password'
+							placeholder='Confirm new password (optional)'
 							register={register}
 							type='password'
 							forDashboard
 						/>
-						<Button>Update account</Button>
+						<Button type='submit' isLoading={loading}>
+							Update account
+						</Button>
 					</VStack>
 				</form>
 			</GridItem>

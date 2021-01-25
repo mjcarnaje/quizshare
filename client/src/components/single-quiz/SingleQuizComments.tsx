@@ -12,7 +12,7 @@ import {
 	Container as ChakraContainter,
 } from '@chakra-ui/react';
 import React from 'react';
-import { useCommentsQuery } from '../generated/graphql';
+import { useCommentsQuery } from '../../generated/graphql';
 import moment from 'moment';
 
 const LoadingSkeleton: React.FC = () => {

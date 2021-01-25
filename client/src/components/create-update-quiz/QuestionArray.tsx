@@ -16,11 +16,11 @@ import { Controller, useFieldArray, useFormContext } from 'react-hook-form';
 import { MdDelete, MdPhotoSizeSelectActual } from 'react-icons/md';
 import TextareaAutosize from 'react-textarea-autosize';
 import { v4 as uuid } from 'uuid';
-import { QuestionInput, QuizInput } from '../generated/graphql';
+import { QuestionInput, QuizInput } from '../../generated/graphql';
 import ChoiceArray from './ChoiceArray';
-import QuizInputUI from './custom-inputs/QuizInputUI';
-import { Image } from 'cloudinary-react';
-import { uploadCloudinaryImage } from '../utils/uploadImage';
+import QuizInputUI from '../custom-inputs/QuizInputUI';
+import Image from 'next/image';
+import { uploadCloudinaryImage } from '../../utils/uploadImage';
 import { HStack } from '@chakra-ui/react';
 import { useRouter } from 'next/dist/client/router';
 
@@ -36,7 +36,7 @@ const QuestionArray: React.FC<QuestionArrayProps> = ({
 	const router = useRouter();
 
 	const [images, setImages] = useState<
-		{ question_id: string; public_id: string | 'loading' }[]
+		{ question_id: string; url: string | 'loading' }[]
 	>([]);
 	const { control, register, errors, watch } = useFormContext<QuizInput>();
 	const { fields, append, remove } = useFieldArray<QuestionInput>({
@@ -62,21 +62,21 @@ const QuestionArray: React.FC<QuestionArrayProps> = ({
 
 	const uploadImage = (question_id: string) => {
 		uploadCloudinaryImage(
-			(error: any, photos: { event: string; info: { public_id: any } }) => {
+			(error: any, photos: { event: string; info: { url: any } }) => {
 				const imagesThatAreNotChanged = images.filter(
 					(img) => img.question_id !== question_id
 				);
 				if (!error && photos.event === 'queues-start') {
 					setImages([
 						...imagesThatAreNotChanged,
-						{ question_id: question_id, public_id: 'loading' },
+						{ question_id: question_id, url: 'loading' },
 					]);
 				} else if (!error && photos.event === 'success') {
 					setImages([
 						...imagesThatAreNotChanged,
 						{
 							question_id: question_id,
-							public_id: photos.info.public_id,
+							url: photos.info.url,
 						},
 					]);
 				} else if (error) {
@@ -102,8 +102,7 @@ const QuestionArray: React.FC<QuestionArrayProps> = ({
 				const imgIndex = images.findIndex(
 					(i) => i.question_id === question.question_id
 				);
-				const publicId =
-					images[imgIndex]?.public_id || question.question_photo!;
+				const url = images[imgIndex]?.url || question.question_photo!;
 
 				const withExplanation = watch(`questions[${i}].with_explanation`);
 				const withHint = watch(`questions[${i}].with_hint`);
@@ -127,7 +126,7 @@ const QuestionArray: React.FC<QuestionArrayProps> = ({
 							<input
 								type='hidden'
 								name={`questions[${i}].question_photo`}
-								value={publicId}
+								value={url}
 								ref={register()}
 							/>
 						)}
@@ -207,12 +206,12 @@ const QuestionArray: React.FC<QuestionArrayProps> = ({
 							</HStack>
 						</Flex>
 
-						{publicId && (
+						{url && (
 							<Box p='4px' mb='2px'>
-								<Skeleton isLoaded={publicId !== 'loading'}>
+								<Skeleton isLoaded={url !== 'loading'}>
 									<Box borderRadius='8px' overflow='hidden'>
 										<AspectRatio maxW='full' ratio={16 / 9}>
-											<Image publicId={publicId} />
+											<Image src={url} alt={`Quiz ${i} photo`} layout='fill' />
 										</AspectRatio>
 									</Box>
 								</Skeleton>

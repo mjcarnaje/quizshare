@@ -18,9 +18,9 @@ import moment from 'moment';
 import NextLink from 'next/link';
 import React from 'react';
 import { IoMdArrowRoundBack } from 'react-icons/io';
-import { CommentButton } from './CommentButton';
-import { LikeButton } from './LikeButton';
-import { UserAvatar } from './UserAvatar';
+import { CommentButton } from '../CommentButton';
+import { LikeButton } from '../LikeButton';
+import { UserAvatar } from '../UserAvatar';
 
 interface SingleQuizHeadProps {
 	data: any;

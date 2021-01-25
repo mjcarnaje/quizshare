@@ -10,20 +10,20 @@ import {
 	useColorModeValue,
 	VStack,
 } from '@chakra-ui/react';
-import { Image } from 'cloudinary-react';
 import { useRouter } from 'next/dist/client/router';
+import Image from 'next/image';
 import NextLink from 'next/link';
 import React, { useState } from 'react';
 import { FormProvider, useForm } from 'react-hook-form';
 import { MdPhotoSizeSelectActual } from 'react-icons/md';
 import TextareaAutosize from 'react-textarea-autosize';
 import QuizInputUI from '../../components/custom-inputs/QuizInputUI';
-import QuestionArray from '../../components/QuestionArray';
+import QuestionArray from '../../components/create-update-quiz/QuestionArray';
 import { QuizInput, useCreateQuizMutation } from '../../generated/graphql';
+import { MainContainer } from '../../layouts/MainContainer';
+import errorMapper from '../../utils/errorMapper';
 import { uploadCloudinaryImage } from '../../utils/uploadImage';
 import { withApollo } from '../../utils/withApollo';
-import errorMapper from '../../utils/errorMapper';
-import { MainContainer } from '../../layouts/MainContainer';
 
 const CreateQuiz: React.FC = () => {
 	const colorTitle = useColorModeValue('gray.800', 'white');
@@ -55,11 +55,11 @@ const CreateQuiz: React.FC = () => {
 
 	const uploadImage = () => {
 		uploadCloudinaryImage(
-			(error: any, photos: { event: string; info: { public_id: any } }) => {
+			(error: any, photos: { event: string; info: { url: any } }) => {
 				if (!error && photos.event === 'queues-start') {
 					setImage('loading');
 				} else if (!error && photos.event === 'success') {
-					setImage(photos.info.public_id);
+					setImage(photos.info.url);
 				} else if (error) {
 					console.error(error);
 				}
@@ -106,7 +106,11 @@ const CreateQuiz: React.FC = () => {
 									<Skeleton isLoaded={image !== 'loading'}>
 										<Box borderRadius='8px' overflow='hidden'>
 											<AspectRatio maxW='full' ratio={16 / 9}>
-												<Image publicId={image} />
+												<Image
+													src={image}
+													alt='Thumbnail of Quiz'
+													layout='fill'
+												/>
 											</AspectRatio>
 										</Box>
 									</Skeleton>

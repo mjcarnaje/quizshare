@@ -18,7 +18,7 @@ import {
 	FaYoutubeSquare,
 } from 'react-icons/fa';
 import { FiEdit } from 'react-icons/fi';
-import { useMeQuery } from '../generated/graphql';
+import { useMeQuery } from '../../generated/graphql';
 import { ProfileInformationEdit } from './ProfileInformationEdit';
 
 interface ProfileInformationProps {}

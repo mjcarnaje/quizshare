@@ -11,7 +11,7 @@ import {
 	Spacer,
 	Tooltip,
 } from '@chakra-ui/react';
-import { Image } from 'cloudinary-react';
+import Image from 'next/image';
 import { useRouter } from 'next/dist/client/router';
 import React, { useEffect, useState } from 'react';
 import { Controller, useFieldArray, useFormContext } from 'react-hook-form';
@@ -19,9 +19,9 @@ import { BsPlusSquare } from 'react-icons/bs';
 import { MdDelete, MdPhotoSizeSelectActual } from 'react-icons/md';
 import TextareaAutosize from 'react-textarea-autosize';
 import { v4 as uuid } from 'uuid';
-import { ChoiceInput, QuizInput } from '../generated/graphql';
-import { uploadCloudinaryImage } from '../utils/uploadImage';
-import QuizInputUI from './custom-inputs/QuizInputUI';
+import { ChoiceInput, QuizInput } from '../../generated/graphql';
+import { uploadCloudinaryImage } from '../../utils/uploadImage';
+import QuizInputUI from '../custom-inputs/QuizInputUI';
 
 declare global {
 	interface Window {
@@ -41,7 +41,7 @@ const ChoiceArray: React.FC<ChoiceArrayProps> = ({
 }) => {
 	const router = useRouter();
 	const [images, setImages] = useState<
-		{ choice_id: string; public_id: string | 'loading' }[]
+		{ choice_id: string; url: string | 'loading' }[]
 	>([]);
 
 	const { control, register, errors } = useFormContext<QuizInput>();
@@ -52,21 +52,21 @@ const ChoiceArray: React.FC<ChoiceArrayProps> = ({
 
 	const uploadImage = (choice_id: string) => {
 		uploadCloudinaryImage(
-			(error: any, photos: { event: string; info: { public_id: any } }) => {
+			(error: any, photos: { event: string; info: { url: any } }) => {
 				const imagesThatAreNotChanged = images.filter(
 					(img) => img.choice_id !== choice_id
 				);
 				if (!error && photos.event === 'queues-start') {
 					setImages([
 						...imagesThatAreNotChanged,
-						{ choice_id: choice_id, public_id: 'loading' },
+						{ choice_id: choice_id, url: 'loading' },
 					]);
 				} else if (!error && photos.event === 'success') {
 					setImages([
 						...imagesThatAreNotChanged,
 						{
 							choice_id: choice_id,
-							public_id: photos.info.public_id,
+							url: photos.info.url,
 						},
 					]);
 				} else if (error) {
@@ -118,7 +118,7 @@ const ChoiceArray: React.FC<ChoiceArrayProps> = ({
 									(i) => i.choice_id === choice.choice_id
 								);
 
-								const publicId = images[img]?.public_id || choice.choicePhoto!;
+								const url = images[img]?.url || choice.choicePhoto!;
 								return (
 									<Box key={choice.choice_id}>
 										<Box
@@ -138,16 +138,20 @@ const ChoiceArray: React.FC<ChoiceArrayProps> = ({
 												<input
 													type='hidden'
 													name={`questions[${questionIndex}].choices[${i}].choicePhoto`}
-													value={publicId}
+													value={url}
 													ref={register()}
 												/>
 											)}
-											{publicId && (
+											{url && (
 												<Box p='4px' mb='2px'>
-													<Skeleton isLoaded={publicId !== 'loading'}>
+													<Skeleton isLoaded={url !== 'loading'}>
 														<Box borderRadius='8px' overflow='hidden'>
 															<AspectRatio maxW='full' ratio={16 / 9}>
-																<Image publicId={publicId} />
+																<Image
+																	src={url}
+																	alt={`Choice ${i} photo`}
+																	layout='fill'
+																/>
 															</AspectRatio>
 														</Box>
 													</Skeleton>

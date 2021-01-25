@@ -25,14 +25,14 @@ import {
 	UpdateProfileInput,
 	UserResponseFragment,
 	useUpdateProfileMutation,
-} from '../generated/graphql';
-import MainInputUI from './custom-inputs/MainInputUI';
+} from '../../generated/graphql';
+import MainInputUI from '../custom-inputs/MainInputUI';
 import TextareaAutosize from 'react-textarea-autosize';
 import { WarningIcon } from '@chakra-ui/icons';
-import { Months, Days, Years } from '../utils/BirthdayDateOptions';
-import { Country } from './Country';
-import { MeQuery, MeDocument } from '../generated/graphql';
-import errorMapper from '../utils/errorMapper';
+import { Months, Days, Years } from '../../utils/BirthdayDateOptions';
+import { Country } from '../Country';
+import { MeQuery, MeDocument } from '../../generated/graphql';
+import errorMapper from '../../utils/errorMapper';
 import {
 	FaFacebookSquare,
 	FaTwitterSquare,

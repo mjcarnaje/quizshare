@@ -24,9 +24,9 @@ import {
 import { useForm, FormProvider } from 'react-hook-form';
 import { MdPhotoSizeSelectActual } from 'react-icons/md';
 import QuizInputUI from '../../../components/custom-inputs/QuizInputUI';
-import QuestionArray from '../../../components/QuestionArray';
+import QuestionArray from '../../../components/create-update-quiz/QuestionArray';
 import { uploadCloudinaryImage } from '../../../utils/uploadImage';
-import { Image } from 'cloudinary-react';
+import Image from 'next/image';
 import NextLink from 'next/link';
 import TextareaAutosize from 'react-textarea-autosize';
 import errorMapper from '../../../utils/errorMapper';
@@ -73,11 +73,11 @@ const EditQuiz = ({}) => {
 
 	const uploadImage = () => {
 		uploadCloudinaryImage(
-			(error: any, photos: { event: string; info: { public_id: any } }) => {
+			(error: any, photos: { event: string; info: { url: any } }) => {
 				if (!error && photos.event === 'queues-start') {
 					setImage('loading');
 				} else if (!error && photos.event === 'success') {
-					setImage(photos.info.public_id);
+					setImage(photos.info.url);
 				} else if (error) {
 					console.error(error);
 				}
@@ -137,7 +137,11 @@ const EditQuiz = ({}) => {
 									<Skeleton isLoaded={image !== 'loading'}>
 										<Box borderRadius='8px' overflow='hidden'>
 											<AspectRatio maxW='full' ratio={16 / 9}>
-												<Image publicId={image || data?.quiz_photo!} />
+												<Image
+													src={image || data?.quiz_photo!}
+													alt='Thumbnail of Quiz'
+													layout='fill'
+												/>
 											</AspectRatio>
 										</Box>
 									</Skeleton>
