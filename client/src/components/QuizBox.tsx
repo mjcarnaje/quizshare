@@ -8,7 +8,7 @@ import {
 	Text,
 	useBreakpointValue,
 } from '@chakra-ui/react';
-import { Image } from 'cloudinary-react';
+import Image from 'next/image';
 import Link from 'next/link';
 import React from 'react';
 import { QuizzesResponseFragment } from '../generated/graphql';
@@ -90,7 +90,11 @@ export const QuizBox: React.FC<QuizBoxProps> = ({ quiz }) => {
 							>
 								<Box borderRadius='8px' overflow='hidden' bg='gray.100'>
 									<AspectRatio maxW='full' ratio={16 / 9}>
-										<Image publicId={quiz_photo} />
+										<Image
+											src={quiz_photo}
+											layout='fill'
+											alt='Thumbnail of Quiz'
+										/>
 									</AspectRatio>
 								</Box>
 							</Box>

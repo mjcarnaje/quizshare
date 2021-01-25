@@ -1,31 +1,32 @@
 import {
 	AspectRatio,
 	Avatar,
+	Box,
 	Button,
 	Center,
 	Divider,
 	Flex,
-	Box,
 	GridItem,
+	Skeleton,
 	Text,
 	useColorModeValue,
 	VStack,
 } from '@chakra-ui/react';
-import React, { useState, useEffect } from 'react';
+import Image from 'next/image';
+import React, { useEffect, useState } from 'react';
+import { useForm } from 'react-hook-form';
 import { FiEdit } from 'react-icons/fi';
 import { MdPhotoSizeSelectActual } from 'react-icons/md';
 import {
+	MeDocument,
+	MeQuery,
+	UpdateAccountInput,
 	UserResponseFragment,
 	useUpdateAccountMutation,
-	UpdateAccountInput,
-	MeQuery,
-	MeDocument,
 } from '../../generated/graphql';
-import { useForm } from 'react-hook-form';
-import MainInputUI from '../custom-inputs/MainInputUI';
-import { uploadCloudinaryImage } from '../../utils/uploadImage';
 import errorMapper from '../../utils/errorMapper';
-import Image from 'next/image';
+import { uploadCloudinaryImage } from '../../utils/uploadImage';
+import MainInputUI from '../custom-inputs/MainInputUI';
 
 interface AccountInformationEditProps {
 	accInfoProps: UserResponseFragment;
@@ -150,22 +151,27 @@ export const AccountInformationEdit: React.FC<AccountInformationEditProps> = ({
 			<GridItem colSpan={10}>
 				<form onSubmit={handleSubmit(onSumbit)}>
 					<Box p='5px' textAlign='center'>
-						<AspectRatio maxW='full' ratio={16 / 5}>
-							{coverPhoto && coverPhoto !== 'loading' ? (
-								<Image src={coverPhoto} alt='Cover Photo' layout='fill' />
-							) : (
-								<Center bg={coverPhotoBg}>
-									<Button
-										onClick={uploadCoverPhoto}
-										leftIcon={<MdPhotoSizeSelectActual />}
-										colorScheme='gray'
-										variant='ghost'
-									>
-										Upload cover photo
-									</Button>
-								</Center>
-							)}
-						</AspectRatio>
+						<Skeleton isLoaded={coverPhoto !== 'loading'}>
+							<Box bg='gray.100'>
+								<AspectRatio maxW='full' ratio={16 / 5}>
+									{coverPhoto && coverPhoto !== 'loading' ? (
+										<Image src={coverPhoto} alt='Cover Photo' layout='fill' />
+									) : (
+										<Center bg={coverPhotoBg}>
+											<Button
+												onClick={uploadCoverPhoto}
+												leftIcon={<MdPhotoSizeSelectActual />}
+												colorScheme='gray'
+												variant='ghost'
+											>
+												Upload cover photo
+											</Button>
+										</Center>
+									)}
+								</AspectRatio>
+							</Box>
+						</Skeleton>
+
 						{coverPhoto && (
 							<Button
 								mt='10px'
@@ -182,7 +188,9 @@ export const AccountInformationEdit: React.FC<AccountInformationEditProps> = ({
 						<VStack spacing='12px' align='flex-start'>
 							<Text fontWeight='semibold'>Profile Image</Text>
 							<Flex align='center'>
-								<Avatar name={name} size='xl' src={profilePhoto || ''} />
+								<Skeleton isLoaded={profilePhoto !== 'loading'}>
+									<Avatar name={name} size='xl' src={profilePhoto ?? ''} />
+								</Skeleton>
 								<Button
 									ml='16px'
 									size='sm'

@@ -1,6 +1,7 @@
 import {
 	AspectRatio,
 	Avatar,
+	Box,
 	Button,
 	Center,
 	Divider,
@@ -77,22 +78,24 @@ export const AccountInformation: React.FC<AccountInformationProps> = ({}) => {
 				<Divider />
 			</GridItem>
 			<GridItem colSpan={10} p='5px'>
-				<AspectRatio maxW='full' ratio={16 / 5}>
-					{cover_photo ? (
-						<Image src={cover_photo} alt='Cover Photo' layout='fill' />
-					) : (
-						<Center bg={coverPhotoBg}>
-							<Button
-								onClick={() => setEditMode(true)}
-								leftIcon={<MdPhotoSizeSelectActual />}
-								colorScheme='gray'
-								variant='ghost'
-							>
-								Edit
-							</Button>
-						</Center>
-					)}
-				</AspectRatio>
+				<Box bg='gray.100'>
+					<AspectRatio maxW='full' ratio={16 / 5}>
+						{cover_photo ? (
+							<Image src={cover_photo} alt='Cover Photo' layout='fill' />
+						) : (
+							<Center bg={coverPhotoBg}>
+								<Button
+									onClick={() => setEditMode(true)}
+									leftIcon={<MdPhotoSizeSelectActual />}
+									colorScheme='gray'
+									variant='ghost'
+								>
+									Edit
+								</Button>
+							</Center>
+						)}
+					</AspectRatio>
+				</Box>
 			</GridItem>
 			<GridItem colSpan={10}>
 				<Divider mb='16px' />

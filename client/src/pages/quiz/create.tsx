@@ -55,7 +55,7 @@ const CreateQuiz: React.FC = () => {
 
 	const uploadImage = () => {
 		uploadCloudinaryImage(
-			(error: any, photos: { event: string; info: { url: any } }) => {
+			(error: any, photos: { event: string; info: { url: string } }) => {
 				if (!error && photos.event === 'queues-start') {
 					setImage('loading');
 				} else if (!error && photos.event === 'success') {
@@ -104,13 +104,17 @@ const CreateQuiz: React.FC = () => {
 							<Box w='full'>
 								{image ? (
 									<Skeleton isLoaded={image !== 'loading'}>
-										<Box borderRadius='8px' overflow='hidden'>
+										<Box borderRadius='8px' overflow='hidden' bg='gray.100'>
 											<AspectRatio maxW='full' ratio={16 / 9}>
-												<Image
-													src={image}
-													alt='Thumbnail of Quiz'
-													layout='fill'
-												/>
+												{image !== 'loading' ? (
+													<Image
+														src={image}
+														alt='Thumbnail of Quiz'
+														layout='fill'
+													/>
+												) : (
+													<Box></Box>
+												)}
 											</AspectRatio>
 										</Box>
 									</Skeleton>

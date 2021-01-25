@@ -13,7 +13,7 @@ import {
 	HStack,
 	SkeletonText,
 } from '@chakra-ui/react';
-import { Image } from 'cloudinary-react';
+import Image from 'next/image';
 import moment from 'moment';
 import NextLink from 'next/link';
 import React from 'react';
@@ -129,7 +129,13 @@ const SingleQuizHead: React.FC<SingleQuizHeadProps> = ({
 					<Box w='full' px='5px' pt='5px'>
 						<Box bg='gray.100'>
 							<AspectRatio maxW='full' ratio={16 / 9}>
-								<Image publicId={quiz_photo} />
+								{quiz_photo !== 'loading' && (
+									<Image
+										src={quiz_photo}
+										layout='fill'
+										alt='Thumbnail of Quiz'
+									/>
+								)}
 							</AspectRatio>
 						</Box>
 					</Box>

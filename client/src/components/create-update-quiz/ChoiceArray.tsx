@@ -145,13 +145,21 @@ const ChoiceArray: React.FC<ChoiceArrayProps> = ({
 											{url && (
 												<Box p='4px' mb='2px'>
 													<Skeleton isLoaded={url !== 'loading'}>
-														<Box borderRadius='8px' overflow='hidden'>
+														<Box
+															borderRadius='8px'
+															overflow='hidden'
+															bg='gray.100'
+														>
 															<AspectRatio maxW='full' ratio={16 / 9}>
-																<Image
-																	src={url}
-																	alt={`Choice ${i} photo`}
-																	layout='fill'
-																/>
+																{url !== 'loading' ? (
+																	<Image
+																		src={url}
+																		alt={`Choice ${i} photo`}
+																		layout='fill'
+																	/>
+																) : (
+																	<Box></Box>
+																)}
 															</AspectRatio>
 														</Box>
 													</Skeleton>

@@ -92,7 +92,7 @@ const EditQuiz = ({}) => {
 
 	if (loading && !data) {
 		return (
-			<MainContainer>
+			<MainContainer display='grid' placeItems='center' minH='101vh'>
 				<Spinner color='purple.500' />
 			</MainContainer>
 		);
@@ -135,13 +135,17 @@ const EditQuiz = ({}) => {
 							<Box w='full'>
 								{data?.quiz_photo || image ? (
 									<Skeleton isLoaded={image !== 'loading'}>
-										<Box borderRadius='8px' overflow='hidden'>
+										<Box borderRadius='8px' overflow='hidden' bg='gray.100'>
 											<AspectRatio maxW='full' ratio={16 / 9}>
-												<Image
-													src={image || data?.quiz_photo!}
-													alt='Thumbnail of Quiz'
-													layout='fill'
-												/>
+												{image !== 'loading' ? (
+													<Image
+														src={image || data?.quiz_photo!}
+														alt='Thumbnail of Quiz'
+														layout='fill'
+													/>
+												) : (
+													<Box></Box>
+												)}
 											</AspectRatio>
 										</Box>
 									</Skeleton>
