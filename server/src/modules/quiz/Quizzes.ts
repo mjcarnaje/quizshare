@@ -15,6 +15,7 @@ import { Comment } from '../../entity/Comment';
 import { MyContext } from '../../types/MyContext';
 import { isAuthenticated } from '../middleware/isAuthenticated';
 import { UseMiddleware } from 'type-graphql';
+import { Question } from '../../entity/Question';
 
 @ObjectType()
 class PaginatedQuizzes {
@@ -175,6 +176,18 @@ export class QuizzesResolver {
 			return null;
 		}
 		return quiz;
+	}
+
+	@UseMiddleware(isAuthenticated)
+	@Query(() => [Question], { nullable: true })
+	async questions(
+		@Arg('quiz_id', () => Int) quiz_id: number
+	): Promise<Question[] | null> {
+		const questions = await Question.find({ where: { quiz_id } });
+		if (!questions) {
+			return null;
+		}
+		return questions;
 	}
 
 	@UseMiddleware(isAuthenticated)

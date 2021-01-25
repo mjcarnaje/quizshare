@@ -1,11 +1,11 @@
+import { Button, useColorModeValue } from '@chakra-ui/react';
 import React from 'react';
-import { MainContainer } from '../../layouts/MainContainer';
-import { DashboardContainer } from '../../layouts/DashboardContainer';
-import { withApollo } from '../../utils/withApollo';
-import { useMeQuizzesQuery } from '../../generated/graphql';
-import { Button, Spinner, useColorModeValue } from '@chakra-ui/react';
 import { QuizBox } from '../../components/QuizBox';
 import { QuizBoxLoading } from '../../components/QuizBoxLoading';
+import { useMeQuizzesQuery } from '../../generated/graphql';
+import { DashboardContainer } from '../../layouts/DashboardContainer';
+import { MainContainer } from '../../layouts/MainContainer';
+import { withApollo } from '../../utils/withApollo';
 
 const Quizzes: React.FC = () => {
 	const buttonColorScheme = useColorModeValue('purple', 'gray');
@@ -20,12 +20,7 @@ const Quizzes: React.FC = () => {
 
 	if (!data && loading) {
 		return (
-			<MainContainer
-				flexGrow={1}
-				display='flex'
-				justifyContent='center'
-				alignItems='center'
-			>
+			<MainContainer display='grid' justifyItems='center'>
 				<DashboardContainer display='grid' justifyItems='center' w='full'>
 					<QuizBoxLoading />
 					<QuizBoxLoading />
@@ -50,6 +45,12 @@ const Quizzes: React.FC = () => {
 				{data?.meQuizzes.meQuizzes.map((quiz) => {
 					return <QuizBox key={quiz.id} quiz={quiz} />;
 				})}
+				{loading && (
+					<>
+						<QuizBoxLoading />
+						<QuizBoxLoading />
+					</>
+				)}
 				{data && data.meQuizzes.meHasMore && (
 					<Button
 						size='sm'
@@ -72,13 +73,6 @@ const Quizzes: React.FC = () => {
 					>
 						Load more
 					</Button>
-				)}
-				{loading && (
-					<>
-						<QuizBoxLoading />
-						<QuizBoxLoading />
-						<QuizBoxLoading />
-					</>
 				)}
 			</DashboardContainer>
 		</MainContainer>

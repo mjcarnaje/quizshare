@@ -15,12 +15,12 @@ import {
 } from '@chakra-ui/react';
 import Image from 'next/image';
 import moment from 'moment';
-import NextLink from 'next/link';
 import React from 'react';
 import { IoMdArrowRoundBack } from 'react-icons/io';
 import { CommentButton } from '../CommentButton';
 import { LikeButton } from '../LikeButton';
 import { UserAvatar } from '../UserAvatar';
+import { useRouter } from 'next/dist/client/router';
 
 interface SingleQuizHeadProps {
 	data: any;
@@ -31,6 +31,8 @@ const SingleQuizHead: React.FC<SingleQuizHeadProps> = ({
 	data,
 	quizLoading,
 }) => {
+	const router = useRouter();
+
 	if (quizLoading && !data) {
 		// loading skeleton
 		return (
@@ -85,6 +87,7 @@ const SingleQuizHead: React.FC<SingleQuizHeadProps> = ({
 	}
 
 	const {
+		id,
 		quiz_photo,
 		title,
 		description,
@@ -105,16 +108,15 @@ const SingleQuizHead: React.FC<SingleQuizHeadProps> = ({
 				p='0'
 			>
 				<Flex p='10px' align='center'>
-					<NextLink href='/'>
-						<IconButton
-							variant='ghost'
-							colorScheme='purple'
-							aria-label='back to home'
-							isRound
-							fontSize='24px'
-							icon={<IoMdArrowRoundBack />}
-						/>
-					</NextLink>
+					<IconButton
+						variant='ghost'
+						colorScheme='purple'
+						aria-label='back to home'
+						isRound
+						fontSize='24px'
+						icon={<IoMdArrowRoundBack />}
+						onClick={() => router.push('/')}
+					/>
 					<Heading
 						ml='20px'
 						fontSize='28px'
@@ -177,7 +179,11 @@ const SingleQuizHead: React.FC<SingleQuizHeadProps> = ({
 					<Flex justify='space-around' py='8px'>
 						<LikeButton quiz={data} withoutCount />
 						<CommentButton quiz={data} withoutCount />
-						<Button variant='ghost' colorScheme='purple'>
+						<Button
+							variant='ghost'
+							colorScheme='purple'
+							onClick={() => router.push(`/quiz/take/${id}`)}
+						>
 							Take quiz
 						</Button>
 					</Flex>

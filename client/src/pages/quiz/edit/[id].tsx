@@ -1,35 +1,35 @@
+import {
+	AspectRatio,
+	Box,
+	Button,
+	Center,
+	Flex,
+	Heading,
+	Skeleton,
+	Spacer,
+	Spinner,
+	useColorModeValue,
+	VStack,
+} from '@chakra-ui/react';
 import { useRouter } from 'next/dist/client/router';
-import React, { useState, useEffect } from 'react';
-import { MainContainer } from '../../../layouts/MainContainer';
+import Image from 'next/image';
+import NextLink from 'next/link';
+import React, { useEffect, useState } from 'react';
+import { FormProvider, useForm } from 'react-hook-form';
+import { MdPhotoSizeSelectActual } from 'react-icons/md';
+import TextareaAutosize from 'react-textarea-autosize';
+import QuestionArray from '../../../components/create-update-quiz/QuestionArray';
+import QuizInputUI from '../../../components/custom-inputs/QuizInputUI';
 import {
 	QuizInput,
 	useQuizToUpdateQuery,
 	useUpdateQuizMutation,
 } from '../../../generated/graphql';
-import { withApollo } from '../../../utils/withApollo';
-import { removeTypename } from '../../../utils/removeTypename';
-import {
-	useColorModeValue,
-	Box,
-	Heading,
-	VStack,
-	Skeleton,
-	AspectRatio,
-	Center,
-	Button,
-	Flex,
-	Spacer,
-	Spinner,
-} from '@chakra-ui/react';
-import { useForm, FormProvider } from 'react-hook-form';
-import { MdPhotoSizeSelectActual } from 'react-icons/md';
-import QuizInputUI from '../../../components/custom-inputs/QuizInputUI';
-import QuestionArray from '../../../components/create-update-quiz/QuestionArray';
-import { uploadCloudinaryImage } from '../../../utils/uploadImage';
-import Image from 'next/image';
-import NextLink from 'next/link';
-import TextareaAutosize from 'react-textarea-autosize';
+import { MainContainer } from '../../../layouts/MainContainer';
 import errorMapper from '../../../utils/errorMapper';
+import { removeTypename } from '../../../utils/removeTypename';
+import { uploadCloudinaryImage } from '../../../utils/uploadImage';
+import { withApollo } from '../../../utils/withApollo';
 
 const EditQuiz = ({}) => {
 	const colorTitle = useColorModeValue('gray.800', 'white');
@@ -61,6 +61,7 @@ const EditQuiz = ({}) => {
 				},
 				update: (cache) => {
 					cache.evict({ fieldName: 'quizzes' });
+					cache.evict({ fieldName: 'quizToUpdate' });
 				},
 			});
 			if (!errors) {

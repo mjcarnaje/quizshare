@@ -22,12 +22,7 @@ const Index: React.FC = () => {
 
 	if (!data && loading) {
 		return (
-			<MainContainer
-				flexGrow={1}
-				display='flex'
-				justifyContent='center'
-				alignItems='center'
-			>
+			<MainContainer display='grid' justifyItems='center'>
 				<QuizBoxLoading />
 				<QuizBoxLoading />
 				<QuizBoxLoading />
@@ -49,6 +44,12 @@ const Index: React.FC = () => {
 			{data?.quizzes.quizzes.map((quiz) => {
 				return <QuizBox key={quiz.id} quiz={quiz} />;
 			})}
+			{loading && (
+				<>
+					<QuizBoxLoading />
+					<QuizBoxLoading />
+				</>
+			)}
 			{data && data.quizzes.hasMore && (
 				<Button
 					size='sm'
@@ -70,13 +71,6 @@ const Index: React.FC = () => {
 				>
 					Load more
 				</Button>
-			)}
-			{loading && (
-				<>
-					<QuizBoxLoading />
-					<QuizBoxLoading />
-					<QuizBoxLoading />
-				</>
 			)}
 		</MainContainer>
 	);
