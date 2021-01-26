@@ -8,14 +8,14 @@ import {
 	Query,
 	Resolver,
 	Root,
+	UseMiddleware,
 } from 'type-graphql';
 import { FindManyOptions, LessThan, MoreThan } from 'typeorm';
-import { Quiz } from '../../entity/Quiz';
 import { Comment } from '../../entity/Comment';
+import { Question } from '../../entity/Question';
+import { Quiz } from '../../entity/Quiz';
 import { MyContext } from '../../types/MyContext';
 import { isAuthenticated } from '../middleware/isAuthenticated';
-import { UseMiddleware } from 'type-graphql';
-import { Question } from '../../entity/Question';
 
 @ObjectType()
 class PaginatedQuizzes {
@@ -65,6 +65,11 @@ export class QuizzesResolver {
 	@FieldResolver(() => Int)
 	questionsCount(@Root() quiz: Quiz) {
 		return quiz.questions.length;
+	}
+
+	@FieldResolver(() => Int)
+	resultsCount(@Root() quiz: Quiz) {
+		return quiz.results.length;
 	}
 
 	@UseMiddleware(isAuthenticated)

@@ -1,0 +1,10 @@
+query Questions($quiz_id: Int!) {
+	questions(quiz_id: $quiz_id) {
+		question_id
+		question
+		question_photo
+		choices
+		hint
+		with_hint
+	}
+}

@@ -52,6 +52,15 @@ export type Profile = {
   name: Scalars['String'];
 };
 
+export type Result = {
+  __typename?: 'Result';
+  id: Scalars['ID'];
+  taker: User;
+  score: Scalars['Float'];
+  current_total_questions: Scalars['Float'];
+  answered_at: Scalars['String'];
+};
+
 export type User = {
   __typename?: 'User';
   id: Scalars['ID'];
@@ -73,6 +82,7 @@ export type Quiz = {
   description: Scalars['String'];
   quiz_photo?: Maybe<Scalars['String']>;
   questions: Array<Question>;
+  resultsCount: Scalars['Int'];
   likes: Array<Like>;
   isLiked: Scalars['Boolean'];
   likesCount: Scalars['Int'];
@@ -107,6 +117,16 @@ export type PaginatedComments = {
   __typename?: 'PaginatedComments';
   comments: Array<Comment>;
   hasMore: Scalars['Boolean'];
+};
+
+export type UsersAnswer = {
+  question_id: Scalars['String'];
+  choice_id: Scalars['String'];
+};
+
+export type ChecksAnswerInput = {
+  quiz_id: Scalars['Float'];
+  users_answer: Array<UsersAnswer>;
 };
 
 export type ChoiceInput = {
@@ -185,6 +205,7 @@ export type Query = {
   meQuizzes: PaginatedMeQuizzes;
   quizToUpdate: Quiz;
   singleQuiz?: Maybe<Quiz>;
+  questions?: Maybe<Array<Question>>;
   comments?: Maybe<PaginatedComments>;
   me?: Maybe<User>;
   getUsers: Array<User>;
@@ -213,6 +234,11 @@ export type QuerySingleQuizArgs = {
 };
 
 
+export type QueryQuestionsArgs = {
+  quiz_id: Scalars['Int'];
+};
+
+
 export type QueryCommentsArgs = {
   cursor?: Maybe<Scalars['String']>;
   limit: Scalars['Int'];
@@ -221,6 +247,7 @@ export type QueryCommentsArgs = {
 
 export type Mutation = {
   __typename?: 'Mutation';
+  checkAnswer?: Maybe<Result>;
   createComment: Comment;
   createQuiz: Quiz;
   deleteComment: Scalars['String'];
@@ -233,6 +260,11 @@ export type Mutation = {
   register: User;
   updateAccount: User;
   updateProfile?: Maybe<User>;
+};
+
+
+export type MutationCheckAnswerArgs = {
+  data: ChecksAnswerInput;
 };
 
 
@@ -333,6 +365,23 @@ export type UserResponseFragment = (
     { __typename?: 'Profile' }
     & Pick<Profile, 'id' | 'first_name' | 'last_name' | 'birthday' | 'gender' | 'name' | 'country' | 'bio' | 'social'>
   ) }
+);
+
+export type CheckAnswerMutationVariables = Exact<{
+  data: ChecksAnswerInput;
+}>;
+
+
+export type CheckAnswerMutation = (
+  { __typename?: 'Mutation' }
+  & { checkAnswer?: Maybe<(
+    { __typename?: 'Result' }
+    & Pick<Result, 'id' | 'score' | 'current_total_questions'>
+    & { taker: (
+      { __typename?: 'User' }
+      & Pick<User, 'username' | 'avatar' | 'email'>
+    ) }
+  )> }
 );
 
 export type CreateCommentMutationVariables = Exact<{
@@ -529,6 +578,19 @@ export type MeQuizzesQuery = (
   ) }
 );
 
+export type QuestionsQueryVariables = Exact<{
+  quiz_id: Scalars['Int'];
+}>;
+
+
+export type QuestionsQuery = (
+  { __typename?: 'Query' }
+  & { questions?: Maybe<Array<(
+    { __typename?: 'Question' }
+    & Pick<Question, 'question_id' | 'question' | 'question_photo' | 'choices' | 'hint' | 'with_hint'>
+  )>> }
+);
+
 export type QuizToUpdateQueryVariables = Exact<{
   quiz_id: Scalars['Int'];
 }>;
@@ -667,6 +729,45 @@ export const UserResponseFragmentDoc = gql`
   }
 }
     `;
+export const CheckAnswerDocument = gql`
+    mutation CheckAnswer($data: ChecksAnswerInput!) {
+  checkAnswer(data: $data) {
+    id
+    taker {
+      username
+      avatar
+      email
+    }
+    score
+    current_total_questions
+  }
+}
+    `;
+export type CheckAnswerMutationFn = Apollo.MutationFunction<CheckAnswerMutation, CheckAnswerMutationVariables>;
+
+/**
+ * __useCheckAnswerMutation__
+ *
+ * To run a mutation, you first call `useCheckAnswerMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useCheckAnswerMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [checkAnswerMutation, { data, loading, error }] = useCheckAnswerMutation({
+ *   variables: {
+ *      data: // value for 'data'
+ *   },
+ * });
+ */
+export function useCheckAnswerMutation(baseOptions?: Apollo.MutationHookOptions<CheckAnswerMutation, CheckAnswerMutationVariables>) {
+        return Apollo.useMutation<CheckAnswerMutation, CheckAnswerMutationVariables>(CheckAnswerDocument, baseOptions);
+      }
+export type CheckAnswerMutationHookResult = ReturnType<typeof useCheckAnswerMutation>;
+export type CheckAnswerMutationResult = Apollo.MutationResult<CheckAnswerMutation>;
+export type CheckAnswerMutationOptions = Apollo.BaseMutationOptions<CheckAnswerMutation, CheckAnswerMutationVariables>;
 export const CreateCommentDocument = gql`
     mutation CreateComment($text: String!, $quiz_id: Float!) {
   createComment(text: $text, quiz_id: $quiz_id) {
@@ -1140,6 +1241,44 @@ export function useMeQuizzesLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<
 export type MeQuizzesQueryHookResult = ReturnType<typeof useMeQuizzesQuery>;
 export type MeQuizzesLazyQueryHookResult = ReturnType<typeof useMeQuizzesLazyQuery>;
 export type MeQuizzesQueryResult = Apollo.QueryResult<MeQuizzesQuery, MeQuizzesQueryVariables>;
+export const QuestionsDocument = gql`
+    query Questions($quiz_id: Int!) {
+  questions(quiz_id: $quiz_id) {
+    question_id
+    question
+    question_photo
+    choices
+    hint
+    with_hint
+  }
+}
+    `;
+
+/**
+ * __useQuestionsQuery__
+ *
+ * To run a query within a React component, call `useQuestionsQuery` and pass it any options that fit your needs.
+ * When your component renders, `useQuestionsQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useQuestionsQuery({
+ *   variables: {
+ *      quiz_id: // value for 'quiz_id'
+ *   },
+ * });
+ */
+export function useQuestionsQuery(baseOptions: Apollo.QueryHookOptions<QuestionsQuery, QuestionsQueryVariables>) {
+        return Apollo.useQuery<QuestionsQuery, QuestionsQueryVariables>(QuestionsDocument, baseOptions);
+      }
+export function useQuestionsLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<QuestionsQuery, QuestionsQueryVariables>) {
+          return Apollo.useLazyQuery<QuestionsQuery, QuestionsQueryVariables>(QuestionsDocument, baseOptions);
+        }
+export type QuestionsQueryHookResult = ReturnType<typeof useQuestionsQuery>;
+export type QuestionsLazyQueryHookResult = ReturnType<typeof useQuestionsLazyQuery>;
+export type QuestionsQueryResult = Apollo.QueryResult<QuestionsQuery, QuestionsQueryVariables>;
 export const QuizToUpdateDocument = gql`
     query QuizToUpdate($quiz_id: Int!) {
   quizToUpdate(quiz_id: $quiz_id) {

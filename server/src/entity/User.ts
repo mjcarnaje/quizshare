@@ -15,6 +15,7 @@ import { Like } from './Like';
 import { Profile } from './Profile';
 import { Quiz } from './Quiz';
 // import { Comment } from './Comment';
+import { Result } from './Result';
 
 @ObjectType()
 @Entity()
@@ -54,6 +55,9 @@ export class User extends BaseEntity {
 	@OneToOne(() => Profile, { cascade: true, eager: true })
 	@JoinColumn({ name: 'profile_id' })
 	profile: Profile;
+
+	@OneToMany(() => Result, (result) => result.quiz, { cascade: true })
+	answered_quizzes: Result[];
 
 	@OneToMany(() => Quiz, (quiz) => quiz.author)
 	quizzes: Quiz[];

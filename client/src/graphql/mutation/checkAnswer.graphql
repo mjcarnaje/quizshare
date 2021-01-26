@@ -1,0 +1,12 @@
+mutation CheckAnswer($data: ChecksAnswerInput!) {
+	checkAnswer(data: $data) {
+		id
+		taker {
+			username
+			avatar
+			email
+		}
+		score
+		current_total_questions
+	}
+}

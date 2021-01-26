@@ -3,7 +3,6 @@ import { Quiz } from '../../entity/Quiz';
 import { MyContext } from '../../types/MyContext';
 import { isAuthenticated } from '../middleware/isAuthenticated';
 import { QuizInput } from './createQuiz/CreateQuizInput';
-
 @Resolver(Quiz)
 export class UpdateQuiz {
 	@UseMiddleware(isAuthenticated)

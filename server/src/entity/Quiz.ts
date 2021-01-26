@@ -14,6 +14,7 @@ import { Question } from './Question';
 import { User } from './User';
 import { Like } from './Like';
 import { Comment } from './Comment';
+import { Result } from './Result';
 
 @ObjectType()
 @Entity()
@@ -46,6 +47,12 @@ export class Quiz extends BaseEntity {
 	@Field(() => [Question])
 	@OneToMany(() => Question, (question) => question.quiz, { cascade: true })
 	questions: Question[];
+
+	@OneToMany(() => Result, (result) => result.quiz, { cascade: true })
+	results: Result[];
+
+	@Field(() => Int)
+	resultsCount: number;
 
 	@Field(() => [Like])
 	@OneToMany(() => Like, (like) => like.quiz)
