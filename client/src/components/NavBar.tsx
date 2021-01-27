@@ -13,10 +13,8 @@ import { isServer } from '../utils/isServer';
 import { DarkModeSwitch } from './DarkModeSwitch';
 import { UserMenu } from './UserMenu';
 import { useRouter } from 'next/dist/client/router';
-import { useUserContext } from '../store/context';
 
 export const NavBar: React.FC = () => {
-	const { setUser } = useUserContext();
 	const router = useRouter();
 
 	const bgColor = useColorModeValue(
@@ -91,11 +89,6 @@ export const NavBar: React.FC = () => {
 			</>
 		);
 	}
-
-	useEffect(() => {
-		if (!data?.me) return;
-		setUser(data.me!);
-	}, []);
 
 	return (
 		<Flex

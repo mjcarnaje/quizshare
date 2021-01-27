@@ -1,0 +1,14 @@
+fragment ResultResponse on Result {
+	id
+	taker {
+		username
+		avatar
+		email
+		profile {
+			name
+		}
+	}
+	score
+	current_total_questions
+	answered_at
+}

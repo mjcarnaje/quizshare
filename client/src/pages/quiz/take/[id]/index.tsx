@@ -11,7 +11,7 @@ import {
 } from '@chakra-ui/react';
 import { useRouter } from 'next/dist/client/router';
 import Image from 'next/image';
-import React, { useState, useRef, RefObject } from 'react';
+import React, { useState, useRef, RefObject, useContext } from 'react';
 import {
 	useQuestionsQuery,
 	useSingleQuizQuery,
@@ -20,6 +20,7 @@ import { MainContainer } from '../../../../layouts/MainContainer';
 import { withApollo } from '../../../../utils/withApollo';
 import { Grid } from '@chakra-ui/react';
 import { useCheckAnswerMutation } from '../../../../generated/graphql';
+import { QuizResultContext, QuizResultType } from '../../../../store/context';
 
 interface TakeQuizProps {}
 type UsersAnswerProps = {
@@ -33,6 +34,8 @@ const TakeQuiz: React.FC<TakeQuizProps> = ({}) => {
 
 	const [show, setShow] = useState(false);
 	const [usersAnswer, setUsersAnswer] = useState<UsersAnswerProps[]>([]);
+
+	const { setQuizResult } = useContext(QuizResultContext) as QuizResultType;
 
 	const { data, loading } = useQuestionsQuery({
 		variables: {
@@ -201,7 +204,11 @@ const TakeQuiz: React.FC<TakeQuizProps> = ({}) => {
 										users_answer: usersAnswer,
 									},
 								},
-								update: () => {
+								update: (_, { data }) => {
+									router.push(
+										`/quiz/take/${parseInt(router.query.id as string)}/result`
+									);
+									setQuizResult(data?.checkAnswer);
 									setUsersAnswer([]);
 								},
 							});

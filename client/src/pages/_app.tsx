@@ -3,8 +3,8 @@ import { AppProps } from 'next/app';
 import Router from 'next/router';
 import NProgress from 'nprogress';
 import '../styles/nprogress.css';
-import { UserProvider } from '../store/context';
 import theme from '../theme';
+import { QuizResultProvider } from '../store/context';
 
 NProgress.configure({
 	showSpinner: false,
@@ -17,9 +17,9 @@ Router.events.on('routeChangeError', () => NProgress.done());
 function MyApp({ Component, pageProps }: AppProps) {
 	return (
 		<ChakraProvider resetCSS theme={theme}>
-			<UserProvider>
+			<QuizResultProvider>
 				<Component {...pageProps} />
-			</UserProvider>
+			</QuizResultProvider>
 		</ChakraProvider>
 	);
 }

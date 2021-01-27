@@ -15,16 +15,16 @@ import {
 	MenuList,
 	Square,
 	SquareProps,
-	useDisclosure,
 	useColorModeValue,
+	useDisclosure,
 } from '@chakra-ui/react';
+import NextLink from 'next/link';
 import React, { RefObject, useRef } from 'react';
 import {
 	QuizzesResponseFragment,
 	useDeleteQuizMutation,
+	useMeQuery,
 } from '../generated/graphql';
-import { useUserContext } from '../store/context';
-import NextLink from 'next/link';
 
 type EditDeleteQuizButtonsProps = {
 	quiz: QuizzesResponseFragment;
@@ -34,7 +34,7 @@ export const EditDeleteQuizButtons: React.FC<EditDeleteQuizButtonsProps> = ({
 	quiz,
 	...props
 }) => {
-	const { user } = useUserContext();
+	const { data } = useMeQuery();
 
 	const bgColor = useColorModeValue('rgb(255, 255, 255)', 'rgb(32, 32, 32)');
 	const colorBody = useColorModeValue('gray.600', '#BDBDBD');
@@ -44,9 +44,10 @@ export const EditDeleteQuizButtons: React.FC<EditDeleteQuizButtonsProps> = ({
 	const { isOpen, onOpen, onClose } = useDisclosure();
 	const cancelRef: RefObject<any> = useRef();
 
-	if (user?.id! !== quiz.author.id) {
+	if (data?.me?.id !== quiz.author.id) {
 		return null;
 	}
+
 	return (
 		<>
 			<Square {...props}>

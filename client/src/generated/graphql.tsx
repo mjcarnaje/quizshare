@@ -358,6 +358,19 @@ export type QuizzesResponseFragment = (
   ) }
 );
 
+export type ResultResponseFragment = (
+  { __typename?: 'Result' }
+  & Pick<Result, 'id' | 'score' | 'current_total_questions' | 'answered_at'>
+  & { taker: (
+    { __typename?: 'User' }
+    & Pick<User, 'username' | 'avatar' | 'email'>
+    & { profile: (
+      { __typename?: 'Profile' }
+      & Pick<Profile, 'name'>
+    ) }
+  ) }
+);
+
 export type UserResponseFragment = (
   { __typename?: 'User' }
   & Pick<User, 'id' | 'username' | 'email' | 'avatar' | 'cover_photo' | 'created_at' | 'updated_at'>
@@ -376,11 +389,7 @@ export type CheckAnswerMutation = (
   { __typename?: 'Mutation' }
   & { checkAnswer?: Maybe<(
     { __typename?: 'Result' }
-    & Pick<Result, 'id' | 'score' | 'current_total_questions'>
-    & { taker: (
-      { __typename?: 'User' }
-      & Pick<User, 'username' | 'avatar' | 'email'>
-    ) }
+    & ResultResponseFragment
   )> }
 );
 
@@ -707,6 +716,22 @@ export const QuizzesResponseFragmentDoc = gql`
   commentsCount
 }
     `;
+export const ResultResponseFragmentDoc = gql`
+    fragment ResultResponse on Result {
+  id
+  taker {
+    username
+    avatar
+    email
+    profile {
+      name
+    }
+  }
+  score
+  current_total_questions
+  answered_at
+}
+    `;
 export const UserResponseFragmentDoc = gql`
     fragment UserResponse on User {
   id
@@ -732,17 +757,10 @@ export const UserResponseFragmentDoc = gql`
 export const CheckAnswerDocument = gql`
     mutation CheckAnswer($data: ChecksAnswerInput!) {
   checkAnswer(data: $data) {
-    id
-    taker {
-      username
-      avatar
-      email
-    }
-    score
-    current_total_questions
+    ...ResultResponse
   }
 }
-    `;
+    ${ResultResponseFragmentDoc}`;
 export type CheckAnswerMutationFn = Apollo.MutationFunction<CheckAnswerMutation, CheckAnswerMutationVariables>;
 
 /**

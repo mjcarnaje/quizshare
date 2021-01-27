@@ -1,33 +1,18 @@
-import React, { createContext, useState, useContext } from 'react';
-import { User } from '../generated/graphql';
+import React, { createContext, useState } from 'react';
+import { Result } from '../generated/graphql';
 
-interface ContextProps {
-	user?: User;
-	setUser(user: User): void;
-}
-const UserContext = createContext<ContextProps>({
-	user: undefined,
-	setUser: () => {},
-});
-
-interface Props {
-	children?: React.ReactNode;
-}
-
-export const UserProvider: React.FC<Props> = ({ children }) => {
-	const [user, setUser] = useState<User>();
-	return (
-		<UserContext.Provider
-			value={{
-				user,
-				setUser,
-			}}
-		>
-			{children}
-		</UserContext.Provider>
-	);
+export type QuizResultType = {
+	quizResult?: Result | null;
+	setQuizResult: (data: Result | null | undefined) => void;
 };
 
-export function useUserContext() {
-	return useContext(UserContext);
-}
+export const QuizResultContext = createContext<QuizResultType | null>(null);
+
+export const QuizResultProvider: React.FC = ({ children }) => {
+	const [quizResult, setQuizResult] = useState<Result | null | undefined>();
+	return (
+		<QuizResultContext.Provider value={{ quizResult, setQuizResult }}>
+			{children}
+		</QuizResultContext.Provider>
+	);
+};

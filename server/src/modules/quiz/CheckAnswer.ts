@@ -56,7 +56,7 @@ export class CheckAnswerResolver {
 		for (const usersans of users_answer) {
 			for (const correctans of quiz.questions) {
 				if (usersans.choice_id === correctans.answer) {
-					score = +1;
+					score += 1;
 				}
 			}
 		}
