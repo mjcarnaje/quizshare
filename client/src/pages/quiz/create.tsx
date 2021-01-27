@@ -185,7 +185,7 @@ const CreateQuiz: React.FC = () => {
 								ml='10px'
 								isLoading={loading}
 							>
-								Save
+								Publish
 							</Button>
 						</Flex>
 					</form>

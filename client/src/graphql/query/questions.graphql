@@ -1,4 +1,4 @@
-query Questions($quiz_id: Int!) {
+query Questions($quiz_id: Int!, $withAnswer: Boolean!) {
 	questions(quiz_id: $quiz_id) {
 		question_id
 		question
@@ -6,5 +6,6 @@ query Questions($quiz_id: Int!) {
 		choices
 		hint
 		with_hint
+		answer @include(if: $withAnswer)
 	}
 }

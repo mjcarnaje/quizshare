@@ -215,7 +215,7 @@ const EditQuiz = ({}) => {
 								ml='10px'
 								isLoading={updateLoading}
 							>
-								Save
+								Publish
 							</Button>
 						</Flex>
 					</form>

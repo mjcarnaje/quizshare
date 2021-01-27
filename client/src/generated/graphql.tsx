@@ -589,6 +589,7 @@ export type MeQuizzesQuery = (
 
 export type QuestionsQueryVariables = Exact<{
   quiz_id: Scalars['Int'];
+  withAnswer: Scalars['Boolean'];
 }>;
 
 
@@ -596,7 +597,7 @@ export type QuestionsQuery = (
   { __typename?: 'Query' }
   & { questions?: Maybe<Array<(
     { __typename?: 'Question' }
-    & Pick<Question, 'question_id' | 'question' | 'question_photo' | 'choices' | 'hint' | 'with_hint'>
+    & MakeOptional<Pick<Question, 'question_id' | 'question' | 'question_photo' | 'choices' | 'hint' | 'with_hint' | 'answer'>, 'answer'>
   )>> }
 );
 
@@ -1260,7 +1261,7 @@ export type MeQuizzesQueryHookResult = ReturnType<typeof useMeQuizzesQuery>;
 export type MeQuizzesLazyQueryHookResult = ReturnType<typeof useMeQuizzesLazyQuery>;
 export type MeQuizzesQueryResult = Apollo.QueryResult<MeQuizzesQuery, MeQuizzesQueryVariables>;
 export const QuestionsDocument = gql`
-    query Questions($quiz_id: Int!) {
+    query Questions($quiz_id: Int!, $withAnswer: Boolean!) {
   questions(quiz_id: $quiz_id) {
     question_id
     question
@@ -1268,6 +1269,7 @@ export const QuestionsDocument = gql`
     choices
     hint
     with_hint
+    answer @include(if: $withAnswer)
   }
 }
     `;
@@ -1285,6 +1287,7 @@ export const QuestionsDocument = gql`
  * const { data, loading, error } = useQuestionsQuery({
  *   variables: {
  *      quiz_id: // value for 'quiz_id'
+ *      withAnswer: // value for 'withAnswer'
  *   },
  * });
  */

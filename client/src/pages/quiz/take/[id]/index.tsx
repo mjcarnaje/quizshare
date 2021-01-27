@@ -1,45 +1,58 @@
 import {
-	Avatar,
-	Button,
-	Container as ChakraContainter,
-	Heading,
-	Flex,
-	Text,
-	Box,
-	VStack,
 	AspectRatio,
+	Avatar,
+	Box,
+	Button,
+	Flex,
+	Grid,
+	Heading,
+	Text,
+	useColorModeValue,
+	VStack,
 } from '@chakra-ui/react';
 import { useRouter } from 'next/dist/client/router';
 import Image from 'next/image';
-import React, { useState, useRef, RefObject, useContext } from 'react';
+import React, { RefObject, useContext, useRef, useState } from 'react';
 import {
+	useCheckAnswerMutation,
 	useQuestionsQuery,
 	useSingleQuizQuery,
 } from '../../../../generated/graphql';
 import { MainContainer } from '../../../../layouts/MainContainer';
-import { withApollo } from '../../../../utils/withApollo';
-import { Grid } from '@chakra-ui/react';
-import { useCheckAnswerMutation } from '../../../../generated/graphql';
+import { SubContainer } from '../../../../layouts/SubContainer';
 import { QuizResultContext, QuizResultType } from '../../../../store/context';
+import { withApollo } from '../../../../utils/withApollo';
 
 interface TakeQuizProps {}
-type UsersAnswerProps = {
+export type UsersAnswerProps = {
 	question_id: string;
 	choice_id: string;
 };
 
 const TakeQuiz: React.FC<TakeQuizProps> = ({}) => {
+	const choiceBgHover = useColorModeValue(
+		'gray.200',
+		'rgba(255, 255, 255, 0.04)'
+	);
+
+	const choiceBgSelected = useColorModeValue(
+		'gray.300',
+		'rgba(255, 255, 255, 0.06'
+	);
+
 	const router = useRouter();
 	const myRefs: RefObject<any> = useRef([]);
 
-	const [show, setShow] = useState(false);
 	const [usersAnswer, setUsersAnswer] = useState<UsersAnswerProps[]>([]);
 
-	const { setQuizResult } = useContext(QuizResultContext) as QuizResultType;
+	const { setQuizResult, setAnswerByUser } = useContext(
+		QuizResultContext
+	) as QuizResultType;
 
 	const { data, loading } = useQuestionsQuery({
 		variables: {
 			quiz_id: parseInt(router.query.id as string),
+			withAnswer: false,
 		},
 	});
 
@@ -72,14 +85,7 @@ const TakeQuiz: React.FC<TakeQuizProps> = ({}) => {
 
 	return (
 		<MainContainer>
-			<ChakraContainter
-				maxW={['100%', '100%', '860px']}
-				boxShadow='md'
-				borderRadius='md'
-				my='42px'
-				p='24px'
-				borderWidth='1px'
-			>
+			<SubContainer>
 				<Box ml='10px'>
 					<Heading as='h2' fontSize='24px'>
 						{quizdata?.singleQuiz?.title}
@@ -162,11 +168,11 @@ const TakeQuiz: React.FC<TakeQuizProps> = ({}) => {
 											textAlign='center'
 											wordBreak='break-word'
 											whiteSpace='pre-line'
-											_hover={{ bg: !isAnswered ? 'gray.50' : '' }}
+											_hover={{ bg: !isAnswered ? choiceBgHover : '' }}
 											onClick={() =>
 												selectAnswer(question.question_id, choice.choice_id, i)
 											}
-											bg={isAnswered ? 'gray.300' : ''}
+											bg={isAnswered ? choiceBgSelected : ''}
 											boxShadow={isAnswered ? 'sm' : ''}
 										>
 											{choice?.choicePhoto && (
@@ -181,7 +187,9 @@ const TakeQuiz: React.FC<TakeQuizProps> = ({}) => {
 													</AspectRatio>
 												</Box>
 											)}
-											{choice.value}
+											<Box>
+												<Text>{choice.value}</Text>
+											</Box>
 										</Box>
 									);
 								})}
@@ -193,7 +201,7 @@ const TakeQuiz: React.FC<TakeQuizProps> = ({}) => {
 				{!quizdata && quizloading && <Text>quiz loading...</Text>}
 				{!data && loading && <Text>questoins loading...</Text>}
 
-				<Box w='full' textAlign='right'>
+				<Box w='full' textAlign='center'>
 					<Button
 						isLoading={checking}
 						onClick={async () => {
@@ -208,20 +216,17 @@ const TakeQuiz: React.FC<TakeQuizProps> = ({}) => {
 									router.push(
 										`/quiz/take/${parseInt(router.query.id as string)}/result`
 									);
+									setAnswerByUser(usersAnswer);
 									setQuizResult(data?.checkAnswer);
 									setUsersAnswer([]);
 								},
 							});
 						}}
 					>
-						Check Answer
+						Sumbit answer
 					</Button>
 				</Box>
-			</ChakraContainter>
-			<Button onClick={() => setShow(!show)} size='sm'>
-				toggle
-			</Button>
-			{show && data && <pre>{JSON.stringify(data.questions, null, 2)}</pre>}
+			</SubContainer>
 		</MainContainer>
 	);
 };

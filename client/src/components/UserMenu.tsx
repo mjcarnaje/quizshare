@@ -42,7 +42,7 @@ export const UserMenu: React.FC<User> = ({
 
 	return (
 		<Menu>
-			<MenuButton _hover={{ bg: '' }} _focus={{ bg: '', outline: '' }}>
+			<MenuButton>
 				<Avatar
 					size='sm'
 					name={name}
