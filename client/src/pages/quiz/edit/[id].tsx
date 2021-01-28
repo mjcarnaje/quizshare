@@ -68,7 +68,7 @@ const EditQuiz = ({}) => {
 				router.push('/');
 			}
 		} catch (err) {
-			errorMapper(errors, setError);
+			errorMapper(err, setError);
 		}
 	};
 
@@ -182,7 +182,9 @@ const EditQuiz = ({}) => {
 								fontSize='20px'
 								size='lg'
 								error={errors.title}
-								errorMessage='Title is required field.'
+								errorMessage={
+									errors.title?.message || 'Title is required field.'
+								}
 							/>
 							<QuizInputUI
 								register={register({ required: true })}
@@ -194,7 +196,10 @@ const EditQuiz = ({}) => {
 								overflow='hidden'
 								py='5px'
 								error={errors.description}
-								errorMessage='Description is required field.'
+								errorMessage={
+									errors.description?.message ||
+									'Description is required field.'
+								}
 							/>
 						</VStack>
 						<QuestionArray

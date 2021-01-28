@@ -19,12 +19,7 @@ import {
 import React, { RefObject, useRef, useState } from 'react';
 import { FaComment } from 'react-icons/fa';
 import TextareaAutosize from 'react-textarea-autosize';
-import {
-	CommentsDocument,
-	useCreateCommentMutation,
-	useMeQuery,
-} from '../generated/graphql';
-import { useUserContext } from '../store/context';
+import { useCreateCommentMutation, useMeQuery } from '../generated/graphql';
 
 interface CommentButtonProps {
 	quiz: {

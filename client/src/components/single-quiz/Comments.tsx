@@ -9,11 +9,19 @@ import {
 	Text,
 	useColorModeValue,
 	VStack,
+	Input,
+	FormControl,
 	Container as ChakraContainter,
 } from '@chakra-ui/react';
-import React from 'react';
-import { useCommentsQuery } from '../../generated/graphql';
+import React, { useState } from 'react';
+import {
+	useCommentsQuery,
+	useMeQuery,
+	useCreateCommentMutation,
+} from '../../generated/graphql';
 import moment from 'moment';
+import TextareaAutosize from 'react-textarea-autosize';
+import { gql } from '@apollo/client';
 
 const LoadingSkeleton: React.FC = () => {
 	return (
@@ -42,14 +50,22 @@ const LoadingSkeleton: React.FC = () => {
 interface SingleQuizCommentsProps {
 	quiz_id: number;
 	limit?: number;
+	commentsCount: number;
 }
 
-const SingleQuizComments: React.FC<SingleQuizCommentsProps> = ({
+const Comments: React.FC<SingleQuizCommentsProps> = ({
 	quiz_id,
 	limit = 5,
+	commentsCount,
 }) => {
 	const buttonColorScheme = useColorModeValue('purple', 'gray');
+	const [text, setText] = useState('');
 
+	const { data: medata } = useMeQuery();
+	const [
+		createComment,
+		{ loading: commentloading },
+	] = useCreateCommentMutation();
 	const { data, loading, error, fetchMore, variables } = useCommentsQuery({
 		variables: {
 			limit: limit,
@@ -70,7 +86,71 @@ const SingleQuizComments: React.FC<SingleQuizCommentsProps> = ({
 
 	return (
 		<ChakraContainter maxW={['100%', '100%', '820px']} mb='36px' p='0'>
+			<Flex p='10px' mb='40px'>
+				<Avatar
+					name={medata?.me?.profile.name}
+					src={medata?.me?.avatar ?? ''}
+					mr='10px'
+				/>
+				<Box w='full'>
+					<FormControl>
+						<Input
+							type='text'
+							placeholder='Add to discussion'
+							resize='none'
+							variant='filled'
+							value={text}
+							onChange={(e) => setText(e.target.value)}
+							_focus={{ outline: 'none' }}
+							fontFamily='inter'
+							py='7px'
+							minH='70px'
+							overflow='hidden'
+							as={TextareaAutosize}
+						/>
+					</FormControl>
+					<Button
+						mt='4px'
+						variant='ghost'
+						size='sm'
+						borderRadius='lg'
+						colorScheme='purple'
+						onClick={async () => {
+							createComment({
+								variables: {
+									quiz_id: quiz_id,
+									text: text,
+								},
+								update: (cache) => {
+									cache.writeFragment({
+										id: 'Quiz:' + quiz_id,
+										fragment: gql`
+											fragment _ on Quiz {
+												id
+												commentsCount
+											}
+										`,
+										data: { commentsCount: (commentsCount += 1) },
+									});
+
+									setText('');
+								},
+							});
+						}}
+						isLoading={commentloading}
+					>
+						Post Comment
+					</Button>
+				</Box>
+			</Flex>
+
 			{loading && !data && <LoadingSkeleton />}
+
+			{!loading && !data?.comments?.comments && (
+				<Box my='36px' textAlign='center' w='full'>
+					<Text>There is no discussion yet.</Text>
+				</Box>
+			)}
 
 			<VStack spacing='15px' w='full'>
 				<>
@@ -92,8 +172,8 @@ const SingleQuizComments: React.FC<SingleQuizCommentsProps> = ({
 								<Flex
 									key={id}
 									p='10px'
-									borderWidth='1px'
-									borderRadius='8px'
+									// borderWidth='1px'
+									// borderRadius='8px'
 									w='full'
 								>
 									<Avatar src={avatar || ''} name={name} />
@@ -101,12 +181,13 @@ const SingleQuizComments: React.FC<SingleQuizCommentsProps> = ({
 										<HStack>
 											<Text fontWeight='bold'>{username}</Text>
 											<Text fontSize='14px'>{email}</Text>
-											<Text>&#183;</Text>
-											<Text fontSize='14px'>
-												{moment(parseInt(created_at)).fromNow(true)} ago
-											</Text>
 										</HStack>
-										<Text mt='5px'>{text}</Text>
+										<Text fontSize='14px' mb='12px'>
+											{moment(parseInt(created_at)).fromNow(true)} ago
+										</Text>
+										<Text wordBreak='break-word' whiteSpace='pre-line'>
+											{text}
+										</Text>
 									</Box>
 								</Flex>
 							);
@@ -143,4 +224,4 @@ const SingleQuizComments: React.FC<SingleQuizCommentsProps> = ({
 		</ChakraContainter>
 	);
 };
-export default SingleQuizComments;
+export default Comments;

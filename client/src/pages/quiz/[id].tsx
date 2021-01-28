@@ -1,7 +1,7 @@
 import { useRouter } from 'next/dist/client/router';
 import React from 'react';
 import { MainContainer } from '../../layouts/MainContainer';
-import SingleQuizComments from '../../components/single-quiz/SingleQuizComments';
+import Comments from '../../components/single-quiz/Comments';
 import SingleQuizHead from '../../components/single-quiz/SingleQuizHead';
 import { useSingleQuizQuery } from '../../generated/graphql';
 import { withApollo } from '../../utils/withApollo';
@@ -12,7 +12,7 @@ const Quiz: React.FC<QuizProps> = ({}) => {
 	const router = useRouter();
 
 	const {
-		data: quizData,
+		data: quizdata,
 		loading: quizLoading,
 		error: quizError,
 	} = useSingleQuizQuery({
@@ -27,8 +27,11 @@ const Quiz: React.FC<QuizProps> = ({}) => {
 
 	return (
 		<MainContainer>
-			<SingleQuizHead data={quizData?.singleQuiz} quizLoading={quizLoading} />
-			<SingleQuizComments quiz_id={parseInt(router.query.id as string)} />
+			<SingleQuizHead data={quizdata?.singleQuiz} quizLoading={quizLoading} />
+			<Comments
+				quiz_id={parseInt(router.query.id as string)}
+				commentsCount={quizdata?.singleQuiz?.commentsCount ?? 0}
+			/>
 		</MainContainer>
 	);
 };

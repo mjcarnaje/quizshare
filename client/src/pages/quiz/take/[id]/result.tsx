@@ -25,7 +25,7 @@ import { QuizResultContext, QuizResultType } from '../../../../store/context';
 import { withApollo } from '../../../../utils/withApollo';
 import { useColorModeValue } from '@chakra-ui/react';
 import { AiFillCheckCircle, AiFillCloseCircle } from 'react-icons/ai';
-import SingleQuizComments from '../../../../components/single-quiz/SingleQuizComments';
+import Comments from '../../../../components/single-quiz/Comments';
 
 interface ResultProps {}
 
@@ -301,7 +301,10 @@ const Result: React.FC<ResultProps> = ({}) => {
 				<Heading as='h3' fontSize='18px' fontFamily='inter' mb='20px'>
 					Discussions
 				</Heading>
-				<SingleQuizComments quiz_id={parseInt(id as string)} />
+				<Comments
+					quiz_id={parseInt(id as string)}
+					commentsCount={quizdata?.singleQuiz?.commentsCount ?? 0}
+				/>
 			</SubContainer>
 		</MainContainer>
 	);
