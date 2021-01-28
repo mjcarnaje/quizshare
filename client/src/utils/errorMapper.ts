@@ -17,7 +17,7 @@ const errorMapper = (err: any, setError: Function) => {
 	} else {
 		return toast({
 			title: 'An error occurred.',
-			description: err.graphQLErrors[0].message,
+			description: err.graphQLErrors?.[0]?.message ?? 'There is an error',
 			status: 'error',
 			isClosable: true,
 			position: 'bottom-right',

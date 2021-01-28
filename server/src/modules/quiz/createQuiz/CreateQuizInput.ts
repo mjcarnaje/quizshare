@@ -9,7 +9,7 @@ export class QuizInput {
 	title: string;
 
 	@Field()
-	@MinLength(6)
+	@MinLength(80)
 	description: string;
 
 	@Field({ nullable: true })

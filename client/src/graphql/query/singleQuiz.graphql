@@ -18,5 +18,7 @@ query SingleQuiz($quiz_id: Int!) {
 		commentsCount
 		created_at
 		questionsCount
+		takersCount
+		isTaken
 	}
 }

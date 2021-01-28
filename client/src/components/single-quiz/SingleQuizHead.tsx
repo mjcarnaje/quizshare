@@ -12,6 +12,8 @@ import {
 	Skeleton,
 	HStack,
 	SkeletonText,
+	Icon,
+	Tooltip,
 } from '@chakra-ui/react';
 import Image from 'next/image';
 import moment from 'moment';
@@ -21,6 +23,7 @@ import { CommentButton } from '../CommentButton';
 import { LikeButton } from '../LikeButton';
 import { UserAvatar } from '../UserAvatar';
 import { useRouter } from 'next/dist/client/router';
+import { BiCheckDouble } from 'react-icons/bi';
 
 interface SingleQuizHeadProps {
 	data: any;
@@ -96,6 +99,8 @@ const SingleQuizHead: React.FC<SingleQuizHeadProps> = ({
 		likesCount,
 		commentsCount,
 		questionsCount,
+		takersCount,
+		isTaken,
 	} = data;
 
 	return (
@@ -143,12 +148,19 @@ const SingleQuizHead: React.FC<SingleQuizHeadProps> = ({
 					</Box>
 				)}
 				<Box px='20px' pt='20px'>
-					<Flex justify='flex-start' align='center'>
+					<Flex justify='flex-start' align='center' position='relative'>
 						<UserAvatar author={author} />
 						<Divider orientation='vertical' h='50px' mx='20px' />
 						<Heading wordBreak='break-word' lineHeight='1'>
 							{title}
 						</Heading>
+						{isTaken && (
+							<Tooltip label='You have taken this' aria-label='A tooltip'>
+								<Box position='absolute' right='10px'>
+									<Icon as={BiCheckDouble} color='gray.500' boxSize='24px' />
+								</Box>
+							</Tooltip>
+						)}
 					</Flex>
 					<Text
 						fontSize='18px'
@@ -173,6 +185,9 @@ const SingleQuizHead: React.FC<SingleQuizHeadProps> = ({
 						</Text>
 						<Text ml='5px'>
 							<strong>{questionsCount}</strong> Questions
+						</Text>
+						<Text ml='5px'>
+							<strong>{takersCount}</strong> Submissions
 						</Text>
 					</Flex>
 					<Divider />

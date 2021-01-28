@@ -52,6 +52,17 @@ export class QuizzesResolver {
 		return false;
 	}
 
+	@FieldResolver(() => Boolean)
+	isTaken(@Root() quiz: Quiz, @Ctx() { req }: MyContext) {
+		const isTaken =
+			quiz.takers.filter((taker) => taker.taker_id === req.session.user_id)
+				.length > 0;
+		if (isTaken) {
+			return true;
+		}
+		return false;
+	}
+
 	@FieldResolver(() => Int)
 	likesCount(@Root() quiz: Quiz) {
 		return quiz.likes.length;
@@ -68,8 +79,8 @@ export class QuizzesResolver {
 	}
 
 	@FieldResolver(() => Int)
-	resultsCount(@Root() quiz: Quiz) {
-		return quiz.results.length;
+	takersCount(@Root() quiz: Quiz) {
+		return quiz.takers.length;
 	}
 
 	@UseMiddleware(isAuthenticated)
@@ -85,7 +96,7 @@ export class QuizzesResolver {
 
 		if (cursor) {
 			findOption = {
-				relations: ['author', 'questions', 'likes', 'comments'],
+				relations: ['author', 'questions', 'likes', 'comments', 'takers'],
 				order: {
 					created_at: 'DESC',
 				},
@@ -94,7 +105,7 @@ export class QuizzesResolver {
 			};
 		} else {
 			findOption = {
-				relations: ['author', 'questions', 'likes', 'comments'],
+				relations: ['author', 'questions', 'likes', 'comments', 'takers'],
 				order: {
 					created_at: 'DESC',
 				},
@@ -124,7 +135,7 @@ export class QuizzesResolver {
 
 		if (cursor) {
 			findOption = {
-				relations: ['author', 'questions', 'likes', 'comments'],
+				relations: ['author', 'questions', 'likes', 'comments', 'takers'],
 				order: {
 					created_at: 'DESC',
 				},
@@ -136,7 +147,7 @@ export class QuizzesResolver {
 			};
 		} else {
 			findOption = {
-				relations: ['author', 'questions', 'likes', 'comments'],
+				relations: ['author', 'questions', 'likes', 'comments', 'takers'],
 				order: {
 					created_at: 'DESC',
 				},
@@ -175,7 +186,7 @@ export class QuizzesResolver {
 		@Arg('quiz_id', () => Int) quiz_id: number
 	): Promise<Quiz | null> {
 		const quiz = await Quiz.findOne(quiz_id, {
-			relations: ['likes', 'comments', 'questions', 'author'],
+			relations: ['likes', 'comments', 'questions', 'author', 'takers'],
 		});
 		if (!quiz) {
 			return null;

@@ -6,13 +6,13 @@ import {
 	Text,
 	useColorModeValue,
 } from '@chakra-ui/react';
+import { useRouter } from 'next/dist/client/router';
 import NextLink from 'next/link';
-import React, { useEffect } from 'react';
+import React from 'react';
 import { useMeQuery } from '../generated/graphql';
 import { isServer } from '../utils/isServer';
 import { DarkModeSwitch } from './DarkModeSwitch';
 import { UserMenu } from './UserMenu';
-import { useRouter } from 'next/dist/client/router';
 
 export const NavBar: React.FC = () => {
 	const router = useRouter();

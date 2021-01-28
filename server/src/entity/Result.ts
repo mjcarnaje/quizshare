@@ -24,7 +24,7 @@ export class Result extends BaseEntity {
 	@Column()
 	taker_id: number;
 
-	@ManyToOne(() => Quiz, (quiz) => quiz.results, { onDelete: 'CASCADE' })
+	@ManyToOne(() => Quiz, (quiz) => quiz.takers, { onDelete: 'CASCADE' })
 	@JoinColumn({ name: 'quiz_id' })
 	quiz: Quiz;
 

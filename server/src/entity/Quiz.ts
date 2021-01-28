@@ -48,11 +48,15 @@ export class Quiz extends BaseEntity {
 	@OneToMany(() => Question, (question) => question.quiz, { cascade: true })
 	questions: Question[];
 
+	@Field(() => [Result])
 	@OneToMany(() => Result, (result) => result.quiz, { cascade: true })
-	results: Result[];
+	takers: Result[];
 
 	@Field(() => Int)
-	resultsCount: number;
+	takersCount: number;
+
+	@Field(() => Boolean)
+	isTaken: boolean;
 
 	@Field(() => [Like])
 	@OneToMany(() => Like, (like) => like.quiz)

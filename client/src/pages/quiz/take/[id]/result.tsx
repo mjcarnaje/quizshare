@@ -25,6 +25,7 @@ import { QuizResultContext, QuizResultType } from '../../../../store/context';
 import { withApollo } from '../../../../utils/withApollo';
 import { useColorModeValue } from '@chakra-ui/react';
 import { AiFillCheckCircle, AiFillCloseCircle } from 'react-icons/ai';
+import SingleQuizComments from '../../../../components/single-quiz/SingleQuizComments';
 
 interface ResultProps {}
 
@@ -72,9 +73,11 @@ const Result: React.FC<ResultProps> = ({}) => {
 				justifyContent='center'
 				h='100vh'
 			>
-				<SubContainer>
-					<Text>Checking...</Text>
-					<Spinner />
+				<SubContainer display='grid' placeItems='center'>
+					<Flex>
+						<Spinner mr='5px' />
+						<Text>Checking...</Text>
+					</Flex>
 				</SubContainer>
 			</MainContainer>
 		);
@@ -293,6 +296,12 @@ const Result: React.FC<ResultProps> = ({}) => {
 						})}
 					</VStack>
 				)}
+			</SubContainer>
+			<SubContainer bg='' borderWidth='0' boxShadow='none'>
+				<Heading as='h3' fontSize='18px' fontFamily='inter' mb='20px'>
+					Discussions
+				</Heading>
+				<SingleQuizComments quiz_id={parseInt(id as string)} />
 			</SubContainer>
 		</MainContainer>
 	);

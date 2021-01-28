@@ -7,6 +7,8 @@ import {
 	StackDivider,
 	Text,
 	useBreakpointValue,
+	Flex,
+	Icon,
 } from '@chakra-ui/react';
 import Image from 'next/image';
 import Link from 'next/link';
@@ -17,12 +19,16 @@ import { EditDeleteQuizButtons } from './EditDeleteQuizButtons';
 import { LikeButton } from './LikeButton';
 import { UserAvatar } from './UserAvatar';
 import moment from 'moment';
+import { AiOutlineEye, AiOutlineUnorderedList } from 'react-icons/ai';
+import { useColorModeValue } from '@chakra-ui/react';
 
 interface QuizBoxProps {
 	quiz: QuizzesResponseFragment;
 }
 
 export const QuizBox: React.FC<QuizBoxProps> = ({ quiz }) => {
+	const titleColor = useColorModeValue('gray.700', 'white');
+
 	const { description, created_at } = quiz;
 	const descriptionCharacter = useBreakpointValue({ base: 172, md: 250 });
 
@@ -49,7 +55,7 @@ export const QuizBox: React.FC<QuizBoxProps> = ({ quiz }) => {
 	}
 
 	const titleSize = useBreakpointValue({ base: 'xl', md: 'lg' });
-	const { id, quiz_photo, title, author } = quiz;
+	const { id, quiz_photo, title, author, takersCount, questionsCount } = quiz;
 
 	return (
 		<ChakraContainter maxW={['100%', '460px', '820px']} my='36px' p='0'>
@@ -63,7 +69,7 @@ export const QuizBox: React.FC<QuizBoxProps> = ({ quiz }) => {
 					align='start'
 				>
 					<Box w={['100%', '100%', quiz_photo ? '60%' : '85%']} pos='relative'>
-						<Heading as='h2' size={titleSize} mb='10px'>
+						<Heading as='h2' size={titleSize} mb='10px' color={titleColor}>
 							<Link href={`/quiz/${id}`}>{title}</Link>
 						</Heading>
 						<EditDeleteQuizButtons
@@ -73,9 +79,23 @@ export const QuizBox: React.FC<QuizBoxProps> = ({ quiz }) => {
 							right='4px'
 							display={['inline-block', 'inline-block', 'none']}
 						/>
-						<Text mb='10px' fontSize='14px'>
-							<Link href={`/quiz/${id}`}>{date}</Link>
-						</Text>
+						<Flex mb='10px'>
+							<Text fontSize='14px'>
+								<Link href={`/quiz/${id}`}>{date}</Link>
+							</Text>
+							<Flex align='center' ml='20px'>
+								<Icon as={AiOutlineEye} />
+								<Text ml='4px' fontSize='14px'>
+									{takersCount} Submissions
+								</Text>
+							</Flex>
+							<Flex align='center' ml='20px'>
+								<Icon as={AiOutlineUnorderedList} />
+								<Text ml='4px' fontSize='14px'>
+									{questionsCount} Questions
+								</Text>
+							</Flex>
+						</Flex>
 						<Text lineHeight='22px' mb='24px'>
 							<Link href={`/quiz/${id}`}>{desc}</Link>
 						</Text>

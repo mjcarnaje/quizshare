@@ -1,5 +1,6 @@
-import { Avatar, Box, Heading, HStack, Link, Text } from '@chakra-ui/react';
+import { Avatar, Box, Heading, HStack, Text } from '@chakra-ui/react';
 import React from 'react';
+import Link from 'next/link';
 
 type ProfileProps = {
 	name?: string;

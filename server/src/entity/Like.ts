@@ -1,12 +1,11 @@
-import { Field, ID, ObjectType } from 'type-graphql';
+import { Field, ObjectType } from 'type-graphql';
 import {
 	BaseEntity,
-	Column,
 	CreateDateColumn,
 	Entity,
 	JoinColumn,
 	ManyToOne,
-	PrimaryGeneratedColumn,
+	PrimaryColumn,
 } from 'typeorm';
 import { Quiz } from './Quiz';
 import { User } from './User';
@@ -14,16 +13,12 @@ import { User } from './User';
 @ObjectType()
 @Entity()
 export class Like extends BaseEntity {
-	@Field(() => ID)
-	@PrimaryGeneratedColumn()
-	id: number;
-
 	@Field()
-	@Column()
+	@PrimaryColumn()
 	quiz_id: number;
 
 	@Field()
-	@Column()
+	@PrimaryColumn()
 	author_id: number;
 
 	@ManyToOne(() => Quiz, (quiz) => quiz.likes, { onDelete: 'CASCADE' })

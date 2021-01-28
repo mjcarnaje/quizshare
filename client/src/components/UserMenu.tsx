@@ -114,8 +114,8 @@ export const UserMenu: React.FC<User> = ({
 				<MenuDivider />
 				{[
 					{
-						path: '/dashboard/quizzes',
-						name: 'Quizzes',
+						path: '/dashboard/published',
+						name: 'Published',
 						icon: <IoDocumentsOutline fontSize='18px' color='inherit' />,
 					},
 					{

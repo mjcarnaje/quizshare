@@ -41,14 +41,18 @@ const LoadingSkeleton: React.FC = () => {
 };
 interface SingleQuizCommentsProps {
 	quiz_id: number;
+	limit?: number;
 }
 
-const SingleQuizComments: React.FC<SingleQuizCommentsProps> = ({ quiz_id }) => {
+const SingleQuizComments: React.FC<SingleQuizCommentsProps> = ({
+	quiz_id,
+	limit = 5,
+}) => {
 	const buttonColorScheme = useColorModeValue('purple', 'gray');
 
 	const { data, loading, error, fetchMore, variables } = useCommentsQuery({
 		variables: {
-			limit: 5,
+			limit: limit,
 			quiz_id: quiz_id,
 			cursor: null,
 		},
@@ -66,7 +70,7 @@ const SingleQuizComments: React.FC<SingleQuizCommentsProps> = ({ quiz_id }) => {
 
 	return (
 		<ChakraContainter maxW={['100%', '100%', '820px']} mb='36px' p='0'>
-			{!loading && !data && <LoadingSkeleton />}
+			{loading && !data && <LoadingSkeleton />}
 
 			<VStack spacing='15px' w='full'>
 				<>

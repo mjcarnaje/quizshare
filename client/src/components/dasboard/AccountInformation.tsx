@@ -90,7 +90,7 @@ export const AccountInformation: React.FC<AccountInformationProps> = ({}) => {
 									colorScheme='gray'
 									variant='ghost'
 								>
-									Edit
+									Add Cover Photo
 								</Button>
 							</Center>
 						)}

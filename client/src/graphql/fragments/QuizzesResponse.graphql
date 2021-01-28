@@ -5,7 +5,8 @@ fragment QuizzesResponse on Quiz {
 	quiz_photo
 	created_at
 	likes {
-		id
+		quiz_id
+		author_id
 	}
 	author {
 		id
@@ -19,4 +20,6 @@ fragment QuizzesResponse on Quiz {
 	isLiked
 	likesCount
 	commentsCount
+	takersCount
+	questionsCount
 }

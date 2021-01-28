@@ -9,6 +9,8 @@ import {
 	Text,
 	useColorModeValue,
 	VStack,
+	Icon,
+	Tooltip,
 } from '@chakra-ui/react';
 import { useRouter } from 'next/dist/client/router';
 import Image from 'next/image';
@@ -22,6 +24,8 @@ import { MainContainer } from '../../../../layouts/MainContainer';
 import { SubContainer } from '../../../../layouts/SubContainer';
 import { QuizResultContext, QuizResultType } from '../../../../store/context';
 import { withApollo } from '../../../../utils/withApollo';
+import { gql } from '@apollo/client';
+import { BiCheckDouble } from 'react-icons/bi';
 
 interface TakeQuizProps {}
 export type UsersAnswerProps = {
@@ -41,7 +45,7 @@ const TakeQuiz: React.FC<TakeQuizProps> = ({}) => {
 	);
 
 	const router = useRouter();
-	const myRefs: RefObject<any> = useRef([]);
+	const questionsRefs: RefObject<any> = useRef([]);
 
 	const [usersAnswer, setUsersAnswer] = useState<UsersAnswerProps[]>([]);
 
@@ -68,6 +72,7 @@ const TakeQuiz: React.FC<TakeQuizProps> = ({}) => {
 		const isAnsweredIndex = usersAnswer.findIndex(
 			(ans) => ans.question_id === question_id
 		);
+
 		if (isAnsweredIndex !== -1) {
 			let newArr = [...usersAnswer];
 			newArr[isAnsweredIndex] = { ...newArr[isAnsweredIndex], choice_id };
@@ -75,37 +80,48 @@ const TakeQuiz: React.FC<TakeQuizProps> = ({}) => {
 		} else {
 			setUsersAnswer((ans) => [...ans, { question_id, choice_id }]);
 		}
+
+		// automatic scrolling until second to the last question
 		if (
 			data?.questions?.length !== undefined &&
 			data?.questions?.length > i + 1
 		) {
-			myRefs.current[i + 1].scrollIntoView({ behavior: 'smooth' });
+			questionsRefs.current[i + 1].scrollIntoView({ behavior: 'smooth' });
 		}
 	};
 
 	return (
 		<MainContainer>
-			<SubContainer>
-				<Box ml='10px'>
-					<Heading as='h2' fontSize='24px'>
-						{quizdata?.singleQuiz?.title}
-					</Heading>
-					<Flex mt='2px'>
-						<Avatar
-							size='xs'
-							src={quizdata?.singleQuiz?.author.avatar ?? ''}
-							name={quizdata?.singleQuiz?.author.profile.name ?? ''}
-						/>
-						<Text ml='10px' as='p'>
-							{quizdata?.singleQuiz?.author.profile.name}
-						</Text>
-					</Flex>
-				</Box>
+			<SubContainer position='relative'>
+				<Flex justify='space-between'>
+					<Box ml='10px'>
+						<Heading as='h2' fontSize='24px'>
+							{quizdata?.singleQuiz?.title}
+						</Heading>
+						<Flex mt='2px'>
+							<Avatar
+								size='xs'
+								src={quizdata?.singleQuiz?.author.avatar ?? ''}
+								name={quizdata?.singleQuiz?.author.profile.name ?? ''}
+							/>
+							<Text ml='10px' as='p'>
+								{quizdata?.singleQuiz?.author.profile.name}
+							</Text>
+						</Flex>
+					</Box>
+					{quizdata?.singleQuiz?.isTaken && (
+						<Tooltip label='You have taken this' aria-label='A tooltip'>
+							<Box>
+								<Icon as={BiCheckDouble} color='gray.500' boxSize='24px' />
+							</Box>
+						</Tooltip>
+					)}
+				</Flex>
 				<VStack spacing='48px' my='20px'>
 					{data?.questions?.map((question, i) => (
 						<Box
 							key={question.question_id}
-							ref={(el) => (myRefs.current[i] = el)}
+							ref={(ref) => (questionsRefs.current[i] = ref)}
 							w='full'
 						>
 							{question?.question_photo && (
@@ -212,10 +228,36 @@ const TakeQuiz: React.FC<TakeQuizProps> = ({}) => {
 										users_answer: usersAnswer,
 									},
 								},
-								update: (_, { data }) => {
-									router.push(
-										`/quiz/take/${parseInt(router.query.id as string)}/result`
-									);
+								update: (cache, { data }) => {
+									const id = parseInt(router.query.id as string);
+
+									router.push(`/quiz/take/${id}/result`);
+
+									const qdata = cache.readFragment<{
+										takersCount: number;
+									}>({
+										id: 'Quiz:' + id,
+										fragment: gql`
+											fragment _ on Quiz {
+												takersCount
+											}
+										`,
+									});
+
+									let newTakersCount: number = qdata?.takersCount ?? 0;
+
+									cache.writeFragment({
+										id: 'Quiz:' + id,
+										fragment: gql`
+											fragment _ on Quiz {
+												takersCount
+											}
+										`,
+										data: {
+											takersCount: (newTakersCount += 1),
+										},
+									});
+
 									setAnswerByUser(usersAnswer);
 									setQuizResult(data?.checkAnswer);
 									setUsersAnswer([]);

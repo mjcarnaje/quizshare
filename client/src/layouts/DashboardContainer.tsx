@@ -61,8 +61,8 @@ const mainNavLinks = [
 	},
 	{
 		icon: <IoDocumentsOutline />,
-		href: '/dashboard/quizzes',
-		label: 'Quizzes',
+		href: '/dashboard/published',
+		label: 'Published',
 	},
 ];
 

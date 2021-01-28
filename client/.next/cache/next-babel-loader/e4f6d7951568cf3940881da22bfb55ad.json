@@ -1,0 +1,1 @@
+{"ast":null,"code":"export const isServer = () => true;","map":{"version":3,"sources":["C:/Users/mj/Documents/Codes/PROJECTS/quizshare-typescript/client/src/utils/isServer.ts"],"names":["isServer"],"mappings":"AAAA,OAAO,MAAMA,QAAQ,GAAG,UAAjB","sourcesContent":["export const isServer = () => typeof window === 'undefined';\r\n"]},"metadata":{},"sourceType":"module"}

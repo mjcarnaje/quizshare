@@ -32,7 +32,6 @@ export type Question = {
 
 export type Like = {
   __typename?: 'Like';
-  id: Scalars['ID'];
   quiz_id: Scalars['Float'];
   author_id: Scalars['Float'];
   author: User;
@@ -82,7 +81,9 @@ export type Quiz = {
   description: Scalars['String'];
   quiz_photo?: Maybe<Scalars['String']>;
   questions: Array<Question>;
-  resultsCount: Scalars['Int'];
+  takers: Array<Result>;
+  takersCount: Scalars['Int'];
+  isTaken: Scalars['Boolean'];
   likes: Array<Like>;
   isLiked: Scalars['Boolean'];
   likesCount: Scalars['Int'];
@@ -333,21 +334,12 @@ export type CommentResponseFragment = (
   ) }
 );
 
-export type QuizResponseFragment = (
-  { __typename?: 'Quiz' }
-  & Pick<Quiz, 'id' | 'title' | 'description' | 'quiz_photo' | 'author_id'>
-  & { questions: Array<(
-    { __typename?: 'Question' }
-    & Pick<Question, 'id' | 'question' | 'question_photo' | 'choices' | 'answer' | 'explanation' | 'with_explanation' | 'hint' | 'with_hint'>
-  )> }
-);
-
 export type QuizzesResponseFragment = (
   { __typename?: 'Quiz' }
-  & Pick<Quiz, 'id' | 'title' | 'description' | 'quiz_photo' | 'created_at' | 'isLiked' | 'likesCount' | 'commentsCount'>
+  & Pick<Quiz, 'id' | 'title' | 'description' | 'quiz_photo' | 'created_at' | 'isLiked' | 'likesCount' | 'commentsCount' | 'takersCount' | 'questionsCount'>
   & { likes: Array<(
     { __typename?: 'Like' }
-    & Pick<Like, 'id'>
+    & Pick<Like, 'quiz_id' | 'author_id'>
   )>, author: (
     { __typename?: 'User' }
     & Pick<User, 'id' | 'username' | 'email' | 'avatar'>
@@ -645,7 +637,7 @@ export type SingleQuizQuery = (
   { __typename?: 'Query' }
   & { singleQuiz?: Maybe<(
     { __typename?: 'Quiz' }
-    & Pick<Quiz, 'id' | 'quiz_photo' | 'title' | 'description' | 'isLiked' | 'likesCount' | 'commentsCount' | 'created_at' | 'questionsCount'>
+    & Pick<Quiz, 'id' | 'quiz_photo' | 'title' | 'description' | 'isLiked' | 'likesCount' | 'commentsCount' | 'created_at' | 'questionsCount' | 'takersCount' | 'isTaken'>
     & { author: (
       { __typename?: 'User' }
       & Pick<User, 'id' | 'username' | 'avatar' | 'email'>
@@ -673,26 +665,6 @@ export const CommentResponseFragmentDoc = gql`
   created_at
 }
     `;
-export const QuizResponseFragmentDoc = gql`
-    fragment QuizResponse on Quiz {
-  id
-  title
-  description
-  quiz_photo
-  author_id
-  questions {
-    id
-    question
-    question_photo
-    choices
-    answer
-    explanation
-    with_explanation
-    hint
-    with_hint
-  }
-}
-    `;
 export const QuizzesResponseFragmentDoc = gql`
     fragment QuizzesResponse on Quiz {
   id
@@ -701,7 +673,8 @@ export const QuizzesResponseFragmentDoc = gql`
   quiz_photo
   created_at
   likes {
-    id
+    quiz_id
+    author_id
   }
   author {
     id
@@ -715,6 +688,8 @@ export const QuizzesResponseFragmentDoc = gql`
   isLiked
   likesCount
   commentsCount
+  takersCount
+  questionsCount
 }
     `;
 export const ResultResponseFragmentDoc = gql`
@@ -1404,6 +1379,8 @@ export const SingleQuizDocument = gql`
     commentsCount
     created_at
     questionsCount
+    takersCount
+    isTaken
   }
 }
     `;
