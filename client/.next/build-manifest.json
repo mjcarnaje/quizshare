@@ -29,10 +29,10 @@
       "static/chunks/webpack.js",
       "static/chunks/pages/dashboard/profile.js"
     ],
-    "/quiz/create": [
+    "/quiz/[id]": [
       "static/chunks/main.js",
       "static/chunks/webpack.js",
-      "static/chunks/pages/quiz/create.js"
+      "static/chunks/pages/quiz/[id].js"
     ]
   },
   "ampFirstPages": []
