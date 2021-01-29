@@ -101,51 +101,67 @@ export const AccountInformation: React.FC<AccountInformationProps> = ({}) => {
 				<Divider mb='16px' />
 			</GridItem>
 			<GridItem
-				colStart={1}
-				colEnd={4}
 				fontWeight='semibold'
-				pl='32px'
-				py='16px'
+				colSpan={[10, 3]}
+				px={['12px', '32px']}
+				py={['8px', '16px']}
 			>
 				Profile Image
 			</GridItem>
-			<GridItem colStart={4} colEnd={11} color='purple' py='16px'>
+			<GridItem
+				color='purple'
+				colSpan={[10, 7]}
+				py={['8px', '16px']}
+				px={['12px', '0']}
+			>
 				<Avatar name={name} size='xl' src={avatar || ''} />
 			</GridItem>
 			<GridItem
-				colStart={1}
-				colEnd={4}
 				fontWeight='semibold'
-				pl='32px'
-				py='16px'
+				colSpan={[10, 3]}
+				px={['12px', '32px']}
+				py={['8px', '16px']}
 			>
 				Username
 			</GridItem>
-			<GridItem colStart={4} colEnd={11} color='purple' py='16px'>
+			<GridItem
+				color='purple'
+				colSpan={[10, 7]}
+				py={['8px', '16px']}
+				px={['12px', '0']}
+			>
 				{username}
 			</GridItem>
 			<GridItem
-				colStart={1}
-				colEnd={4}
 				fontWeight='semibold'
-				pl='32px'
-				py='16px'
+				colSpan={[10, 3]}
+				px={['12px', '32px']}
+				py={['8px', '16px']}
 			>
 				Email
 			</GridItem>
-			<GridItem colStart={4} colEnd={11} color='purple' py='16px'>
+			<GridItem
+				color='purple'
+				colSpan={[10, 7]}
+				py={['8px', '16px']}
+				px={['12px', '0']}
+			>
 				{email}
 			</GridItem>
 			<GridItem
-				colStart={1}
-				colEnd={4}
 				fontWeight='semibold'
-				pl='32px'
-				py='16px'
+				colSpan={[10, 3]}
+				px={['12px', '32px']}
+				py={['8px', '16px']}
 			>
 				Password
 			</GridItem>
-			<GridItem colStart={4} colEnd={11} color='purple' py='16px'>
+			<GridItem
+				color='purple'
+				colSpan={[10, 7]}
+				py={['8px', '16px']}
+				px={['12px', '0']}
+			>
 				******
 			</GridItem>
 		</>

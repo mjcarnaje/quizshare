@@ -122,7 +122,13 @@ export const ProfileInformationEdit: React.FC<ProfileInformationEditProps> = ({
 			</GridItem>
 			<GridItem colSpan={10}>
 				<form onSubmit={handleSubmit(onSumbit)}>
-					<VStack pl='32px' spacing='10px' py='20px' align='flex-start' w='60%'>
+					<VStack
+						spacing='10px'
+						align='flex-start'
+						py={['8px', '12px', '20px']}
+						px={['12px', '20px', '32px']}
+						w={['100%', '80%', '75%', '60%']}
+					>
 						<HStack spacing={2}>
 							<MainInputUI
 								error={errors.first_name}

@@ -73,27 +73,35 @@ export const ProfileInformation: React.FC<ProfileInformationProps> = ({}) => {
 				<Divider mb='16px' />
 			</GridItem>
 			<GridItem
-				colStart={1}
-				colEnd={4}
 				fontWeight='semibold'
-				pl='32px'
-				py='16px'
+				colSpan={[10, 3]}
+				px={['12px', '32px']}
+				py={['8px', '16px']}
 			>
 				Name
 			</GridItem>
-			<GridItem colStart={4} colEnd={11} color='purple' py='16px'>
+			<GridItem
+				colSpan={[10, 7]}
+				py={['8px', '16px']}
+				px={['12px', '0']}
+				color='purple'
+			>
 				{name}
 			</GridItem>
 			<GridItem
-				colStart={1}
-				colEnd={4}
 				fontWeight='semibold'
-				pl='32px'
-				py='16px'
+				colSpan={[10, 3]}
+				px={['12px', '32px']}
+				py={['8px', '16px']}
 			>
 				Bio
 			</GridItem>
-			<GridItem colStart={4} colEnd={11} color='purple' py='16px'>
+			<GridItem
+				colSpan={[10, 7]}
+				py={['8px', '16px']}
+				px={['12px', '0']}
+				color='purple'
+			>
 				{bio ? (
 					bio
 				) : (
@@ -108,27 +116,35 @@ export const ProfileInformation: React.FC<ProfileInformationProps> = ({}) => {
 				)}
 			</GridItem>
 			<GridItem
-				colStart={1}
-				colEnd={4}
 				fontWeight='semibold'
-				pl='32px'
-				py='16px'
+				colSpan={[10, 3]}
+				px={['12px', '32px']}
+				py={['8px', '16px']}
 			>
 				Birthday
 			</GridItem>
-			<GridItem colStart={4} colEnd={11} color='purple' py='16px'>
+			<GridItem
+				colSpan={[10, 7]}
+				py={['8px', '16px']}
+				px={['12px', '0']}
+				color='purple'
+			>
 				{birthday ?? ''}
 			</GridItem>
 			<GridItem
-				colStart={1}
-				colEnd={4}
 				fontWeight='semibold'
-				pl='32px'
-				py='16px'
+				colSpan={[10, 3]}
+				px={['12px', '32px']}
+				py={['8px', '16px']}
 			>
 				Country
 			</GridItem>
-			<GridItem colStart={4} colEnd={11} color='purple' py='16px'>
+			<GridItem
+				colSpan={[10, 7]}
+				py={['8px', '16px']}
+				px={['12px', '0']}
+				color='purple'
+			>
 				{country ? (
 					country
 				) : (
@@ -143,15 +159,14 @@ export const ProfileInformation: React.FC<ProfileInformationProps> = ({}) => {
 				)}
 			</GridItem>
 			<GridItem
-				colStart={1}
-				colEnd={4}
 				fontWeight='semibold'
-				pl='32px'
-				py='16px'
+				colSpan={[10, 3]}
+				px={['12px', '32px']}
+				py={['8px', '16px']}
 			>
 				Social
 			</GridItem>
-			<GridItem colStart={4} colEnd={11} py='16px'>
+			<GridItem colSpan={[10, 7]} py={['8px', '16px']} px={['12px', '0']}>
 				<VStack spacing='16px' align='flex-start'>
 					<Flex align='center'>
 						<Icon as={FaFacebookSquare} boxSize='36px' color='#3b5999' />

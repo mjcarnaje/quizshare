@@ -73,11 +73,25 @@ export const DashboardContainer: React.FC<DashboardContainerProps> = ({
 	...props
 }) => {
 	return (
-		<Grid templateColumns='repeat(12, 1fr)' gap={2} px='64px'>
-			<GridItem colSpan={3}>
-				<List spacing='2' styleType='none' py='32px' pl='12px' pr='32px'>
+		<Grid
+			templateColumns='repeat(12, 1fr)'
+			gap={2}
+			px={['0', '32px', '32px', '64px']}
+		>
+			<GridItem colSpan={[12, 12, 12, 3]}>
+				<List
+					display={['block', 'flex', 'flex', 'block']}
+					justifyContent={['', 'space-between', 'space-between', '']}
+					alignItems={['', 'center', 'center', '']}
+					spacing={['2', '0', '0', '2']}
+					styleType='none'
+					pt='32px'
+					pb={['0', '0', '0', '32px']}
+					pl={['0', '0', '0', '12px']}
+					pr={['0', '0', '0', '32px']}
+				>
 					{mainNavLinks.map((item) => (
-						<ListItem key={item.label}>
+						<ListItem key={item.label} w='full' mx={['0', '2px', '2px', '0']}>
 							<MainNavLink icon={item.icon} href={item.href}>
 								{item.label}
 							</MainNavLink>
@@ -85,7 +99,7 @@ export const DashboardContainer: React.FC<DashboardContainerProps> = ({
 					))}
 				</List>
 			</GridItem>
-			<GridItem colSpan={9} px='5px' {...props}>
+			<GridItem colSpan={[12, 12, 12, 9]} px='5px' {...props}>
 				{children}
 			</GridItem>
 		</Grid>

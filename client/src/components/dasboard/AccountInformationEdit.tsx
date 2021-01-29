@@ -184,7 +184,13 @@ export const AccountInformationEdit: React.FC<AccountInformationEditProps> = ({
 							</Button>
 						)}
 					</Box>
-					<VStack pl='32px' spacing='10px' py='20px' align='flex-start' w='60%'>
+					<VStack
+						spacing='10px'
+						align='flex-start'
+						py={['8px', '12px', '20px']}
+						px={['12px', '20px', '32px']}
+						w={['100%', '80%', '75%', '60%']}
+					>
 						<VStack spacing='12px' align='flex-start'>
 							<Text fontWeight='semibold'>Profile Image</Text>
 							<Flex align='center'>
