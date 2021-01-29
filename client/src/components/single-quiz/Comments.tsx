@@ -1,46 +1,44 @@
+import { gql } from '@apollo/client';
 import {
 	Avatar,
 	Box,
 	Button,
+	Container as ChakraContainter,
 	Flex,
+	FormControl,
 	HStack,
+	Input,
 	SkeletonCircle,
 	SkeletonText,
 	Text,
 	useColorModeValue,
 	VStack,
-	Input,
-	FormControl,
-	Container as ChakraContainter,
 } from '@chakra-ui/react';
+import moment from 'moment';
 import React, { useState } from 'react';
+import TextareaAutosize from 'react-textarea-autosize';
 import {
 	useCommentsQuery,
-	useMeQuery,
 	useCreateCommentMutation,
-	CommentsDocument,
+	useMeQuery,
 } from '../../generated/graphql';
-import moment from 'moment';
-import TextareaAutosize from 'react-textarea-autosize';
-import { gql, makeReference } from '@apollo/client';
-import { PaginatedComments } from '../../generated/graphql';
 
 const LoadingSkeleton: React.FC = () => {
 	return (
 		<VStack spacing='15px' w='full'>
-			<Flex p='10px' borderWidth='1px' borderRadius='8px' w='full'>
+			<Flex p='10px' w='full'>
 				<SkeletonCircle size='10' />
 				<Box ml='10px' py='2px' w='64%'>
 					<SkeletonText mt='2' noOfLines={3} spacing='2' />
 				</Box>
 			</Flex>
-			<Flex p='10px' borderWidth='1px' borderRadius='8px' w='full'>
+			<Flex p='10px' w='full'>
 				<SkeletonCircle size='10' />
 				<Box ml='10px' py='2px' w='64%'>
 					<SkeletonText mt='2' noOfLines={3} spacing='2' />
 				</Box>
 			</Flex>
-			<Flex p='10px' borderWidth='1px' borderRadius='8px' w='full'>
+			<Flex p='10px' w='full'>
 				<SkeletonCircle size='10' />
 				<Box ml='10px' py='2px' w='64%'>
 					<SkeletonText mt='2' noOfLines={3} spacing='2' />
@@ -116,6 +114,7 @@ const Comments: React.FC<SingleQuizCommentsProps> = ({
 						size='sm'
 						borderRadius='lg'
 						colorScheme='purple'
+						isDisabled={text.trim() === ''}
 						onClick={async () => {
 							await createComment({
 								variables: {

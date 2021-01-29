@@ -48,6 +48,7 @@ const TakeQuiz: React.FC<TakeQuizProps> = ({}) => {
 	const questionsRefs: RefObject<any> = useRef([]);
 
 	const [usersAnswer, setUsersAnswer] = useState<UsersAnswerProps[]>([]);
+	const [checking, setChecking] = useState(false);
 
 	const { setQuizResult, setAnswerByUser } = useContext(
 		QuizResultContext
@@ -66,7 +67,10 @@ const TakeQuiz: React.FC<TakeQuizProps> = ({}) => {
 		},
 	});
 
-	const [checkAnswer, { loading: checking }] = useCheckAnswerMutation();
+	const [
+		checkAnswer,
+		{ loading: checkAnswerLoading },
+	] = useCheckAnswerMutation();
 
 	const selectAnswer = (question_id: string, choice_id: string, i: number) => {
 		const isAnsweredIndex = usersAnswer.findIndex(
@@ -219,7 +223,8 @@ const TakeQuiz: React.FC<TakeQuizProps> = ({}) => {
 
 				<Box w='full' textAlign='center'>
 					<Button
-						isLoading={checking}
+						isLoading={checkAnswerLoading || checking}
+						loadingText='Checking...'
 						onClick={async () => {
 							await checkAnswer({
 								variables: {
@@ -261,6 +266,7 @@ const TakeQuiz: React.FC<TakeQuizProps> = ({}) => {
 									setAnswerByUser(usersAnswer);
 									setQuizResult(data?.checkAnswer);
 									setUsersAnswer([]);
+									setChecking(true);
 								},
 							});
 						}}
