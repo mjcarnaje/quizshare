@@ -5,10 +5,15 @@ import { ProfileInformation } from '../../components/dasboard/ProfileInformation
 import { DashboardContainer } from '../../layouts/DashboardContainer';
 import { MainContainer } from '../../layouts/MainContainer';
 import { withApollo } from '../../utils/withApollo';
+import Head from 'next/head';
 
 const Profile: React.FC = () => {
 	return (
 		<MainContainer>
+			<Head>
+				<title>Profile | Dashboard</title>
+				<meta name='viewport' content='initial-scale=1.0, width=device-width' />
+			</Head>
 			<DashboardContainer>
 				<Grid
 					templateColumns='repeat(10, 1fr)'

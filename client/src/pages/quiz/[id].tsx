@@ -5,6 +5,7 @@ import SingleQuizHead from '../../components/single-quiz/SingleQuizHead';
 import { useSingleQuizQuery } from '../../generated/graphql';
 import { MainContainer } from '../../layouts/MainContainer';
 import { withApollo } from '../../utils/withApollo';
+import Head from 'next/head';
 
 interface QuizProps {}
 
@@ -27,6 +28,10 @@ const Quiz: React.FC<QuizProps> = ({}) => {
 
 	return (
 		<MainContainer>
+			<Head>
+				<title>{quizdata?.singleQuiz?.title}</title>
+				<meta name='viewport' content='initial-scale=1.0, width=device-width' />
+			</Head>
 			<SingleQuizHead data={quizdata?.singleQuiz} quizLoading={quizLoading} />
 			<Comments
 				quiz_id={parseInt(router.query.id as string)}

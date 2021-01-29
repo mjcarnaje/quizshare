@@ -14,6 +14,7 @@ import {
 	SkeletonText,
 	Icon,
 	Tooltip,
+	Circle,
 } from '@chakra-ui/react';
 import Image from 'next/image';
 import moment from 'moment';
@@ -148,17 +149,38 @@ const SingleQuizHead: React.FC<SingleQuizHeadProps> = ({
 					</Box>
 				)}
 				<Box px='20px' pt='20px'>
-					<Flex justify='flex-start' align='center' position='relative'>
+					<Flex
+						direction={['column-reverse', 'column-reverse', 'row']}
+						justify='flex-start'
+						align={['flex-start', 'flex-start', 'center']}
+						position='relative'
+					>
 						<UserAvatar author={author} />
-						<Divider orientation='vertical' h='50px' mx='20px' />
-						<Heading wordBreak='break-word' lineHeight='1'>
+						<Divider
+							display={['none', 'none', 'block']}
+							orientation='vertical'
+							h='50px'
+							mx='20px'
+						/>
+						<Heading
+							wordBreak='break-word'
+							lineHeight='1'
+							mb={['15px', '15px', '0']}
+						>
 							{title}
 						</Heading>
 						{isTaken && (
 							<Tooltip label='You have taken this' aria-label='A tooltip'>
-								<Box position='absolute' right='10px'>
-									<Icon as={BiCheckDouble} color='gray.500' boxSize='24px' />
-								</Box>
+								<IconButton
+									position='absolute'
+									right='10px'
+									colorScheme='purple'
+									variant='ghost'
+									aria-label='is already taken'
+									icon={<BiCheckDouble fontSize='24px' />}
+									isRound
+									_focus={{ outline: 'none' }}
+								/>
 							</Tooltip>
 						)}
 					</Flex>

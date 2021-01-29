@@ -26,6 +26,7 @@ import { withApollo } from '../../../../utils/withApollo';
 import { useColorModeValue } from '@chakra-ui/react';
 import { AiFillCheckCircle, AiFillCloseCircle } from 'react-icons/ai';
 import Comments from '../../../../components/single-quiz/Comments';
+import Head from 'next/head';
 
 interface ResultProps {}
 
@@ -98,6 +99,10 @@ const Result: React.FC<ResultProps> = ({}) => {
 
 	return (
 		<MainContainer>
+			<Head>
+				<title>{`Result | ${quizdata?.singleQuiz?.title}`}</title>
+				<meta name='viewport' content='initial-scale=1.0, width=device-width' />
+			</Head>
 			<SubContainer>
 				<Flex align='center' flexDirection='column' mb='30px'>
 					<Heading as='h2' fontSize='32px'>

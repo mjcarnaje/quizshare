@@ -30,6 +30,7 @@ import errorMapper from '../../../utils/errorMapper';
 import { removeTypename } from '../../../utils/removeTypename';
 import { uploadCloudinaryImage } from '../../../utils/uploadImage';
 import { withApollo } from '../../../utils/withApollo';
+import Head from 'next/head';
 
 const EditQuiz = ({}) => {
 	const colorTitle = useColorModeValue('gray.800', 'white');
@@ -101,6 +102,10 @@ const EditQuiz = ({}) => {
 
 	return (
 		<MainContainer py='40px'>
+			<Head>
+				<title>Update Quiz</title>
+				<meta name='viewport' content='initial-scale=1.0, width=device-width' />
+			</Head>
 			<Heading
 				as='h1'
 				fontFamily='inter'

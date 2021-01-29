@@ -55,7 +55,7 @@ interface SingleQuizCommentsProps {
 
 const Comments: React.FC<SingleQuizCommentsProps> = ({
 	quiz_id,
-	limit = 5,
+	limit = 10,
 	commentsCount,
 }) => {
 	const buttonColorScheme = useColorModeValue('purple', 'gray');

@@ -24,6 +24,7 @@ import { MainContainer } from '../../layouts/MainContainer';
 import errorMapper from '../../utils/errorMapper';
 import { uploadCloudinaryImage } from '../../utils/uploadImage';
 import { withApollo } from '../../utils/withApollo';
+import Head from 'next/head';
 
 const CreateQuiz: React.FC = () => {
 	const colorTitle = useColorModeValue('gray.800', 'white');
@@ -69,6 +70,10 @@ const CreateQuiz: React.FC = () => {
 
 	return (
 		<MainContainer py='40px'>
+			<Head>
+				<title>Create Quiz</title>
+				<meta name='viewport' content='initial-scale=1.0, width=device-width' />
+			</Head>
 			<Heading
 				as='h1'
 				fontFamily='inter'

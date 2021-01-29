@@ -6,6 +6,7 @@ import { useMeQuizzesQuery } from '../../generated/graphql';
 import { DashboardContainer } from '../../layouts/DashboardContainer';
 import { MainContainer } from '../../layouts/MainContainer';
 import { withApollo } from '../../utils/withApollo';
+import Head from 'next/head';
 
 const Published: React.FC = () => {
 	const buttonColorScheme = useColorModeValue('purple', 'gray');
@@ -41,6 +42,10 @@ const Published: React.FC = () => {
 
 	return (
 		<MainContainer>
+			<Head>
+				<title>Published | Dashboard</title>
+				<meta name='viewport' content='initial-scale=1.0, width=device-width' />
+			</Head>
 			<DashboardContainer display='grid' justifyItems='center'>
 				{data?.meQuizzes.meQuizzes.map((quiz) => {
 					return <QuizBox key={quiz.id} quiz={quiz} />;
