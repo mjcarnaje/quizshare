@@ -97,6 +97,7 @@ export type Quiz = {
 export type Comment = {
   __typename?: 'Comment';
   id: Scalars['ID'];
+  quiz_id: Scalars['Float'];
   author: User;
   text: Scalars['String'];
   created_at: Scalars['String'];
@@ -323,7 +324,7 @@ export type MutationUpdateProfileArgs = {
 
 export type CommentResponseFragment = (
   { __typename?: 'Comment' }
-  & Pick<Comment, 'id' | 'text' | 'created_at'>
+  & Pick<Comment, 'id' | 'quiz_id' | 'text' | 'created_at'>
   & { author: (
     { __typename?: 'User' }
     & Pick<User, 'id' | 'username' | 'email' | 'avatar'>
@@ -395,11 +396,7 @@ export type CreateCommentMutation = (
   { __typename?: 'Mutation' }
   & { createComment: (
     { __typename?: 'Comment' }
-    & Pick<Comment, 'id' | 'text' | 'created_at'>
-    & { author: (
-      { __typename?: 'User' }
-      & Pick<User, 'id' | 'username' | 'email' | 'avatar'>
-    ) }
+    & CommentResponseFragment
   ) }
 );
 
@@ -652,6 +649,7 @@ export type SingleQuizQuery = (
 export const CommentResponseFragmentDoc = gql`
     fragment CommentResponse on Comment {
   id
+  quiz_id
   author {
     id
     username
@@ -765,18 +763,10 @@ export type CheckAnswerMutationOptions = Apollo.BaseMutationOptions<CheckAnswerM
 export const CreateCommentDocument = gql`
     mutation CreateComment($text: String!, $quiz_id: Float!) {
   createComment(text: $text, quiz_id: $quiz_id) {
-    id
-    author {
-      id
-      username
-      email
-      avatar
-    }
-    text
-    created_at
+    ...CommentResponse
   }
 }
-    `;
+    ${CommentResponseFragmentDoc}`;
 export type CreateCommentMutationFn = Apollo.MutationFunction<CreateCommentMutation, CreateCommentMutationVariables>;
 
 /**

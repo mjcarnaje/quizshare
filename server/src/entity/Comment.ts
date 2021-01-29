@@ -18,6 +18,7 @@ export class Comment extends BaseEntity {
 	@PrimaryGeneratedColumn()
 	id: number;
 
+	@Field()
 	@Column()
 	quiz_id: number;
 

@@ -10,7 +10,7 @@ import {
 	Root,
 	UseMiddleware,
 } from 'type-graphql';
-import { FindManyOptions, LessThan, MoreThan } from 'typeorm';
+import { FindManyOptions, LessThan } from 'typeorm';
 import { Comment } from '../../entity/Comment';
 import { Question } from '../../entity/Question';
 import { Quiz } from '../../entity/Quiz';
@@ -223,13 +223,19 @@ export class QuizzesResolver {
 				take: realLimitPlusOne,
 				where: {
 					quiz_id: quiz_id,
-					created_at: MoreThan(new Date(parseInt(cursor))),
+					created_at: LessThan(new Date(parseInt(cursor))),
+				},
+				order: {
+					created_at: 'DESC',
 				},
 			};
 		} else {
 			findOption = {
 				where: { quiz_id: quiz_id },
 				take: realLimitPlusOne,
+				order: {
+					created_at: 'DESC',
+				},
 			};
 		}
 

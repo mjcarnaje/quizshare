@@ -55,7 +55,7 @@ const createClient = (ctx: NextPageContext) =>
 								return {
 									...incoming,
 									comments: [
-										...(existing?.comments || []),
+										...(existing?.comments ?? []),
 										...incoming.comments,
 									],
 								};

@@ -18,10 +18,12 @@ import {
 	useCommentsQuery,
 	useMeQuery,
 	useCreateCommentMutation,
+	CommentsDocument,
 } from '../../generated/graphql';
 import moment from 'moment';
 import TextareaAutosize from 'react-textarea-autosize';
-import { gql } from '@apollo/client';
+import { gql, makeReference } from '@apollo/client';
+import { PaginatedComments } from '../../generated/graphql';
 
 const LoadingSkeleton: React.FC = () => {
 	return (
@@ -86,13 +88,12 @@ const Comments: React.FC<SingleQuizCommentsProps> = ({
 
 	return (
 		<ChakraContainter maxW={['100%', '100%', '820px']} mb='36px' p='0'>
-			<Flex p='10px' mb='40px'>
+			<Flex p='10px' mb='30px'>
 				<Avatar
 					name={medata?.me?.profile.name}
 					src={medata?.me?.avatar ?? ''}
-					mr='10px'
 				/>
-				<Box w='full'>
+				<Box w='full' ml='15px'>
 					<FormControl>
 						<Input
 							type='text'
@@ -116,12 +117,12 @@ const Comments: React.FC<SingleQuizCommentsProps> = ({
 						borderRadius='lg'
 						colorScheme='purple'
 						onClick={async () => {
-							createComment({
+							await createComment({
 								variables: {
 									quiz_id: quiz_id,
 									text: text,
 								},
-								update: (cache) => {
+								update: (cache, { data }) => {
 									cache.writeFragment({
 										id: 'Quiz:' + quiz_id,
 										fragment: gql`
@@ -133,6 +134,21 @@ const Comments: React.FC<SingleQuizCommentsProps> = ({
 										data: { commentsCount: (commentsCount += 1) },
 									});
 
+									const cacheId = cache.identify(data!.createComment!);
+
+									cache.modify({
+										fields: {
+											comments: (existingFieldData, { toReference }) => {
+												return {
+													...existingFieldData,
+													comments: [
+														toReference(cacheId as string),
+														...existingFieldData.comments,
+													],
+												};
+											},
+										},
+									});
 									setText('');
 								},
 							});
@@ -177,7 +193,7 @@ const Comments: React.FC<SingleQuizCommentsProps> = ({
 									w='full'
 								>
 									<Avatar src={avatar || ''} name={name} />
-									<Box ml='10px'>
+									<Box ml='15px'>
 										<HStack>
 											<Text fontWeight='bold'>{username}</Text>
 											<Text fontSize='14px'>{email}</Text>

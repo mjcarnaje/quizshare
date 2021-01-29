@@ -1,5 +1,6 @@
 fragment CommentResponse on Comment {
 	id
+	quiz_id
 	author {
 		id
 		username

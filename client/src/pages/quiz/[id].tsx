@@ -1,9 +1,9 @@
 import { useRouter } from 'next/dist/client/router';
 import React from 'react';
-import { MainContainer } from '../../layouts/MainContainer';
 import Comments from '../../components/single-quiz/Comments';
 import SingleQuizHead from '../../components/single-quiz/SingleQuizHead';
 import { useSingleQuizQuery } from '../../generated/graphql';
+import { MainContainer } from '../../layouts/MainContainer';
 import { withApollo } from '../../utils/withApollo';
 
 interface QuizProps {}
