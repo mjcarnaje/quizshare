@@ -24,7 +24,7 @@ import { useCreateCommentMutation, useMeQuery } from '../generated/graphql';
 interface CommentButtonProps {
 	quiz: {
 		id: string;
-		commentsCount: number;
+		comments_count: number;
 		author: {
 			email: string;
 		};
@@ -35,7 +35,7 @@ interface CommentButtonProps {
 export const CommentButton: React.FC<CommentButtonProps> = ({
 	quiz: {
 		id,
-		commentsCount,
+		comments_count,
 		author: { email },
 	},
 	withoutCount,
@@ -109,10 +109,10 @@ export const CommentButton: React.FC<CommentButtonProps> = ({
 											fragment: gql`
 												fragment _ on Quiz {
 													id
-													commentsCount
+													comments_count
 												}
 											`,
-											data: { commentsCount: commentsCount + 1 },
+											data: { comments_count: comments_count + 1 },
 										});
 
 										setText('');
@@ -143,7 +143,7 @@ export const CommentButton: React.FC<CommentButtonProps> = ({
 				/>
 				{!withoutCount && (
 					<Text fontSize='14px' fontWeight='medium' color='gray.400'>
-						{commentsCount}
+						{comments_count}
 					</Text>
 				)}
 			</Center>

@@ -12,5 +12,5 @@ export class ChoiceInput {
 	@Field({ nullable: true })
 	@IsString()
 	// @IsBase64({ message: 'Enter valid image file (base64)' })
-	choicePhoto?: string;
+	choice_photo?: string;
 }

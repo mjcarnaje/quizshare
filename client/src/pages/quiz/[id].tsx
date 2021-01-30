@@ -35,7 +35,7 @@ const Quiz: React.FC<QuizProps> = ({}) => {
 			<SingleQuizHead data={quizdata?.singleQuiz} quizLoading={quizLoading} />
 			<Comments
 				quiz_id={parseInt(router.query.id as string)}
-				commentsCount={quizdata?.singleQuiz?.commentsCount ?? 0}
+				comments_count={quizdata?.singleQuiz?.comments_count ?? 0}
 			/>
 		</MainContainer>
 	);

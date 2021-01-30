@@ -55,7 +55,7 @@ export const QuizBox: React.FC<QuizBoxProps> = ({ quiz }) => {
 	}
 
 	const titleSize = useBreakpointValue({ base: 'xl', md: 'lg' });
-	const { id, quiz_photo, title, author, takersCount, questionsCount } = quiz;
+	const { id, quiz_photo, title, author, takers_count, questionsCount } = quiz;
 
 	return (
 		<ChakraContainter maxW={['100%', '460px', '820px']} my='36px' p='0'>
@@ -86,7 +86,7 @@ export const QuizBox: React.FC<QuizBoxProps> = ({ quiz }) => {
 							<Flex align='center' ml='20px'>
 								<Icon as={AiOutlineEye} />
 								<Text ml='4px' fontSize='14px'>
-									{takersCount} Submissions
+									{takers_count} Submissions
 								</Text>
 							</Flex>
 							<Flex align='center' ml='20px'>

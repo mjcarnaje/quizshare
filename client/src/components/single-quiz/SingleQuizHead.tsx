@@ -97,11 +97,11 @@ const SingleQuizHead: React.FC<SingleQuizHeadProps> = ({
 		description,
 		author,
 		created_at,
-		likesCount,
-		commentsCount,
+		likes_count,
+		comments_count,
 		questionsCount,
-		takersCount,
-		isTaken,
+		takers_count,
+		is_taken,
 	} = data;
 
 	return (
@@ -169,7 +169,7 @@ const SingleQuizHead: React.FC<SingleQuizHeadProps> = ({
 						>
 							{title}
 						</Heading>
-						{isTaken && (
+						{is_taken && (
 							<Tooltip label='You have taken this' aria-label='A tooltip'>
 								<IconButton
 									position='absolute'
@@ -200,16 +200,16 @@ const SingleQuizHead: React.FC<SingleQuizHeadProps> = ({
 					<Divider />
 					<Flex justify='space-around' py='12px'>
 						<Text ml='5px'>
-							<strong>{likesCount}</strong> Likes
+							<strong>{likes_count}</strong> Likes
 						</Text>
 						<Text ml='5px'>
-							<strong>{commentsCount}</strong> Comments
+							<strong>{comments_count}</strong> Comments
 						</Text>
 						<Text ml='5px'>
 							<strong>{questionsCount}</strong> Questions
 						</Text>
 						<Text ml='5px'>
-							<strong>{takersCount}</strong> Submissions
+							<strong>{takers_count}</strong> Submissions
 						</Text>
 					</Flex>
 					<Divider />

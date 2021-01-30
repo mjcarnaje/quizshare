@@ -118,7 +118,7 @@ const TakeQuiz: React.FC<TakeQuizProps> = ({}) => {
 							</Text>
 						</Flex>
 					</Box>
-					{quizdata?.singleQuiz?.isTaken && (
+					{quizdata?.singleQuiz?.is_taken && (
 						<Tooltip label='You have taken this' aria-label='A tooltip'>
 							<Box>
 								<Icon as={BiCheckDouble} color='gray.500' boxSize='24px' />
@@ -200,7 +200,7 @@ const TakeQuiz: React.FC<TakeQuizProps> = ({}) => {
 											bg={isAnswered ? choiceBgSelected : ''}
 											boxShadow={isAnswered ? 'sm' : ''}
 										>
-											{choice?.choicePhoto && (
+											{choice?.choice_photo && (
 												<Box
 													mb='8px'
 													overflow='hidden'
@@ -208,7 +208,7 @@ const TakeQuiz: React.FC<TakeQuizProps> = ({}) => {
 													bg='gray.100'
 												>
 													<AspectRatio ratio={16 / 9}>
-														<Image src={choice.choicePhoto} layout='fill' />
+														<Image src={choice.choice_photo} layout='fill' />
 													</AspectRatio>
 												</Box>
 											)}
@@ -244,27 +244,27 @@ const TakeQuiz: React.FC<TakeQuizProps> = ({}) => {
 									router.push(`/quiz/take/${id}/result`);
 
 									const qdata = cache.readFragment<{
-										takersCount: number;
+										takers_count: number;
 									}>({
 										id: 'Quiz:' + id,
 										fragment: gql`
 											fragment _ on Quiz {
-												takersCount
+												takers_count
 											}
 										`,
 									});
 
-									let newTakersCount: number = qdata?.takersCount ?? 0;
+									let newTakersCount: number = qdata?.takers_count ?? 0;
 
 									cache.writeFragment({
 										id: 'Quiz:' + id,
 										fragment: gql`
 											fragment _ on Quiz {
-												takersCount
+												takers_count
 											}
 										`,
 										data: {
-											takersCount: (newTakersCount += 1),
+											takers_count: (newTakersCount += 1),
 										},
 									});
 

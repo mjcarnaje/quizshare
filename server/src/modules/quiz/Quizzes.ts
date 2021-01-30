@@ -42,34 +42,34 @@ class PaginatedComments {
 @Resolver(Quiz)
 export class QuizzesResolver {
 	@FieldResolver(() => Boolean)
-	isLiked(@Root() quiz: Quiz, @Ctx() { req }: MyContext) {
-		const isLiked =
+	is_liked(@Root() quiz: Quiz, @Ctx() { req }: MyContext) {
+		const is_liked =
 			quiz.likes.filter((like) => like.author_id === req.session.user_id)
 				.length > 0;
-		if (isLiked) {
+		if (is_liked) {
 			return true;
 		}
 		return false;
 	}
 
 	@FieldResolver(() => Boolean)
-	isTaken(@Root() quiz: Quiz, @Ctx() { req }: MyContext) {
-		const isTaken =
+	is_taken(@Root() quiz: Quiz, @Ctx() { req }: MyContext) {
+		const is_taken =
 			quiz.takers.filter((taker) => taker.taker_id === req.session.user_id)
 				.length > 0;
-		if (isTaken) {
+		if (is_taken) {
 			return true;
 		}
 		return false;
 	}
 
 	@FieldResolver(() => Int)
-	likesCount(@Root() quiz: Quiz) {
+	likes_count(@Root() quiz: Quiz) {
 		return quiz.likes.length;
 	}
 
 	@FieldResolver(() => Int)
-	commentsCount(@Root() quiz: Quiz) {
+	comments_count(@Root() quiz: Quiz) {
 		return quiz.comments.length;
 	}
 
@@ -79,7 +79,7 @@ export class QuizzesResolver {
 	}
 
 	@FieldResolver(() => Int)
-	takersCount(@Root() quiz: Quiz) {
+	takers_count(@Root() quiz: Quiz) {
 		return quiz.takers.length;
 	}
 

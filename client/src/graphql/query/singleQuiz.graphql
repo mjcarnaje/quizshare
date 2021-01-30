@@ -13,12 +13,12 @@ query SingleQuiz($quiz_id: Int!) {
 				name
 			}
 		}
-		isLiked
-		likesCount
-		commentsCount
+		is_liked
+		likes_count
+		comments_count
 		created_at
 		questionsCount
-		takersCount
-		isTaken
+		takers_count
+		is_taken
 	}
 }

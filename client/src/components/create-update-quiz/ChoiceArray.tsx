@@ -77,7 +77,7 @@ const ChoiceArray: React.FC<ChoiceArrayProps> = ({
 	};
 
 	const addChoice = (shouldFocus: boolean = true) => {
-		append({ choice_id: uuid(), value: '', choicePhoto: '' }, shouldFocus);
+		append({ choice_id: uuid(), value: '', choice_photo: '' }, shouldFocus);
 	};
 
 	useEffect(() => {
@@ -118,7 +118,7 @@ const ChoiceArray: React.FC<ChoiceArrayProps> = ({
 									(i) => i.choice_id === choice.choice_id
 								);
 
-								const url = images[img]?.url || choice.choicePhoto!;
+								const url = images[img]?.url || choice.choice_photo!;
 								return (
 									<Box key={choice.choice_id}>
 										<Box
@@ -137,7 +137,7 @@ const ChoiceArray: React.FC<ChoiceArrayProps> = ({
 											{img !== -1 && (
 												<input
 													type='hidden'
-													name={`questions[${questionIndex}].choices[${i}].choicePhoto`}
+													name={`questions[${questionIndex}].choices[${i}].choice_photo`}
 													value={url}
 													ref={register()}
 												/>
@@ -196,7 +196,7 @@ const ChoiceArray: React.FC<ChoiceArrayProps> = ({
 												<Tooltip
 													hasArrow
 													label={
-														choice?.choicePhoto
+														choice?.choice_photo
 															? 'Replace choice photo'
 															: 'Add choice photo'
 													}

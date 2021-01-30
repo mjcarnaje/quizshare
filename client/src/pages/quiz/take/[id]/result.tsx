@@ -251,7 +251,7 @@ const Result: React.FC<ResultProps> = ({}) => {
 															: ''
 													}
 												>
-													{choice?.choicePhoto && (
+													{choice?.choice_photo && (
 														<Box
 															mb='8px'
 															overflow='hidden'
@@ -259,7 +259,10 @@ const Result: React.FC<ResultProps> = ({}) => {
 															bg='gray.100'
 														>
 															<AspectRatio ratio={16 / 9}>
-																<Image src={choice.choicePhoto} layout='fill' />
+																<Image
+																	src={choice.choice_photo}
+																	layout='fill'
+																/>
 															</AspectRatio>
 														</Box>
 													)}
@@ -308,7 +311,7 @@ const Result: React.FC<ResultProps> = ({}) => {
 				</Heading>
 				<Comments
 					quiz_id={parseInt(id as string)}
-					commentsCount={quizdata?.singleQuiz?.commentsCount ?? 0}
+					comments_count={quizdata?.singleQuiz?.comments_count ?? 0}
 				/>
 			</SubContainer>
 		</MainContainer>

@@ -82,13 +82,13 @@ export type Quiz = {
   quiz_photo?: Maybe<Scalars['String']>;
   questions: Array<Question>;
   takers: Array<Result>;
-  takersCount: Scalars['Int'];
-  isTaken: Scalars['Boolean'];
+  takers_count: Scalars['Int'];
+  is_taken: Scalars['Boolean'];
   likes: Array<Like>;
-  isLiked: Scalars['Boolean'];
-  likesCount: Scalars['Int'];
+  is_liked: Scalars['Boolean'];
+  likes_count: Scalars['Int'];
   comments: Array<Comment>;
-  commentsCount: Scalars['Int'];
+  comments_count: Scalars['Int'];
   created_at: Scalars['String'];
   updated_at: Scalars['String'];
   questionsCount: Scalars['Int'];
@@ -134,7 +134,7 @@ export type ChecksAnswerInput = {
 export type ChoiceInput = {
   choice_id: Scalars['String'];
   value: Scalars['String'];
-  choicePhoto?: Maybe<Scalars['String']>;
+  choice_photo?: Maybe<Scalars['String']>;
 };
 
 export type QuestionInput = {
@@ -337,7 +337,7 @@ export type CommentResponseFragment = (
 
 export type QuizzesResponseFragment = (
   { __typename?: 'Quiz' }
-  & Pick<Quiz, 'id' | 'title' | 'description' | 'quiz_photo' | 'created_at' | 'isLiked' | 'likesCount' | 'commentsCount' | 'takersCount' | 'questionsCount'>
+  & Pick<Quiz, 'id' | 'title' | 'description' | 'quiz_photo' | 'created_at' | 'is_liked' | 'likes_count' | 'comments_count' | 'takers_count' | 'questionsCount'>
   & { likes: Array<(
     { __typename?: 'Like' }
     & Pick<Like, 'quiz_id' | 'author_id'>
@@ -634,7 +634,7 @@ export type SingleQuizQuery = (
   { __typename?: 'Query' }
   & { singleQuiz?: Maybe<(
     { __typename?: 'Quiz' }
-    & Pick<Quiz, 'id' | 'quiz_photo' | 'title' | 'description' | 'isLiked' | 'likesCount' | 'commentsCount' | 'created_at' | 'questionsCount' | 'takersCount' | 'isTaken'>
+    & Pick<Quiz, 'id' | 'quiz_photo' | 'title' | 'description' | 'is_liked' | 'likes_count' | 'comments_count' | 'created_at' | 'questionsCount' | 'takers_count' | 'is_taken'>
     & { author: (
       { __typename?: 'User' }
       & Pick<User, 'id' | 'username' | 'avatar' | 'email'>
@@ -683,10 +683,10 @@ export const QuizzesResponseFragmentDoc = gql`
       name
     }
   }
-  isLiked
-  likesCount
-  commentsCount
-  takersCount
+  is_liked
+  likes_count
+  comments_count
+  takers_count
   questionsCount
 }
     `;
@@ -1364,13 +1364,13 @@ export const SingleQuizDocument = gql`
         name
       }
     }
-    isLiked
-    likesCount
-    commentsCount
+    is_liked
+    likes_count
+    comments_count
     created_at
     questionsCount
-    takersCount
-    isTaken
+    takers_count
+    is_taken
   }
 }
     `;

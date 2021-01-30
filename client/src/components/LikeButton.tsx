@@ -6,16 +6,16 @@ import { useToggleLikeMutation } from '../generated/graphql';
 
 interface LikeButtonProps {
 	quiz: {
-		isLiked?: boolean;
+		is_liked?: boolean;
 		id: string;
-		likesCount: number;
+		likes_count: number;
 		questionsCount?: number;
 	} & any;
 	withoutCount?: boolean;
 }
 
 export const LikeButton: React.FC<LikeButtonProps> = ({
-	quiz: { isLiked, id, likesCount },
+	quiz: { is_liked, id, likes_count },
 	withoutCount,
 }) => {
 	const [toggleLike] = useToggleLikeMutation();
@@ -27,10 +27,10 @@ export const LikeButton: React.FC<LikeButtonProps> = ({
 				colorScheme='gray'
 				aria-label='Like post'
 				isRound
-				color={isLiked ? 'red.400' : 'gray.400'}
+				color={is_liked ? 'red.400' : 'gray.400'}
 				_focus={{ outline: 'none' }}
 				border='none'
-				_hover={{ color: isLiked ? 'red.500' : 'gray.500' }}
+				_hover={{ color: is_liked ? 'red.500' : 'gray.500' }}
 				fontSize='24px'
 				icon={<IoIosHeart />}
 				onClick={async () =>
@@ -40,23 +40,23 @@ export const LikeButton: React.FC<LikeButtonProps> = ({
 						},
 						update: (cache) => {
 							const data = cache.readFragment<{
-								likesCount: number;
-								isLiked: boolean;
+								likes_count: number;
+								is_liked: boolean;
 							}>({
 								id: 'Quiz:' + id,
 								fragment: gql`
 									fragment _ on Quiz {
 										id
-										likesCount
-										isLiked
+										likes_count
+										is_liked
 									}
 								`,
 							});
 
 							let newIsLiked: boolean;
-							let newLikesCount: number = data!.likesCount;
+							let newLikesCount: number = data!.likes_count;
 
-							if (data && data.isLiked) {
+							if (data && data.is_liked) {
 								newIsLiked = false;
 								newLikesCount = newLikesCount - 1;
 							} else {
@@ -68,11 +68,11 @@ export const LikeButton: React.FC<LikeButtonProps> = ({
 								fragment: gql`
 									fragment _ on Quiz {
 										id
-										likesCount
-										isLiked
+										likes_count
+										is_liked
 									}
 								`,
-								data: { isLiked: newIsLiked, likesCount: newLikesCount },
+								data: { is_liked: newIsLiked, likes_count: newLikesCount },
 							});
 						},
 					})
@@ -80,7 +80,7 @@ export const LikeButton: React.FC<LikeButtonProps> = ({
 			/>
 			{!withoutCount && (
 				<Text fontSize='14px' fontWeight='medium' color='gray.400'>
-					{likesCount}
+					{likes_count}
 				</Text>
 			)}
 		</Center>

@@ -19,5 +19,5 @@
     "target": "esnext"
   },
   "exclude": ["node_modules"],
-  "include": ["**/*.ts", "**/*.tsx", "src/utils/cloudinaryHelpers.ts"]
+  "include": ["**/*.ts", "**/*.tsx"]
 }

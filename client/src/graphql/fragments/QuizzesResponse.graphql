@@ -17,9 +17,9 @@ fragment QuizzesResponse on Quiz {
 			name
 		}
 	}
-	isLiked
-	likesCount
-	commentsCount
-	takersCount
+	is_liked
+	likes_count
+	comments_count
+	takers_count
 	questionsCount
 }

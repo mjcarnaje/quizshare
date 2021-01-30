@@ -50,13 +50,13 @@ const LoadingSkeleton: React.FC = () => {
 interface SingleQuizCommentsProps {
 	quiz_id: number;
 	limit?: number;
-	commentsCount: number;
+	comments_count: number;
 }
 
 const Comments: React.FC<SingleQuizCommentsProps> = ({
 	quiz_id,
 	limit = 10,
-	commentsCount,
+	comments_count,
 }) => {
 	const buttonColorScheme = useColorModeValue('purple', 'gray');
 	const [text, setText] = useState('');
@@ -127,10 +127,10 @@ const Comments: React.FC<SingleQuizCommentsProps> = ({
 										fragment: gql`
 											fragment _ on Quiz {
 												id
-												commentsCount
+												comments_count
 											}
 										`,
-										data: { commentsCount: (commentsCount += 1) },
+										data: { comments_count: (comments_count += 1) },
 									});
 
 									const cacheId = cache.identify(data!.createComment!);

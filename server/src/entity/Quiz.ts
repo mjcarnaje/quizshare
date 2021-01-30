@@ -53,27 +53,27 @@ export class Quiz extends BaseEntity {
 	takers: Result[];
 
 	@Field(() => Int)
-	takersCount: number;
+	takers_count: number;
 
 	@Field(() => Boolean)
-	isTaken: boolean;
+	is_taken: boolean;
 
 	@Field(() => [Like])
 	@OneToMany(() => Like, (like) => like.quiz)
 	likes: Like[];
 
 	@Field(() => Boolean)
-	isLiked: boolean;
+	is_liked: boolean;
 
 	@Field(() => Int)
-	likesCount: number;
+	likes_count: number;
 
 	@Field(() => [Comment])
 	@OneToMany(() => Comment, (comment) => comment.quiz)
 	comments: Comment[];
 
 	@Field(() => Int)
-	commentsCount: number;
+	comments_count: number;
 
 	@Field(() => String)
 	@CreateDateColumn()
