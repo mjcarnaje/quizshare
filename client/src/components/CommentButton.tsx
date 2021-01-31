@@ -14,6 +14,7 @@ import {
 	ModalHeader,
 	ModalOverlay,
 	Text,
+	Flex,
 	useDisclosure,
 } from '@chakra-ui/react';
 import React, { RefObject, useRef, useState } from 'react';
@@ -127,7 +128,7 @@ export const CommentButton: React.FC<CommentButtonProps> = ({
 					</ModalFooter>
 				</ModalContent>
 			</Modal>
-			<Center>
+			<Flex justify='flex-start' align='center'>
 				<IconButton
 					variant='outline'
 					colorScheme='gray'
@@ -146,7 +147,7 @@ export const CommentButton: React.FC<CommentButtonProps> = ({
 						{comments_count}
 					</Text>
 				)}
-			</Center>
+			</Flex>
 		</>
 	);
 };

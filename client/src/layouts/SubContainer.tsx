@@ -5,16 +5,19 @@ interface SubContainerProps extends ContainerProps {}
 
 export const SubContainer: React.FC<SubContainerProps> = ({
 	children,
+	boxShadow = 'md',
+	borderWidth = '1px',
+
 	...props
 }) => {
 	return (
 		<Container
 			maxW={['100%', '100%', '860px']}
-			boxShadow='md'
+			boxShadow={boxShadow}
 			borderRadius='md'
 			my='42px'
 			p='24px'
-			borderWidth='1px'
+			borderWidth={borderWidth}
 			{...props}
 		>
 			{children}

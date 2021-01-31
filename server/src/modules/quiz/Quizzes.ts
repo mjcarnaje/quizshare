@@ -10,7 +10,7 @@ import {
 	Root,
 	UseMiddleware,
 } from 'type-graphql';
-import { FindManyOptions, LessThan } from 'typeorm';
+import { FindManyOptions, getConnection, LessThan } from 'typeorm';
 import { Comment } from '../../entity/Comment';
 import { Question } from '../../entity/Question';
 import { Quiz } from '../../entity/Quiz';
@@ -87,33 +87,63 @@ export class QuizzesResolver {
 	@Query(() => PaginatedQuizzes)
 	async quizzes(
 		@Arg('limit', () => Int) limit: number,
-		@Arg('cursor', () => String, { nullable: true }) cursor: string | null
+		@Arg('cursor', () => String, { nullable: true }) cursor: string | null,
+		@Arg('query', () => String, { nullable: true }) query: string | null
 	): Promise<PaginatedQuizzes> {
 		const realLimit = Math.min(10, limit);
 		const realLimitPlusOne = realLimit + 1;
 
-		let findOption: FindManyOptions;
+		const qs = await getConnection()
+			.getRepository(Quiz)
+			.createQueryBuilder('q')
+			.leftJoinAndSelect('q.author', 'author')
+			.leftJoinAndSelect('author.profile', 'profile')
+			.leftJoinAndSelect('q.questions', 'questions')
+			.leftJoinAndSelect('q.likes', 'likes')
+			.leftJoinAndSelect('q.comments', 'comments')
+			.leftJoinAndSelect('q.takers', 'takers')
+			.orderBy('q.created_at', 'DESC')
+			.take(realLimitPlusOne);
 
 		if (cursor) {
-			findOption = {
-				relations: ['author', 'questions', 'likes', 'comments', 'takers'],
-				order: {
-					created_at: 'DESC',
-				},
-				take: realLimitPlusOne,
-				where: { created_at: LessThan(new Date(parseInt(cursor))) },
-			};
-		} else {
-			findOption = {
-				relations: ['author', 'questions', 'likes', 'comments', 'takers'],
-				order: {
-					created_at: 'DESC',
-				},
-				take: realLimitPlusOne,
-			};
+			qs.where('q."created_at" < :cursor', {
+				cursor: new Date(parseInt(cursor)),
+			});
+		} else if (query) {
+			const formattedQuery = query.trim().replace(/ /g, ' <-> ');
+
+			qs.where(
+				`to_tsvector('simple',q.title) @@ to_tsquery('simple', :query)`,
+				{
+					query: `${formattedQuery}:*`,
+				}
+			).orWhere(
+				`to_tsvector('simple',q.description) @@ to_tsquery('simple', :query)`,
+				{
+					query: `${formattedQuery}:*`,
+				}
+			);
+		} else if (cursor && query) {
+			const formattedQuery = query.trim().replace(/ /g, ' <-> ');
+
+			qs.where(
+				`q."created_at" < :cursor,
+				to_tsvector('simple',q.title) @@ to_tsquery('simple', :query)`,
+				{
+					cursor: new Date(parseInt(cursor)),
+					query: `${formattedQuery}:*`,
+				}
+			).orWhere(
+				`q."created_at" < :cursor,
+				to_tsvector('simple',q.description) @@ to_tsquery('simple', :query)`,
+				{
+					cursor: new Date(parseInt(cursor)),
+					query: `${formattedQuery}:*`,
+				}
+			);
 		}
 
-		const quizzes = await Quiz.find(findOption);
+		const quizzes = await qs.getMany();
 
 		return {
 			quizzes: (quizzes as [Quiz]).slice(0, realLimit),
@@ -162,6 +192,26 @@ export class QuizzesResolver {
 			meQuizzes: (quizzes as [Quiz]).slice(0, realLimit),
 			meHasMore: (quizzes as [Quiz]).length === realLimitPlusOne,
 		};
+	}
+
+	@UseMiddleware(isAuthenticated)
+	@Query(() => [Quiz])
+	async searhedQuizzes(@Arg('query') query: string): Promise<Quiz[] | null> {
+		const formattedQuery = query.trim().replace(/ /g, ' <-> ');
+
+		const results = await getConnection()
+			.createQueryBuilder(Quiz, 'q')
+			.where(`to_tsvector('simple',q.title) @@ to_tsquery('simple', :query)`, {
+				query: `${formattedQuery}:*`,
+			})
+			.orWhere(
+				`to_tsvector('simple',q.description) @@ to_tsquery('simple', :query)`,
+				{
+					query: `${formattedQuery}:*`,
+				}
+			)
+			.getMany();
+		return results;
 	}
 
 	@UseMiddleware(isAuthenticated)

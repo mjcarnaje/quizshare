@@ -1,5 +1,5 @@
 import { gql } from '@apollo/client';
-import { Center, IconButton, Text } from '@chakra-ui/react';
+import { Flex, IconButton, Text } from '@chakra-ui/react';
 import React from 'react';
 import { IoIosHeart } from 'react-icons/io';
 import { useToggleLikeMutation } from '../generated/graphql';
@@ -21,7 +21,7 @@ export const LikeButton: React.FC<LikeButtonProps> = ({
 	const [toggleLike] = useToggleLikeMutation();
 
 	return (
-		<Center>
+		<Flex justify='flex-start' align='center'>
 			<IconButton
 				variant='outline'
 				colorScheme='gray'
@@ -83,6 +83,6 @@ export const LikeButton: React.FC<LikeButtonProps> = ({
 					{likes_count}
 				</Text>
 			)}
-		</Center>
+		</Flex>
 	);
 };

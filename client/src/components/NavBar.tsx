@@ -1,9 +1,12 @@
 import {
+	Box,
 	Button,
 	Flex,
 	Heading,
 	HStack,
+	List,
 	Text,
+	ListItem,
 	useColorModeValue,
 } from '@chakra-ui/react';
 import { useRouter } from 'next/dist/client/router';
@@ -14,19 +17,59 @@ import { isServer } from '../utils/isServer';
 import { DarkModeSwitch } from './DarkModeSwitch';
 import { UserMenu } from './UserMenu';
 
-export const NavBar: React.FC = () => {
-	const router = useRouter();
+interface MainNavLinkProps {
+	href: string;
+}
 
-	const bgColor = useColorModeValue(
-		'rgb(255, 255, 255, .90)',
-		'rgb(32, 32, 32, .90)'
+const MainNavLink: React.FC<MainNavLinkProps> = ({ href, children }) => {
+	const { pathname } = useRouter();
+	const [, path1, path2] = href.split('/');
+
+	const active = pathname.includes(path1 || path2);
+	const linkColor = useColorModeValue('purple.500', 'gray.100');
+	const bgColor = useColorModeValue('purple.50', 'rgba(255, 255, 255, 0.04)');
+
+	return (
+		<NextLink href={href} passHref>
+			<Box
+				bg={active ? bgColor : ''}
+				rounded='lg'
+				mx='10px'
+				px='20px'
+				_hover={{ bg: bgColor }}
+			>
+				<Text
+					cursor='pointer'
+					as='a'
+					fontSize='md'
+					fontWeight={active ? 'semibold' : ''}
+					transitionProperty='colors'
+					transitionDuration='200ms'
+					color={active ? linkColor : 'gray.500'}
+					_hover={{ color: linkColor }}
+					fontFamily='inter'
+				>
+					{children}
+				</Text>
+			</Box>
+		</NextLink>
 	);
-	const navBarShadow = useColorModeValue('xs', 'sm');
-	const buttonColorScheme = useColorModeValue('purple', 'gray');
-	const logoColor = useColorModeValue('purple.500', 'purple.400');
+};
 
-	const linkColorHover = useColorModeValue('#000', '#fff');
+const mainNavLinks = [
+	{
+		icon: null,
+		href: '/quiz/create',
+		label: 'Create Quiz',
+	},
+	{
+		icon: null,
+		href: '/users',
+		label: 'Users',
+	},
+];
 
+export const NavBar: React.FC = () => {
 	const { data } = useMeQuery({ skip: isServer() });
 
 	let body;
@@ -37,7 +80,7 @@ export const NavBar: React.FC = () => {
 				<NextLink href='login'>
 					<Button
 						size='sm'
-						colorScheme={buttonColorScheme}
+						colorScheme={useColorModeValue('purple', 'gray')}
 						variant='ghost'
 						fontSize={16}
 					>
@@ -47,7 +90,7 @@ export const NavBar: React.FC = () => {
 				<NextLink href='register'>
 					<Button
 						size='sm'
-						colorScheme={buttonColorScheme}
+						colorScheme={useColorModeValue('purple', 'gray')}
 						variant='outline'
 						fontSize={16}
 					>
@@ -59,32 +102,13 @@ export const NavBar: React.FC = () => {
 	} else {
 		body = (
 			<>
-				{[
-					{
-						path: '/quiz/create',
-						name: 'Create Quiz',
-					},
-					{ path: '/users', name: 'Users', icon: 'FaUsers' },
-				].map(({ path, name }, i) => {
-					return (
-						<NextLink href={path} key={i}>
-							<Text
-								_hover={{
-									color: router.pathname == path ? '' : linkColorHover,
-								}}
-								px='10px'
-								transition='ease-in-out'
-								transitionDuration='.1s'
-								cursor='pointer'
-								fontWeight={router.pathname == path ? 'semibold' : ''}
-								color={router.pathname == path ? logoColor : ''}
-								display={['none', 'none', 'inline-block']}
-							>
-								{name}
-							</Text>
-						</NextLink>
-					);
-				})}
+				<List display='flex'>
+					{mainNavLinks.map((item) => (
+						<ListItem key={item.label}>
+							<MainNavLink href={item.href}>{item.label}</MainNavLink>
+						</ListItem>
+					))}
+				</List>
 				<UserMenu {...data.me} />
 			</>
 		);
@@ -96,8 +120,8 @@ export const NavBar: React.FC = () => {
 			w='full'
 			py={4}
 			px={[3, 6, 12, 24]}
-			bg={bgColor}
-			boxShadow={navBarShadow}
+			bg={useColorModeValue('rgb(255, 255, 255, .90)', 'rgb(32, 32, 32, .90)')}
+			boxShadow={useColorModeValue('xs', 'sm')}
 			position='sticky'
 			left='0'
 			right='0'
@@ -110,7 +134,7 @@ export const NavBar: React.FC = () => {
 					fontSize={28}
 					fontWeight='sm'
 					fontFamily='berkshire'
-					color={logoColor}
+					color={useColorModeValue('purple.500', 'purple.400')}
 					cursor='pointer'
 					lineHeight='22px'
 					pb='6px'

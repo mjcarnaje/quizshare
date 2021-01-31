@@ -205,6 +205,7 @@ export type Query = {
   __typename?: 'Query';
   quizzes: PaginatedQuizzes;
   meQuizzes: PaginatedMeQuizzes;
+  searhedQuizzes: Array<Quiz>;
   quizToUpdate: Quiz;
   singleQuiz?: Maybe<Quiz>;
   questions?: Maybe<Array<Question>>;
@@ -215,6 +216,7 @@ export type Query = {
 
 
 export type QueryQuizzesArgs = {
+  query?: Maybe<Scalars['String']>;
   cursor?: Maybe<Scalars['String']>;
   limit: Scalars['Int'];
 };
@@ -223,6 +225,11 @@ export type QueryQuizzesArgs = {
 export type QueryMeQuizzesArgs = {
   cursor?: Maybe<Scalars['String']>;
   limit: Scalars['Int'];
+};
+
+
+export type QuerySearhedQuizzesArgs = {
+  query: Scalars['String'];
 };
 
 
@@ -610,6 +617,7 @@ export type QuizToUpdateQuery = (
 export type QuizzesQueryVariables = Exact<{
   limit: Scalars['Int'];
   cursor?: Maybe<Scalars['String']>;
+  query?: Maybe<Scalars['String']>;
 }>;
 
 
@@ -1312,8 +1320,8 @@ export type QuizToUpdateQueryHookResult = ReturnType<typeof useQuizToUpdateQuery
 export type QuizToUpdateLazyQueryHookResult = ReturnType<typeof useQuizToUpdateLazyQuery>;
 export type QuizToUpdateQueryResult = Apollo.QueryResult<QuizToUpdateQuery, QuizToUpdateQueryVariables>;
 export const QuizzesDocument = gql`
-    query Quizzes($limit: Int!, $cursor: String) {
-  quizzes(limit: $limit, cursor: $cursor) {
+    query Quizzes($limit: Int!, $cursor: String, $query: String) {
+  quizzes(limit: $limit, cursor: $cursor, query: $query) {
     hasMore
     quizzes {
       ...QuizzesResponse
@@ -1336,6 +1344,7 @@ export const QuizzesDocument = gql`
  *   variables: {
  *      limit: // value for 'limit'
  *      cursor: // value for 'cursor'
+ *      query: // value for 'query'
  *   },
  * });
  */

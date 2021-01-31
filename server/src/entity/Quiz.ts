@@ -4,6 +4,7 @@ import {
 	Column,
 	CreateDateColumn,
 	Entity,
+	Index,
 	JoinColumn,
 	ManyToOne,
 	OneToMany,
@@ -33,10 +34,12 @@ export class Quiz extends BaseEntity {
 	author: User;
 
 	@Field()
+	@Index({ fulltext: true })
 	@Column()
 	title: string;
 
 	@Field()
+	@Index({ fulltext: true })
 	@Column()
 	description: string;
 

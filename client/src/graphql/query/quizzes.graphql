@@ -1,5 +1,5 @@
-query Quizzes($limit: Int!, $cursor: String) {
-	quizzes(limit: $limit, cursor: $cursor) {
+query Quizzes($limit: Int!, $cursor: String, $query: String) {
+	quizzes(limit: $limit, cursor: $cursor, query: $query) {
 		hasMore
 		quizzes {
 			...QuizzesResponse

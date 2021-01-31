@@ -7,15 +7,12 @@ import {
 	SkeletonCircle,
 	Flex,
 	AspectRatio,
-	Container as ChakraContainter,
 } from '@chakra-ui/react';
 import React from 'react';
 
-interface QuizBoxLoadingProps {}
-
-export const QuizBoxLoading: React.FC<QuizBoxLoadingProps> = ({}) => {
+export const QuizItemLoading: React.FC = () => {
 	return (
-		<ChakraContainter maxW={['100%', '460px', '820px']} my='36px' p='0'>
+		<Box w={['100%', '460px', '820px']}>
 			<Stack
 				direction={['column', 'column', 'row']}
 				divider={<StackDivider borderColor='gray' />}
@@ -53,9 +50,10 @@ export const QuizBoxLoading: React.FC<QuizBoxLoadingProps> = ({}) => {
 				</Stack>
 
 				<Stack
+					w='70px'
 					direction={['row', 'row', 'column']}
 					justify='center'
-					spacing={['42px', '42px', '18px']}
+					spacing={['36px', '36px', '12px']}
 					pos='relative'
 				>
 					<SkeletonCircle
@@ -69,6 +67,6 @@ export const QuizBoxLoading: React.FC<QuizBoxLoadingProps> = ({}) => {
 					<SkeletonCircle size='7' />
 				</Stack>
 			</Stack>
-		</ChakraContainter>
+		</Box>
 	);
 };

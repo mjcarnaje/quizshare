@@ -1,12 +1,11 @@
 import { Button, useColorModeValue } from '@chakra-ui/react';
+import Head from 'next/head';
 import React from 'react';
-import { QuizBox } from '../../components/QuizBox';
-import { QuizBoxLoading } from '../../components/QuizBoxLoading';
+import { QuizzesCards } from '../../components/QuizzesCards';
 import { useMeQuizzesQuery } from '../../generated/graphql';
 import { DashboardContainer } from '../../layouts/DashboardContainer';
 import { MainContainer } from '../../layouts/MainContainer';
 import { withApollo } from '../../utils/withApollo';
-import Head from 'next/head';
 
 const Published: React.FC = () => {
 	const buttonColorScheme = useColorModeValue('purple', 'gray');
@@ -19,27 +18,6 @@ const Published: React.FC = () => {
 		notifyOnNetworkStatusChange: true,
 	});
 
-	if (!data && loading) {
-		return (
-			<MainContainer display='grid' justifyItems='center'>
-				<DashboardContainer display='grid' justifyItems='center' w='full'>
-					<QuizBoxLoading />
-					<QuizBoxLoading />
-					<QuizBoxLoading />
-				</DashboardContainer>
-			</MainContainer>
-		);
-	}
-
-	if (!loading && !data) {
-		return (
-			<div>
-				<div>you got query failed for some reason</div>
-				<div>{error?.message}</div>
-			</div>
-		);
-	}
-
 	return (
 		<MainContainer>
 			<Head>
@@ -47,15 +25,11 @@ const Published: React.FC = () => {
 				<meta name='viewport' content='initial-scale=1.0, width=device-width' />
 			</Head>
 			<DashboardContainer display='grid' justifyItems='center'>
-				{data?.meQuizzes.meQuizzes.map((quiz) => {
-					return <QuizBox key={quiz.id} quiz={quiz} />;
-				})}
-				{loading && (
-					<>
-						<QuizBoxLoading />
-						<QuizBoxLoading />
-					</>
-				)}
+				<QuizzesCards
+					quizzes={data?.meQuizzes.meQuizzes}
+					isLoading={loading}
+					isError={error}
+				/>
 				{data && data.meQuizzes.meHasMore && (
 					<Button
 						size='sm'

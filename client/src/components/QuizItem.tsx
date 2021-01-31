@@ -1,32 +1,31 @@
 import {
 	AspectRatio,
 	Box,
-	Container as ChakraContainter,
+	Flex,
 	Heading,
+	Icon,
 	Stack,
 	StackDivider,
 	Text,
 	useBreakpointValue,
-	Flex,
-	Icon,
+	useColorModeValue,
 } from '@chakra-ui/react';
+import moment from 'moment';
 import Image from 'next/image';
 import Link from 'next/link';
 import React from 'react';
+import { AiOutlineEye, AiOutlineUnorderedList } from 'react-icons/ai';
 import { QuizzesResponseFragment } from '../generated/graphql';
 import { CommentButton } from './CommentButton';
 import { EditDeleteQuizButtons } from './EditDeleteQuizButtons';
 import { LikeButton } from './LikeButton';
 import { UserAvatar } from './UserAvatar';
-import moment from 'moment';
-import { AiOutlineEye, AiOutlineUnorderedList } from 'react-icons/ai';
-import { useColorModeValue } from '@chakra-ui/react';
 
-interface QuizBoxProps {
+interface QuizItemProps {
 	quiz: QuizzesResponseFragment;
 }
 
-export const QuizBox: React.FC<QuizBoxProps> = ({ quiz }) => {
+export const QuizItem: React.FC<QuizItemProps> = ({ quiz }) => {
 	const titleColor = useColorModeValue('gray.700', 'white');
 
 	const { description, created_at } = quiz;
@@ -58,7 +57,7 @@ export const QuizBox: React.FC<QuizBoxProps> = ({ quiz }) => {
 	const { id, quiz_photo, title, author, takers_count, questionsCount } = quiz;
 
 	return (
-		<ChakraContainter maxW={['100%', '460px', '820px']} my='36px' p='0'>
+		<Box w={['100%', '460px', '820px']}>
 			<Stack
 				direction={['column', 'column', 'row']}
 				divider={<StackDivider borderColor='gray' />}
@@ -96,7 +95,7 @@ export const QuizBox: React.FC<QuizBoxProps> = ({ quiz }) => {
 								</Text>
 							</Flex>
 						</Flex>
-						<Text lineHeight='22px' mb='24px'>
+						<Text lineHeight='22px' mb='24px' wordBreak='break-word'>
 							<Link href={`/quiz/${id}`}>{desc}</Link>
 						</Text>
 						<UserAvatar author={author} />
@@ -123,6 +122,7 @@ export const QuizBox: React.FC<QuizBoxProps> = ({ quiz }) => {
 				</Stack>
 
 				<Stack
+					w='70px'
 					direction={['row', 'row', 'column']}
 					justify='center'
 					spacing={['36px', '36px', '12px']}
@@ -139,6 +139,6 @@ export const QuizBox: React.FC<QuizBoxProps> = ({ quiz }) => {
 					<CommentButton quiz={quiz} />
 				</Stack>
 			</Stack>
-		</ChakraContainter>
+		</Box>
 	);
 };

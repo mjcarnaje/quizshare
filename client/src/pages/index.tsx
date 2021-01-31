@@ -1,15 +1,15 @@
 import { Button, useColorModeValue } from '@chakra-ui/react';
-import React from 'react';
-import { QuizBox } from '../components/QuizBox';
-import { QuizBoxLoading } from '../components/QuizBoxLoading';
+import Head from 'next/head';
+import React, { useState } from 'react';
+import { QuizzesCards } from '../components/QuizzesCards';
+import { SearchBar } from '../components/SearchBar';
 import { useQuizzesQuery } from '../generated/graphql';
 import { MainContainer } from '../layouts/MainContainer';
 import { useIsAuth } from '../utils/useIsAuth';
 import { withApollo } from '../utils/withApollo';
-import Head from 'next/head';
 
 const Index: React.FC = () => {
-	const buttonColorScheme = useColorModeValue('purple', 'gray');
+	const [query, setQuery] = useState<string | null>(null);
 
 	useIsAuth();
 
@@ -21,44 +21,22 @@ const Index: React.FC = () => {
 		notifyOnNetworkStatusChange: true,
 	});
 
-	if (!data && loading) {
-		return (
-			<MainContainer display='grid' justifyItems='center'>
-				<QuizBoxLoading />
-				<QuizBoxLoading />
-				<QuizBoxLoading />
-			</MainContainer>
-		);
-	}
-
-	if (!loading && !data) {
-		return (
-			<div>
-				<div>you got query failed for some reason</div>
-				<div>{error?.message}</div>
-			</div>
-		);
-	}
-
 	return (
 		<MainContainer display='grid' justifyItems='center'>
 			<Head>
 				<title>QuizShare</title>
 				<meta name='viewport' content='initial-scale=1.0, width=device-width' />
 			</Head>
-			{data?.quizzes.quizzes.map((quiz) => {
-				return <QuizBox key={quiz.id} quiz={quiz} />;
-			})}
-			{loading && (
-				<>
-					<QuizBoxLoading />
-					<QuizBoxLoading />
-				</>
-			)}
+			<SearchBar getQuery={setQuery} />
+			<QuizzesCards
+				quizzes={data?.quizzes.quizzes}
+				isLoading={loading}
+				isError={error}
+			/>
 			{data && data.quizzes.hasMore && (
 				<Button
 					size='sm'
-					colorScheme={buttonColorScheme}
+					colorScheme={useColorModeValue('purple', 'gray')}
 					variant='ghost'
 					fontSize={16}
 					my='20px'
