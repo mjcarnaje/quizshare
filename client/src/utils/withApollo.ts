@@ -7,6 +7,23 @@ import {
 } from '../generated/graphql';
 import { createWithApollo } from './createWithApollo';
 import { isServer } from './isServer';
+import { QuizzesResponseFragment } from '../generated/graphql';
+import { ReadFieldFunction } from '@apollo/client/cache/core/types/common';
+
+function offsetFromCursor(
+	items: QuizzesResponseFragment[],
+	cursor: string,
+	readField: ReadFieldFunction
+) {
+	for (let i = items.length - 1; i >= 0; --i) {
+		const item = items[i];
+
+		if (readField('id', item) === cursor) {
+			return i + 1;
+		}
+	}
+	return -1;
+}
 
 const createClient = (ctx: NextPageContext) =>
 	new ApolloClient({
@@ -20,14 +37,25 @@ const createClient = (ctx: NextPageContext) =>
 				Query: {
 					fields: {
 						quizzes: {
-							keyArgs: [],
+							keyArgs: ['query'],
 							merge(
 								existing: PaginatedQuizzes | undefined,
-								incoming: PaginatedQuizzes
+								incoming: PaginatedQuizzes,
+								{ args, readField }
 							): PaginatedQuizzes {
+								const merged = existing?.quizzes
+									? existing.quizzes.slice(0)
+									: [];
+								let offset = offsetFromCursor(merged, args?.cursor, readField);
+
+								if (offset < 0) offset = merged.length;
+
+								for (let i = 0; i < incoming.quizzes.length; ++i) {
+									merged[offset + i] = incoming.quizzes[i];
+								}
 								return {
 									...incoming,
-									quizzes: [...(existing?.quizzes || []), ...incoming.quizzes],
+									quizzes: merged,
 								};
 							},
 						},

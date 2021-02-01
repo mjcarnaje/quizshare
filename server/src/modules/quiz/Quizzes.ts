@@ -90,7 +90,7 @@ export class QuizzesResolver {
 		@Arg('cursor', () => String, { nullable: true }) cursor: string | null,
 		@Arg('query', () => String, { nullable: true }) query: string | null
 	): Promise<PaginatedQuizzes> {
-		const realLimit = Math.min(10, limit);
+		const realLimit = Math.min(50, limit);
 		const realLimitPlusOne = realLimit + 1;
 
 		const qs = await getConnection()
@@ -101,15 +101,13 @@ export class QuizzesResolver {
 			.leftJoinAndSelect('q.questions', 'questions')
 			.leftJoinAndSelect('q.likes', 'likes')
 			.leftJoinAndSelect('q.comments', 'comments')
-			.leftJoinAndSelect('q.takers', 'takers')
-			.orderBy('q.created_at', 'DESC')
-			.take(realLimitPlusOne);
+			.leftJoinAndSelect('q.takers', 'takers');
 
-		if (cursor) {
+		if (cursor && !query) {
 			qs.where('q."created_at" < :cursor', {
 				cursor: new Date(parseInt(cursor)),
 			});
-		} else if (query) {
+		} else if (query && !cursor) {
 			const formattedQuery = query.trim().replace(/ /g, ' <-> ');
 
 			qs.where(
@@ -127,23 +125,26 @@ export class QuizzesResolver {
 			const formattedQuery = query.trim().replace(/ /g, ' <-> ');
 
 			qs.where(
-				`q."created_at" < :cursor,
-				to_tsvector('simple',q.title) @@ to_tsquery('simple', :query)`,
+				`to_tsvector('simple',q.title) @@ to_tsquery('simple', :query)`,
 				{
-					cursor: new Date(parseInt(cursor)),
 					query: `${formattedQuery}:*`,
 				}
-			).orWhere(
-				`q."created_at" < :cursor,
-				to_tsvector('simple',q.description) @@ to_tsquery('simple', :query)`,
-				{
+			)
+				.orWhere(
+					`to_tsvector('simple',q.description) @@ to_tsquery('simple', :query)`,
+					{
+						query: `${formattedQuery}:*`,
+					}
+				)
+				.andWhere(`q."created_at" < :cursor`, {
 					cursor: new Date(parseInt(cursor)),
-					query: `${formattedQuery}:*`,
-				}
-			);
+				});
 		}
 
-		const quizzes = await qs.getMany();
+		const quizzes = await qs
+			.orderBy('q.created_at', 'DESC')
+			.take(realLimitPlusOne)
+			.getMany();
 
 		return {
 			quizzes: (quizzes as [Quiz]).slice(0, realLimit),

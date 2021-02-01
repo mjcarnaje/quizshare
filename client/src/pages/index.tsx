@@ -1,25 +1,36 @@
 import { Button, useColorModeValue } from '@chakra-ui/react';
 import Head from 'next/head';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { QuizzesCards } from '../components/QuizzesCards';
 import { SearchBar } from '../components/SearchBar';
 import { useQuizzesQuery } from '../generated/graphql';
 import { MainContainer } from '../layouts/MainContainer';
 import { useIsAuth } from '../utils/useIsAuth';
 import { withApollo } from '../utils/withApollo';
+import { useRouter } from 'next/dist/client/router';
 
 const Index: React.FC = () => {
-	const [query, setQuery] = useState<string | null>(null);
-
+	const {
+		query: { q },
+	} = useRouter();
 	useIsAuth();
+	const [query, setQuery] = useState<string | null>();
 
 	const { data, loading, fetchMore, variables, error } = useQuizzesQuery({
 		variables: {
-			limit: 4,
+			limit: 50,
 			cursor: null,
+			query: query,
 		},
-		notifyOnNetworkStatusChange: true,
 	});
+
+	useEffect(() => {
+		if (q) {
+			setQuery(q as string);
+		} else if (q === '' || !q) {
+			setQuery(null);
+		}
+	}, [q]);
 
 	return (
 		<MainContainer display='grid' justifyItems='center'>
@@ -27,7 +38,7 @@ const Index: React.FC = () => {
 				<title>QuizShare</title>
 				<meta name='viewport' content='initial-scale=1.0, width=device-width' />
 			</Head>
-			<SearchBar getQuery={setQuery} />
+			<SearchBar />
 			<QuizzesCards
 				quizzes={data?.quizzes.quizzes}
 				isLoading={loading}

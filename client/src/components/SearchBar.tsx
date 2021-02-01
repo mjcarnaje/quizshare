@@ -7,12 +7,11 @@ import {
 	useColorModeValue,
 } from '@chakra-ui/react';
 import { SearchIcon } from '@chakra-ui/icons';
+import { useRouter } from 'next/router';
 
-interface SearchBarProps {
-	getQuery: (text: string) => void;
-}
+export const SearchBar: React.FC = () => {
+	const router = useRouter();
 
-export const SearchBar: React.FC<SearchBarProps> = ({ getQuery }) => {
 	const [text, setText] = useState('');
 
 	return (
@@ -20,7 +19,10 @@ export const SearchBar: React.FC<SearchBarProps> = ({ getQuery }) => {
 			<form
 				onSubmit={(e) => {
 					e.preventDefault();
-					getQuery(text);
+					router.push({
+						pathname: '/',
+						query: { q: text },
+					});
 				}}
 			>
 				<InputGroup

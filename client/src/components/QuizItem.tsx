@@ -122,9 +122,10 @@ export const QuizItem: React.FC<QuizItemProps> = ({ quiz }) => {
 				</Stack>
 
 				<Stack
-					w='70px'
+					w={['full', 'full', '70px']}
 					direction={['row', 'row', 'column']}
 					justify='center'
+					align='center'
 					spacing={['36px', '36px', '12px']}
 					pos='relative'
 				>
