@@ -25,6 +25,7 @@ import errorMapper from '../../utils/errorMapper';
 import { uploadCloudinaryImage } from '../../utils/uploadImage';
 import { withApollo } from '../../utils/withApollo';
 import Head from 'next/head';
+import { QuizContainer } from '../../layouts/QuizContainer';
 
 const CreateQuiz: React.FC = () => {
 	const colorTitle = useColorModeValue('gray.800', 'white');
@@ -86,116 +87,118 @@ const CreateQuiz: React.FC = () => {
 			>
 				Create an interactive quiz
 			</Heading>
-			<Box
-				maxW='764px'
-				w={['auto', 'auto', '764px']}
-				m='auto'
-				boxShadow='md'
-				p={['10px', '10px', '24px']}
-				borderWidth='1px'
-				borderRadius='md'
-			>
-				<FormProvider {...methods}>
-					<form onSubmit={handleSubmit(onSubmit)}>
-						{image && (
-							<input
-								type='hidden'
-								name='quiz_photo'
-								ref={register()}
-								defaultValue={image}
-							/>
-						)}
-						<VStack spacing='16px'>
-							<Box w='full'>
-								{image ? (
-									<Skeleton isLoaded={image !== 'loading'}>
-										<Box borderRadius='8px' overflow='hidden' bg='gray.100'>
-											<AspectRatio maxW='full' ratio={16 / 9}>
-												{image !== 'loading' ? (
-													<Image
-														src={image}
-														alt='Thumbnail of Quiz'
-														layout='fill'
-													/>
-												) : (
-													<Box></Box>
-												)}
-											</AspectRatio>
-										</Box>
-									</Skeleton>
-								) : (
-									<Center h='200px' bg={thumbnailBg}>
+			<QuizContainer type='create'>
+				<Box
+					maxW='764px'
+					w={['auto', 'auto', '764px']}
+					m='auto'
+					boxShadow='md'
+					p={['10px', '10px', '24px']}
+					borderWidth='1px'
+					borderRadius='md'
+				>
+					<FormProvider {...methods}>
+						<form onSubmit={handleSubmit(onSubmit)}>
+							{image && (
+								<input
+									type='hidden'
+									name='quiz_photo'
+									ref={register()}
+									defaultValue={image}
+								/>
+							)}
+							<VStack spacing='16px'>
+								<Box w='full'>
+									{image ? (
+										<Skeleton isLoaded={image !== 'loading'}>
+											<Box borderRadius='8px' overflow='hidden' bg='gray.100'>
+												<AspectRatio maxW='full' ratio={16 / 9}>
+													{image !== 'loading' ? (
+														<Image
+															src={image}
+															alt='Thumbnail of Quiz'
+															layout='fill'
+														/>
+													) : (
+														<Box></Box>
+													)}
+												</AspectRatio>
+											</Box>
+										</Skeleton>
+									) : (
+										<Center h='200px' bg={thumbnailBg}>
+											<Button
+												leftIcon={<MdPhotoSizeSelectActual />}
+												colorScheme='gray'
+												variant='ghost'
+												onClick={uploadImage}
+											>
+												Upload Thumbnail
+											</Button>
+										</Center>
+									)}
+								</Box>
+								{image && (
+									<Center>
 										<Button
 											leftIcon={<MdPhotoSizeSelectActual />}
 											colorScheme='gray'
-											variant='ghost'
 											onClick={uploadImage}
 										>
-											Upload Thumbnail
+											Change Thumbnail
 										</Button>
 									</Center>
 								)}
-							</Box>
-							{image && (
-								<Center>
-									<Button
-										leftIcon={<MdPhotoSizeSelectActual />}
-										colorScheme='gray'
-										onClick={uploadImage}
-									>
-										Change Thumbnail
+								<QuizInputUI
+									register={register({ required: true })}
+									name='Title'
+									input='title'
+									placeholder='Type the title here...'
+									fontSize='20px'
+									size='lg'
+									error={errors.title}
+									errorMessage={
+										errors.title?.message || 'Title is required field.'
+									}
+								/>
+								<QuizInputUI
+									register={register({ required: true })}
+									name='Description'
+									input='description'
+									placeholder='Type the description here..'
+									as={TextareaAutosize}
+									resize='none'
+									overflow='hidden'
+									py='5px'
+									error={errors.description}
+									errorMessage={
+										errors.description?.message ||
+										'Description is required field.'
+									}
+								/>
+							</VStack>
+							<QuestionArray />
+							<Flex w='full' mt='20px'>
+								<Spacer />
+								<NextLink href='/'>
+									<Button variant='outline' colorScheme='purple' px='20px'>
+										Cancel
 									</Button>
-								</Center>
-							)}
-							<QuizInputUI
-								register={register({ required: true })}
-								name='Title'
-								input='title'
-								placeholder='Type the title here...'
-								fontSize='20px'
-								size='lg'
-								error={errors.title}
-								errorMessage={
-									errors.title?.message || 'Title is required field.'
-								}
-							/>
-							<QuizInputUI
-								register={register({ required: true })}
-								name='Description'
-								input='description'
-								placeholder='Type the description here..'
-								as={TextareaAutosize}
-								resize='none'
-								overflow='hidden'
-								py='5px'
-								error={errors.description}
-								errorMessage={
-									errors.description?.message ||
-									'Description is required field.'
-								}
-							/>
-						</VStack>
-						<QuestionArray />
-						<Flex w='full' mt='20px'>
-							<Spacer />
-							<NextLink href='/'>
-								<Button variant='outline' colorScheme='purple' px='20px'>
-									Cancel
+								</NextLink>
+								<Button
+									colorScheme='purple'
+									type='submit'
+									px='20px'
+									ml='10px'
+									isLoading={loading}
+								>
+									Publish
 								</Button>
-							</NextLink>
-							<Button
-								colorScheme='purple'
-								type='submit'
-								px='20px'
-								ml='10px'
-								isLoading={loading}
-							>
-								Publish
-							</Button>
-						</Flex>
-					</form>
-				</FormProvider>
-			</Box>
+							</Flex>
+						</form>
+					</FormProvider>
+				</Box>
+			</QuizContainer>
 		</MainContainer>
 	);
 };
