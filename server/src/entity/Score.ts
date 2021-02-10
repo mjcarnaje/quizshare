@@ -13,7 +13,7 @@ import { User } from './User';
 
 @ObjectType()
 @Entity()
-export class Result extends BaseEntity {
+export class Score extends BaseEntity {
 	@Field(() => ID)
 	@PrimaryGeneratedColumn()
 	id: number;
@@ -24,7 +24,7 @@ export class Result extends BaseEntity {
 	@Column()
 	taker_id: number;
 
-	@ManyToOne(() => Quiz, (quiz) => quiz.takers, { onDelete: 'CASCADE' })
+	@ManyToOne(() => Quiz, (quiz) => quiz.scores, { onDelete: 'CASCADE' })
 	@JoinColumn({ name: 'quiz_id' })
 	quiz: Quiz;
 

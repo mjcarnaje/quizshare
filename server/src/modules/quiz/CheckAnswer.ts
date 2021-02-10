@@ -9,7 +9,7 @@ import {
 	Root,
 } from 'type-graphql';
 import { Quiz } from '../../entity/Quiz';
-import { Result } from '../../entity/Result';
+import { Score } from '../../entity/Score';
 import { User } from '../../entity/User';
 import { MyContext } from '../../types/MyContext';
 
@@ -31,20 +31,20 @@ export class ChecksAnswerInput {
 	users_answer: UsersAnswer[];
 }
 
-@Resolver(Result)
+@Resolver(Score)
 export class CheckAnswerResolver {
 	@FieldResolver(() => User)
-	async taker(@Root() results: Result) {
-		const taker = await User.findOne({ where: { id: results.taker_id } });
+	async taker(@Root() scores: Score) {
+		const taker = await User.findOne({ where: { id: scores.taker_id } });
 		return taker;
 	}
 
-	@Mutation(() => Result, { nullable: true })
+	@Mutation(() => Score, { nullable: true })
 	async checkAnswer(
 		@Arg('data')
 		{ quiz_id, users_answer }: ChecksAnswerInput,
 		@Ctx() { req }: MyContext
-	): Promise<Result | null> {
+	): Promise<Score | null> {
 		let score: number = 0;
 
 		const quiz = await Quiz.findOne(quiz_id, { relations: ['questions'] });
@@ -61,7 +61,7 @@ export class CheckAnswerResolver {
 			}
 		}
 
-		const result = await Result.create({
+		const result = await Score.create({
 			quiz_id,
 			score,
 			taker_id: req.session.user_id,

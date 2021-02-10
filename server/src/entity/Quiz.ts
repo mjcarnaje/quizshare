@@ -15,7 +15,7 @@ import { Question } from './Question';
 import { User } from './User';
 import { Like } from './Like';
 import { Comment } from './Comment';
-import { Result } from './Result';
+import { Score } from './Score';
 
 @ObjectType()
 @Entity()
@@ -51,12 +51,12 @@ export class Quiz extends BaseEntity {
 	@OneToMany(() => Question, (question) => question.quiz, { cascade: true })
 	questions: Question[];
 
-	@Field(() => [Result])
-	@OneToMany(() => Result, (result) => result.quiz, { cascade: true })
-	takers: Result[];
+	@Field(() => [Score])
+	@OneToMany(() => Score, (score) => score.quiz, { cascade: true })
+	scores: Score[];
 
 	@Field(() => Int)
-	takers_count: number;
+	scores_count: number;
 
 	@Field(() => Boolean)
 	is_taken: boolean;

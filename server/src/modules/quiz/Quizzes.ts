@@ -55,7 +55,7 @@ export class QuizzesResolver {
 	@FieldResolver(() => Boolean)
 	is_taken(@Root() quiz: Quiz, @Ctx() { req }: MyContext) {
 		const is_taken =
-			quiz.takers.filter((taker) => taker.taker_id === req.session.user_id)
+			quiz.scores.filter((taker) => taker.taker_id === req.session.user_id)
 				.length > 0;
 		if (is_taken) {
 			return true;
@@ -79,8 +79,8 @@ export class QuizzesResolver {
 	}
 
 	@FieldResolver(() => Int)
-	takers_count(@Root() quiz: Quiz) {
-		return quiz.takers.length;
+	scores_count(@Root() quiz: Quiz) {
+		return quiz.scores.length;
 	}
 
 	@UseMiddleware(isAuthenticated)
@@ -101,7 +101,7 @@ export class QuizzesResolver {
 			.leftJoinAndSelect('q.questions', 'questions')
 			.leftJoinAndSelect('q.likes', 'likes')
 			.leftJoinAndSelect('q.comments', 'comments')
-			.leftJoinAndSelect('q.takers', 'takers');
+			.leftJoinAndSelect('q.scores', 'scores');
 
 		if (cursor && !query) {
 			qs.where('q."created_at" < :cursor', {
@@ -166,7 +166,7 @@ export class QuizzesResolver {
 
 		if (cursor) {
 			findOption = {
-				relations: ['author', 'questions', 'likes', 'comments', 'takers'],
+				relations: ['author', 'questions', 'likes', 'comments', 'scores'],
 				order: {
 					created_at: 'DESC',
 				},
@@ -178,7 +178,7 @@ export class QuizzesResolver {
 			};
 		} else {
 			findOption = {
-				relations: ['author', 'questions', 'likes', 'comments', 'takers'],
+				relations: ['author', 'questions', 'likes', 'comments', 'scores'],
 				order: {
 					created_at: 'DESC',
 				},
@@ -200,7 +200,7 @@ export class QuizzesResolver {
 	async searhedQuizzes(@Arg('query') query: string): Promise<Quiz[] | null> {
 		const formattedQuery = query.trim().replace(/ /g, ' <-> ');
 
-		const results = await getConnection()
+		const scores = await getConnection()
 			.createQueryBuilder(Quiz, 'q')
 			.where(`to_tsvector('simple',q.title) @@ to_tsquery('simple', :query)`, {
 				query: `${formattedQuery}:*`,
@@ -212,7 +212,7 @@ export class QuizzesResolver {
 				}
 			)
 			.getMany();
-		return results;
+		return scores;
 	}
 
 	@UseMiddleware(isAuthenticated)
@@ -237,7 +237,7 @@ export class QuizzesResolver {
 		@Arg('quiz_id', () => Int) quiz_id: number
 	): Promise<Quiz | null> {
 		const quiz = await Quiz.findOne(quiz_id, {
-			relations: ['likes', 'comments', 'questions', 'author', 'takers'],
+			relations: ['likes', 'comments', 'questions', 'author', 'scores'],
 		});
 		if (!quiz) {
 			return null;
