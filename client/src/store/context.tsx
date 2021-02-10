@@ -1,15 +1,15 @@
 import React, { createContext, useState } from 'react';
-import { Maybe, ResultResponseFragment } from '../generated/graphql';
+import { Maybe, ScoreResponseFragment } from '../generated/graphql';
 import { UsersAnswerProps } from '../pages/quiz/take/[id]/index';
 
-export type QuizResultType = {
-	quizResult?:
-		| Maybe<{ __typename?: 'Result' } & ResultResponseFragment>
+export type QuizScoreType = {
+	quizScore?:
+		| Maybe<{ __typename?: 'Score' } & ScoreResponseFragment>
 		| null
 		| undefined;
-	setQuizResult: (
+	setQuizScore: (
 		data:
-			| Maybe<{ __typename?: 'Result' } & ResultResponseFragment>
+			| Maybe<{ __typename?: 'Score' } & ScoreResponseFragment>
 			| null
 			| undefined
 	) => void;
@@ -18,20 +18,20 @@ export type QuizResultType = {
 	setAnswerByUser: (data: UsersAnswerProps[]) => void;
 };
 
-export const QuizResultContext = createContext<QuizResultType | null>(null);
+export const QuizScoreContext = createContext<QuizScoreType | null>(null);
 
-export const QuizResultProvider: React.FC = ({ children }) => {
-	const [quizResult, setQuizResult] = useState<
-		Maybe<{ __typename?: 'Result' } & ResultResponseFragment> | null | undefined
+export const QuizScoreProvider: React.FC = ({ children }) => {
+	const [quizScore, setQuizScore] = useState<
+		Maybe<{ __typename?: 'Score' } & ScoreResponseFragment> | null | undefined
 	>();
 	const [answersByUser, setAnswerByUser] = useState<UsersAnswerProps[] | null>(
 		null
 	);
 	return (
-		<QuizResultContext.Provider
-			value={{ quizResult, setQuizResult, answersByUser, setAnswerByUser }}
+		<QuizScoreContext.Provider
+			value={{ quizScore, setQuizScore, answersByUser, setAnswerByUser }}
 		>
 			{children}
-		</QuizResultContext.Provider>
+		</QuizScoreContext.Provider>
 	);
 };

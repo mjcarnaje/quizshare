@@ -54,7 +54,7 @@ export const QuizItem: React.FC<QuizItemProps> = ({ quiz }) => {
 	}
 
 	const titleSize = useBreakpointValue({ base: 'xl', md: 'lg' });
-	const { id, quiz_photo, title, author, takers_count, questionsCount } = quiz;
+	const { id, quiz_photo, title, author, scores_count, questionsCount } = quiz;
 
 	return (
 		<Box w={['100%', '460px', '820px']}>
@@ -85,7 +85,7 @@ export const QuizItem: React.FC<QuizItemProps> = ({ quiz }) => {
 							<Flex align='center' ml='20px'>
 								<Icon as={AiOutlineEye} />
 								<Text ml='4px' fontSize='14px'>
-									{takers_count} Submissions
+									{scores_count} Submissions
 								</Text>
 							</Flex>
 							<Flex align='center' ml='20px'>

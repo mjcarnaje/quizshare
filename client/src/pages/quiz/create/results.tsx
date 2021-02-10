@@ -32,7 +32,7 @@ import { SettingsInput, State } from '../../../store/type';
 import { uploadCloudinaryImage } from '../../../utils/uploadImage';
 import { withApollo } from '../../../utils/withApollo';
 
-const Result: React.FC = () => {
+const Score: React.FC = () => {
 	const dispatch = useDispatch();
 
 	const { title, description, quiz_photo } = useSelector(
@@ -90,7 +90,7 @@ const Result: React.FC = () => {
 						<VStack spacing='16px'>
 							<QuizInputUI
 								register={register({ required: true, minLength: 6 })}
-								name='Result Title'
+								name='Score Title'
 								input='title'
 								placeholder='Type the title here...'
 								fontSize='20px'
@@ -133,7 +133,7 @@ const Result: React.FC = () => {
 											variant='ghost'
 											onClick={uploadImage}
 										>
-											Upload result image
+											Upload score image
 										</Button>
 									</AspectRatio>
 								)}
@@ -159,7 +159,7 @@ const Result: React.FC = () => {
 									w='full'
 									textAlign='left'
 								>
-									Result Minimum Percent Correct -{' '}
+									Score Minimum Percent Correct -{' '}
 									<Badge colorScheme='purple'>{percentage}%</Badge>
 								</Text>
 								<Slider
@@ -178,7 +178,7 @@ const Result: React.FC = () => {
 
 							<QuizInputUI
 								register={register({ required: true })}
-								name='Result Description'
+								name='Score Description'
 								input='description'
 								placeholder='Type the description here..'
 								as={TextareaAutosize}
@@ -196,7 +196,7 @@ const Result: React.FC = () => {
 
 						<Flex w='full' mt='20px' justify='flex-end'>
 							<Button colorScheme='purple' type='submit' px='20px' ml='10px'>
-								Add result
+								Add score
 							</Button>
 						</Flex>
 					</form>
@@ -206,4 +206,4 @@ const Result: React.FC = () => {
 	);
 };
 
-export default withApollo({ ssr: true })(Result);
+export default withApollo({ ssr: true })(Score);

@@ -51,8 +51,8 @@ export type Profile = {
   name: Scalars['String'];
 };
 
-export type Result = {
-  __typename?: 'Result';
+export type Score = {
+  __typename?: 'Score';
   id: Scalars['ID'];
   taker: User;
   score: Scalars['Float'];
@@ -81,8 +81,8 @@ export type Quiz = {
   description: Scalars['String'];
   quiz_photo?: Maybe<Scalars['String']>;
   questions: Array<Question>;
-  takers: Array<Result>;
-  takers_count: Scalars['Int'];
+  scores: Array<Score>;
+  scores_count: Scalars['Int'];
   is_taken: Scalars['Boolean'];
   likes: Array<Like>;
   is_liked: Scalars['Boolean'];
@@ -256,7 +256,7 @@ export type QueryCommentsArgs = {
 
 export type Mutation = {
   __typename?: 'Mutation';
-  checkAnswer?: Maybe<Result>;
+  checkAnswer?: Maybe<Score>;
   createComment: Comment;
   createQuiz: Quiz;
   deleteComment: Scalars['String'];
@@ -344,7 +344,7 @@ export type CommentResponseFragment = (
 
 export type QuizzesResponseFragment = (
   { __typename?: 'Quiz' }
-  & Pick<Quiz, 'id' | 'title' | 'description' | 'quiz_photo' | 'created_at' | 'is_liked' | 'likes_count' | 'comments_count' | 'takers_count' | 'questionsCount'>
+  & Pick<Quiz, 'id' | 'title' | 'description' | 'quiz_photo' | 'created_at' | 'is_liked' | 'likes_count' | 'comments_count' | 'scores_count' | 'questionsCount'>
   & { likes: Array<(
     { __typename?: 'Like' }
     & Pick<Like, 'quiz_id' | 'author_id'>
@@ -358,9 +358,9 @@ export type QuizzesResponseFragment = (
   ) }
 );
 
-export type ResultResponseFragment = (
-  { __typename?: 'Result' }
-  & Pick<Result, 'id' | 'score' | 'current_total_questions' | 'answered_at'>
+export type ScoreResponseFragment = (
+  { __typename?: 'Score' }
+  & Pick<Score, 'id' | 'score' | 'current_total_questions' | 'answered_at'>
   & { taker: (
     { __typename?: 'User' }
     & Pick<User, 'username' | 'avatar' | 'email'>
@@ -388,8 +388,8 @@ export type CheckAnswerMutationVariables = Exact<{
 export type CheckAnswerMutation = (
   { __typename?: 'Mutation' }
   & { checkAnswer?: Maybe<(
-    { __typename?: 'Result' }
-    & ResultResponseFragment
+    { __typename?: 'Score' }
+    & ScoreResponseFragment
   )> }
 );
 
@@ -642,7 +642,7 @@ export type SingleQuizQuery = (
   { __typename?: 'Query' }
   & { singleQuiz?: Maybe<(
     { __typename?: 'Quiz' }
-    & Pick<Quiz, 'id' | 'quiz_photo' | 'title' | 'description' | 'is_liked' | 'likes_count' | 'comments_count' | 'created_at' | 'questionsCount' | 'takers_count' | 'is_taken'>
+    & Pick<Quiz, 'id' | 'quiz_photo' | 'title' | 'description' | 'is_liked' | 'likes_count' | 'comments_count' | 'created_at' | 'questionsCount' | 'scores_count' | 'is_taken'>
     & { author: (
       { __typename?: 'User' }
       & Pick<User, 'id' | 'username' | 'avatar' | 'email'>
@@ -694,12 +694,12 @@ export const QuizzesResponseFragmentDoc = gql`
   is_liked
   likes_count
   comments_count
-  takers_count
+  scores_count
   questionsCount
 }
     `;
-export const ResultResponseFragmentDoc = gql`
-    fragment ResultResponse on Result {
+export const ScoreResponseFragmentDoc = gql`
+    fragment ScoreResponse on Score {
   id
   taker {
     username
@@ -739,10 +739,10 @@ export const UserResponseFragmentDoc = gql`
 export const CheckAnswerDocument = gql`
     mutation CheckAnswer($data: ChecksAnswerInput!) {
   checkAnswer(data: $data) {
-    ...ResultResponse
+    ...ScoreResponse
   }
 }
-    ${ResultResponseFragmentDoc}`;
+    ${ScoreResponseFragmentDoc}`;
 export type CheckAnswerMutationFn = Apollo.MutationFunction<CheckAnswerMutation, CheckAnswerMutationVariables>;
 
 /**
@@ -1378,7 +1378,7 @@ export const SingleQuizDocument = gql`
     comments_count
     created_at
     questionsCount
-    takers_count
+    scores_count
     is_taken
   }
 }

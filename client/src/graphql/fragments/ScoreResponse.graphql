@@ -1,4 +1,4 @@
-fragment ResultResponse on Result {
+fragment ScoreResponse on Score {
 	id
 	taker {
 		username

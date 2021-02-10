@@ -86,8 +86,8 @@ export const QuizContainer: React.FC<QuizContainerProps> = ({
 		},
 		{
 			icon: <IoStatsChart />,
-			href: `/${url}/results`,
-			label: 'Results',
+			href: `/${url}/scores`,
+			label: 'Scores',
 		},
 	];
 

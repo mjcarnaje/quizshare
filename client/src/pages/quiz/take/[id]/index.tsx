@@ -22,7 +22,7 @@ import {
 } from '../../../../generated/graphql';
 import { MainContainer } from '../../../../layouts/MainContainer';
 import { SubContainer } from '../../../../layouts/SubContainer';
-import { QuizResultContext, QuizResultType } from '../../../../store/context';
+import { QuizScoreContext, QuizScoreType } from '../../../../store/context';
 import { withApollo } from '../../../../utils/withApollo';
 import { gql } from '@apollo/client';
 import { BiCheckDouble } from 'react-icons/bi';
@@ -51,9 +51,9 @@ const TakeQuiz: React.FC<TakeQuizProps> = ({}) => {
 	const [usersAnswer, setUsersAnswer] = useState<UsersAnswerProps[]>([]);
 	const [checking, setChecking] = useState(false);
 
-	const { setQuizResult, setAnswerByUser } = useContext(
-		QuizResultContext
-	) as QuizResultType;
+	const { setQuizScore, setAnswerByUser } = useContext(
+		QuizScoreContext
+	) as QuizScoreType;
 
 	const { data, loading } = useQuestionsQuery({
 		variables: {
@@ -241,35 +241,35 @@ const TakeQuiz: React.FC<TakeQuizProps> = ({}) => {
 								update: (cache, { data }) => {
 									const id = parseInt(router.query.id as string);
 
-									router.push(`/quiz/take/${id}/result`);
+									router.push(`/quiz/take/${id}/score`);
 
 									const qdata = cache.readFragment<{
-										takers_count: number;
+										scores_count: number;
 									}>({
 										id: 'Quiz:' + id,
 										fragment: gql`
 											fragment _ on Quiz {
-												takers_count
+												scores_count
 											}
 										`,
 									});
 
-									let newTakersCount: number = qdata?.takers_count ?? 0;
+									let newTakersCount: number = qdata?.scores_count ?? 0;
 
 									cache.writeFragment({
 										id: 'Quiz:' + id,
 										fragment: gql`
 											fragment _ on Quiz {
-												takers_count
+												scores_count
 											}
 										`,
 										data: {
-											takers_count: (newTakersCount += 1),
+											scores_count: (newTakersCount += 1),
 										},
 									});
 
 									setAnswerByUser(usersAnswer);
-									setQuizResult(data?.checkAnswer);
+									setQuizScore(data?.checkAnswer);
 									setUsersAnswer([]);
 									setChecking(true);
 								},

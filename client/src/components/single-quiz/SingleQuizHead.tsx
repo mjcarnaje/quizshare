@@ -100,7 +100,7 @@ const SingleQuizHead: React.FC<SingleQuizHeadProps> = ({
 		likes_count,
 		comments_count,
 		questionsCount,
-		takers_count,
+		scores_count,
 		is_taken,
 	} = data;
 
@@ -209,7 +209,7 @@ const SingleQuizHead: React.FC<SingleQuizHeadProps> = ({
 							<strong>{questionsCount}</strong> Questions
 						</Text>
 						<Text ml='5px'>
-							<strong>{takers_count}</strong> Submissions
+							<strong>{scores_count}</strong> Submissions
 						</Text>
 					</Flex>
 					<Divider />

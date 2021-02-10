@@ -21,16 +21,16 @@ import {
 } from '../../../../generated/graphql';
 import { MainContainer } from '../../../../layouts/MainContainer';
 import { SubContainer } from '../../../../layouts/SubContainer';
-import { QuizResultContext, QuizResultType } from '../../../../store/context';
+import { QuizScoreContext, QuizScoreType } from '../../../../store/context';
 import { withApollo } from '../../../../utils/withApollo';
 import { useColorModeValue } from '@chakra-ui/react';
 import { AiFillCheckCircle, AiFillCloseCircle } from 'react-icons/ai';
 import Comments from '../../../../components/single-quiz/Comments';
 import Head from 'next/head';
 
-interface ResultProps {}
+interface ScoreProps {}
 
-const Result: React.FC<ResultProps> = ({}) => {
+const Score: React.FC<ScoreProps> = ({}) => {
 	const correctColor = useColorModeValue('#68AF15', '#68AF15');
 	const wrongColor = useColorModeValue('#D30000', '#D30000');
 
@@ -40,9 +40,9 @@ const Result: React.FC<ResultProps> = ({}) => {
 
 	const [showAnswer, setShowAnswer] = useState(false);
 
-	const { quizResult, setQuizResult, answersByUser } = useContext(
-		QuizResultContext
-	) as QuizResultType;
+	const { quizScore, setQuizScore, answersByUser } = useContext(
+		QuizScoreContext
+	) as QuizScoreType;
 
 	const { data: quizdata } = useSingleQuizQuery({
 		variables: {
@@ -58,15 +58,15 @@ const Result: React.FC<ResultProps> = ({}) => {
 	});
 
 	useEffect(() => {
-		if (!quizResult) {
+		if (!quizScore) {
 			router.replace(`/quiz/take/${id}`);
 		}
 		// return () => {
-		// 	setQuizResult(null);
+		// 	setQuizScore(null);
 		// };
 	}, []);
 
-	if (!quizResult) {
+	if (!quizScore) {
 		return (
 			<MainContainer
 				display='flex'
@@ -93,14 +93,14 @@ const Result: React.FC<ResultProps> = ({}) => {
 			avatar,
 			profile: { name },
 		},
-	} = quizResult;
+	} = quizScore;
 
 	const percentage = ((score / current_total_questions) * 100).toFixed(1);
 
 	return (
 		<MainContainer>
 			<Head>
-				<title>{`Result | ${quizdata?.singleQuiz?.title}`}</title>
+				<title>{`Score | ${quizdata?.singleQuiz?.title}`}</title>
 				<meta name='viewport' content='initial-scale=1.0, width=device-width' />
 			</Head>
 			<SubContainer>
@@ -317,4 +317,4 @@ const Result: React.FC<ResultProps> = ({}) => {
 		</MainContainer>
 	);
 };
-export default withApollo({ ssr: true })(Result);
+export default withApollo({ ssr: true })(Score);
