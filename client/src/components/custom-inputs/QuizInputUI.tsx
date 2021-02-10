@@ -11,8 +11,8 @@ type QuizInputUIProps = {
 	input: string;
 	name?: string;
 	register: any;
-	error: any;
-	errorMessage: string;
+	error?: any;
+	errorMessage?: string;
 	isChoiceInput?: boolean;
 } & InputProps;
 
@@ -47,11 +47,7 @@ const QuizInputUI: React.FC<QuizInputUIProps> = ({
 				isInvalid={!!error}
 				{...props}
 			/>
-			{error && (
-				<FormErrorMessage mt='0'>
-					{`${errorMessage[0].toUpperCase()}${errorMessage.slice(1)}`}
-				</FormErrorMessage>
-			)}
+			{error && <FormErrorMessage mt='0'>{errorMessage}</FormErrorMessage>}
 		</FormControl>
 	);
 };

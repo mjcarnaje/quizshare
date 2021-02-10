@@ -12,14 +12,13 @@ import {
 	Tooltip,
 } from '@chakra-ui/react';
 import Image from 'next/image';
-import { useRouter } from 'next/dist/client/router';
 import React, { useEffect, useState } from 'react';
-import { Controller, useFieldArray, useFormContext } from 'react-hook-form';
+import { Controller, useFieldArray } from 'react-hook-form';
 import { BsPlusSquare } from 'react-icons/bs';
 import { MdDelete, MdPhotoSizeSelectActual } from 'react-icons/md';
 import TextareaAutosize from 'react-textarea-autosize';
 import { v4 as uuid } from 'uuid';
-import { ChoiceInput, QuizInput } from '../../generated/graphql';
+import { ChoiceInput } from '../../generated/graphql';
 import { uploadCloudinaryImage } from '../../utils/uploadImage';
 import QuizInputUI from '../custom-inputs/QuizInputUI';
 
@@ -31,20 +30,28 @@ declare global {
 interface ChoiceArrayProps {
 	questionIndex: number;
 	answer: string;
-	autoAddChoiceInput?: boolean;
+	control: any;
+	register: any;
+	autoAdd: boolean;
+	addChoice: boolean;
+	setAddChoice: (a: boolean) => void;
+	errors: any;
 }
 
 const ChoiceArray: React.FC<ChoiceArrayProps> = ({
 	questionIndex,
 	answer,
-	autoAddChoiceInput,
+	control,
+	register,
+	autoAdd,
+	addChoice: AC,
+	setAddChoice,
+	errors,
 }) => {
-	const router = useRouter();
 	const [images, setImages] = useState<
 		{ choice_id: string; url: string | 'loading' }[]
 	>([]);
 
-	const { control, register, errors } = useFormContext<QuizInput>();
 	const { fields, append, remove } = useFieldArray<ChoiceInput>({
 		control,
 		name: `questions[${questionIndex}].choices`,
@@ -81,9 +88,11 @@ const ChoiceArray: React.FC<ChoiceArrayProps> = ({
 	};
 
 	useEffect(() => {
-		if (router.pathname.includes('edit') && !autoAddChoiceInput) return;
-		addChoice(false);
-		addChoice(false);
+		if (autoAdd || AC) {
+			addChoice(false);
+			addChoice(false);
+		}
+		setAddChoice(false);
 	}, []);
 
 	return (
@@ -173,10 +182,11 @@ const ChoiceArray: React.FC<ChoiceArrayProps> = ({
 												resize='none'
 												overflow='hidden'
 												defaultValue={choice.value}
-												py='7px'
 												error={
-													errors.questions?.[questionIndex]?.choices?.[i]?.value
+													errors?.questions?.[questionIndex]?.choices?.[i]
+														?.value
 												}
+												py='7px'
 												errorMessage={`Choice ${
 													i + 1
 												} is required field: type or remove it.😉`}

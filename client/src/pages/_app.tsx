@@ -5,6 +5,8 @@ import NProgress from 'nprogress';
 import '../styles/nprogress.css';
 import theme from '../theme';
 import { QuizResultProvider } from '../store/context';
+import { Provider } from 'react-redux';
+import store from '../store';
 
 NProgress.configure({
 	showSpinner: false,
@@ -18,7 +20,9 @@ function MyApp({ Component, pageProps }: AppProps) {
 	return (
 		<ChakraProvider resetCSS theme={theme}>
 			<QuizResultProvider>
-				<Component {...pageProps} />
+				<Provider store={store}>
+					<Component {...pageProps} />
+				</Provider>
 			</QuizResultProvider>
 		</ChakraProvider>
 	);

@@ -59,7 +59,7 @@ const MainNavLink: React.FC<MainNavLinkProps> = ({ href, children }) => {
 const mainNavLinks = [
 	{
 		icon: null,
-		href: '/quiz/create',
+		href: '/quiz/create/settings',
 		label: 'Create Quiz',
 	},
 	{

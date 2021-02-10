@@ -4,6 +4,7 @@ import {
 	Flex,
 	Grid,
 	GridItem,
+	Heading,
 	List,
 	ListItem,
 	useColorModeValue,
@@ -17,12 +18,18 @@ import { MdLibraryBooks } from 'react-icons/md';
 interface MainNavLinkProps {
 	href: string;
 	icon: any;
+	type: 'update' | 'create';
 }
 
-const MainNavLink: React.FC<MainNavLinkProps> = ({ href, icon, children }) => {
+const MainNavLink: React.FC<MainNavLinkProps> = ({
+	href,
+	icon,
+	children,
+	type,
+}) => {
 	const { pathname } = useRouter();
-	const [, , , , path] = href.split('/');
-	const active = pathname.includes(path);
+	const path = href.split('/');
+	const active = pathname.includes(path[type === 'update' ? 4 : 3]);
 	const linkColor = useColorModeValue('purple.500', 'gray.100');
 	const bgColor = useColorModeValue('purple.50', 'rgba(255, 255, 255, 0.04)');
 
@@ -31,6 +38,7 @@ const MainNavLink: React.FC<MainNavLinkProps> = ({ href, icon, children }) => {
 			<Flex
 				as='a'
 				align='center'
+				justify={['center', 'center', 'center', 'flex-start']}
 				fontSize='md'
 				fontWeight={active ? 'semibold' : ''}
 				transitionProperty='colors'
@@ -84,36 +92,50 @@ export const QuizContainer: React.FC<QuizContainerProps> = ({
 	];
 
 	return (
-		<Grid
-			templateColumns='repeat(12, 1fr)'
-			gap={2}
-			px={['0', '32px', '32px', '64px']}
-			mx='auto'
-			maxW='1100px'
-		>
-			<GridItem colSpan={[12, 12, 12, 3]}>
-				<List
-					display={['block', 'flex', 'flex', 'block']}
-					justifyContent={['', 'space-between', 'space-between', '']}
-					alignItems={['', 'center', 'center', '']}
-					spacing={['2', '0', '0', '2']}
-					styleType='none'
-					pb={['0', '0', '0', '32px']}
-					pl={['0', '0', '0', '12px']}
-					pr={['0', '0', '0', '32px']}
-				>
-					{mainNavLinks.map((item) => (
-						<ListItem key={item.label} w='full' mx={['0', '2px', '2px', '0']}>
-							<MainNavLink icon={item.icon} href={item.href}>
-								{item.label}
-							</MainNavLink>
-						</ListItem>
-					))}
-				</List>
-			</GridItem>
-			<GridItem colSpan={[12, 12, 12, 9]} px='5px' {...props}>
-				{children}
-			</GridItem>
-		</Grid>
+		<>
+			<Heading
+				as='h1'
+				fontFamily='inter'
+				fontWeight='800'
+				color={useColorModeValue('gray.800', 'white')}
+				lineHeight='1'
+				fontSize={['30px', '42px', '56px']}
+				pb='40px'
+				textAlign='center'
+			>
+				Create an interactive quiz
+			</Heading>
+			<Grid
+				templateColumns='repeat(12, 1fr)'
+				gap={2}
+				px={['0', '32px', '32px', '64px']}
+				mx='auto'
+				maxW='1100px'
+			>
+				<GridItem colSpan={[12, 12, 12, 3]}>
+					<List
+						display={['block', 'flex', 'flex', 'block']}
+						justifyContent={['', 'space-between', 'space-between', '']}
+						alignItems={['', 'center', 'center', '']}
+						spacing={['2', '0', '0', '2']}
+						styleType='none'
+						pb={['0', '0', '0', '32px']}
+						pl={['0', '0', '0', '12px']}
+						pr={['0', '0', '0', '32px']}
+					>
+						{mainNavLinks.map((item) => (
+							<ListItem key={item.label} w='full' mx={['0', '2px', '2px', '0']}>
+								<MainNavLink icon={item.icon} href={item.href} type={type}>
+									{item.label}
+								</MainNavLink>
+							</ListItem>
+						))}
+					</List>
+				</GridItem>
+				<GridItem colSpan={[12, 12, 12, 9]} px='5px' {...props}>
+					{children}
+				</GridItem>
+			</Grid>
+		</>
 	);
 };

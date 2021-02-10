@@ -138,7 +138,7 @@ export type ChoiceInput = {
 };
 
 export type QuestionInput = {
-  question_id: Scalars['ID'];
+  question_id: Scalars['String'];
   question: Scalars['String'];
   question_photo?: Maybe<Scalars['String']>;
   choices: Array<ChoiceInput>;

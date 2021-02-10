@@ -1,10 +1,10 @@
 import { IsString, IsUUID, MinLength } from 'class-validator';
-import { Field, ID, InputType } from 'type-graphql';
+import { Field, InputType } from 'type-graphql';
 import { ChoiceInput } from './ChoiceInput';
 
 @InputType()
 export class QuestionInput {
-	@Field(() => ID)
+	@Field(() => String)
 	@IsUUID()
 	question_id: string;
 
