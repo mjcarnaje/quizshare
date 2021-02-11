@@ -1,17 +1,18 @@
+import { ChevronDownIcon, DeleteIcon, EditIcon } from '@chakra-ui/icons';
 import {
 	AspectRatio,
 	Badge,
 	Box,
 	Button,
 	Center,
-	Menu,
-	MenuButton,
-	IconButton,
-	MenuList,
-	MenuItem,
 	Divider,
 	Flex,
 	Heading,
+	IconButton,
+	Menu,
+	MenuButton,
+	MenuItem,
+	MenuList,
 	Skeleton,
 	Slider,
 	SliderFilledTrack,
@@ -42,7 +43,6 @@ import {
 import { State } from '../../../store/type';
 import { uploadCloudinaryImage } from '../../../utils/uploadImage';
 import { withApollo } from '../../../utils/withApollo';
-import { ChevronDownIcon, DeleteIcon, EditIcon } from '@chakra-ui/icons';
 
 const Score: React.FC = () => {
 	const toast = useToast();
@@ -71,9 +71,9 @@ const Score: React.FC = () => {
 			toast({
 				description: 'Percentage is already taken',
 				status: 'error',
-				duration: 3000,
+				duration: 5000,
 				isClosable: true,
-				position: 'bottom-left',
+				position: 'bottom-right',
 			});
 		} else {
 			dispatch(
@@ -142,12 +142,12 @@ const Score: React.FC = () => {
 				<meta name='viewport' content='initial-scale=1.0, width=device-width' />
 			</Head>
 			<QuizContainer type='create'>
-				<SubContainer w='764px' my='0'>
+				<SubContainer my='0'>
 					<form onSubmit={handleSubmit(editMode ? update : create)}>
 						{image && (
 							<input
 								type='hidden'
-								name='result_image'
+								name='result_photo'
 								value={image}
 								ref={register()}
 							/>
@@ -303,74 +303,70 @@ const Score: React.FC = () => {
 							)}
 						</Flex>
 					</form>
-
-					<Divider my='20px' />
-
-					{results.map((result) => (
-						<Box
-							p='20px 15px'
-							mb='20px'
-							boxShadow='base'
-							borderRadius='md'
-							textAlign='center'
-							position='relative'
-						>
-							<Box position='absolute' right='5px' top='5px'>
-								<Menu>
-									<MenuButton
-										as={IconButton}
-										aria-label='Options'
-										icon={<ChevronDownIcon />}
-										size='xs'
-										variant='ghost'
-									/>
-									<MenuList>
-										<MenuItem
-											icon={<DeleteIcon />}
-											onClick={() => dispatch(deleteResult(result.result_id))}
-										>
-											Delete
-										</MenuItem>
-										<MenuItem
-											icon={<EditIcon />}
-											onClick={() => edit(result.result_id)}
-										>
-											Edit
-										</MenuItem>
-									</MenuList>
-								</Menu>
-							</Box>
-
-							<Heading as='h2' fontSize='24px'>
-								{result.title}
-							</Heading>
-							<Badge colorScheme='purple' size='lg' fontSize='14px' my='5px'>
-								{result.minimum_percentage}%
-							</Badge>
-							{result.result_photo && (
-								<Box
-									overflow='hidden'
-									maxW='500px'
-									borderRadius='md'
-									bg='gray.100'
-									my='5px'
-									mx='auto'
-								>
-									<AspectRatio w='full' ratio={16 / 9}>
-										<Image
-											alt='result image'
-											layout='fill'
-											src={result.result_photo}
-										/>
-									</AspectRatio>
-								</Box>
-							)}
-							<Text mt='20px' wordBreak='break-word' whiteSpace='pre-line'>
-								{result.description}
-							</Text>
-						</Box>
-					))}
 				</SubContainer>
+
+				{results.map((result) => (
+					<SubContainer
+						my='20px'
+						boxShadow='sm'
+						textAlign='center'
+						position='relative'
+					>
+						<Box position='absolute' right='5px' top='5px'>
+							<Menu>
+								<MenuButton
+									as={IconButton}
+									aria-label='Options'
+									icon={<ChevronDownIcon />}
+									size='xs'
+									variant='ghost'
+								/>
+								<MenuList>
+									<MenuItem
+										icon={<DeleteIcon />}
+										onClick={() => dispatch(deleteResult(result.result_id))}
+									>
+										Delete
+									</MenuItem>
+									<MenuItem
+										icon={<EditIcon />}
+										onClick={() => edit(result.result_id)}
+									>
+										Edit
+									</MenuItem>
+								</MenuList>
+							</Menu>
+						</Box>
+
+						<Heading as='h2' fontSize='24px'>
+							{result.title}
+						</Heading>
+						<Badge colorScheme='purple' size='lg' fontSize='14px' my='5px'>
+							{result.minimum_percentage}%
+						</Badge>
+						{result.result_photo && (
+							<Box
+								overflow='hidden'
+								maxW='500px'
+								borderRadius='md'
+								bg='gray.100'
+								my='5px'
+								mx='auto'
+							>
+								<AspectRatio w='full' ratio={16 / 9}>
+									<Image
+										alt='result image'
+										layout='fill'
+										src={result.result_photo}
+									/>
+								</AspectRatio>
+							</Box>
+						)}
+						<Text mt='20px' wordBreak='break-word' whiteSpace='pre-line'>
+							{result.description}
+						</Text>
+					</SubContainer>
+				))}
 			</QuizContainer>
 		</MainContainer>
 	);

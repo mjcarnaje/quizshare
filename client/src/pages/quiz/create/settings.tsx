@@ -11,7 +11,7 @@ import {
 } from '@chakra-ui/react';
 import Head from 'next/head';
 import Image from 'next/image';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { MdPhotoSizeSelectActual } from 'react-icons/md';
 import { useDispatch, useSelector } from 'react-redux';
@@ -73,6 +73,12 @@ const Settings: React.FC = () => {
 	const { isOpen, onClose, onOpen } = useDisclosure();
 
 	usePreventRouteChangeIf(isDirty && !isSubmitted, onOpen);
+
+	useEffect(() => {
+		if (quiz_photo) {
+			setImage(quiz_photo);
+		}
+	}, [quiz_photo]);
 
 	return (
 		<MainContainer py='40px'>

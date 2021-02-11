@@ -16,6 +16,7 @@ import { User } from './User';
 import { Like } from './Like';
 import { Comment } from './Comment';
 import { Score } from './Score';
+import { GraphQLJSONObject } from 'graphql-type-json';
 
 @ObjectType()
 @Entity()
@@ -50,6 +51,16 @@ export class Quiz extends BaseEntity {
 	@Field(() => [Question])
 	@OneToMany(() => Question, (question) => question.quiz, { cascade: true })
 	questions: Question[];
+
+	@Field(() => [GraphQLJSONObject], { nullable: true })
+	@Column('jsonb', { default: null })
+	results: {
+		result_id: string;
+		title: string;
+		result_photo?: string;
+		minimum_percentage: number;
+		description: string;
+	}[];
 
 	@Field(() => [Score])
 	@OneToMany(() => Score, (score) => score.quiz, { cascade: true })

@@ -12,8 +12,13 @@ import {
 import { useRouter } from 'next/dist/client/router';
 import NextLink from 'next/link';
 import React from 'react';
+import { HiUpload } from 'react-icons/hi';
 import { IoSettings, IoStatsChart } from 'react-icons/io5';
 import { MdLibraryBooks } from 'react-icons/md';
+import { Button } from '@chakra-ui/react';
+import { useCreateQuizMutation } from '../generated/graphql';
+import { QuizState, State } from '../store/type';
+import { useSelector } from 'react-redux';
 
 interface MainNavLinkProps {
 	href: string;
@@ -50,6 +55,7 @@ const MainNavLink: React.FC<MainNavLinkProps> = ({
 				px='12px'
 				py='8px'
 				rounded='8px'
+				w='full'
 			>
 				<Center mr='3' fontSize='18px'>
 					{icon}
@@ -91,6 +97,28 @@ export const QuizContainer: React.FC<QuizContainerProps> = ({
 		},
 	];
 
+	const router = useRouter();
+
+	const quiz = useSelector((state: State) => state.quiz);
+
+	const [createQuiz, { loading }] = useCreateQuizMutation();
+
+	const onSubmit = async (quiz: QuizState) => {
+		try {
+			const { errors } = await createQuiz({
+				variables: quiz,
+				update: (cache) => {
+					cache.evict({ fieldName: 'quizzes' });
+				},
+			});
+			if (!errors) {
+				router.push('/');
+			}
+		} catch (err) {
+			console.error(err);
+		}
+	};
+
 	return (
 		<>
 			<Heading
@@ -112,16 +140,18 @@ export const QuizContainer: React.FC<QuizContainerProps> = ({
 				mx='auto'
 				maxW='1100px'
 			>
-				<GridItem colSpan={[12, 12, 12, 3]}>
+				<GridItem colSpan={[12, 12, 12, 3]} maxW='764px'>
 					<List
 						display={['block', 'flex', 'flex', 'block']}
 						justifyContent={['', 'space-between', 'space-between', '']}
 						alignItems={['', 'center', 'center', '']}
 						spacing={['2', '0', '0', '2']}
 						styleType='none'
-						pb={['0', '0', '0', '32px']}
-						pl={['0', '0', '0', '12px']}
-						pr={['0', '0', '0', '32px']}
+						bg='white'
+						boxShadow='md'
+						borderRadius='md'
+						borderWidth='1px'
+						p='10px'
 					>
 						{mainNavLinks.map((item) => (
 							<ListItem key={item.label} w='full' mx={['0', '2px', '2px', '0']}>
@@ -131,6 +161,16 @@ export const QuizContainer: React.FC<QuizContainerProps> = ({
 							</ListItem>
 						))}
 					</List>
+					<Button
+						mt='20px'
+						leftIcon={<HiUpload />}
+						colorScheme='purple'
+						w='full'
+						isLoading={loading}
+						onClick={() => onSubmit(quiz)}
+					>
+						Published
+					</Button>
 				</GridItem>
 				<GridItem colSpan={[12, 12, 12, 9]} px='5px' {...props}>
 					{children}

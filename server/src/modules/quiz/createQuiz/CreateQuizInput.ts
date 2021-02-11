@@ -3,6 +3,20 @@ import { Field, InputType } from 'type-graphql';
 import { QuestionInput } from './QuestionInput';
 
 @InputType()
+export class ResultInput {
+	@Field()
+	result_id: string;
+	@Field()
+	title: string;
+	@Field({ nullable: true })
+	result_photo?: string;
+	@Field()
+	minimum_percentage: number;
+	@Field()
+	description: string;
+}
+
+@InputType()
 export class QuizInput {
 	@Field()
 	@MinLength(6)
@@ -18,4 +32,7 @@ export class QuizInput {
 
 	@Field(() => [QuestionInput])
 	questions: QuestionInput[];
+
+	@Field(() => [ResultInput], { nullable: true })
+	results?: ResultInput[];
 }

@@ -10,23 +10,24 @@ import {
 	Icon,
 	Spinner,
 	Text,
+	useColorModeValue,
 	VStack,
 } from '@chakra-ui/react';
+import Head from 'next/head';
 import Image from 'next/image';
 import { useRouter } from 'next/router';
-import React, { useContext, useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
+import { AiFillCheckCircle, AiFillCloseCircle } from 'react-icons/ai';
+import { useSelector } from 'react-redux';
+import Comments from '../../../../components/single-quiz/Comments';
 import {
 	useQuestionsQuery,
 	useSingleQuizQuery,
 } from '../../../../generated/graphql';
 import { MainContainer } from '../../../../layouts/MainContainer';
 import { SubContainer } from '../../../../layouts/SubContainer';
-import { QuizScoreContext, QuizScoreType } from '../../../../store/context';
+import { State } from '../../../../store/type';
 import { withApollo } from '../../../../utils/withApollo';
-import { useColorModeValue } from '@chakra-ui/react';
-import { AiFillCheckCircle, AiFillCloseCircle } from 'react-icons/ai';
-import Comments from '../../../../components/single-quiz/Comments';
-import Head from 'next/head';
 
 interface ScoreProps {}
 
@@ -40,9 +41,7 @@ const Score: React.FC<ScoreProps> = ({}) => {
 
 	const [showAnswer, setShowAnswer] = useState(false);
 
-	const { quizScore, setQuizScore, answersByUser } = useContext(
-		QuizScoreContext
-	) as QuizScoreType;
+	const results = useSelector((state: State) => state.result);
 
 	const { data: quizdata } = useSingleQuizQuery({
 		variables: {
@@ -58,7 +57,7 @@ const Score: React.FC<ScoreProps> = ({}) => {
 	});
 
 	useEffect(() => {
-		if (!quizScore) {
+		if (!results.quizResult) {
 			router.replace(`/quiz/take/${id}`);
 		}
 		// return () => {
@@ -66,7 +65,7 @@ const Score: React.FC<ScoreProps> = ({}) => {
 		// };
 	}, []);
 
-	if (!quizScore) {
+	if (!results.quizResult) {
 		return (
 			<MainContainer
 				display='flex'
@@ -85,17 +84,19 @@ const Score: React.FC<ScoreProps> = ({}) => {
 	}
 
 	const {
-		score,
-		current_total_questions,
-		taker: {
-			username,
-			email,
-			avatar,
-			profile: { name },
+		score: {
+			score,
+			current_total_questions,
+			taker: {
+				username,
+				email,
+				avatar,
+				profile: { name },
+			},
 		},
-	} = quizScore;
-
-	const percentage = ((score / current_total_questions) * 100).toFixed(1);
+		percentage,
+		result,
+	} = results.quizResult;
 
 	return (
 		<MainContainer>
@@ -130,7 +131,24 @@ const Score: React.FC<ScoreProps> = ({}) => {
 						</Text>
 					</Box>
 					<Box textAlign='center' my='20px'>
+						<Heading>{result?.title}</Heading>
+						{result?.result_photo && (
+							<Box
+								mb='8px'
+								overflow='hidden'
+								borderRadius='sm'
+								bg='gray.100'
+								maxW='70%'
+							>
+								<AspectRatio ratio={16 / 9}>
+									<Image src={result.result_photo} layout='fill' />
+								</AspectRatio>
+							</Box>
+						)}
+						<Text>{result?.description}</Text>
+
 						<Heading fontSize='44px'>{`${percentage}%`}</Heading>
+
 						<Text as='h2' fontSize='20px'>
 							You answered <strong>{score}</strong> out of{' '}
 							<strong>{current_total_questions}</strong> correctly
@@ -149,7 +167,7 @@ const Score: React.FC<ScoreProps> = ({}) => {
 				{showAnswer && (
 					<VStack spacing='48px' my='20px'>
 						{questionsdata?.questions?.map((question, i) => {
-							const questionThatAnswered = answersByUser?.find(
+							const questionThatAnswered = results.answersByUser?.find(
 								(ans) => ans.question_id === question.question_id
 							);
 

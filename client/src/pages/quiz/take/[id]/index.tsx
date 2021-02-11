@@ -1,3 +1,4 @@
+import { gql } from '@apollo/client';
 import {
 	AspectRatio,
 	Avatar,
@@ -6,15 +7,18 @@ import {
 	Flex,
 	Grid,
 	Heading,
+	Icon,
 	Text,
+	Tooltip,
 	useColorModeValue,
 	VStack,
-	Icon,
-	Tooltip,
 } from '@chakra-ui/react';
 import { useRouter } from 'next/dist/client/router';
+import Head from 'next/head';
 import Image from 'next/image';
-import React, { RefObject, useContext, useRef, useState } from 'react';
+import React, { RefObject, useRef, useState } from 'react';
+import { BiCheckDouble } from 'react-icons/bi';
+import { useDispatch } from 'react-redux';
 import {
 	useCheckAnswerMutation,
 	useQuestionsQuery,
@@ -22,17 +26,11 @@ import {
 } from '../../../../generated/graphql';
 import { MainContainer } from '../../../../layouts/MainContainer';
 import { SubContainer } from '../../../../layouts/SubContainer';
-import { QuizScoreContext, QuizScoreType } from '../../../../store/context';
+import { setAnswerByUser, setQuizResult } from '../../../../store/resultSlice';
+import { AnswerByUserProps, QuizResultProps } from '../../../../store/type';
 import { withApollo } from '../../../../utils/withApollo';
-import { gql } from '@apollo/client';
-import { BiCheckDouble } from 'react-icons/bi';
-import Head from 'next/head';
 
 interface TakeQuizProps {}
-export type UsersAnswerProps = {
-	question_id: string;
-	choice_id: string;
-};
 
 const TakeQuiz: React.FC<TakeQuizProps> = ({}) => {
 	const choiceBgHover = useColorModeValue(
@@ -46,14 +44,11 @@ const TakeQuiz: React.FC<TakeQuizProps> = ({}) => {
 	);
 
 	const router = useRouter();
+	const dispatch = useDispatch();
 	const questionsRefs: RefObject<any> = useRef([]);
 
-	const [usersAnswer, setUsersAnswer] = useState<UsersAnswerProps[]>([]);
+	const [usersAnswer, setUsersAnswer] = useState<AnswerByUserProps[]>([]);
 	const [checking, setChecking] = useState(false);
-
-	const { setQuizScore, setAnswerByUser } = useContext(
-		QuizScoreContext
-	) as QuizScoreType;
 
 	const { data, loading } = useQuestionsQuery({
 		variables: {
@@ -268,8 +263,10 @@ const TakeQuiz: React.FC<TakeQuizProps> = ({}) => {
 										},
 									});
 
-									setAnswerByUser(usersAnswer);
-									setQuizScore(data?.checkAnswer);
+									dispatch(setAnswerByUser(usersAnswer));
+									dispatch(
+										setQuizResult(data!.checkAnswer! as QuizResultProps)
+									);
 									setUsersAnswer([]);
 									setChecking(true);
 								},

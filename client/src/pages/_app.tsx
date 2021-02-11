@@ -4,7 +4,6 @@ import Router from 'next/router';
 import NProgress from 'nprogress';
 import '../styles/nprogress.css';
 import theme from '../theme';
-import { QuizScoreProvider } from '../store/context';
 import { Provider } from 'react-redux';
 import store from '../store';
 
@@ -19,11 +18,9 @@ Router.events.on('routeChangeError', () => NProgress.done());
 function MyApp({ Component, pageProps }: AppProps) {
 	return (
 		<ChakraProvider resetCSS theme={theme}>
-			<QuizScoreProvider>
-				<Provider store={store}>
-					<Component {...pageProps} />
-				</Provider>
-			</QuizScoreProvider>
+			<Provider store={store}>
+				<Component {...pageProps} />
+			</Provider>
 		</ChakraProvider>
 	);
 }

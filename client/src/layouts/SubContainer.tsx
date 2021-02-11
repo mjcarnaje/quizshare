@@ -13,8 +13,7 @@ export const SubContainer: React.FC<SubContainerProps> = ({
 }) => {
 	return (
 		<Container
-			w={width}
-			maxW={['100%', '100%', `${width}`]}
+			maxW={['100%', '100%', '100%', `${width}`]}
 			borderRadius='md'
 			my={my}
 			p={['10px', '10px', '24px']}

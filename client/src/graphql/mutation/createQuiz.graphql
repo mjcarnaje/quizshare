@@ -3,6 +3,7 @@ mutation CreateQuiz(
 	$description: String!
 	$quiz_photo: String
 	$questions: [QuestionInput!]!
+	$results: [ResultInput!]
 ) {
 	createQuiz(
 		data: {
@@ -10,6 +11,7 @@ mutation CreateQuiz(
 			description: $description
 			quiz_photo: $quiz_photo
 			questions: $questions
+			results: $results
 		}
 	) {
 		title
@@ -26,5 +28,6 @@ mutation CreateQuiz(
 			hint
 			with_hint
 		}
+		results
 	}
 }

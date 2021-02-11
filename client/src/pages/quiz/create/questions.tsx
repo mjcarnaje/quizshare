@@ -44,14 +44,7 @@ const Questions: React.FC = () => {
 		{ question_id: string; url: string | 'loading' }[]
 	>([]);
 
-	const {
-		control,
-		register,
-		watch,
-		handleSubmit,
-		errors,
-		formState: { isSubmitted, isDirty },
-	} = useForm({
+	const { control, register, watch, handleSubmit, errors } = useForm({
 		defaultValues: questions as any,
 	});
 
@@ -60,8 +53,8 @@ const Questions: React.FC = () => {
 		name: 'questions',
 	});
 
-	const onSubmit = (data: QuestionInput[]) => {
-		dispatch(setQuestions(data));
+	const onSubmit = (data: { questions: QuestionInput[] }) => {
+		dispatch(setQuestions(data.questions));
 	};
 
 	const addQuestion = (shouldFocus: boolean = true) => {
@@ -116,7 +109,7 @@ const Questions: React.FC = () => {
 
 	const { isOpen, onClose, onOpen } = useDisclosure();
 
-	usePreventRouteChangeIf(isDirty && !isSubmitted, onOpen);
+	usePreventRouteChangeIf(false, onOpen);
 
 	return (
 		<MainContainer py='40px' height='100.1vh'>

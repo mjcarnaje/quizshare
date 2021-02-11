@@ -81,6 +81,7 @@ export type Quiz = {
   description: Scalars['String'];
   quiz_photo?: Maybe<Scalars['String']>;
   questions: Array<Question>;
+  results?: Maybe<Array<Scalars['JSONObject']>>;
   scores: Array<Score>;
   scores_count: Scalars['Int'];
   is_taken: Scalars['Boolean'];
@@ -101,6 +102,22 @@ export type Comment = {
   author: User;
   text: Scalars['String'];
   created_at: Scalars['String'];
+};
+
+export type ResultProps = {
+  __typename?: 'ResultProps';
+  result_id: Scalars['String'];
+  title: Scalars['String'];
+  result_photo?: Maybe<Scalars['String']>;
+  minimum_percentage: Scalars['Float'];
+  description: Scalars['String'];
+};
+
+export type CheckAnswerResult = {
+  __typename?: 'CheckAnswerResult';
+  score: Score;
+  percentage: Scalars['Int'];
+  result?: Maybe<ResultProps>;
 };
 
 export type PaginatedQuizzes = {
@@ -127,7 +144,7 @@ export type UsersAnswer = {
 };
 
 export type ChecksAnswerInput = {
-  quiz_id: Scalars['Float'];
+  quiz_id: Scalars['Int'];
   users_answer: Array<UsersAnswer>;
 };
 
@@ -149,11 +166,20 @@ export type QuestionInput = {
   with_hint?: Maybe<Scalars['Boolean']>;
 };
 
+export type ResultInput = {
+  result_id: Scalars['String'];
+  title: Scalars['String'];
+  result_photo?: Maybe<Scalars['String']>;
+  minimum_percentage: Scalars['Float'];
+  description: Scalars['String'];
+};
+
 export type QuizInput = {
   title: Scalars['String'];
   description: Scalars['String'];
   quiz_photo?: Maybe<Scalars['String']>;
   questions: Array<QuestionInput>;
+  results?: Maybe<Array<ResultInput>>;
 };
 
 export type LoginInput = {
@@ -256,7 +282,7 @@ export type QueryCommentsArgs = {
 
 export type Mutation = {
   __typename?: 'Mutation';
-  checkAnswer?: Maybe<Score>;
+  checkAnswer: CheckAnswerResult;
   createComment: Comment;
   createQuiz: Quiz;
   deleteComment: Scalars['String'];
@@ -387,10 +413,17 @@ export type CheckAnswerMutationVariables = Exact<{
 
 export type CheckAnswerMutation = (
   { __typename?: 'Mutation' }
-  & { checkAnswer?: Maybe<(
-    { __typename?: 'Score' }
-    & ScoreResponseFragment
-  )> }
+  & { checkAnswer: (
+    { __typename?: 'CheckAnswerResult' }
+    & Pick<CheckAnswerResult, 'percentage'>
+    & { score: (
+      { __typename?: 'Score' }
+      & ScoreResponseFragment
+    ), result?: Maybe<(
+      { __typename?: 'ResultProps' }
+      & Pick<ResultProps, 'title' | 'description' | 'result_photo'>
+    )> }
+  ) }
 );
 
 export type CreateCommentMutationVariables = Exact<{
@@ -412,6 +445,7 @@ export type CreateQuizMutationVariables = Exact<{
   description: Scalars['String'];
   quiz_photo?: Maybe<Scalars['String']>;
   questions: Array<QuestionInput>;
+  results?: Maybe<Array<ResultInput>>;
 }>;
 
 
@@ -419,7 +453,7 @@ export type CreateQuizMutation = (
   { __typename?: 'Mutation' }
   & { createQuiz: (
     { __typename?: 'Quiz' }
-    & Pick<Quiz, 'title' | 'description' | 'quiz_photo'>
+    & Pick<Quiz, 'title' | 'description' | 'quiz_photo' | 'results'>
     & { questions: Array<(
       { __typename?: 'Question' }
       & Pick<Question, 'question_id' | 'question' | 'question_photo' | 'choices' | 'answer' | 'explanation' | 'with_explanation' | 'hint' | 'with_hint'>
@@ -739,7 +773,15 @@ export const UserResponseFragmentDoc = gql`
 export const CheckAnswerDocument = gql`
     mutation CheckAnswer($data: ChecksAnswerInput!) {
   checkAnswer(data: $data) {
-    ...ScoreResponse
+    score {
+      ...ScoreResponse
+    }
+    percentage
+    result {
+      title
+      description
+      result_photo
+    }
   }
 }
     ${ScoreResponseFragmentDoc}`;
@@ -802,9 +844,9 @@ export type CreateCommentMutationHookResult = ReturnType<typeof useCreateComment
 export type CreateCommentMutationResult = Apollo.MutationResult<CreateCommentMutation>;
 export type CreateCommentMutationOptions = Apollo.BaseMutationOptions<CreateCommentMutation, CreateCommentMutationVariables>;
 export const CreateQuizDocument = gql`
-    mutation CreateQuiz($title: String!, $description: String!, $quiz_photo: String, $questions: [QuestionInput!]!) {
+    mutation CreateQuiz($title: String!, $description: String!, $quiz_photo: String, $questions: [QuestionInput!]!, $results: [ResultInput!]) {
   createQuiz(
-    data: {title: $title, description: $description, quiz_photo: $quiz_photo, questions: $questions}
+    data: {title: $title, description: $description, quiz_photo: $quiz_photo, questions: $questions, results: $results}
   ) {
     title
     description
@@ -820,6 +862,7 @@ export const CreateQuizDocument = gql`
       hint
       with_hint
     }
+    results
   }
 }
     `;
@@ -842,6 +885,7 @@ export type CreateQuizMutationFn = Apollo.MutationFunction<CreateQuizMutation, C
  *      description: // value for 'description'
  *      quiz_photo: // value for 'quiz_photo'
  *      questions: // value for 'questions'
+ *      results: // value for 'results'
  *   },
  * });
  */
