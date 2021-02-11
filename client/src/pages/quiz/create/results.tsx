@@ -1,59 +1,124 @@
 import {
 	AspectRatio,
+	Badge,
 	Box,
 	Button,
 	Center,
+	Menu,
+	MenuButton,
+	IconButton,
+	MenuList,
+	MenuItem,
+	Divider,
 	Flex,
+	Heading,
 	Skeleton,
 	Slider,
-	SliderTrack,
 	SliderFilledTrack,
 	SliderThumb,
-	useColorModeValue,
-	VStack,
+	SliderTrack,
 	Text,
-	Badge,
+	useColorModeValue,
+	useToast,
+	VStack,
 } from '@chakra-ui/react';
 import Head from 'next/head';
 import Image from 'next/image';
 import React, { useState } from 'react';
 import { useForm } from 'react-hook-form';
-import { MdPhotoSizeSelectActual } from 'react-icons/md';
-import { FaPercentage } from 'react-icons/fa';
+import { MdGraphicEq, MdPhotoSizeSelectActual } from 'react-icons/md';
 import { useDispatch, useSelector } from 'react-redux';
 import TextareaAutosize from 'react-textarea-autosize';
+import { v4 as uuid } from 'uuid';
 import QuizInputUI from '../../../components/custom-inputs/QuizInputUI';
-import { QuizInput } from '../../../generated/graphql';
 import { MainContainer } from '../../../layouts/MainContainer';
 import { QuizContainer } from '../../../layouts/QuizContainer';
 import { SubContainer } from '../../../layouts/SubContainer';
-import { setSettings } from '../../../store/quizSlice';
-import { SettingsInput, State } from '../../../store/type';
+import {
+	createResult,
+	deleteResult,
+	updateResult,
+} from '../../../store/quizSlice';
+import { State } from '../../../store/type';
 import { uploadCloudinaryImage } from '../../../utils/uploadImage';
 import { withApollo } from '../../../utils/withApollo';
+import { ChevronDownIcon, DeleteIcon, EditIcon } from '@chakra-ui/icons';
 
 const Score: React.FC = () => {
+	const toast = useToast();
 	const dispatch = useDispatch();
-
-	const { title, description, quiz_photo } = useSelector(
-		(state: State) => state.quiz
-	);
+	const results = useSelector((state: State) => state.quiz.results);
 
 	const [image, setImage] = useState<string | 'loading'>();
-	const [percentage, setPercentage] = useState<number>(30);
+	const [percentage, setPercentage] = useState<number>(0);
+	const [editMode, setEditMode] = useState<boolean>(false);
+	const [currentResultIdx, setCurrentResultIdx] = useState<string | null>();
 
-	const { register, handleSubmit, errors } = useForm<QuizInput>({
-		defaultValues: { title, description, quiz_photo },
-	});
+	const { register, handleSubmit, errors, reset } = useForm();
 
-	const onSubmit = (data: SettingsInput) => {
-		dispatch(
-			setSettings({
-				title: data.title,
-				description: data.description,
-				quiz_photo: data.quiz_photo,
-			})
+	const clear = () => {
+		reset({ title: '', description: '' });
+		setPercentage(0);
+		setImage(undefined);
+	};
+
+	const create = (data: { title: string; description: string }) => {
+		let percentIsTaken = results.find(
+			(result) => result.minimum_percentage === percentage
 		);
+
+		if (percentIsTaken) {
+			toast({
+				description: 'Percentage is already taken',
+				status: 'error',
+				duration: 3000,
+				isClosable: true,
+				position: 'bottom-left',
+			});
+		} else {
+			dispatch(
+				createResult({
+					...data,
+					result_id: uuid(),
+					result_photo: image,
+					minimum_percentage: percentage,
+				})
+			);
+			clear();
+		}
+	};
+
+	const edit = (id: string) => {
+		setEditMode(true);
+		setCurrentResultIdx(id);
+
+		const toEdit = results.find((result) => result.result_id === id);
+
+		if (toEdit) {
+			reset({ title: toEdit.title, description: toEdit.description });
+			setImage(toEdit.result_photo);
+			setPercentage(toEdit.minimum_percentage);
+		}
+	};
+
+	const update = (data: { title: string; description: string }) => {
+		if (currentResultIdx && editMode) {
+			dispatch(
+				updateResult({
+					id: currentResultIdx,
+					data: {
+						...data,
+						result_id: currentResultIdx,
+						result_photo: image,
+						minimum_percentage: percentage,
+					},
+				})
+			);
+
+			clear();
+			setEditMode(false);
+			setCurrentResultIdx(null);
+		}
 	};
 
 	const uploadImage = () => {
@@ -78,39 +143,49 @@ const Score: React.FC = () => {
 			</Head>
 			<QuizContainer type='create'>
 				<SubContainer w='764px' my='0'>
-					<form onSubmit={handleSubmit(onSubmit)}>
+					<form onSubmit={handleSubmit(editMode ? update : create)}>
 						{image && (
 							<input
 								type='hidden'
-								name='quiz_photo'
+								name='result_image'
+								value={image}
 								ref={register()}
-								defaultValue={image}
 							/>
 						)}
 						<VStack spacing='16px'>
 							<QuizInputUI
-								register={register({ required: true, minLength: 6 })}
-								name='Score Title'
+								register={register({
+									required: 'Title is required',
+									minLength: {
+										value: 3,
+										message: 'Title required more than 3 characters',
+									},
+									maxLength: {
+										value: 60,
+										message: 'Title must not exceed more than 60 characters',
+									},
+								})}
+								name='Result Title'
 								input='title'
 								placeholder='Type the title here...'
 								fontSize='20px'
 								size='lg'
 								error={errors.title}
-								errorMessage={
-									errors.title?.message || 'Title is required field.'
-								}
+								errorMessage={errors.title?.message}
 							/>
 							<Box w='full'>
 								{image ? (
 									<Skeleton isLoaded={image !== 'loading'}>
-										<Box borderRadius='8px' overflow='hidden' bg='gray.100'>
-											<AspectRatio maxW='600px' ratio={16 / 9}>
+										<Box
+											borderRadius='8px'
+											maxW='500px'
+											mx='auto'
+											overflow='hidden'
+											bg='gray.100'
+										>
+											<AspectRatio ratio={16 / 9}>
 												{image !== 'loading' ? (
-													<Image
-														src={image}
-														alt='Thumbnail of Quiz'
-														layout='fill'
-													/>
+													<Image src={image} alt='result image' layout='fill' />
 												) : (
 													<Box></Box>
 												)}
@@ -126,6 +201,9 @@ const Score: React.FC = () => {
 											'rgba(255, 255, 255, 0.04)'
 										)}
 										mx='auto'
+										display='flex'
+										justifyContent='center'
+										alignItems='center'
 									>
 										<Button
 											leftIcon={<MdPhotoSizeSelectActual />}
@@ -133,7 +211,7 @@ const Score: React.FC = () => {
 											variant='ghost'
 											onClick={uploadImage}
 										>
-											Upload score image
+											Upload result image
 										</Button>
 									</AspectRatio>
 								)}
@@ -171,14 +249,20 @@ const Score: React.FC = () => {
 										<SliderFilledTrack bg='purple.500' />
 									</SliderTrack>
 									<SliderThumb boxSize={6}>
-										<Box color='purple.500' as={FaPercentage} />
+										<Box color='purple.500' as={MdGraphicEq} />
 									</SliderThumb>
 								</Slider>
 							</Box>
 
 							<QuizInputUI
-								register={register({ required: true })}
-								name='Score Description'
+								register={register({
+									required: 'Description is required',
+									minLength: {
+										value: 20,
+										message: 'Description required more than 20 characters',
+									},
+								})}
+								name='Result Description'
 								input='description'
 								placeholder='Type the description here..'
 								as={TextareaAutosize}
@@ -187,19 +271,105 @@ const Score: React.FC = () => {
 								minH='100px'
 								py='5px'
 								error={errors.description}
-								errorMessage={
-									errors.description?.message ||
-									'Description is required field.'
-								}
+								errorMessage={errors.description?.message}
 							/>
 						</VStack>
 
 						<Flex w='full' mt='20px' justify='flex-end'>
-							<Button colorScheme='purple' type='submit' px='20px' ml='10px'>
-								Add score
-							</Button>
+							{editMode ? (
+								<>
+									<Button
+										colorScheme='purple'
+										type='submit'
+										px='20px'
+										ml='10px'
+										variant='ghost'
+									>
+										Cancel
+									</Button>
+									<Button
+										colorScheme='purple'
+										type='submit'
+										px='20px'
+										ml='10px'
+									>
+										Save Changes
+									</Button>
+								</>
+							) : (
+								<Button colorScheme='purple' type='submit' px='20px' ml='10px'>
+									Add Result
+								</Button>
+							)}
 						</Flex>
 					</form>
+
+					<Divider my='20px' />
+
+					{results.map((result) => (
+						<Box
+							p='20px 15px'
+							mb='20px'
+							boxShadow='base'
+							borderRadius='md'
+							textAlign='center'
+							position='relative'
+						>
+							<Box position='absolute' right='5px' top='5px'>
+								<Menu>
+									<MenuButton
+										as={IconButton}
+										aria-label='Options'
+										icon={<ChevronDownIcon />}
+										size='xs'
+										variant='ghost'
+									/>
+									<MenuList>
+										<MenuItem
+											icon={<DeleteIcon />}
+											onClick={() => dispatch(deleteResult(result.result_id))}
+										>
+											Delete
+										</MenuItem>
+										<MenuItem
+											icon={<EditIcon />}
+											onClick={() => edit(result.result_id)}
+										>
+											Edit
+										</MenuItem>
+									</MenuList>
+								</Menu>
+							</Box>
+
+							<Heading as='h2' fontSize='24px'>
+								{result.title}
+							</Heading>
+							<Badge colorScheme='purple' size='lg' fontSize='14px' my='5px'>
+								{result.minimum_percentage}%
+							</Badge>
+							{result.result_photo && (
+								<Box
+									overflow='hidden'
+									maxW='500px'
+									borderRadius='md'
+									bg='gray.100'
+									my='5px'
+									mx='auto'
+								>
+									<AspectRatio w='full' ratio={16 / 9}>
+										<Image
+											alt='result image'
+											layout='fill'
+											src={result.result_photo}
+										/>
+									</AspectRatio>
+								</Box>
+							)}
+							<Text mt='20px' wordBreak='break-word' whiteSpace='pre-line'>
+								{result.description}
+							</Text>
+						</Box>
+					))}
 				</SubContainer>
 			</QuizContainer>
 		</MainContainer>

@@ -9,25 +9,29 @@ import {
 	Switch,
 	Text,
 	Tooltip,
+	useDisclosure,
 } from '@chakra-ui/react';
 import Head from 'next/head';
 import Image from 'next/image';
 import React, { useEffect, useState } from 'react';
 import { Controller, useFieldArray, useForm } from 'react-hook-form';
+import { BsPlusSquareFill } from 'react-icons/bs';
 import { MdDelete, MdPhotoSizeSelectActual } from 'react-icons/md';
-import { useSelector, useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import TextareaAutosize from 'react-textarea-autosize';
 import { v4 as uuid } from 'uuid';
+import { AlertDialog } from '../../../components/AlertDialog';
 import ChoiceArray from '../../../components/create-update-quiz/ChoiceArray';
 import QuizInputUI from '../../../components/custom-inputs/QuizInputUI';
 import { QuestionInput } from '../../../generated/graphql';
 import { MainContainer } from '../../../layouts/MainContainer';
 import { QuizContainer } from '../../../layouts/QuizContainer';
+import { SubContainer } from '../../../layouts/SubContainer';
 import { setQuestions } from '../../../store/quizSlice';
 import { State } from '../../../store/type';
 import { uploadCloudinaryImage } from '../../../utils/uploadImage';
+import usePreventRouteChangeIf from '../../../utils/useWarnIfUnsavedChanges';
 import { withApollo } from '../../../utils/withApollo';
-import { SubContainer } from '../../../layouts/SubContainer';
 
 const Questions: React.FC = () => {
 	const [addChoice, setAddChoice] = useState(false);
@@ -40,7 +44,14 @@ const Questions: React.FC = () => {
 		{ question_id: string; url: string | 'loading' }[]
 	>([]);
 
-	const { control, register, watch, handleSubmit, errors } = useForm({
+	const {
+		control,
+		register,
+		watch,
+		handleSubmit,
+		errors,
+		formState: { isSubmitted, isDirty },
+	} = useForm({
 		defaultValues: questions as any,
 	});
 
@@ -103,12 +114,17 @@ const Questions: React.FC = () => {
 		}
 	}, []);
 
+	const { isOpen, onClose, onOpen } = useDisclosure();
+
+	usePreventRouteChangeIf(isDirty && !isSubmitted, onOpen);
+
 	return (
 		<MainContainer py='40px' height='100.1vh'>
 			<Head>
 				<title>Create Quiz</title>
 				<meta name='viewport' content='initial-scale=1.0, width=device-width' />
 			</Head>
+			<AlertDialog isOpen={isOpen} onClose={onClose} />
 			<QuizContainer type='create'>
 				<SubContainer w='764px' my='0'>
 					<form onSubmit={handleSubmit(onSubmit)}>
@@ -314,20 +330,30 @@ const Questions: React.FC = () => {
 									</Box>
 								);
 							})}
-							<Button
-								colorScheme='purple'
-								variant='outline'
-								size='lg'
-								w='full'
-								onClick={() => {
-									addQuestion();
-								}}
-							>
-								Add Question
-							</Button>
-							<Flex w='full' mt='20px' justify='flex-end'>
-								<Button colorScheme='purple' type='submit' px='20px' ml='10px'>
-									Save Questions
+							<Flex w='full' justify='flex-end'>
+								<Button
+									leftIcon={<BsPlusSquareFill />}
+									variant='ghost'
+									textAlign='right'
+									colorScheme='purple'
+									size='sm'
+									onClick={() => {
+										addQuestion();
+									}}
+								>
+									Add Question
+								</Button>
+							</Flex>
+
+							<Flex w='full' mt='20px' justify='center'>
+								<Button
+									colorScheme='purple'
+									variant='ghost'
+									type='submit'
+									px='20px'
+									ml='10px'
+								>
+									Save Changes
 								</Button>
 							</Flex>
 						</Box>
