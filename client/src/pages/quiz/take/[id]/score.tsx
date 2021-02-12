@@ -73,27 +73,16 @@ const Score: React.FC<ScoreProps> = ({}) => {
 				justifyContent='center'
 				h='100vh'
 			>
-				<SubContainer display='grid' placeItems='center'>
-					<Flex>
-						<Spinner mr='5px' />
-						<Text>Checking...</Text>
-					</Flex>
-				</SubContainer>
+				<Flex>
+					<Spinner mr='5px' />
+					<Text>Checking...</Text>
+				</Flex>
 			</MainContainer>
 		);
 	}
 
 	const {
-		score: {
-			score,
-			current_total_questions,
-			taker: {
-				username,
-				email,
-				avatar,
-				profile: { name },
-			},
-		},
+		score: { score, current_total_questions },
 		percentage,
 		result,
 	} = results.quizResult;
@@ -120,18 +109,16 @@ const Score: React.FC<ScoreProps> = ({}) => {
 						</Text>
 					</Flex>
 				</Flex>
-				<Box>
+				<Flex direction='column' align='center'>
 					<Box textAlign='center'>
-						<Avatar src={avatar ?? ''} name={name} alt={username} size='xl' />
-						<Text lineHeight='1.2' fontWeight='semibold'>
-							{username}
-						</Text>
-						<Text lineHeight='1' fontSize='14px'>
-							{`@${email.split('@')[0]}`}
+						<Heading fontSize='44px'>{`${percentage}%`}</Heading>
+						<Text as='h2' fontSize='20px'>
+							You answered <strong>{score}</strong> out of{' '}
+							<strong>{current_total_questions}</strong> correctly
 						</Text>
 					</Box>
-					<Box textAlign='center' my='20px'>
-						<Heading>{result?.title}</Heading>
+					<Box textAlign='center' my='20px' w='full'>
+						<Heading fontSize='24px'>{result?.title}</Heading>
 						{result?.result_photo && (
 							<Box
 								mb='8px'
@@ -139,6 +126,8 @@ const Score: React.FC<ScoreProps> = ({}) => {
 								borderRadius='sm'
 								bg='gray.100'
 								maxW='70%'
+								mx='auto'
+								my='12px'
 							>
 								<AspectRatio ratio={16 / 9}>
 									<Image src={result.result_photo} layout='fill' />
@@ -146,15 +135,8 @@ const Score: React.FC<ScoreProps> = ({}) => {
 							</Box>
 						)}
 						<Text>{result?.description}</Text>
-
-						<Heading fontSize='44px'>{`${percentage}%`}</Heading>
-
-						<Text as='h2' fontSize='20px'>
-							You answered <strong>{score}</strong> out of{' '}
-							<strong>{current_total_questions}</strong> correctly
-						</Text>
 					</Box>
-				</Box>
+				</Flex>
 				<Flex justify='center' mt='30px'>
 					<Button
 						size='sm'

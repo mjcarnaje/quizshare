@@ -14,5 +14,6 @@ query QuizToUpdate($quiz_id: Int!) {
 			hint
 			with_hint
 		}
+		results
 	}
 }

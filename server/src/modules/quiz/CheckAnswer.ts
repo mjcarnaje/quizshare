@@ -103,10 +103,8 @@ export class CheckAnswerResolver {
 			(score.score / score.current_total_questions) * 100
 		);
 
-		const reversedOrder = [...quiz.results].reverse();
-
-		let result = reversedOrder.find(
-			(res) => res.minimum_percentage < percentage
+		let result = [...quiz.results].find(
+			(res) => res.minimum_percentage <= percentage
 		);
 
 		return { score, percentage, result };

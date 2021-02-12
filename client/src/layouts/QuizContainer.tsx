@@ -16,7 +16,10 @@ import { HiUpload } from 'react-icons/hi';
 import { IoSettings, IoStatsChart } from 'react-icons/io5';
 import { MdLibraryBooks } from 'react-icons/md';
 import { Button } from '@chakra-ui/react';
-import { useCreateQuizMutation } from '../generated/graphql';
+import {
+	useCreateQuizMutation,
+	useUpdateQuizMutation,
+} from '../generated/graphql';
 import { QuizState, State } from '../store/type';
 import { useSelector } from 'react-redux';
 
@@ -102,20 +105,41 @@ export const QuizContainer: React.FC<QuizContainerProps> = ({
 	const quiz = useSelector((state: State) => state.quiz);
 
 	const [createQuiz, { loading }] = useCreateQuizMutation();
+	const [updateQuiz, { loading: updateLoading }] = useUpdateQuizMutation();
 
 	const onSubmit = async (quiz: QuizState) => {
-		try {
-			const { errors } = await createQuiz({
-				variables: quiz,
-				update: (cache) => {
-					cache.evict({ fieldName: 'quizzes' });
-				},
-			});
-			if (!errors) {
-				router.push('/');
+		if (type === 'create') {
+			try {
+				const { errors } = await createQuiz({
+					variables: quiz,
+					update: (cache) => {
+						cache.evict({ fieldName: 'quizzes' });
+					},
+				});
+				if (!errors) {
+					router.push('/');
+				}
+			} catch (err) {
+				console.error(err);
 			}
-		} catch (err) {
-			console.error(err);
+		} else if (type === 'update') {
+			try {
+				const { errors } = await updateQuiz({
+					variables: {
+						inputs: quiz,
+						quiz_id: parseInt(quizId as string),
+					},
+					update: (cache) => {
+						cache.evict({ fieldName: 'quizzes' });
+						cache.evict({ fieldName: 'quizToUpdate' });
+					},
+				});
+				if (!errors) {
+					router.push('/');
+				}
+			} catch (err) {
+				console.error(err);
+			}
 		}
 	};
 
@@ -166,7 +190,7 @@ export const QuizContainer: React.FC<QuizContainerProps> = ({
 						leftIcon={<HiUpload />}
 						colorScheme='purple'
 						w='full'
-						isLoading={loading}
+						isLoading={loading ?? updateLoading}
 						onClick={() => onSubmit(quiz)}
 					>
 						Published

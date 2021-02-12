@@ -14,5 +14,6 @@ mutation UpdateQuiz($inputs: QuizInput!, $quiz_id: Float!) {
 			hint
 			with_hint
 		}
+		results
 	}
 }

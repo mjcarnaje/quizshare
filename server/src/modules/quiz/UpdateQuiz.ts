@@ -9,7 +9,8 @@ export class UpdateQuiz {
 	@Mutation(() => Quiz)
 	async updateQuiz(
 		@Arg('quiz_id') quiz_id: number,
-		@Arg('inputs') { title, description, quiz_photo, questions }: QuizInput,
+		@Arg('inputs')
+		{ title, description, quiz_photo, questions, results }: QuizInput,
 		@Ctx() { req }: MyContext
 	): Promise<Quiz | null> {
 		const quiz = await Quiz.findOneOrFail(quiz_id, {
@@ -22,6 +23,7 @@ export class UpdateQuiz {
 
 		quiz.title = title ?? quiz.title;
 		quiz.description = description ?? quiz.description;
+		quiz.results = results ?? quiz.results;
 		quiz.quiz_photo = quiz_photo;
 
 		quiz.questions = questions.map((item, i) =>

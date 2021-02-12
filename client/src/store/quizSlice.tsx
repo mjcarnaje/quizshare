@@ -48,6 +48,23 @@ const quizSlice = createSlice({
 			});
 		},
 
+		setResults: (
+			state,
+			{ payload }: PayloadAction<ResultProps[] | undefined | null>
+		) => {
+			if (payload) {
+				state.results = payload;
+			}
+
+			toast({
+				description: 'Questions saved.',
+				status: 'success',
+				duration: 5000,
+				isClosable: true,
+				position: 'bottom-right',
+			});
+		},
+
 		createResult: (state, { payload }: PayloadAction<ResultProps>) => {
 			state.results.push(payload);
 
@@ -95,6 +112,7 @@ const quizSlice = createSlice({
 export const {
 	setSettings,
 	setQuestions,
+	setResults,
 	createResult,
 	deleteResult,
 	updateResult,

@@ -10,7 +10,7 @@ export type SettingsInput = {
 	quiz_photo?: string | null;
 };
 
-type ResultProps = {
+export type ResultProps = {
 	result_id: string;
 	title: string;
 	result_photo?: string;

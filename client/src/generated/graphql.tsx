@@ -561,7 +561,7 @@ export type UpdateQuizMutation = (
   { __typename?: 'Mutation' }
   & { updateQuiz: (
     { __typename?: 'Quiz' }
-    & Pick<Quiz, 'title' | 'description' | 'quiz_photo'>
+    & Pick<Quiz, 'title' | 'description' | 'quiz_photo' | 'results'>
     & { questions: Array<(
       { __typename?: 'Question' }
       & Pick<Question, 'question_id' | 'question' | 'question_photo' | 'choices' | 'answer' | 'explanation' | 'with_explanation' | 'hint' | 'with_hint'>
@@ -640,7 +640,7 @@ export type QuizToUpdateQuery = (
   { __typename?: 'Query' }
   & { quizToUpdate: (
     { __typename?: 'Quiz' }
-    & Pick<Quiz, 'title' | 'description' | 'quiz_photo'>
+    & Pick<Quiz, 'title' | 'description' | 'quiz_photo' | 'results'>
     & { questions: Array<(
       { __typename?: 'Question' }
       & Pick<Question, 'question_id' | 'question' | 'question_photo' | 'choices' | 'answer' | 'explanation' | 'with_explanation' | 'hint' | 'with_hint'>
@@ -1141,6 +1141,7 @@ export const UpdateQuizDocument = gql`
       hint
       with_hint
     }
+    results
   }
 }
     `;
@@ -1334,6 +1335,7 @@ export const QuizToUpdateDocument = gql`
       hint
       with_hint
     }
+    results
   }
 }
     `;
