@@ -45,7 +45,7 @@ const Questions: React.FC = () => {
 	>([]);
 
 	const { control, register, watch, handleSubmit, errors } = useForm({
-		defaultValues: questions as any,
+		defaultValues: { questions },
 	});
 
 	const { fields, append, remove } = useFieldArray({

@@ -1,8 +1,8 @@
 import { createStandaloneToast } from '@chakra-ui/react';
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { QuestionInput } from '../generated/graphql';
-import { QuizState, ResultProps, SettingsInput } from './type';
 import { removeTypename } from '../utils/removeTypename';
+import { QuizState, ResultProps, SettingsInput } from './type';
 
 const toast = createStandaloneToast();
 
@@ -67,38 +67,6 @@ const quizSlice = createSlice({
 			});
 		},
 
-		createResult: (state, { payload }: PayloadAction<ResultProps>) => {
-			state.results.push(payload);
-
-			state.results.sort((a, b) => {
-				return b.minimum_percentage - a.minimum_percentage;
-			});
-
-			toast({
-				description: 'Added result.',
-				status: 'success',
-				duration: 3000,
-				isClosable: true,
-				position: 'bottom-left',
-			});
-		},
-
-		deleteResult: (state, { payload }: PayloadAction<string>) => {
-			const idx = state.results.findIndex(
-				(result) => result.result_id === payload
-			);
-
-			state.results.splice(idx, 1);
-
-			toast({
-				description: 'Result deleted.',
-				status: 'success',
-				duration: 3000,
-				isClosable: true,
-				position: 'bottom-left',
-			});
-		},
-
 		fetchDataForEdit: (state, { payload }: PayloadAction<any>) => {
 			const __typenameRemoved = removeTypename(payload) as QuizState;
 
@@ -108,16 +76,6 @@ const quizSlice = createSlice({
 			state.description = __typenameRemoved.description;
 			state.quiz_photo = __typenameRemoved?.quiz_photo;
 		},
-
-		updateResult: (
-			state,
-			{ payload }: PayloadAction<{ id: string; data: ResultProps }>
-		) => {
-			const idx = state.results.findIndex(
-				(result) => result.result_id === payload.id
-			);
-			state.results[idx] = payload.data;
-		},
 	},
 });
 
@@ -126,9 +84,6 @@ export const {
 	setSettings,
 	setQuestions,
 	setResults,
-	createResult,
-	deleteResult,
-	updateResult,
 	fetchDataForEdit,
 } = quizSlice.actions;
 

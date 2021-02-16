@@ -1,33 +1,25 @@
-import { ChevronDownIcon, DeleteIcon, EditIcon } from '@chakra-ui/icons';
 import {
 	AspectRatio,
-	Badge,
 	Box,
 	Button,
-	Center,
 	Flex,
-	Heading,
+	HStack,
 	IconButton,
-	Menu,
-	MenuButton,
-	MenuItem,
-	MenuList,
 	Skeleton,
 	Slider,
 	SliderFilledTrack,
 	SliderThumb,
 	SliderTrack,
-	Text,
-	useColorModeValue,
+	Tag,
+	Tooltip,
 	useToast,
-	VStack,
 } from '@chakra-ui/react';
-import { useRouter } from 'next/dist/client/router';
 import Head from 'next/head';
 import Image from 'next/image';
 import React, { useState } from 'react';
-import { useForm } from 'react-hook-form';
-import { MdGraphicEq, MdPhotoSizeSelectActual } from 'react-icons/md';
+import { Controller, useFieldArray, useForm } from 'react-hook-form';
+import { BsPlusSquareFill } from 'react-icons/bs';
+import { MdDelete, MdGraphicEq, MdPhotoSizeSelectActual } from 'react-icons/md';
 import { useDispatch, useSelector } from 'react-redux';
 import TextareaAutosize from 'react-textarea-autosize';
 import { v4 as uuid } from 'uuid';
@@ -35,100 +27,80 @@ import QuizInputUI from '../../../../components/custom-inputs/QuizInputUI';
 import { MainContainer } from '../../../../layouts/MainContainer';
 import { QuizContainer } from '../../../../layouts/QuizContainer';
 import { SubContainer } from '../../../../layouts/SubContainer';
-import {
-	createResult,
-	deleteResult,
-	updateResult,
-} from '../../../../store/quizSlice';
-import { State } from '../../../../store/type';
+import { setResults } from '../../../../store/quizSlice';
+import { ResultProps, State } from '../../../../store/type';
 import { uploadCloudinaryImage } from '../../../../utils/uploadImage';
 import { withApollo } from '../../../../utils/withApollo';
 
-const Score: React.FC = () => {
-	const router = useRouter();
+const Results: React.FC = () => {
 	const toast = useToast();
 	const dispatch = useDispatch();
+
 	const results = useSelector((state: State) => state.quiz.results);
 
-	const [image, setImage] = useState<string | 'loading'>();
-	const [percentage, setPercentage] = useState<number>(0);
-	const [editMode, setEditMode] = useState<boolean>(false);
-	const [currentResultIdx, setCurrentResultIdx] = useState<string | null>();
+	const [images, setImages] = useState<
+		{ result_id: string; url: string | 'loading' }[]
+	>([]);
 
-	const { register, handleSubmit, errors, reset } = useForm();
+	const { control, register, handleSubmit, errors } = useForm({
+		defaultValues: { results },
+	});
 
-	const clear = () => {
-		reset({ title: '', description: '' });
-		setPercentage(0);
-		setImage(undefined);
-	};
+	const { fields, append, remove } = useFieldArray({
+		control,
+		name: 'results',
+	});
 
-	const create = (data: { title: string; description: string }) => {
-		let percentIsTaken = results.find(
-			(result) => result.minimum_percentage === percentage
-		);
+	const onSubmit = (data: { results: ResultProps[] }) => {
+		let percentIsTaken =
+			new Set(data.results.map((result) => result['minimum_percentage']))
+				.size !== data.results.length;
 
 		if (percentIsTaken) {
 			toast({
-				description: 'Percentage is already taken',
+				description: 'There is a duplicate percentage.',
 				status: 'error',
 				duration: 5000,
 				isClosable: true,
 				position: 'bottom-right',
 			});
 		} else {
-			dispatch(
-				createResult({
-					...data,
-					result_id: uuid(),
-					result_photo: image,
-					minimum_percentage: percentage,
-				})
-			);
-			clear();
+			dispatch(setResults(data.results));
 		}
 	};
 
-	const edit = (id: string) => {
-		setEditMode(true);
-		setCurrentResultIdx(id);
-
-		const toEdit = results.find((result) => result.result_id === id);
-
-		if (toEdit) {
-			reset({ title: toEdit.title, description: toEdit.description });
-			setImage(toEdit.result_photo);
-			setPercentage(toEdit.minimum_percentage);
-		}
+	const addResult = (shouldFocus: boolean = true) => {
+		append(
+			{
+				result_id: uuid(),
+				title: '',
+				result_photo: '',
+				minimum_percentage: 0,
+				description: '',
+			},
+			shouldFocus
+		);
 	};
 
-	const update = (data: { title: string; description: string }) => {
-		if (currentResultIdx && editMode) {
-			dispatch(
-				updateResult({
-					id: currentResultIdx,
-					data: {
-						...data,
-						result_id: currentResultIdx,
-						result_photo: image,
-						minimum_percentage: percentage,
-					},
-				})
-			);
-
-			clear();
-			setEditMode(false);
-			setCurrentResultIdx(null);
-		}
-	};
-
-	const uploadImage = () => {
+	const uploadImage = (result_id: string) => {
 		uploadCloudinaryImage(
-			(error: any, photos: { event: string; info: { url: string } }) => {
+			(error: any, photos: { event: string; info: { url: any } }) => {
+				const imagesThatAreNotChanged = images.filter(
+					(img) => img.result_id !== result_id
+				);
 				if (!error && photos.event === 'queues-start') {
-					setImage('loading');
+					setImages([
+						...imagesThatAreNotChanged,
+						{ result_id: result_id, url: 'loading' },
+					]);
 				} else if (!error && photos.event === 'success') {
-					setImage(photos.info.url);
+					setImages([
+						...imagesThatAreNotChanged,
+						{
+							result_id: result_id,
+							url: photos.info.url,
+						},
+					]);
 				} else if (error) {
 					console.error(error);
 				}
@@ -137,240 +109,208 @@ const Score: React.FC = () => {
 	};
 
 	return (
-		<MainContainer py='40px'>
+		<MainContainer py='40px' height='100.1vh'>
 			<Head>
 				<title>Create Quiz</title>
 				<meta name='viewport' content='initial-scale=1.0, width=device-width' />
 			</Head>
-			<QuizContainer type='update' quizId={router.query?.id as string}>
-				<SubContainer my='0'>
-					<form onSubmit={handleSubmit(editMode ? update : create)}>
-						{image && (
-							<input
-								type='hidden'
-								name='result_photo'
-								value={image}
-								ref={register()}
-							/>
-						)}
-						<VStack spacing='16px'>
-							<QuizInputUI
-								register={register({
-									required: 'Title is required',
-									minLength: {
-										value: 3,
-										message: 'Title required more than 3 characters',
-									},
-									maxLength: {
-										value: 60,
-										message: 'Title must not exceed more than 60 characters',
-									},
-								})}
-								name='Result Title'
-								input='title'
-								placeholder='Type the title here...'
-								fontSize='20px'
-								size='lg'
-								error={errors.title}
-								errorMessage={errors.title?.message}
-							/>
-							<Box w='full'>
-								{image ? (
-									<Skeleton isLoaded={image !== 'loading'}>
-										<Box
-											borderRadius='8px'
-											maxW='500px'
-											mx='auto'
-											overflow='hidden'
-											bg='gray.100'
-										>
-											<AspectRatio ratio={16 / 9}>
-												{image !== 'loading' ? (
-													<Image src={image} alt='result image' layout='fill' />
-												) : (
-													<Box></Box>
-												)}
-											</AspectRatio>
-										</Box>
-									</Skeleton>
-								) : (
-									<AspectRatio
-										ratio={16 / 9}
-										maxW='500px'
-										bg={useColorModeValue(
-											'gray.50',
-											'rgba(255, 255, 255, 0.04)'
+			<QuizContainer type='create'>
+				<SubContainer w='764px' my='0'>
+					<form onSubmit={handleSubmit(onSubmit)}>
+						<Box w='full'>
+							{fields.map((result, i) => {
+								const imgIndex = images.findIndex(
+									(i) => i.result_id === result.result_id
+								);
+								const url = images[imgIndex]?.url || result.result_photo!;
+
+								return (
+									<Box
+										key={result.id}
+										borderWidth='1px'
+										p='12px'
+										borderRadius='8px'
+										mb='20px'
+										_notFirst={{ marginTop: '20px' }}
+										boxShadow='sm'
+									>
+										<input
+											type='hidden'
+											name={`results[${i}].result_id`}
+											defaultValue={result.result_id}
+											ref={register()}
+										/>
+										{imgIndex !== -1 && (
+											<input
+												type='hidden'
+												name={`results[${i}].result_photo`}
+												value={url}
+												ref={register()}
+											/>
 										)}
-										mx='auto'
-										display='flex'
-										justifyContent='center'
-										alignItems='center'
-									>
-										<Button
-											leftIcon={<MdPhotoSizeSelectActual />}
-											colorScheme='gray'
-											variant='ghost'
-											onClick={uploadImage}
-										>
-											Upload result image
-										</Button>
-									</AspectRatio>
-								)}
-							</Box>
-							{image && (
-								<Center>
-									<Button
-										leftIcon={<MdPhotoSizeSelectActual />}
-										colorScheme='gray'
-										onClick={uploadImage}
-									>
-										Change Thumbnail
-									</Button>
-								</Center>
-							)}
-							<Box w='full'>
-								<Text
-									fontFamily='inter'
-									textTransform='uppercase'
-									fontWeight='400'
-									fontSize='14px'
-									color={useColorModeValue('#000', '#fff')}
-									w='full'
-									textAlign='left'
-								>
-									Score Minimum Percent Correct -{' '}
-									<Badge colorScheme='purple'>{percentage}%</Badge>
-								</Text>
-								<Slider
-									aria-label='percentage'
-									defaultValue={percentage}
-									onChangeEnd={(val) => setPercentage(val)}
-								>
-									<SliderTrack bg='purple.100'>
-										<SliderFilledTrack bg='purple.500' />
-									</SliderTrack>
-									<SliderThumb boxSize={6}>
-										<Box color='purple.500' as={MdGraphicEq} />
-									</SliderThumb>
-								</Slider>
-							</Box>
+										<Controller
+											name={`results[${i}].minimum_percentage`}
+											control={control}
+											defaultValue={result?.minimum_percentage ?? 30}
+											rules={{ required: 'Percentage is required' }}
+											render={({ value, onChange }) => (
+												<Box>
+													<Flex align='center' justify='space-between'>
+														<Tag>{value}%</Tag>
+														<HStack spacing='10px'>
+															<Tooltip
+																hasArrow
+																label={
+																	result?.result_photo
+																		? 'Replace result photo'
+																		: 'Add result photo'
+																}
+															>
+																<IconButton
+																	isRound
+																	icon={<MdPhotoSizeSelectActual />}
+																	size='sm'
+																	variant='ghost'
+																	color='gray.400'
+																	fontSize='15px'
+																	onClick={() => uploadImage(result.result_id!)}
+																	aria-label='upload result_photo button'
+																/>
+															</Tooltip>
+															<Tooltip hasArrow label='Remove result'>
+																<IconButton
+																	isRound
+																	icon={<MdDelete />}
+																	size='sm'
+																	variant='ghost'
+																	color='gray.400'
+																	fontSize='15px'
+																	onClick={() => remove(i)}
+																	isDisabled={
+																		fields.length === 1 ? true : false
+																	}
+																	aria-label='Remove result'
+																/>
+															</Tooltip>
+														</HStack>
+													</Flex>
+													<Slider
+														aria-label='slider-ex-4'
+														defaultValue={value}
+														onChange={(val) => onChange(val)}
+													>
+														<SliderTrack bg='red.100'>
+															<SliderFilledTrack bg='tomato' />
+														</SliderTrack>
+														<SliderThumb boxSize={6}>
+															<Box color='tomato' as={MdGraphicEq} />
+														</SliderThumb>
+													</Slider>
+												</Box>
+											)} // props contains: onChange, onBlur and value
+										/>
+										{url && (
+											<Box p='4px' mb='2px'>
+												<Skeleton isLoaded={url !== 'loading'}>
+													<Box
+														borderRadius='8px'
+														overflow='hidden'
+														bg='gray.100'
+													>
+														<AspectRatio maxW='full' ratio={16 / 9}>
+															{url !== 'loading' ? (
+																<Image
+																	src={url}
+																	alt={`Result ${i} photo`}
+																	layout='fill'
+																/>
+															) : (
+																<Box></Box>
+															)}
+														</AspectRatio>
+													</Box>
+												</Skeleton>
+											</Box>
+										)}
 
-							<QuizInputUI
-								register={register({
-									required: 'Description is required',
-									minLength: {
-										value: 20,
-										message: 'Description required more than 20 characters',
-									},
-								})}
-								name='Result Description'
-								input='description'
-								placeholder='Type the description here..'
-								as={TextareaAutosize}
-								resize='none'
-								overflow='hidden'
-								minH='100px'
-								py='5px'
-								error={errors.description}
-								errorMessage={errors.description?.message}
-							/>
-						</VStack>
-
-						<Flex w='full' mt='20px' justify='flex-end'>
-							{editMode ? (
-								<>
-									<Button
-										colorScheme='purple'
-										type='submit'
-										px='20px'
-										ml='10px'
-										variant='ghost'
-									>
-										Cancel
-									</Button>
-									<Button
-										colorScheme='purple'
-										type='submit'
-										px='20px'
-										ml='10px'
-									>
-										Save Changes
-									</Button>
-								</>
-							) : (
-								<Button colorScheme='purple' type='submit' px='20px' ml='10px'>
+										<QuizInputUI
+											register={register({
+												required: `Result ${i + 1}: Title is a required field`,
+												minLength: {
+													value: 6,
+													message: `Result ${
+														i + 1
+													} required 6 characters minimum`,
+												},
+											})}
+											input={`results[${i}].title`}
+											as={TextareaAutosize}
+											placeholder='Type the title here..'
+											resize='none'
+											overflow='hidden'
+											py='7px'
+											error={errors?.results?.[i]?.title}
+											errorMessage={errors?.results?.[i]?.title?.message}
+											defaultValue={result.title}
+										/>
+										<QuizInputUI
+											register={register({
+												required: `Result ${
+													i + 1
+												}: Description is a required field`,
+												minLength: {
+													value: 20,
+													message: `Result ${
+														i + 1
+													} required 20 characters minimum`,
+												},
+											})}
+											input={`results[${i}].description`}
+											as={TextareaAutosize}
+											placeholder='Type the description here..'
+											resize='none'
+											overflow='hidden'
+											minH='100px'
+											py='7px'
+											error={errors?.results?.[i]?.description}
+											errorMessage={errors?.results?.[i]?.description?.message}
+											defaultValue={result.description!}
+										/>
+									</Box>
+								);
+							})}
+							<Flex w='full' justify='flex-end'>
+								<Button
+									leftIcon={<BsPlusSquareFill />}
+									variant='ghost'
+									textAlign='right'
+									colorScheme='purple'
+									size='sm'
+									onClick={() => {
+										addResult();
+									}}
+								>
 									Add Result
 								</Button>
-							)}
-						</Flex>
+							</Flex>
+
+							<Flex w='full' mt='20px' justify='center'>
+								<Button
+									colorScheme='purple'
+									variant='ghost'
+									type='submit'
+									px='20px'
+									ml='10px'
+								>
+									Save Changes
+								</Button>
+							</Flex>
+						</Box>
 					</form>
 				</SubContainer>
-
-				{results.map((result) => (
-					<SubContainer
-						my='20px'
-						boxShadow='sm'
-						textAlign='center'
-						position='relative'
-					>
-						<Box position='absolute' right='5px' top='5px'>
-							<Menu>
-								<MenuButton
-									as={IconButton}
-									aria-label='Options'
-									icon={<ChevronDownIcon />}
-									size='xs'
-									variant='ghost'
-								/>
-								<MenuList>
-									<MenuItem
-										icon={<DeleteIcon />}
-										onClick={() => dispatch(deleteResult(result.result_id))}
-									>
-										Delete
-									</MenuItem>
-									<MenuItem
-										icon={<EditIcon />}
-										onClick={() => edit(result.result_id)}
-									>
-										Edit
-									</MenuItem>
-								</MenuList>
-							</Menu>
-						</Box>
-
-						<Heading as='h2' fontSize='24px'>
-							{result.title}
-						</Heading>
-						<Badge colorScheme='purple' size='lg' fontSize='14px' my='5px'>
-							{result.minimum_percentage}%
-						</Badge>
-						{result.result_photo && (
-							<Box
-								overflow='hidden'
-								maxW='500px'
-								borderRadius='md'
-								bg='gray.100'
-								my='5px'
-								mx='auto'
-							>
-								<AspectRatio w='full' ratio={16 / 9}>
-									<Image
-										alt='result image'
-										layout='fill'
-										src={result.result_photo}
-									/>
-								</AspectRatio>
-							</Box>
-						)}
-						<Text mt='20px' wordBreak='break-word' whiteSpace='pre-line'>
-							{result.description}
-						</Text>
-					</SubContainer>
-				))}
 			</QuizContainer>
 		</MainContainer>
 	);
 };
 
-export default withApollo({ ssr: true })(Score);
+export default withApollo({ ssr: true })(Results);
