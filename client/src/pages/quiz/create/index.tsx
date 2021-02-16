@@ -10,4 +10,4 @@ const CreateQuiz: React.FC = () => {
 	return null;
 };
 
-export default withApollo({ ssr: true })(CreateQuiz);
+export default withApollo({ ssr: false })(CreateQuiz);

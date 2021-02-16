@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import {
 	Box,
+	Flex,
 	Input,
 	InputGroup,
 	InputLeftElement,
@@ -15,37 +16,39 @@ export const SearchBar: React.FC = () => {
 	const [text, setText] = useState('');
 
 	return (
-		<Box w='50%' my='30px'>
-			<form
-				onSubmit={(e) => {
-					e.preventDefault();
-					router.push({
-						pathname: '/',
-						query: { q: text },
-					});
-				}}
-			>
-				<InputGroup
-					size='lg'
-					boxShadow='base'
-					variant='ghost'
-					borderRadius='md'
+		<Flex justify='center' align='center' w='full' h='30vh'>
+			<Box w='50%'>
+				<form
+					onSubmit={(e) => {
+						e.preventDefault();
+						router.push({
+							pathname: '/',
+							query: { q: text },
+						});
+					}}
 				>
-					<InputLeftElement
-						pointerEvents='none'
-						children={<SearchIcon color='gray.300' />}
-					/>
-					<Input
-						onChange={(e) => setText(e.target.value)}
-						value={text}
-						type='text'
-						fontFamily='inter'
-						placeholder='Search the quizzes'
-						_focus={{ shadow: 'outline' }}
-						bg={useColorModeValue('white', 'rgb(32, 32, 32)')}
-					/>
-				</InputGroup>
-			</form>
-		</Box>
+					<InputGroup
+						size='lg'
+						boxShadow='base'
+						variant='ghost'
+						borderRadius='md'
+					>
+						<InputLeftElement
+							pointerEvents='none'
+							children={<SearchIcon color='gray.300' />}
+						/>
+						<Input
+							onChange={(e) => setText(e.target.value)}
+							value={text}
+							type='text'
+							fontFamily='inter'
+							placeholder='Search the quizzes'
+							_focus={{ shadow: 'outline' }}
+							bg={useColorModeValue('white', 'rgb(32, 32, 32)')}
+						/>
+					</InputGroup>
+				</form>
+			</Box>
+		</Flex>
 	);
 };

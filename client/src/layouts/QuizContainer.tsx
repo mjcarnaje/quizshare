@@ -1,5 +1,6 @@
 import {
 	BoxProps,
+	Button,
 	Center,
 	Flex,
 	Grid,
@@ -15,13 +16,13 @@ import React from 'react';
 import { HiUpload } from 'react-icons/hi';
 import { IoSettings, IoStatsChart } from 'react-icons/io5';
 import { MdLibraryBooks } from 'react-icons/md';
-import { Button } from '@chakra-ui/react';
+import { useDispatch, useSelector } from 'react-redux';
 import {
 	useCreateQuizMutation,
 	useUpdateQuizMutation,
 } from '../generated/graphql';
+import { resetQuizState } from '../store/quizSlice';
 import { QuizState, State } from '../store/type';
-import { useSelector } from 'react-redux';
 
 interface MainNavLinkProps {
 	href: string;
@@ -38,8 +39,6 @@ const MainNavLink: React.FC<MainNavLinkProps> = ({
 	const { pathname } = useRouter();
 	const path = href.split('/');
 	const active = pathname.includes(path[type === 'update' ? 4 : 3]);
-	const linkColor = useColorModeValue('purple.500', 'gray.100');
-	const bgColor = useColorModeValue('purple.50', 'rgba(255, 255, 255, 0.04)');
 
 	return (
 		<NextLink href={href} passHref>
@@ -51,10 +50,19 @@ const MainNavLink: React.FC<MainNavLinkProps> = ({
 				fontWeight={active ? 'semibold' : ''}
 				transitionProperty='colors'
 				transitionDuration='200ms'
-				color={active ? linkColor : 'gray.500'}
-				_hover={{ color: linkColor, bg: bgColor }}
+				color={
+					active ? useColorModeValue('purple.500', 'gray.100') : 'gray.500'
+				}
+				_hover={{
+					color: useColorModeValue('purple.500', 'gray.100'),
+					bg: useColorModeValue('purple.50', 'rgba(255, 255, 255, 0.04)'),
+				}}
 				fontFamily='inter'
-				bg={active ? bgColor : ''}
+				bg={
+					active
+						? useColorModeValue('purple.50', 'rgba(255, 255, 255, 0.04)')
+						: ''
+				}
 				px='12px'
 				py='8px'
 				rounded='8px'
@@ -100,6 +108,7 @@ export const QuizContainer: React.FC<QuizContainerProps> = ({
 		},
 	];
 
+	const dispatch = useDispatch();
 	const router = useRouter();
 
 	const quiz = useSelector((state: State) => state.quiz);
@@ -141,6 +150,7 @@ export const QuizContainer: React.FC<QuizContainerProps> = ({
 				console.error(err);
 			}
 		}
+		dispatch(resetQuizState());
 	};
 
 	return (

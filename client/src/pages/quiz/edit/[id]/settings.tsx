@@ -6,17 +6,16 @@ import {
 	Flex,
 	Skeleton,
 	useColorModeValue,
-	useDisclosure,
 	VStack,
 } from '@chakra-ui/react';
 import Head from 'next/head';
 import Image from 'next/image';
+import { useRouter } from 'next/router';
 import React, { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { MdPhotoSizeSelectActual } from 'react-icons/md';
 import { useDispatch, useSelector } from 'react-redux';
 import TextareaAutosize from 'react-textarea-autosize';
-import { AlertDialog } from '../../../../components/AlertDialog';
 import QuizInputUI from '../../../../components/custom-inputs/QuizInputUI';
 import { QuizInput } from '../../../../generated/graphql';
 import { MainContainer } from '../../../../layouts/MainContainer';
@@ -26,8 +25,6 @@ import { setSettings } from '../../../../store/quizSlice';
 import { SettingsInput, State } from '../../../../store/type';
 import { uploadCloudinaryImage } from '../../../../utils/uploadImage';
 import { withApollo } from '../../../../utils/withApollo';
-import usePreventRouteChangeIf from '../../../../utils/useWarnIfUnsavedChanges';
-import { useRouter } from 'next/router';
 
 const Settings: React.FC = () => {
 	const router = useRouter();
@@ -39,12 +36,7 @@ const Settings: React.FC = () => {
 
 	const [image, setImage] = useState<string | 'loading'>();
 
-	const {
-		register,
-		handleSubmit,
-		errors,
-		formState: { isDirty, isSubmitted },
-	} = useForm<QuizInput>({
+	const { register, handleSubmit, errors } = useForm<QuizInput>({
 		defaultValues: { title, description, quiz_photo },
 	});
 
@@ -72,15 +64,15 @@ const Settings: React.FC = () => {
 		);
 	};
 
-	const { isOpen, onClose, onOpen } = useDisclosure();
-
-	usePreventRouteChangeIf(isDirty && !isSubmitted, onOpen);
-
 	useEffect(() => {
+		if (!title || !description) {
+			router.replace(`/quiz/edit/${router.query.id}`);
+		}
+
 		if (quiz_photo) {
 			setImage(quiz_photo);
 		}
-	}, [quiz_photo]);
+	}, [quiz_photo, title, description]);
 
 	return (
 		<MainContainer py='40px'>
@@ -88,8 +80,7 @@ const Settings: React.FC = () => {
 				<title>Create Quiz</title>
 				<meta name='viewport' content='initial-scale=1.0, width=device-width' />
 			</Head>
-			<AlertDialog isOpen={isOpen} onClose={onClose} />
-			<QuizContainer type='update' quizId={router.query?.id as string}>
+			<QuizContainer type='update' quizId={router.query.id as string}>
 				<SubContainer w='764px' my='0'>
 					<form onSubmit={handleSubmit(onSubmit)}>
 						{image && (

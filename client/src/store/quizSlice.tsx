@@ -2,6 +2,7 @@ import { createStandaloneToast } from '@chakra-ui/react';
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { QuestionInput } from '../generated/graphql';
 import { QuizState, ResultProps, SettingsInput } from './type';
+import { removeTypename } from '../utils/removeTypename';
 
 const toast = createStandaloneToast();
 
@@ -17,6 +18,7 @@ const quizSlice = createSlice({
 	name: 'quiz',
 	initialState: quizIS,
 	reducers: {
+		resetQuizState: () => quizIS,
 		setSettings: (
 			state,
 			{
@@ -97,6 +99,16 @@ const quizSlice = createSlice({
 			});
 		},
 
+		fetchDataForEdit: (state, { payload }: PayloadAction<any>) => {
+			const __typenameRemoved = removeTypename(payload) as QuizState;
+
+			state.results = __typenameRemoved?.results;
+			state.questions = __typenameRemoved.questions;
+			state.title = __typenameRemoved.title;
+			state.description = __typenameRemoved.description;
+			state.quiz_photo = __typenameRemoved?.quiz_photo;
+		},
+
 		updateResult: (
 			state,
 			{ payload }: PayloadAction<{ id: string; data: ResultProps }>
@@ -110,12 +122,14 @@ const quizSlice = createSlice({
 });
 
 export const {
+	resetQuizState,
 	setSettings,
 	setQuestions,
 	setResults,
 	createResult,
 	deleteResult,
 	updateResult,
+	fetchDataForEdit,
 } = quizSlice.actions;
 
 export default quizSlice;

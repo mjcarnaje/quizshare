@@ -17,6 +17,7 @@ export const QuizzesCards: React.FC<QuizzesCardsProps> = ({
 	isLoading,
 	isError,
 }) => {
+	if (quizzes?.length === 0) return null;
 	return (
 		<SubContainer boxShadow='none' borderWidth='0'>
 			<VStack spacing='40px'>

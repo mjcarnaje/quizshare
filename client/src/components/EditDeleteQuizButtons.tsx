@@ -18,7 +18,7 @@ import {
 	useColorModeValue,
 	useDisclosure,
 } from '@chakra-ui/react';
-import NextLink from 'next/link';
+import { useRouter } from 'next/dist/client/router';
 import React, { RefObject, useRef } from 'react';
 import {
 	QuizzesResponseFragment,
@@ -35,9 +35,7 @@ export const EditDeleteQuizButtons: React.FC<EditDeleteQuizButtonsProps> = ({
 	...props
 }) => {
 	const { data } = useMeQuery();
-
-	const bgColor = useColorModeValue('rgb(255, 255, 255)', 'rgb(32, 32, 32)');
-	const colorBody = useColorModeValue('gray.600', '#BDBDBD');
+	const router = useRouter();
 
 	const [deleteQuiz] = useDeleteQuizMutation();
 
@@ -61,17 +59,18 @@ export const EditDeleteQuizButtons: React.FC<EditDeleteQuizButtonsProps> = ({
 						colorScheme='gray'
 						icon={<ChevronDownIcon />}
 					/>
-					<MenuList bg={bgColor} color={colorBody}>
+					<MenuList
+						bg={useColorModeValue('rgb(255, 255, 255)', 'rgb(32, 32, 32)')}
+						color={useColorModeValue('gray.600', '#BDBDBD')}
+					>
 						<MenuItem onClick={onOpen}>
 							<DeleteIcon mr='12px' />
 							<span>Delete</span>
 						</MenuItem>
-						<NextLink href={`/quiz/edit/${quiz.id}`}>
-							<MenuItem>
-								<EditIcon mr='12px' />
-								<span>Edit</span>
-							</MenuItem>
-						</NextLink>
+						<MenuItem onClick={() => router.push(`/quiz/edit/${quiz.id}`)}>
+							<EditIcon mr='12px' />
+							<span>Edit</span>
+						</MenuItem>
 					</MenuList>
 				</Menu>
 			</Square>

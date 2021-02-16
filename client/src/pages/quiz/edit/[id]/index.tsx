@@ -1,49 +1,44 @@
+import { Center, Spinner } from '@chakra-ui/react';
 import { useRouter } from 'next/router';
-import React, { useEffect } from 'react';
-import { withApollo } from '../../../../utils/withApollo';
-import { useQuizToUpdateQuery } from '../../../../generated/graphql';
-import { removeTypename } from '../../../../utils/removeTypename';
+import { useEffect } from 'react';
 import { useDispatch } from 'react-redux';
-import {
-	setQuestions,
-	setResults,
-	setSettings,
-} from '../../../../store/quizSlice';
+import { useQuizToUpdateQuery } from '../../../../generated/graphql';
+import { MainContainer } from '../../../../layouts/MainContainer';
+import { QuizContainer } from '../../../../layouts/QuizContainer';
+import { fetchDataForEdit, resetQuizState } from '../../../../store/quizSlice';
+import { withApollo } from '../../../../utils/withApollo';
 
-const EditQuiz: React.FC = () => {
+function EditQuiz() {
+	const dispatch = useDispatch();
 	const router = useRouter();
 	const id = parseInt(router.query.id as string);
-	const dispatch = useDispatch();
 
-	const { data, loading } = useQuizToUpdateQuery({
+	const { data } = useQuizToUpdateQuery({
 		variables: {
 			quiz_id: id,
 		},
 	});
 
-	if (loading && !data) {
-		return <pre>loading...</pre>;
-	}
-
-	const toUpdateData = removeTypename(data?.quizToUpdate!);
+	useEffect(() => {
+		dispatch(resetQuizState());
+	}, []);
 
 	useEffect(() => {
-		dispatch(
-			setSettings({
-				title: toUpdateData.title,
-				description: toUpdateData.description,
-				quiz_photo: toUpdateData?.quiz_photo,
-			})
-		);
-		dispatch(setQuestions(toUpdateData.questions));
-		dispatch(setResults(toUpdateData?.results));
+		if (data?.quizToUpdate) {
+			dispatch(fetchDataForEdit(data.quizToUpdate));
+			router.push(`/quiz/edit/${id}/settings`, undefined, { shallow: true });
+		}
+	}, [data]);
 
-		setTimeout(() => {
-			router.push(`/quiz/edit/${id}/settings`);
-		}, 3000);
-	}, [toUpdateData]);
+	return (
+		<MainContainer>
+			<QuizContainer type='update' quizId={router.query?.id as string}>
+				<Center w='full'>
+					<Spinner />
+				</Center>
+			</QuizContainer>
+		</MainContainer>
+	);
+}
 
-	return <div></div>;
-};
-
-export default withApollo({ ssr: true })(EditQuiz);
+export default withApollo({ ssr: false })(EditQuiz);
