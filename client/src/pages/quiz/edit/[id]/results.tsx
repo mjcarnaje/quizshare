@@ -16,7 +16,7 @@ import {
 } from '@chakra-ui/react';
 import Head from 'next/head';
 import Image from 'next/image';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Controller, useFieldArray, useForm } from 'react-hook-form';
 import { BsPlusSquareFill } from 'react-icons/bs';
 import { MdDelete, MdGraphicEq, MdPhotoSizeSelectActual } from 'react-icons/md';
@@ -31,11 +31,14 @@ import { setResults } from '../../../../store/quizSlice';
 import { ResultProps, State } from '../../../../store/type';
 import { uploadCloudinaryImage } from '../../../../utils/uploadImage';
 import { withApollo } from '../../../../utils/withApollo';
+import { useRouter } from 'next/router';
 
 const Results: React.FC = () => {
+	const router = useRouter();
 	const toast = useToast();
 	const dispatch = useDispatch();
 
+	const title = useSelector((state: State) => state.quiz.title);
 	const results = useSelector((state: State) => state.quiz.results);
 
 	const [images, setImages] = useState<
@@ -107,6 +110,12 @@ const Results: React.FC = () => {
 			}
 		);
 	};
+
+	useEffect(() => {
+		if (!title) {
+			router.replace(`/quiz/edit/${router.query.id}`);
+		}
+	}, [title]);
 
 	return (
 		<MainContainer py='40px' height='100.1vh'>

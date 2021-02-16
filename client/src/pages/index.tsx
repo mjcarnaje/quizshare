@@ -51,7 +51,7 @@ const Index: React.FC = () => {
 				isError={error}
 			/>
 			{!data?.quizzes.hasMore && data?.quizzes.quizzes.length === 0 && (
-				<Center flexDirection='column' my='20px'>
+				<Center flexDirection='column' mt='20px' mb='60px'>
 					<AspectRatio ratio={1} minW='320px'>
 						<Image src={'/no-result.svg'} layout='fill' />
 					</AspectRatio>

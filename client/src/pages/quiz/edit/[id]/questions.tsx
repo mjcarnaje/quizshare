@@ -9,10 +9,10 @@ import {
 	Switch,
 	Text,
 	Tooltip,
-	useDisclosure,
 } from '@chakra-ui/react';
 import Head from 'next/head';
 import Image from 'next/image';
+import { useRouter } from 'next/router';
 import React, { useEffect, useState } from 'react';
 import { Controller, useFieldArray, useForm } from 'react-hook-form';
 import { BsPlusSquareFill } from 'react-icons/bs';
@@ -20,7 +20,6 @@ import { MdDelete, MdPhotoSizeSelectActual } from 'react-icons/md';
 import { useDispatch, useSelector } from 'react-redux';
 import TextareaAutosize from 'react-textarea-autosize';
 import { v4 as uuid } from 'uuid';
-import { AlertDialog } from '../../../../components/AlertDialog';
 import ChoiceArray from '../../../../components/create-update-quiz/ChoiceArray';
 import QuizInputUI from '../../../../components/custom-inputs/QuizInputUI';
 import { QuestionInput } from '../../../../generated/graphql';
@@ -30,9 +29,7 @@ import { SubContainer } from '../../../../layouts/SubContainer';
 import { setQuestions } from '../../../../store/quizSlice';
 import { State } from '../../../../store/type';
 import { uploadCloudinaryImage } from '../../../../utils/uploadImage';
-import usePreventRouteChangeIf from '../../../../utils/useWarnIfUnsavedChanges';
 import { withApollo } from '../../../../utils/withApollo';
-import { useRouter } from 'next/router';
 
 const Questions: React.FC = () => {
 	const router = useRouter();
@@ -40,6 +37,7 @@ const Questions: React.FC = () => {
 
 	const [addChoice, setAddChoice] = useState(false);
 
+	const title = useSelector((state: State) => state.quiz.title);
 	const questions = useSelector((state: State) => state.quiz.questions);
 
 	const [images, setImages] = useState<
@@ -74,7 +72,6 @@ const Questions: React.FC = () => {
 			shouldFocus
 		);
 		setAddChoice(true);
-		console.log(errors);
 	};
 
 	const uploadImage = (question_id: string) => {
@@ -103,17 +100,17 @@ const Questions: React.FC = () => {
 		);
 	};
 
-	console.log(questions);
-
 	useEffect(() => {
 		if (questions.length === 0) {
 			addQuestion(false);
 		}
 	}, []);
 
-	const { isOpen, onClose, onOpen } = useDisclosure();
-
-	usePreventRouteChangeIf(false, onOpen);
+	useEffect(() => {
+		if (title) {
+			router.replace(`/quiz/edit/${router.query.id}`);
+		}
+	}, [title]);
 
 	return (
 		<MainContainer py='40px' height='100.1vh'>
@@ -121,7 +118,6 @@ const Questions: React.FC = () => {
 				<title>Create Quiz</title>
 				<meta name='viewport' content='initial-scale=1.0, width=device-width' />
 			</Head>
-			<AlertDialog isOpen={isOpen} onClose={onClose} />
 			<QuizContainer type='update' quizId={router.query?.id as string}>
 				<SubContainer w='764px' my='0'>
 					<form onSubmit={handleSubmit(onSubmit)}>

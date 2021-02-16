@@ -65,14 +65,14 @@ const Settings: React.FC = () => {
 	};
 
 	useEffect(() => {
-		if (!title || !description) {
+		if (!title) {
 			router.replace(`/quiz/edit/${router.query.id}`);
 		}
 
 		if (quiz_photo) {
 			setImage(quiz_photo);
 		}
-	}, [quiz_photo, title, description]);
+	}, [quiz_photo, title]);
 
 	return (
 		<MainContainer py='40px'>
