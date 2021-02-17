@@ -26,17 +26,21 @@ const MainNavLink: React.FC<MainNavLinkProps> = ({ href, children }) => {
 	const [, path1, path2] = href.split('/');
 
 	const active = pathname.includes(path1 || path2);
-	const linkColor = useColorModeValue('purple.500', 'gray.100');
-	const bgColor = useColorModeValue('purple.50', 'rgba(255, 255, 255, 0.04)');
 
 	return (
 		<NextLink href={href} passHref>
 			<Box
-				bg={active ? bgColor : ''}
+				bg={
+					active
+						? useColorModeValue('purple.50', 'rgba(255, 255, 255, 0.04)')
+						: ''
+				}
 				rounded='lg'
 				mx='10px'
 				px='20px'
-				_hover={{ bg: bgColor }}
+				_hover={{
+					bg: useColorModeValue('purple.50', 'rgba(255, 255, 255, 0.04)'),
+				}}
 			>
 				<Text
 					cursor='pointer'
@@ -45,8 +49,10 @@ const MainNavLink: React.FC<MainNavLinkProps> = ({ href, children }) => {
 					fontWeight={active ? 'semibold' : ''}
 					transitionProperty='colors'
 					transitionDuration='200ms'
-					color={active ? linkColor : 'gray.500'}
-					_hover={{ color: linkColor }}
+					color={
+						active ? useColorModeValue('purple.500', 'gray.100') : 'gray.500'
+					}
+					_hover={{ color: useColorModeValue('purple.500', 'gray.100') }}
 					fontFamily='inter'
 				>
 					{children}

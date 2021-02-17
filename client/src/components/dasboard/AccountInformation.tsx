@@ -22,11 +22,6 @@ interface AccountInformationProps {}
 export const AccountInformation: React.FC<AccountInformationProps> = ({}) => {
 	const [editMode, setEditMode] = useState(false);
 
-	const coverPhotoBg = useColorModeValue(
-		'gray.50',
-		'rgba(255, 255, 255, 0.04)'
-	);
-
 	const { data, loading, error } = useMeQuery();
 
 	if (!data && loading) {
@@ -83,7 +78,9 @@ export const AccountInformation: React.FC<AccountInformationProps> = ({}) => {
 						{cover_photo ? (
 							<Image src={cover_photo} alt='Cover Photo' layout='fill' />
 						) : (
-							<Center bg={coverPhotoBg}>
+							<Center
+								bg={useColorModeValue('gray.50', 'rgba(255, 255, 255, 0.04)')}
+							>
 								<Button
 									onClick={() => setEditMode(true)}
 									leftIcon={<MdPhotoSizeSelectActual />}

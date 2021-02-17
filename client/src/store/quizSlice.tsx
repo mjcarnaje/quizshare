@@ -37,7 +37,6 @@ const quizSlice = createSlice({
 				position: 'bottom-right',
 			});
 		},
-
 		setQuestions: (state, { payload }: PayloadAction<QuestionInput[]>) => {
 			state.questions = payload;
 
@@ -49,7 +48,6 @@ const quizSlice = createSlice({
 				position: 'bottom-right',
 			});
 		},
-
 		setResults: (
 			state,
 			{ payload }: PayloadAction<ResultProps[] | undefined | null>
@@ -57,7 +55,6 @@ const quizSlice = createSlice({
 			if (payload) {
 				state.results = payload;
 			}
-
 			toast({
 				description: 'Questions saved.',
 				status: 'success',
@@ -66,7 +63,6 @@ const quizSlice = createSlice({
 				position: 'bottom-right',
 			});
 		},
-
 		fetchDataForEdit: (state, { payload }: PayloadAction<any>) => {
 			const __typenameRemoved = removeTypename(payload) as QuizState;
 

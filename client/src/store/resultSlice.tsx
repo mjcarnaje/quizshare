@@ -10,6 +10,7 @@ const resultSlice = createSlice({
 	name: 'result',
 	initialState: resultIS,
 	reducers: {
+		resetResultState: () => resultIS,
 		setAnswerByUser: (
 			state,
 			{ payload }: PayloadAction<AnswerByUserProps[]>
@@ -25,6 +26,10 @@ const resultSlice = createSlice({
 	},
 });
 
-export const { setAnswerByUser, setQuizResult } = resultSlice.actions;
+export const {
+	resetResultState,
+	setAnswerByUser,
+	setQuizResult,
+} = resultSlice.actions;
 
 export default resultSlice;

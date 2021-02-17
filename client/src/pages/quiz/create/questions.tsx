@@ -9,7 +9,6 @@ import {
 	Switch,
 	Text,
 	Tooltip,
-	useDisclosure,
 } from '@chakra-ui/react';
 import Head from 'next/head';
 import Image from 'next/image';
@@ -20,7 +19,6 @@ import { MdDelete, MdPhotoSizeSelectActual } from 'react-icons/md';
 import { useDispatch, useSelector } from 'react-redux';
 import TextareaAutosize from 'react-textarea-autosize';
 import { v4 as uuid } from 'uuid';
-import { AlertDialog } from '../../../components/AlertDialog';
 import ChoiceArray from '../../../components/create-update-quiz/ChoiceArray';
 import QuizInputUI from '../../../components/custom-inputs/QuizInputUI';
 import { QuestionInput } from '../../../generated/graphql';
@@ -30,16 +28,14 @@ import { SubContainer } from '../../../layouts/SubContainer';
 import { setQuestions } from '../../../store/quizSlice';
 import { State } from '../../../store/type';
 import { uploadCloudinaryImage } from '../../../utils/uploadImage';
-import usePreventRouteChangeIf from '../../../utils/useWarnIfUnsavedChanges';
 import { withApollo } from '../../../utils/withApollo';
 
 const Questions: React.FC = () => {
-	const [addChoice, setAddChoice] = useState(false);
-
 	const dispatch = useDispatch();
 
 	const questions = useSelector((state: State) => state.quiz.questions);
 
+	const [addChoice, setAddChoice] = useState(false);
 	const [images, setImages] = useState<
 		{ question_id: string; url: string | 'loading' }[]
 	>([]);
@@ -72,7 +68,6 @@ const Questions: React.FC = () => {
 			shouldFocus
 		);
 		setAddChoice(true);
-		console.log(errors);
 	};
 
 	const uploadImage = (question_id: string) => {
@@ -107,17 +102,12 @@ const Questions: React.FC = () => {
 		}
 	}, []);
 
-	const { isOpen, onClose, onOpen } = useDisclosure();
-
-	usePreventRouteChangeIf(false, onOpen);
-
 	return (
 		<MainContainer py='40px' height='100.1vh'>
 			<Head>
 				<title>Create Quiz</title>
 				<meta name='viewport' content='initial-scale=1.0, width=device-width' />
 			</Head>
-			<AlertDialog isOpen={isOpen} onClose={onClose} />
 			<QuizContainer type='create'>
 				<SubContainer w='764px' my='0'>
 					<form onSubmit={handleSubmit(onSubmit)}>

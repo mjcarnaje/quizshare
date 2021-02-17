@@ -18,7 +18,7 @@ import Image from 'next/image';
 import { useRouter } from 'next/router';
 import React, { useEffect, useState } from 'react';
 import { AiFillCheckCircle, AiFillCloseCircle } from 'react-icons/ai';
-import { useSelector } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
 import Comments from '../../../../components/single-quiz/Comments';
 import {
 	useQuestionsQuery,
@@ -28,6 +28,8 @@ import { MainContainer } from '../../../../layouts/MainContainer';
 import { SubContainer } from '../../../../layouts/SubContainer';
 import { State } from '../../../../store/type';
 import { withApollo } from '../../../../utils/withApollo';
+import { useGetIntId } from '../../../../utils/useGetIntId';
+import { resetResultState } from '../../../../store/resultSlice';
 
 interface ScoreProps {}
 
@@ -36,16 +38,18 @@ const Score: React.FC<ScoreProps> = ({}) => {
 	const wrongColor = useColorModeValue('#D30000', '#D30000');
 
 	const router = useRouter();
+	const dispatch = useDispatch();
 
 	const [, , , id] = router.asPath.split('/');
-
-	const [showAnswer, setShowAnswer] = useState(false);
+	const quizId = useGetIntId();
 
 	const results = useSelector((state: State) => state.result);
 
+	const [showAnswer, setShowAnswer] = useState(false);
+
 	const { data: quizdata } = useSingleQuizQuery({
 		variables: {
-			quiz_id: parseInt(router.query.id as string),
+			quiz_id: quizId,
 		},
 	});
 
@@ -60,9 +64,9 @@ const Score: React.FC<ScoreProps> = ({}) => {
 		if (!results.quizResult) {
 			router.replace(`/quiz/take/${id}`);
 		}
-		// return () => {
-		// 	setQuizScore(null);
-		// };
+		return () => {
+			dispatch(resetResultState());
+		};
 	}, []);
 
 	if (!results.quizResult) {

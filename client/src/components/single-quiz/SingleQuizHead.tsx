@@ -2,29 +2,27 @@ import {
 	AspectRatio,
 	Box,
 	Button,
+	Container as ChakraContainter,
 	Divider,
 	Flex,
 	Heading,
-	IconButton,
-	Text,
-	Container as ChakraContainter,
-	SkeletonCircle,
-	Skeleton,
 	HStack,
+	IconButton,
+	Skeleton,
+	SkeletonCircle,
 	SkeletonText,
-	Icon,
+	Text,
 	Tooltip,
-	Circle,
 } from '@chakra-ui/react';
-import Image from 'next/image';
 import moment from 'moment';
+import { useRouter } from 'next/dist/client/router';
+import Image from 'next/image';
 import React from 'react';
+import { BiCheckDouble } from 'react-icons/bi';
 import { IoMdArrowRoundBack } from 'react-icons/io';
 import { CommentButton } from '../CommentButton';
 import { LikeButton } from '../LikeButton';
 import { UserAvatar } from '../UserAvatar';
-import { useRouter } from 'next/dist/client/router';
-import { BiCheckDouble } from 'react-icons/bi';
 
 interface SingleQuizHeadProps {
 	data: any;

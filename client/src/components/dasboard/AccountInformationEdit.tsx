@@ -43,11 +43,6 @@ export const AccountInformationEdit: React.FC<AccountInformationEditProps> = ({
 	},
 	setEditMode,
 }) => {
-	const coverPhotoBg = useColorModeValue(
-		'gray.50',
-		'rgba(255, 255, 255, 0.04)'
-	);
-
 	const [coverPhoto, setCoverPhoto] = useState<string | 'loading'>();
 	const [profilePhoto, setProfilePhoto] = useState<string | 'loading'>();
 
@@ -157,7 +152,12 @@ export const AccountInformationEdit: React.FC<AccountInformationEditProps> = ({
 									{coverPhoto && coverPhoto !== 'loading' ? (
 										<Image src={coverPhoto} alt='Cover Photo' layout='fill' />
 									) : (
-										<Center bg={coverPhotoBg}>
+										<Center
+											bg={useColorModeValue(
+												'gray.50',
+												'rgba(255, 255, 255, 0.04)'
+											)}
+										>
 											<Button
 												onClick={uploadCoverPhoto}
 												leftIcon={<MdPhotoSizeSelectActual />}

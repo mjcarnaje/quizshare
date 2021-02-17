@@ -26,8 +26,6 @@ interface QuizItemProps {
 }
 
 export const QuizItem: React.FC<QuizItemProps> = ({ quiz }) => {
-	const titleColor = useColorModeValue('gray.700', 'white');
-
 	const { description, created_at } = quiz;
 	const descriptionCharacter = useBreakpointValue({ base: 172, md: 250 });
 
@@ -68,7 +66,12 @@ export const QuizItem: React.FC<QuizItemProps> = ({ quiz }) => {
 					align='start'
 				>
 					<Box w={['100%', '100%', quiz_photo ? '60%' : '85%']} pos='relative'>
-						<Heading as='h2' size={titleSize} mb='10px' color={titleColor}>
+						<Heading
+							as='h2'
+							size={titleSize}
+							mb='10px'
+							color={useColorModeValue('gray.700', 'white')}
+						>
 							<Link href={`/quiz/${id}`}>{title}</Link>
 						</Heading>
 						<EditDeleteQuizButtons

@@ -64,8 +64,6 @@ export const ProfileInformationEdit: React.FC<ProfileInformationEditProps> = ({
 	},
 	setEditMode,
 }) => {
-	const bgColor = useColorModeValue('white', '#202020');
-
 	const [updateProfile, { loading }] = useUpdateProfileMutation();
 
 	const {
@@ -202,7 +200,7 @@ export const ProfileInformationEdit: React.FC<ProfileInformationEditProps> = ({
 											mx='14px'
 											color='red.500'
 											fontSize='20px'
-											bg={bgColor}
+											bg={useColorModeValue('white', '#202020')}
 											rounded='100px'
 										/>
 									</Tooltip>

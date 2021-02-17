@@ -35,13 +35,9 @@ import { withApollo } from '../utils/withApollo';
 import { MeDocument } from '../generated/graphql';
 
 const Register: React.FC = () => {
-	const [isSecondStep, setIsSecondStep] = useState(false);
-
-	const bgColor = useColorModeValue('white', '#202020');
-	const registerBoxShadow = useColorModeValue('md', 'lg');
-	const borderColor = useColorModeValue('gray.200', '');
-
 	const router = useRouter();
+
+	const [isSecondStep, setIsSecondStep] = useState(false);
 
 	const [registerUser, { loading }] = useRegisterMutation();
 
@@ -83,9 +79,9 @@ const Register: React.FC = () => {
 			</Head>
 			<Box
 				borderWidth='1px'
-				borderColor={borderColor}
-				bg={bgColor}
-				boxShadow={registerBoxShadow}
+				borderColor={useColorModeValue('gray.200', '')}
+				bg={useColorModeValue('white', '#202020')}
+				boxShadow={useColorModeValue('md', 'lg')}
 				rounded='md'
 				w='40%'
 				px='32px'
@@ -167,7 +163,7 @@ const Register: React.FC = () => {
 												<WarningIcon
 													color='red.500'
 													fontSize='20px'
-													bg={bgColor}
+													bg={useColorModeValue('white', '#202020')}
 													rounded='100px'
 												/>
 											</Tooltip>
@@ -209,7 +205,7 @@ const Register: React.FC = () => {
 												mx='14px'
 												color='red.500'
 												fontSize='20px'
-												bg={bgColor}
+												bg={useColorModeValue('white', '#202020')}
 												rounded='100px'
 											/>
 										</Tooltip>

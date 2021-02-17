@@ -30,15 +30,17 @@ import { setQuestions } from '../../../../store/quizSlice';
 import { State } from '../../../../store/type';
 import { uploadCloudinaryImage } from '../../../../utils/uploadImage';
 import { withApollo } from '../../../../utils/withApollo';
+import { useGetIntId } from '../../../../utils/useGetIntId';
 
 const Questions: React.FC = () => {
 	const router = useRouter();
 	const dispatch = useDispatch();
-
-	const [addChoice, setAddChoice] = useState(false);
+	const quizId = useGetIntId();
 
 	const title = useSelector((state: State) => state.quiz.title);
 	const questions = useSelector((state: State) => state.quiz.questions);
+
+	const [addChoice, setAddChoice] = useState(false);
 
 	const [images, setImages] = useState<
 		{ question_id: string; url: string | 'loading' }[]
@@ -107,8 +109,8 @@ const Questions: React.FC = () => {
 	}, []);
 
 	useEffect(() => {
-		if (title) {
-			router.replace(`/quiz/edit/${router.query.id}`);
+		if (!title) {
+			router.replace(`/quiz/edit/${quizId}`);
 		}
 	}, [title]);
 

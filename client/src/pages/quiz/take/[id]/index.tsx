@@ -28,45 +28,35 @@ import { MainContainer } from '../../../../layouts/MainContainer';
 import { SubContainer } from '../../../../layouts/SubContainer';
 import { setAnswerByUser, setQuizResult } from '../../../../store/resultSlice';
 import { AnswerByUserProps, QuizResultProps } from '../../../../store/type';
+import { useGetIntId } from '../../../../utils/useGetIntId';
 import { withApollo } from '../../../../utils/withApollo';
 
 interface TakeQuizProps {}
 
 const TakeQuiz: React.FC<TakeQuizProps> = ({}) => {
-	const choiceBgHover = useColorModeValue(
-		'gray.200',
-		'rgba(255, 255, 255, 0.04)'
-	);
-
-	const choiceBgSelected = useColorModeValue(
-		'gray.300',
-		'rgba(255, 255, 255, 0.06'
-	);
-
 	const router = useRouter();
 	const dispatch = useDispatch();
 	const questionsRefs: RefObject<any> = useRef([]);
+
+	const quizId = useGetIntId();
 
 	const [usersAnswer, setUsersAnswer] = useState<AnswerByUserProps[]>([]);
 	const [checking, setChecking] = useState(false);
 
 	const { data, loading } = useQuestionsQuery({
 		variables: {
-			quiz_id: parseInt(router.query.id as string),
+			quiz_id: quizId,
 			withAnswer: false,
 		},
 	});
 
 	const { data: quizdata, loading: quizloading } = useSingleQuizQuery({
 		variables: {
-			quiz_id: parseInt(router.query.id as string),
+			quiz_id: quizId,
 		},
 	});
 
-	const [
-		checkAnswer,
-		{ loading: checkAnswerLoading },
-	] = useCheckAnswerMutation();
+	const [checkAnswer, { loading: checkloading }] = useCheckAnswerMutation();
 
 	const selectAnswer = (question_id: string, choice_id: string, i: number) => {
 		const isAnsweredIndex = usersAnswer.findIndex(
@@ -188,11 +178,25 @@ const TakeQuiz: React.FC<TakeQuizProps> = ({}) => {
 											textAlign='center'
 											wordBreak='break-word'
 											whiteSpace='pre-line'
-											_hover={{ bg: !isAnswered ? choiceBgHover : '' }}
+											_hover={{
+												bg: !isAnswered
+													? useColorModeValue(
+															'gray.200',
+															'rgba(255, 255, 255, 0.04)'
+													  )
+													: '',
+											}}
 											onClick={() =>
 												selectAnswer(question.question_id, choice.choice_id, i)
 											}
-											bg={isAnswered ? choiceBgSelected : ''}
+											bg={
+												isAnswered
+													? useColorModeValue(
+															'gray.300',
+															'rgba(255, 255, 255, 0.06)'
+													  )
+													: ''
+											}
 											boxShadow={isAnswered ? 'sm' : ''}
 										>
 											{choice?.choice_photo && (
@@ -223,18 +227,18 @@ const TakeQuiz: React.FC<TakeQuizProps> = ({}) => {
 
 				<Box w='full' textAlign='center'>
 					<Button
-						isLoading={checkAnswerLoading || checking}
+						isLoading={checkloading || checking}
 						loadingText='Checking...'
 						onClick={async () => {
 							await checkAnswer({
 								variables: {
 									data: {
-										quiz_id: parseInt(router.query.id as string),
+										quiz_id: quizId,
 										users_answer: usersAnswer,
 									},
 								},
 								update: (cache, { data }) => {
-									const id = parseInt(router.query.id as string);
+									const id = quizId;
 
 									router.push(`/quiz/take/${id}/score`);
 

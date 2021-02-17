@@ -15,13 +15,9 @@ import errorMapper from '../utils/errorMapper';
 import { withApollo } from '../utils/withApollo';
 
 const Login: React.FC = () => {
-	const bgColor = useColorModeValue('white', '#202020');
-	const registerBoxShadow = useColorModeValue('md', 'lg');
-	const borderColor = useColorModeValue('gray.200', '');
+	const router = useRouter();
 
 	const [loginUser, { loading }] = useLoginMutation();
-
-	const router = useRouter();
 
 	const { register, handleSubmit, errors, setError } = useForm<LoginInput>();
 
@@ -59,9 +55,9 @@ const Login: React.FC = () => {
 			</Head>
 			<Box
 				borderWidth='1px'
-				borderColor={borderColor}
-				bg={bgColor}
-				boxShadow={registerBoxShadow}
+				borderColor={useColorModeValue('gray.200', '')}
+				bg={useColorModeValue('white', '#202020')}
+				boxShadow={useColorModeValue('md', 'lg')}
 				rounded='md'
 				w='40%'
 				px='32px'

@@ -6,8 +6,8 @@ import {
 	Flex,
 	Skeleton,
 	useColorModeValue,
-	useDisclosure,
-	VStack,
+
+	VStack
 } from '@chakra-ui/react';
 import Head from 'next/head';
 import Image from 'next/image';
@@ -16,7 +16,6 @@ import { useForm } from 'react-hook-form';
 import { MdPhotoSizeSelectActual } from 'react-icons/md';
 import { useDispatch, useSelector } from 'react-redux';
 import TextareaAutosize from 'react-textarea-autosize';
-import { AlertDialog } from '../../../components/AlertDialog';
 import QuizInputUI from '../../../components/custom-inputs/QuizInputUI';
 import { QuizInput } from '../../../generated/graphql';
 import { MainContainer } from '../../../layouts/MainContainer';
@@ -26,7 +25,6 @@ import { setSettings } from '../../../store/quizSlice';
 import { SettingsInput, State } from '../../../store/type';
 import { uploadCloudinaryImage } from '../../../utils/uploadImage';
 import { withApollo } from '../../../utils/withApollo';
-import usePreventRouteChangeIf from '../../../utils/useWarnIfUnsavedChanges';
 
 const Settings: React.FC = () => {
 	const dispatch = useDispatch();
@@ -37,12 +35,7 @@ const Settings: React.FC = () => {
 
 	const [image, setImage] = useState<string | 'loading'>();
 
-	const {
-		register,
-		handleSubmit,
-		errors,
-		formState: { isDirty, isSubmitted },
-	} = useForm<QuizInput>({
+	const { register, handleSubmit, errors } = useForm<QuizInput>({
 		defaultValues: { title, description, quiz_photo },
 	});
 
@@ -70,10 +63,6 @@ const Settings: React.FC = () => {
 		);
 	};
 
-	const { isOpen, onClose, onOpen } = useDisclosure();
-
-	usePreventRouteChangeIf(isDirty && !isSubmitted, onOpen);
-
 	useEffect(() => {
 		if (quiz_photo) {
 			setImage(quiz_photo);
@@ -86,7 +75,6 @@ const Settings: React.FC = () => {
 				<title>Create Quiz</title>
 				<meta name='viewport' content='initial-scale=1.0, width=device-width' />
 			</Head>
-			<AlertDialog isOpen={isOpen} onClose={onClose} />
 			<QuizContainer type='create'>
 				<SubContainer w='764px' my='0'>
 					<form onSubmit={handleSubmit(onSubmit)}>

@@ -1,16 +1,16 @@
-import { useRouter } from 'next/dist/client/router';
+import Head from 'next/head';
 import React from 'react';
 import Comments from '../../components/single-quiz/Comments';
 import SingleQuizHead from '../../components/single-quiz/SingleQuizHead';
 import { useSingleQuizQuery } from '../../generated/graphql';
 import { MainContainer } from '../../layouts/MainContainer';
+import { useGetIntId } from '../../utils/useGetIntId';
 import { withApollo } from '../../utils/withApollo';
-import Head from 'next/head';
 
 interface QuizProps {}
 
 const Quiz: React.FC<QuizProps> = ({}) => {
-	const router = useRouter();
+	const quizId = useGetIntId();
 
 	const {
 		data: quizdata,
@@ -18,12 +18,12 @@ const Quiz: React.FC<QuizProps> = ({}) => {
 		error: quizError,
 	} = useSingleQuizQuery({
 		variables: {
-			quiz_id: parseInt(router.query.id as string),
+			quiz_id: quizId,
 		},
 	});
 
 	if (quizError) {
-		return <pre>{quizError.message}</pre>;
+		return <p>{quizError.message}</p>;
 	}
 
 	return (
@@ -34,7 +34,7 @@ const Quiz: React.FC<QuizProps> = ({}) => {
 			</Head>
 			<SingleQuizHead data={quizdata?.singleQuiz} quizLoading={quizLoading} />
 			<Comments
-				quiz_id={parseInt(router.query.id as string)}
+				quiz_id={quizId}
 				comments_count={quizdata?.singleQuiz?.comments_count ?? 0}
 			/>
 		</MainContainer>
