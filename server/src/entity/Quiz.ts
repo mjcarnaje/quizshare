@@ -1,4 +1,5 @@
-import { Field, ID, ObjectType, Int } from 'type-graphql';
+import { GraphQLJSONObject } from 'graphql-type-json';
+import { Field, ID, Int, ObjectType } from 'type-graphql';
 import {
 	BaseEntity,
 	Column,
@@ -6,17 +7,19 @@ import {
 	Entity,
 	Index,
 	JoinColumn,
+	JoinTable,
+	ManyToMany,
 	ManyToOne,
 	OneToMany,
 	PrimaryGeneratedColumn,
 	UpdateDateColumn,
 } from 'typeorm';
-import { Question } from './Question';
-import { User } from './User';
-import { Like } from './Like';
+import { Category } from './Category';
 import { Comment } from './Comment';
+import { Like } from './Like';
+import { Question } from './Question';
 import { Score } from './Score';
-import { GraphQLJSONObject } from 'graphql-type-json';
+import { User } from './User';
 
 @ObjectType()
 @Entity()
@@ -62,32 +65,25 @@ export class Quiz extends BaseEntity {
 		description: string;
 	}[];
 
-	@Field(() => [Score])
+	@Field(() => [Category], { nullable: true })
+	@ManyToMany(() => Category, (category) => category.quiz, {
+		cascade: true,
+		nullable: true,
+	})
+	@JoinTable()
+	categories?: Category[];
+
+	@Field(() => [Score], { nullable: true })
 	@OneToMany(() => Score, (score) => score.quiz, { cascade: true })
 	scores: Score[];
 
-	@Field(() => Int)
-	scores_count: number;
-
-	@Field(() => Boolean)
-	is_taken: boolean;
-
-	@Field(() => [Like])
-	@OneToMany(() => Like, (like) => like.quiz)
+	@Field(() => [Like], { nullable: true })
+	@OneToMany(() => Like, (like) => like.quiz, { cascade: true })
 	likes: Like[];
 
-	@Field(() => Boolean)
-	is_liked: boolean;
-
-	@Field(() => Int)
-	likes_count: number;
-
-	@Field(() => [Comment])
+	@Field(() => [Comment], { nullable: true })
 	@OneToMany(() => Comment, (comment) => comment.quiz)
 	comments: Comment[];
-
-	@Field(() => Int)
-	comments_count: number;
 
 	@Field(() => String)
 	@CreateDateColumn()
@@ -96,4 +92,19 @@ export class Quiz extends BaseEntity {
 	@Field(() => String)
 	@UpdateDateColumn()
 	updated_at: Date;
+
+	@Field(() => Int)
+	scores_count: number;
+
+	@Field(() => Boolean)
+	is_taken: boolean;
+
+	@Field(() => Boolean)
+	is_liked: boolean;
+
+	@Field(() => Int)
+	likes_count: number;
+
+	@Field(() => Int)
+	comments_count: number;
 }

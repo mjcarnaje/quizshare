@@ -25,10 +25,11 @@ const Index: React.FC = () => {
 
 	const { data, loading, fetchMore, variables, error } = useQuizzesQuery({
 		variables: {
-			limit: 50,
+			limit: 5,
 			cursor: null,
 			query: query,
 		},
+		notifyOnNetworkStatusChange: true,
 	});
 
 	useEffect(() => {

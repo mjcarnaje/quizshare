@@ -10,7 +10,7 @@ import {
 	Root,
 	UseMiddleware,
 } from 'type-graphql';
-import { FindManyOptions, getConnection, LessThan } from 'typeorm';
+import { FindManyOptions, LessThan, Raw } from 'typeorm';
 import { Comment } from '../../entity/Comment';
 import { Question } from '../../entity/Question';
 import { Quiz } from '../../entity/Quiz';
@@ -90,61 +90,93 @@ export class QuizzesResolver {
 		@Arg('cursor', () => String, { nullable: true }) cursor: string | null,
 		@Arg('query', () => String, { nullable: true }) query: string | null
 	): Promise<PaginatedQuizzes> {
-		const realLimit = Math.min(50, limit);
+		const realLimit = Math.min(20, limit);
 		const realLimitPlusOne = realLimit + 1;
 
-		const qs = await getConnection()
-			.getRepository(Quiz)
-			.createQueryBuilder('q')
-			.leftJoinAndSelect('q.author', 'author')
-			.leftJoinAndSelect('author.profile', 'profile')
-			.leftJoinAndSelect('q.questions', 'questions')
-			.leftJoinAndSelect('q.likes', 'likes')
-			.leftJoinAndSelect('q.comments', 'comments')
-			.leftJoinAndSelect('q.scores', 'scores');
+		let findOptionsInitial: FindManyOptions = {
+			relations: [
+				'author',
+				'author.profile',
+				'questions',
+				'likes',
+				'comments',
+				'categories',
+				'scores',
+			],
+			order: {
+				created_at: 'DESC',
+			},
+			take: realLimitPlusOne,
+		};
 
-		if (cursor && !query) {
-			qs.where('q."created_at" < :cursor', {
-				cursor: new Date(parseInt(cursor)),
-			});
-		} else if (query && !cursor) {
+		let findOptions: FindManyOptions;
+
+		if (cursor && query) {
 			const formattedQuery = query.trim().replace(/ /g, ' <-> ');
 
-			qs.where(
-				`to_tsvector('simple',q.title) @@ to_tsquery('simple', :query)`,
-				{
-					query: `${formattedQuery}:*`,
-				}
-			).orWhere(
-				`to_tsvector('simple',q.description) @@ to_tsquery('simple', :query)`,
-				{
-					query: `${formattedQuery}:*`,
-				}
-			);
-		} else if (cursor && query) {
-			const formattedQuery = query.trim().replace(/ /g, ' <-> ');
-
-			qs.where(
-				`to_tsvector('simple',q.title) @@ to_tsquery('simple', :query)`,
-				{
-					query: `${formattedQuery}:*`,
-				}
-			)
-				.orWhere(
-					`to_tsvector('simple',q.description) @@ to_tsquery('simple', :query)`,
+			findOptions = {
+				...findOptionsInitial,
+				where: [
 					{
-						query: `${formattedQuery}:*`,
-					}
-				)
-				.andWhere(`q."created_at" < :cursor`, {
-					cursor: new Date(parseInt(cursor)),
-				});
+						description: Raw(
+							(description) =>
+								`to_tsvector('simple', ${description}) @@ to_tsquery('simple', :query)`,
+							{
+								query: formattedQuery,
+							}
+						),
+						created_at: LessThan(new Date(parseInt(cursor))),
+					},
+					{
+						title: Raw(
+							(title) =>
+								`to_tsvector('simple', ${title}) @@ to_tsquery('simple', :query)`,
+							{
+								query: formattedQuery,
+							}
+						),
+						created_at: LessThan(new Date(parseInt(cursor))),
+					},
+				],
+			};
+		} else if (cursor) {
+			findOptions = {
+				...findOptionsInitial,
+				where: {
+					created_at: LessThan(new Date(parseInt(cursor))),
+				},
+			};
+		} else if (query) {
+			const formattedQuery = query.trim().replace(/ /g, ' <-> ');
+
+			findOptions = {
+				...findOptionsInitial,
+				where: [
+					{
+						description: Raw(
+							(description) =>
+								`to_tsvector('simple', ${description}) @@ to_tsquery('simple', :query)`,
+							{
+								query: formattedQuery,
+							}
+						),
+					},
+					{
+						title: Raw(
+							(title) =>
+								`to_tsvector('simple', ${title}) @@ to_tsquery('simple', :query)`,
+							{
+								query: formattedQuery,
+							}
+						),
+					},
+				],
+			};
+		} else {
+			findOptions = findOptionsInitial;
 		}
 
-		const quizzes = await qs
-			.orderBy('q.created_at', 'DESC')
-			.take(realLimitPlusOne)
-			.getMany();
+		const quizzes = await Quiz.find(findOptions as FindManyOptions);
 
 		return {
 			quizzes: (quizzes as [Quiz]).slice(0, realLimit),
@@ -159,13 +191,13 @@ export class QuizzesResolver {
 		@Arg('cursor', () => String, { nullable: true }) cursor: string | null,
 		@Ctx() { req }: MyContext
 	): Promise<PaginatedMeQuizzes> {
-		const realLimit = Math.min(10, limit);
+		const realLimit = Math.min(50, limit);
 		const realLimitPlusOne = realLimit + 1;
 
-		let findOption: FindManyOptions;
+		let findOptions: FindManyOptions;
 
 		if (cursor) {
-			findOption = {
+			findOptions = {
 				relations: ['author', 'questions', 'likes', 'comments', 'scores'],
 				order: {
 					created_at: 'DESC',
@@ -177,7 +209,7 @@ export class QuizzesResolver {
 				},
 			};
 		} else {
-			findOption = {
+			findOptions = {
 				relations: ['author', 'questions', 'likes', 'comments', 'scores'],
 				order: {
 					created_at: 'DESC',
@@ -187,32 +219,12 @@ export class QuizzesResolver {
 			};
 		}
 
-		const quizzes = await Quiz.find(findOption);
+		const quizzes = await Quiz.find(findOptions);
 
 		return {
 			meQuizzes: (quizzes as [Quiz]).slice(0, realLimit),
 			meHasMore: (quizzes as [Quiz]).length === realLimitPlusOne,
 		};
-	}
-
-	@UseMiddleware(isAuthenticated)
-	@Query(() => [Quiz])
-	async searhedQuizzes(@Arg('query') query: string): Promise<Quiz[] | null> {
-		const formattedQuery = query.trim().replace(/ /g, ' <-> ');
-
-		const scores = await getConnection()
-			.createQueryBuilder(Quiz, 'q')
-			.where(`to_tsvector('simple',q.title) @@ to_tsquery('simple', :query)`, {
-				query: `${formattedQuery}:*`,
-			})
-			.orWhere(
-				`to_tsvector('simple',q.description) @@ to_tsquery('simple', :query)`,
-				{
-					query: `${formattedQuery}:*`,
-				}
-			)
-			.getMany();
-		return scores;
 	}
 
 	@UseMiddleware(isAuthenticated)
@@ -267,10 +279,10 @@ export class QuizzesResolver {
 		const realLimit = Math.min(10, limit);
 		const realLimitPlusOne = realLimit + 1;
 
-		let findOption: FindManyOptions;
+		let findOptions: FindManyOptions;
 
 		if (cursor) {
-			findOption = {
+			findOptions = {
 				take: realLimitPlusOne,
 				where: {
 					quiz_id: quiz_id,
@@ -281,7 +293,7 @@ export class QuizzesResolver {
 				},
 			};
 		} else {
-			findOption = {
+			findOptions = {
 				where: { quiz_id: quiz_id },
 				take: realLimitPlusOne,
 				order: {
@@ -290,7 +302,7 @@ export class QuizzesResolver {
 			};
 		}
 
-		const comments = await Comment.find(findOption);
+		const comments = await Comment.find(findOptions);
 
 		if (!comments) {
 			return null;

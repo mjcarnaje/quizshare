@@ -15,6 +15,11 @@ export class ResultInput {
 	@Field()
 	description: string;
 }
+@InputType()
+export class CategoryInput {
+	@Field()
+	name: string;
+}
 
 @InputType()
 export class QuizInput {
@@ -35,4 +40,7 @@ export class QuizInput {
 
 	@Field(() => [ResultInput], { nullable: true })
 	results?: ResultInput[];
+
+	@Field(() => [CategoryInput], { nullable: true })
+	categories?: [CategoryInput];
 }

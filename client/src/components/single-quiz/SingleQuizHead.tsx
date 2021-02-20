@@ -119,7 +119,7 @@ const SingleQuizHead: React.FC<SingleQuizHeadProps> = ({
 						isRound
 						fontSize='24px'
 						icon={<IoMdArrowRoundBack />}
-						onClick={() => router.push('/')}
+						onClick={() => router.back()}
 					/>
 					<Heading
 						ml='20px'

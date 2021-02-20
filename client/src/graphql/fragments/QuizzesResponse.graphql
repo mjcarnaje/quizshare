@@ -17,6 +17,9 @@ fragment QuizzesResponse on Quiz {
 			name
 		}
 	}
+	categories {
+		name
+	}
 	is_liked
 	likes_count
 	comments_count

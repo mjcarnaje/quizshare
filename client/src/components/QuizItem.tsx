@@ -6,6 +6,7 @@ import {
 	Icon,
 	Stack,
 	StackDivider,
+	Tag,
 	Text,
 	useBreakpointValue,
 	useColorModeValue,
@@ -52,7 +53,15 @@ export const QuizItem: React.FC<QuizItemProps> = ({ quiz }) => {
 	}
 
 	const titleSize = useBreakpointValue({ base: 'xl', md: 'lg' });
-	const { id, quiz_photo, title, author, scores_count, questionsCount } = quiz;
+	const {
+		id,
+		quiz_photo,
+		title,
+		author,
+		scores_count,
+		questionsCount,
+		categories,
+	} = quiz;
 
 	return (
 		<Box w={['100%', '460px', '820px']}>
@@ -102,6 +111,14 @@ export const QuizItem: React.FC<QuizItemProps> = ({ quiz }) => {
 							<Link href={`/quiz/${id}`}>{desc}</Link>
 						</Text>
 						<UserAvatar author={author} />
+						<Box overflowWrap='break-word' mt='12px'>
+							{categories &&
+								categories.map((tag, i) => (
+									<Tag key={i} mr='6px' my='3px'>
+										{tag.name}
+									</Tag>
+								))}
+						</Box>
 					</Box>
 					{quiz_photo && (
 						<Link href={`/quiz/${id}`}>
