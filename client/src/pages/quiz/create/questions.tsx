@@ -27,7 +27,7 @@ import { QuizContainer } from '../../../layouts/QuizContainer';
 import { SubContainer } from '../../../layouts/SubContainer';
 import { setQuestions } from '../../../store/quizSlice';
 import { State } from '../../../store/type';
-import { uploadCloudinaryImage } from '../../../utils/uploadImage';
+import { useUploadForArrayPhotos } from '../../../utils/uploadPhotoHooks';
 import { withApollo } from '../../../utils/withApollo';
 
 const Questions: React.FC = () => {
@@ -35,10 +35,8 @@ const Questions: React.FC = () => {
 
 	const questions = useSelector((state: State) => state.quiz.questions);
 
+	const { images, uploadImage } = useUploadForArrayPhotos();
 	const [addChoice, setAddChoice] = useState(false);
-	const [images, setImages] = useState<
-		{ question_id: string; url: string | 'loading' }[]
-	>([]);
 
 	const { control, register, watch, handleSubmit, errors } = useForm({
 		defaultValues: { questions },
@@ -70,32 +68,6 @@ const Questions: React.FC = () => {
 		setAddChoice(true);
 	};
 
-	const uploadImage = (question_id: string) => {
-		uploadCloudinaryImage(
-			(error: any, photos: { event: string; info: { url: any } }) => {
-				const imagesThatAreNotChanged = images.filter(
-					(img) => img.question_id !== question_id
-				);
-				if (!error && photos.event === 'queues-start') {
-					setImages([
-						...imagesThatAreNotChanged,
-						{ question_id: question_id, url: 'loading' },
-					]);
-				} else if (!error && photos.event === 'success') {
-					setImages([
-						...imagesThatAreNotChanged,
-						{
-							question_id: question_id,
-							url: photos.info.url,
-						},
-					]);
-				} else if (error) {
-					console.error(error);
-				}
-			}
-		);
-	};
-
 	useEffect(() => {
 		if (questions.length === 0) {
 			addQuestion(false);
@@ -114,7 +86,7 @@ const Questions: React.FC = () => {
 						<Box w='full'>
 							{fields.map((question, i) => {
 								const imgIndex = images.findIndex(
-									(i) => i.question_id === question.question_id
+									(i) => i.item_id === question.question_id
 								);
 								const url = images[imgIndex]?.url || question.question_photo!;
 

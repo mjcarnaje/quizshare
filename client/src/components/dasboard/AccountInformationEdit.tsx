@@ -13,7 +13,7 @@ import {
 	VStack,
 } from '@chakra-ui/react';
 import Image from 'next/image';
-import React, { useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import { FiEdit } from 'react-icons/fi';
 import { MdPhotoSizeSelectActual } from 'react-icons/md';
@@ -25,7 +25,7 @@ import {
 	useUpdateAccountMutation,
 } from '../../generated/graphql';
 import errorMapper from '../../utils/errorMapper';
-import { uploadCloudinaryImage } from '../../utils/uploadImage';
+import { useUploadSinglePhoto } from '../../utils/uploadPhotoHooks';
 import MainInputUI from '../custom-inputs/MainInputUI';
 
 interface AccountInformationEditProps {
@@ -43,8 +43,16 @@ export const AccountInformationEdit: React.FC<AccountInformationEditProps> = ({
 	},
 	setEditMode,
 }) => {
-	const [coverPhoto, setCoverPhoto] = useState<string | 'loading'>();
-	const [profilePhoto, setProfilePhoto] = useState<string | 'loading'>();
+	const {
+		image: coverPhoto,
+		setImage: setCoverPhoto,
+		uploadImage: uploadCoverPhoto,
+	} = useUploadSinglePhoto();
+	const {
+		image: profilePhoto,
+		setImage: setProfilePhoto,
+		uploadImage: uploadProfilePhoto,
+	} = useUploadSinglePhoto();
 
 	const [updateAccount, { loading }] = useUpdateAccountMutation();
 
@@ -83,36 +91,6 @@ export const AccountInformationEdit: React.FC<AccountInformationEditProps> = ({
 		} catch (err) {
 			errorMapper(err, setError);
 		}
-	};
-
-	const uploadCoverPhoto = () => {
-		uploadCloudinaryImage(
-			(error: any, photos: { event: string; info: { url: string } }) => {
-				if (!error && photos.event === 'queues-start') {
-					setCoverPhoto('loading');
-				} else if (!error && photos.event === 'success') {
-					setCoverPhoto(photos.info.url);
-				} else if (error) {
-					console.error(error);
-				}
-			},
-			16 / 5
-		);
-	};
-
-	const uploadProfilePhoto = () => {
-		uploadCloudinaryImage(
-			(error: any, photos: { event: string; info: { url: string } }) => {
-				if (!error && photos.event === 'queues-start') {
-					setProfilePhoto('loading');
-				} else if (!error && photos.event === 'success') {
-					setProfilePhoto(photos.info.url);
-				} else if (error) {
-					console.error(error);
-				}
-			},
-			1
-		);
 	};
 
 	useEffect(() => {

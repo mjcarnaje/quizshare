@@ -6,12 +6,11 @@ import {
 	Flex,
 	Skeleton,
 	useColorModeValue,
-
-	VStack
+	VStack,
 } from '@chakra-ui/react';
 import Head from 'next/head';
 import Image from 'next/image';
-import React, { useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import { MdPhotoSizeSelectActual } from 'react-icons/md';
 import { useDispatch, useSelector } from 'react-redux';
@@ -23,7 +22,7 @@ import { QuizContainer } from '../../../layouts/QuizContainer';
 import { SubContainer } from '../../../layouts/SubContainer';
 import { setSettings } from '../../../store/quizSlice';
 import { SettingsInput, State } from '../../../store/type';
-import { uploadCloudinaryImage } from '../../../utils/uploadImage';
+import { useUploadSinglePhoto } from '../../../utils/uploadPhotoHooks';
 import { withApollo } from '../../../utils/withApollo';
 
 const Settings: React.FC = () => {
@@ -33,7 +32,7 @@ const Settings: React.FC = () => {
 		(state: State) => state.quiz
 	);
 
-	const [image, setImage] = useState<string | 'loading'>();
+	const { image, setImage, uploadImage } = useUploadSinglePhoto();
 
 	const { register, handleSubmit, errors } = useForm<QuizInput>({
 		defaultValues: { title, description, quiz_photo },
@@ -46,20 +45,6 @@ const Settings: React.FC = () => {
 				description: data.description,
 				quiz_photo: data.quiz_photo,
 			})
-		);
-	};
-
-	const uploadImage = () => {
-		uploadCloudinaryImage(
-			(error: any, photos: { event: string; info: { url: string } }) => {
-				if (!error && photos.event === 'queues-start') {
-					setImage('loading');
-				} else if (!error && photos.event === 'success') {
-					setImage(photos.info.url);
-				} else if (error) {
-					console.error(error);
-				}
-			}
 		);
 	};
 

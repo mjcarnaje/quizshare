@@ -12,15 +12,15 @@ import {
 	Tooltip,
 } from '@chakra-ui/react';
 import Image from 'next/image';
-import React, { useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
 import { Controller, useFieldArray } from 'react-hook-form';
 import { BsPlusSquare } from 'react-icons/bs';
 import { MdDelete, MdPhotoSizeSelectActual } from 'react-icons/md';
 import TextareaAutosize from 'react-textarea-autosize';
 import { v4 as uuid } from 'uuid';
 import { ChoiceInput } from '../../generated/graphql';
-import { uploadCloudinaryImage } from '../../utils/uploadImage';
 import QuizInputUI from '../custom-inputs/QuizInputUI';
+import { useUploadForArrayPhotos } from '../../utils/uploadPhotoHooks';
 
 declare global {
 	interface Window {
@@ -48,40 +48,12 @@ const ChoiceArray: React.FC<ChoiceArrayProps> = ({
 	setAddChoice,
 	errors,
 }) => {
-	const [images, setImages] = useState<
-		{ choice_id: string; url: string | 'loading' }[]
-	>([]);
+	const { images, uploadImage } = useUploadForArrayPhotos();
 
 	const { fields, append, remove } = useFieldArray<ChoiceInput>({
 		control,
 		name: `questions[${questionIndex}].choices`,
 	});
-
-	const uploadImage = (choice_id: string) => {
-		uploadCloudinaryImage(
-			(error: any, photos: { event: string; info: { url: any } }) => {
-				const imagesThatAreNotChanged = images.filter(
-					(img) => img.choice_id !== choice_id
-				);
-				if (!error && photos.event === 'queues-start') {
-					setImages([
-						...imagesThatAreNotChanged,
-						{ choice_id: choice_id, url: 'loading' },
-					]);
-				} else if (!error && photos.event === 'success') {
-					setImages([
-						...imagesThatAreNotChanged,
-						{
-							choice_id: choice_id,
-							url: photos.info.url,
-						},
-					]);
-				} else if (error) {
-					console.error(error);
-				}
-			}
-		);
-	};
 
 	const addChoice = (shouldFocus: boolean = true) => {
 		append({ choice_id: uuid(), value: '', choice_photo: '' }, shouldFocus);
@@ -123,11 +95,11 @@ const ChoiceArray: React.FC<ChoiceArrayProps> = ({
 					>
 						<SimpleGrid my='10px' p='2px' columns={[1, 2]} spacing='10px'>
 							{fields.map((choice, i) => {
-								const img = images.findIndex(
-									(i) => i.choice_id === choice.choice_id
+								const imgIndex = images.findIndex(
+									(i) => i.item_id === choice.choice_id
 								);
 
-								const url = images[img]?.url || choice.choice_photo!;
+								const url = images[imgIndex]?.url || choice.choice_photo!;
 								return (
 									<Box key={choice.choice_id}>
 										<Box
@@ -143,7 +115,7 @@ const ChoiceArray: React.FC<ChoiceArrayProps> = ({
 												defaultValue={choice.choice_id}
 												ref={register()}
 											/>
-											{img !== -1 && (
+											{imgIndex !== -1 && (
 												<input
 													type='hidden'
 													name={`questions[${questionIndex}].choices[${i}].choice_photo`}

@@ -16,7 +16,8 @@ import {
 } from '@chakra-ui/react';
 import Head from 'next/head';
 import Image from 'next/image';
-import React, { useEffect, useState } from 'react';
+import { useRouter } from 'next/router';
+import React, { useEffect } from 'react';
 import { Controller, useFieldArray, useForm } from 'react-hook-form';
 import { BsPlusSquareFill } from 'react-icons/bs';
 import { MdDelete, MdGraphicEq, MdPhotoSizeSelectActual } from 'react-icons/md';
@@ -29,9 +30,8 @@ import { QuizContainer } from '../../../../layouts/QuizContainer';
 import { SubContainer } from '../../../../layouts/SubContainer';
 import { setResults } from '../../../../store/quizSlice';
 import { ResultProps, State } from '../../../../store/type';
-import { uploadCloudinaryImage } from '../../../../utils/uploadImage';
+import { useUploadForArrayPhotos } from '../../../../utils/uploadPhotoHooks';
 import { withApollo } from '../../../../utils/withApollo';
-import { useRouter } from 'next/router';
 
 const Results: React.FC = () => {
 	const router = useRouter();
@@ -41,10 +41,7 @@ const Results: React.FC = () => {
 	const title = useSelector((state: State) => state.quiz.title);
 	const results = useSelector((state: State) => state.quiz.results);
 
-	const [images, setImages] = useState<
-		{ result_id: string; url: string | 'loading' }[]
-	>([]);
-
+	const { images, uploadImage } = useUploadForArrayPhotos();
 	const { control, register, handleSubmit, errors } = useForm({
 		defaultValues: { results },
 	});
@@ -85,32 +82,6 @@ const Results: React.FC = () => {
 		);
 	};
 
-	const uploadImage = (result_id: string) => {
-		uploadCloudinaryImage(
-			(error: any, photos: { event: string; info: { url: any } }) => {
-				const imagesThatAreNotChanged = images.filter(
-					(img) => img.result_id !== result_id
-				);
-				if (!error && photos.event === 'queues-start') {
-					setImages([
-						...imagesThatAreNotChanged,
-						{ result_id: result_id, url: 'loading' },
-					]);
-				} else if (!error && photos.event === 'success') {
-					setImages([
-						...imagesThatAreNotChanged,
-						{
-							result_id: result_id,
-							url: photos.info.url,
-						},
-					]);
-				} else if (error) {
-					console.error(error);
-				}
-			}
-		);
-	};
-
 	useEffect(() => {
 		if (!title) {
 			router.replace(`/quiz/edit/${router.query.id}`);
@@ -129,7 +100,7 @@ const Results: React.FC = () => {
 						<Box w='full'>
 							{fields.map((result, i) => {
 								const imgIndex = images.findIndex(
-									(i) => i.result_id === result.result_id
+									(i) => i.item_id === result.result_id
 								);
 								const url = images[imgIndex]?.url || result.result_photo!;
 
