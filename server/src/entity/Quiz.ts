@@ -14,7 +14,7 @@ import {
 	PrimaryGeneratedColumn,
 	UpdateDateColumn,
 } from 'typeorm';
-import { Category } from './Category';
+import { Tag } from './Tags';
 import { Comment } from './Comment';
 import { Like } from './Like';
 import { Question } from './Question';
@@ -65,13 +65,13 @@ export class Quiz extends BaseEntity {
 		description: string;
 	}[];
 
-	@Field(() => [Category], { nullable: true })
-	@ManyToMany(() => Category, (category) => category.quiz, {
+	@Field(() => [Tag], { nullable: true })
+	@ManyToMany(() => Tag, (tag) => tag.quiz, {
 		cascade: true,
 		nullable: true,
 	})
 	@JoinTable()
-	categories?: Category[];
+	tags?: Tag[];
 
 	@Field(() => [Score], { nullable: true })
 	@OneToMany(() => Score, (score) => score.quiz, { cascade: true })

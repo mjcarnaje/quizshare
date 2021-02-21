@@ -60,7 +60,7 @@ export const QuizItem: React.FC<QuizItemProps> = ({ quiz }) => {
 		author,
 		scores_count,
 		questionsCount,
-		categories,
+		tags,
 	} = quiz;
 
 	return (
@@ -111,8 +111,8 @@ export const QuizItem: React.FC<QuizItemProps> = ({ quiz }) => {
 							<Link href={`/quiz/${id}`}>{desc}</Link>
 						</Text>
 						<Box overflowWrap='break-word' mb='12px'>
-							{categories &&
-								categories.map((tag, i) => (
+							{tags &&
+								tags.map((tag, i) => (
 									<Tag key={i} variant='subtle' mr='6px' my='3px'>
 										{tag.name}
 									</Tag>

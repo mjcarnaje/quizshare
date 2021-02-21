@@ -4,7 +4,7 @@ import { Quiz } from './Quiz';
 
 @ObjectType()
 @Entity()
-export class Category {
+export class Tag {
 	@PrimaryGeneratedColumn()
 	id: number;
 
@@ -12,6 +12,6 @@ export class Category {
 	@Column('text', { unique: true })
 	name: string;
 
-	@ManyToMany(() => Quiz, (quiz) => quiz.categories)
+	@ManyToMany(() => Quiz, (quiz) => quiz.tags)
 	quiz: Quiz[];
 }

@@ -15,12 +15,9 @@ export type Scalars = {
   JSONObject: any;
 };
 
-export type Like = {
-  __typename?: 'Like';
-  quiz_id: Scalars['Float'];
-  author_id: Scalars['Float'];
-  author: User;
-  created_at: Scalars['String'];
+export type Tag = {
+  __typename?: 'Tag';
+  name: Scalars['String'];
 };
 
 export type Profile = {
@@ -58,12 +55,11 @@ export type User = {
   profile: Profile;
 };
 
-export type Comment = {
-  __typename?: 'Comment';
-  id: Scalars['ID'];
+export type Like = {
+  __typename?: 'Like';
   quiz_id: Scalars['Float'];
+  author_id: Scalars['Float'];
   author: User;
-  text: Scalars['String'];
   created_at: Scalars['String'];
 };
 
@@ -91,10 +87,10 @@ export type Quiz = {
   quiz_photo?: Maybe<Scalars['String']>;
   questions: Array<Question>;
   results?: Maybe<Array<Scalars['JSONObject']>>;
-  categories?: Maybe<Array<Category>>;
-  scores: Array<Score>;
-  likes: Array<Like>;
-  comments: Array<Comment>;
+  tags?: Maybe<Array<Tag>>;
+  scores?: Maybe<Array<Score>>;
+  likes?: Maybe<Array<Like>>;
+  comments?: Maybe<Array<Comment>>;
   created_at: Scalars['String'];
   updated_at: Scalars['String'];
   scores_count: Scalars['Int'];
@@ -105,9 +101,13 @@ export type Quiz = {
   questionsCount: Scalars['Int'];
 };
 
-export type Category = {
-  __typename?: 'Category';
-  name: Scalars['String'];
+export type Comment = {
+  __typename?: 'Comment';
+  id: Scalars['ID'];
+  quiz_id: Scalars['Float'];
+  author: User;
+  text: Scalars['String'];
+  created_at: Scalars['String'];
 };
 
 export type ResultProps = {
@@ -180,7 +180,7 @@ export type ResultInput = {
   description: Scalars['String'];
 };
 
-export type CategoryInput = {
+export type TagInput = {
   name: Scalars['String'];
 };
 
@@ -190,7 +190,7 @@ export type QuizInput = {
   quiz_photo?: Maybe<Scalars['String']>;
   questions: Array<QuestionInput>;
   results?: Maybe<Array<ResultInput>>;
-  categories?: Maybe<Array<CategoryInput>>;
+  tags?: Maybe<Array<TagInput>>;
 };
 
 export type LoginInput = {
@@ -242,7 +242,6 @@ export type Query = {
   __typename?: 'Query';
   quizzes: PaginatedQuizzes;
   meQuizzes: PaginatedMeQuizzes;
-  searhedQuizzes: Array<Quiz>;
   quizToUpdate: Quiz;
   singleQuiz?: Maybe<Quiz>;
   questions?: Maybe<Array<Question>>;
@@ -262,11 +261,6 @@ export type QueryQuizzesArgs = {
 export type QueryMeQuizzesArgs = {
   cursor?: Maybe<Scalars['String']>;
   limit: Scalars['Int'];
-};
-
-
-export type QuerySearhedQuizzesArgs = {
-  query: Scalars['String'];
 };
 
 
@@ -382,19 +376,19 @@ export type CommentResponseFragment = (
 export type QuizzesResponseFragment = (
   { __typename?: 'Quiz' }
   & Pick<Quiz, 'id' | 'title' | 'description' | 'quiz_photo' | 'created_at' | 'is_liked' | 'likes_count' | 'comments_count' | 'scores_count' | 'questionsCount'>
-  & { likes: Array<(
+  & { likes?: Maybe<Array<(
     { __typename?: 'Like' }
     & Pick<Like, 'quiz_id' | 'author_id'>
-  )>, author: (
+  )>>, author: (
     { __typename?: 'User' }
     & Pick<User, 'id' | 'username' | 'email' | 'avatar'>
     & { profile: (
       { __typename?: 'Profile' }
       & Pick<Profile, 'name'>
     ) }
-  ), categories?: Maybe<Array<(
-    { __typename?: 'Category' }
-    & Pick<Category, 'name'>
+  ), tags?: Maybe<Array<(
+    { __typename?: 'Tag' }
+    & Pick<Tag, 'name'>
   )>> }
 );
 
@@ -739,7 +733,7 @@ export const QuizzesResponseFragmentDoc = gql`
       name
     }
   }
-  categories {
+  tags {
     name
   }
   is_liked

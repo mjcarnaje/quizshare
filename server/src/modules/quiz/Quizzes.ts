@@ -100,7 +100,7 @@ export class QuizzesResolver {
 				'questions',
 				'likes',
 				'comments',
-				'categories',
+				'tags',
 				'scores',
 			],
 			order: {
