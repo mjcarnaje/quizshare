@@ -1,5 +1,4 @@
 import {
-	AspectRatio,
 	Box,
 	Button,
 	Flex,
@@ -7,11 +6,9 @@ import {
 	Radio,
 	RadioGroup,
 	SimpleGrid,
-	Skeleton,
 	Spacer,
 	Tooltip,
 } from '@chakra-ui/react';
-import Image from 'next/image';
 import React, { useEffect } from 'react';
 import { Controller, useFieldArray } from 'react-hook-form';
 import { BsPlusSquare } from 'react-icons/bs';
@@ -19,8 +16,9 @@ import { MdDelete, MdPhotoSizeSelectActual } from 'react-icons/md';
 import TextareaAutosize from 'react-textarea-autosize';
 import { v4 as uuid } from 'uuid';
 import { ChoiceInput } from '../../generated/graphql';
+import { useUploadForArrayPhotos } from '../../utils/useUploadPhoto';
 import QuizInputUI from '../custom-inputs/QuizInputUI';
-import { useUploadForArrayPhotos } from '../../utils/uploadPhotoHooks';
+import ImageHolder from '../ImageHolder';
 
 declare global {
 	interface Window {
@@ -123,29 +121,9 @@ const ChoiceArray: React.FC<ChoiceArrayProps> = ({
 													ref={register()}
 												/>
 											)}
-											{url && (
-												<Box p='4px' mb='2px'>
-													<Skeleton isLoaded={url !== 'loading'}>
-														<Box
-															borderRadius='8px'
-															overflow='hidden'
-															bg='gray.100'
-														>
-															<AspectRatio maxW='full' ratio={16 / 9}>
-																{url !== 'loading' ? (
-																	<Image
-																		src={url}
-																		alt={`Choice ${i} photo`}
-																		layout='fill'
-																	/>
-																) : (
-																	<Box></Box>
-																)}
-															</AspectRatio>
-														</Box>
-													</Skeleton>
-												</Box>
-											)}
+
+											<ImageHolder image={url} ratio={16 / 9} />
+
 											<QuizInputUI
 												register={register({ required: true })}
 												input={`questions[${questionIndex}].choices[${i}].value`}

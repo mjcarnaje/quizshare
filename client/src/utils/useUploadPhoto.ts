@@ -1,8 +1,30 @@
 import { Dispatch, SetStateAction, useState } from 'react';
-import { uploadCloudinaryImage } from './uploadImage';
+
+const uploadCloudinaryImage = (callback: Function, cropRatio: number) => {
+	window.cloudinary?.openUploadWidget(
+		{
+			cloudName: process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME,
+			uploadPreset: process.env.NEXT_PUBLIC_UPLOAD_PRESET,
+			googleApiKey: process.env.NEXT_PUBLIC_GOOGLE_SEARCH_API,
+			sources: ['local', 'url', 'image_search', 'camera'],
+			defaultSource: 'local',
+			cropping: true,
+			maxImageFileSize: 1000000,
+			multiple: false,
+			showSkipCropButton: false,
+			croppingAspectRatio: cropRatio,
+			croppingShowDimensions: true,
+		},
+		callback
+	);
+};
+
+interface uploadOptionsProps {
+	cropRatio: number;
+}
 
 export function useUploadSinglePhoto(
-	cropRatio?: number
+	options?: uploadOptionsProps
 ): {
 	image: string | undefined;
 	setImage: Dispatch<SetStateAction<string | undefined>>;
@@ -21,7 +43,7 @@ export function useUploadSinglePhoto(
 					console.error(error);
 				}
 			},
-			cropRatio
+			options?.cropRatio ?? 16 / 9
 		);
 	};
 
@@ -34,7 +56,7 @@ interface ImagesProps {
 }
 
 export function useUploadForArrayPhotos(
-	cropRatio?: number
+	options?: uploadOptionsProps
 ): {
 	images: ImagesProps[];
 	setImages: Dispatch<SetStateAction<ImagesProps[]>>;
@@ -60,7 +82,7 @@ export function useUploadForArrayPhotos(
 					console.error(error);
 				}
 			},
-			cropRatio
+			options?.cropRatio ?? 16 / 9
 		);
 	};
 

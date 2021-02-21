@@ -1,18 +1,14 @@
 import {
-	AspectRatio,
 	Avatar,
 	Box,
 	Button,
-	Center,
 	Divider,
 	Flex,
 	GridItem,
 	Skeleton,
 	Text,
-	useColorModeValue,
 	VStack,
 } from '@chakra-ui/react';
-import Image from 'next/image';
 import React, { useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import { FiEdit } from 'react-icons/fi';
@@ -25,8 +21,9 @@ import {
 	useUpdateAccountMutation,
 } from '../../generated/graphql';
 import errorMapper from '../../utils/errorMapper';
-import { useUploadSinglePhoto } from '../../utils/uploadPhotoHooks';
+import { useUploadSinglePhoto } from '../../utils/useUploadPhoto';
 import MainInputUI from '../custom-inputs/MainInputUI';
+import ImageHolder from '../ImageHolder';
 
 interface AccountInformationEditProps {
 	accInfoProps: UserResponseFragment;
@@ -47,12 +44,12 @@ export const AccountInformationEdit: React.FC<AccountInformationEditProps> = ({
 		image: coverPhoto,
 		setImage: setCoverPhoto,
 		uploadImage: uploadCoverPhoto,
-	} = useUploadSinglePhoto();
+	} = useUploadSinglePhoto({ cropRatio: 16 / 5 });
 	const {
 		image: profilePhoto,
 		setImage: setProfilePhoto,
 		uploadImage: uploadProfilePhoto,
-	} = useUploadSinglePhoto();
+	} = useUploadSinglePhoto({ cropRatio: 1 / 1 });
 
 	const [updateAccount, { loading }] = useUpdateAccountMutation();
 
@@ -124,31 +121,13 @@ export const AccountInformationEdit: React.FC<AccountInformationEditProps> = ({
 			<GridItem colSpan={10}>
 				<form onSubmit={handleSubmit(onSumbit)}>
 					<Box p='5px' textAlign='center'>
-						<Skeleton isLoaded={coverPhoto !== 'loading'}>
-							<Box bg='gray.100'>
-								<AspectRatio maxW='full' ratio={16 / 5}>
-									{coverPhoto && coverPhoto !== 'loading' ? (
-										<Image src={coverPhoto} alt='Cover Photo' layout='fill' />
-									) : (
-										<Center
-											bg={useColorModeValue(
-												'gray.50',
-												'rgba(255, 255, 255, 0.04)'
-											)}
-										>
-											<Button
-												onClick={uploadCoverPhoto}
-												leftIcon={<MdPhotoSizeSelectActual />}
-												colorScheme='gray'
-												variant='ghost'
-											>
-												Upload cover photo
-											</Button>
-										</Center>
-									)}
-								</AspectRatio>
-							</Box>
-						</Skeleton>
+						<ImageHolder
+							image={coverPhoto}
+							ratio={16 / 5}
+							initialHeight='200px'
+							buttonText='Upload thumbnail'
+							upload={uploadCoverPhoto}
+						/>
 
 						{coverPhoto && (
 							<Button

@@ -1,11 +1,9 @@
 import {
-	AspectRatio,
 	Box,
 	Button,
 	Flex,
 	HStack,
 	IconButton,
-	Skeleton,
 	Slider,
 	SliderFilledTrack,
 	SliderThumb,
@@ -15,7 +13,6 @@ import {
 	useToast,
 } from '@chakra-ui/react';
 import Head from 'next/head';
-import Image from 'next/image';
 import { useRouter } from 'next/router';
 import React, { useEffect } from 'react';
 import { Controller, useFieldArray, useForm } from 'react-hook-form';
@@ -25,12 +22,13 @@ import { useDispatch, useSelector } from 'react-redux';
 import TextareaAutosize from 'react-textarea-autosize';
 import { v4 as uuid } from 'uuid';
 import QuizInputUI from '../../../../components/custom-inputs/QuizInputUI';
+import ImageHolder from '../../../../components/ImageHolder';
 import { MainContainer } from '../../../../layouts/MainContainer';
 import { QuizContainer } from '../../../../layouts/QuizContainer';
 import { SubContainer } from '../../../../layouts/SubContainer';
 import { setResults } from '../../../../store/quizSlice';
 import { ResultProps, State } from '../../../../store/type';
-import { useUploadForArrayPhotos } from '../../../../utils/uploadPhotoHooks';
+import { useUploadForArrayPhotos } from '../../../../utils/useUploadPhoto';
 import { withApollo } from '../../../../utils/withApollo';
 
 const Results: React.FC = () => {
@@ -189,29 +187,8 @@ const Results: React.FC = () => {
 												</Box>
 											)} // props contains: onChange, onBlur and value
 										/>
-										{url && (
-											<Box p='4px' mb='2px'>
-												<Skeleton isLoaded={url !== 'loading'}>
-													<Box
-														borderRadius='8px'
-														overflow='hidden'
-														bg='gray.100'
-													>
-														<AspectRatio maxW='full' ratio={16 / 9}>
-															{url !== 'loading' ? (
-																<Image
-																	src={url}
-																	alt={`Result ${i} photo`}
-																	layout='fill'
-																/>
-															) : (
-																<Box></Box>
-															)}
-														</AspectRatio>
-													</Box>
-												</Skeleton>
-											</Box>
-										)}
+
+										<ImageHolder image={url} ratio={16 / 9} />
 
 										<QuizInputUI
 											register={register({

@@ -1,17 +1,14 @@
 import {
-	AspectRatio,
 	Box,
 	Button,
 	Flex,
 	HStack,
 	IconButton,
-	Skeleton,
 	Switch,
 	Text,
 	Tooltip,
 } from '@chakra-ui/react';
 import Head from 'next/head';
-import Image from 'next/image';
 import React, { useEffect, useState } from 'react';
 import { Controller, useFieldArray, useForm } from 'react-hook-form';
 import { BsPlusSquareFill } from 'react-icons/bs';
@@ -21,13 +18,14 @@ import TextareaAutosize from 'react-textarea-autosize';
 import { v4 as uuid } from 'uuid';
 import ChoiceArray from '../../../components/create-update-quiz/ChoiceArray';
 import QuizInputUI from '../../../components/custom-inputs/QuizInputUI';
+import ImageHolder from '../../../components/ImageHolder';
 import { QuestionInput } from '../../../generated/graphql';
 import { MainContainer } from '../../../layouts/MainContainer';
 import { QuizContainer } from '../../../layouts/QuizContainer';
 import { SubContainer } from '../../../layouts/SubContainer';
 import { setQuestions } from '../../../store/quizSlice';
 import { State } from '../../../store/type';
-import { useUploadForArrayPhotos } from '../../../utils/uploadPhotoHooks';
+import { useUploadForArrayPhotos } from '../../../utils/useUploadPhoto';
 import { withApollo } from '../../../utils/withApollo';
 
 const Questions: React.FC = () => {
@@ -195,29 +193,7 @@ const Questions: React.FC = () => {
 											</HStack>
 										</Flex>
 
-										{url && (
-											<Box p='4px' mb='2px'>
-												<Skeleton isLoaded={url !== 'loading'}>
-													<Box
-														borderRadius='8px'
-														overflow='hidden'
-														bg='gray.100'
-													>
-														<AspectRatio maxW='full' ratio={16 / 9}>
-															{url !== 'loading' ? (
-																<Image
-																	src={url}
-																	alt={`Quiz ${i} photo`}
-																	layout='fill'
-																/>
-															) : (
-																<Box></Box>
-															)}
-														</AspectRatio>
-													</Box>
-												</Skeleton>
-											</Box>
-										)}
+										<ImageHolder image={url} ratio={16 / 9} />
 
 										<QuizInputUI
 											register={register({

@@ -1,15 +1,5 @@
-import {
-	AspectRatio,
-	Box,
-	Button,
-	Center,
-	Flex,
-	Skeleton,
-	useColorModeValue,
-	VStack,
-} from '@chakra-ui/react';
+import { Button, Center, Flex, VStack } from '@chakra-ui/react';
 import Head from 'next/head';
-import Image from 'next/image';
 import { useRouter } from 'next/router';
 import React, { useEffect } from 'react';
 import { useForm } from 'react-hook-form';
@@ -17,13 +7,14 @@ import { MdPhotoSizeSelectActual } from 'react-icons/md';
 import { useDispatch, useSelector } from 'react-redux';
 import TextareaAutosize from 'react-textarea-autosize';
 import QuizInputUI from '../../../../components/custom-inputs/QuizInputUI';
+import ImageHolder from '../../../../components/ImageHolder';
 import { QuizInput } from '../../../../generated/graphql';
 import { MainContainer } from '../../../../layouts/MainContainer';
 import { QuizContainer } from '../../../../layouts/QuizContainer';
 import { SubContainer } from '../../../../layouts/SubContainer';
 import { setSettings } from '../../../../store/quizSlice';
 import { SettingsInput, State } from '../../../../store/type';
-import { useUploadSinglePhoto } from '../../../../utils/uploadPhotoHooks';
+import { useUploadSinglePhoto } from '../../../../utils/useUploadPhoto';
 import { withApollo } from '../../../../utils/withApollo';
 
 const Settings: React.FC = () => {
@@ -78,42 +69,13 @@ const Settings: React.FC = () => {
 							/>
 						)}
 						<VStack spacing='16px'>
-							<Box w='full'>
-								{image ? (
-									<Skeleton isLoaded={image !== 'loading'}>
-										<Box borderRadius='8px' overflow='hidden' bg='gray.100'>
-											<AspectRatio maxW='full' ratio={16 / 9}>
-												{image !== 'loading' ? (
-													<Image
-														src={image}
-														alt='Thumbnail of Quiz'
-														layout='fill'
-													/>
-												) : (
-													<Box></Box>
-												)}
-											</AspectRatio>
-										</Box>
-									</Skeleton>
-								) : (
-									<Center
-										h='200px'
-										bg={useColorModeValue(
-											'gray.50',
-											'rgba(255, 255, 255, 0.04)'
-										)}
-									>
-										<Button
-											leftIcon={<MdPhotoSizeSelectActual />}
-											colorScheme='gray'
-											variant='ghost'
-											onClick={uploadImage}
-										>
-											Upload Thumbnail
-										</Button>
-									</Center>
-								)}
-							</Box>
+							<ImageHolder
+								image={image}
+								ratio={16 / 9}
+								initialHeight='200px'
+								buttonText='Upload thumbnail'
+								upload={uploadImage}
+							/>
 							{image && (
 								<Center>
 									<Button
