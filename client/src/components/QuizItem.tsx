@@ -107,18 +107,18 @@ export const QuizItem: React.FC<QuizItemProps> = ({ quiz }) => {
 								</Text>
 							</Flex>
 						</Flex>
-						<Text lineHeight='22px' mb='24px' wordBreak='break-word'>
+						<Text lineHeight='22px' mb='12px' wordBreak='break-word'>
 							<Link href={`/quiz/${id}`}>{desc}</Link>
 						</Text>
-						<UserAvatar author={author} />
-						<Box overflowWrap='break-word' mt='12px'>
+						<Box overflowWrap='break-word' mb='12px'>
 							{categories &&
 								categories.map((tag, i) => (
-									<Tag key={i} mr='6px' my='3px'>
+									<Tag key={i} variant='subtle' mr='6px' my='3px'>
 										{tag.name}
 									</Tag>
 								))}
 						</Box>
+						<UserAvatar author={author} />
 					</Box>
 					{quiz_photo && (
 						<Link href={`/quiz/${id}`}>

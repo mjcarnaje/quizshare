@@ -9,7 +9,7 @@ export class Category {
 	id: number;
 
 	@Field()
-	@Column()
+	@Column('text', { unique: true })
 	name: string;
 
 	@ManyToMany(() => Quiz, (quiz) => quiz.categories)
