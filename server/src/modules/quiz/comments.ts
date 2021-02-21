@@ -1,18 +1,20 @@
 import {
 	Arg,
 	Ctx,
+	FieldResolver,
+	Int,
 	Mutation,
 	Resolver,
-	UseMiddleware,
 	Root,
-	FieldResolver,
+	UseMiddleware,
 } from 'type-graphql';
 import { Comment } from '../../entity/Comment';
+import { User } from '../../entity/User';
 import { MyContext } from '../../types/MyContext';
 import { isAuthenticated } from '../middleware/isAuthenticated';
-import { User } from '../../entity/User';
+import { AuthenticationError } from 'apollo-server-express';
 
-@Resolver(() => Comment)
+@Resolver(Comment)
 export class CreateCommentResolver {
 	@FieldResolver(() => User)
 	async author(@Root() comment: Comment) {
@@ -34,5 +36,26 @@ export class CreateCommentResolver {
 		}).save();
 
 		return comment;
+	}
+
+	@UseMiddleware(isAuthenticated)
+	@Mutation(() => String)
+	async deleteComment(
+		@Arg('quiz_id', () => Int) quiz_id: number,
+		@Arg('comment_id', () => Int) comment_id: number,
+		@Ctx() { req }: MyContext
+	): Promise<String> {
+		const comment = await Comment.findOneOrFail({
+			id: comment_id,
+			quiz_id,
+		});
+
+		if (comment.author_id !== req.session.user_id) {
+			throw new AuthenticationError('Action not allowed');
+		}
+
+		await comment.remove();
+
+		return 'DELETED COMMENT';
 	}
 }
