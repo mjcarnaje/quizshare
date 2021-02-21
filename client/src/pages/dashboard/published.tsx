@@ -1,7 +1,7 @@
 import { Button, useColorModeValue } from '@chakra-ui/react';
 import Head from 'next/head';
 import React from 'react';
-import { QuizzesCards } from '../../components/QuizzesCards';
+import { QuizzesCards } from '../../components/quiz-cards/QuizzesCards';
 import { useMeQuizzesQuery } from '../../generated/graphql';
 import { DashboardContainer } from '../../layouts/DashboardContainer';
 import { MainContainer } from '../../layouts/MainContainer';

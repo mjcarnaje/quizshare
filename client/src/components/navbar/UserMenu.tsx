@@ -18,7 +18,7 @@ import { AiOutlineUser } from 'react-icons/ai';
 import { FiLogOut, FiUsers } from 'react-icons/fi';
 import { IoDocumentsOutline } from 'react-icons/io5';
 import { TiDocumentAdd } from 'react-icons/ti';
-import { useLogoutMutation, User } from '../generated/graphql';
+import { useLogoutMutation, User } from '../../generated/graphql';
 
 export const UserMenu: React.FC<User> = ({
 	email,

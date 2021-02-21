@@ -289,8 +289,8 @@ export type Mutation = {
   __typename?: 'Mutation';
   checkAnswer: CheckAnswerResult;
   createComment: Comment;
-  createQuiz: Quiz;
   deleteComment: Scalars['String'];
+  createQuiz: Quiz;
   deleteQuiz: Scalars['String'];
   toggleLike: Scalars['String'];
   updateQuiz: Quiz;
@@ -314,14 +314,14 @@ export type MutationCreateCommentArgs = {
 };
 
 
-export type MutationCreateQuizArgs = {
-  data: QuizInput;
+export type MutationDeleteCommentArgs = {
+  comment_id: Scalars['Int'];
+  quiz_id: Scalars['Int'];
 };
 
 
-export type MutationDeleteCommentArgs = {
-  commentId: Scalars['Float'];
-  quiz_id: Scalars['Float'];
+export type MutationCreateQuizArgs = {
+  data: QuizInput;
 };
 
 
@@ -467,6 +467,17 @@ export type CreateQuizMutation = (
       & Pick<Question, 'question_id' | 'question' | 'question_photo' | 'choices' | 'answer' | 'explanation' | 'with_explanation' | 'hint' | 'with_hint'>
     )> }
   ) }
+);
+
+export type DeleteCommentMutationVariables = Exact<{
+  quiz_id: Scalars['Int'];
+  comment_id: Scalars['Int'];
+}>;
+
+
+export type DeleteCommentMutation = (
+  { __typename?: 'Mutation' }
+  & Pick<Mutation, 'deleteComment'>
 );
 
 export type DeleteQuizMutationVariables = Exact<{
@@ -906,6 +917,37 @@ export function useCreateQuizMutation(baseOptions?: Apollo.MutationHookOptions<C
 export type CreateQuizMutationHookResult = ReturnType<typeof useCreateQuizMutation>;
 export type CreateQuizMutationResult = Apollo.MutationResult<CreateQuizMutation>;
 export type CreateQuizMutationOptions = Apollo.BaseMutationOptions<CreateQuizMutation, CreateQuizMutationVariables>;
+export const DeleteCommentDocument = gql`
+    mutation DeleteComment($quiz_id: Int!, $comment_id: Int!) {
+  deleteComment(quiz_id: $quiz_id, comment_id: $comment_id)
+}
+    `;
+export type DeleteCommentMutationFn = Apollo.MutationFunction<DeleteCommentMutation, DeleteCommentMutationVariables>;
+
+/**
+ * __useDeleteCommentMutation__
+ *
+ * To run a mutation, you first call `useDeleteCommentMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useDeleteCommentMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [deleteCommentMutation, { data, loading, error }] = useDeleteCommentMutation({
+ *   variables: {
+ *      quiz_id: // value for 'quiz_id'
+ *      comment_id: // value for 'comment_id'
+ *   },
+ * });
+ */
+export function useDeleteCommentMutation(baseOptions?: Apollo.MutationHookOptions<DeleteCommentMutation, DeleteCommentMutationVariables>) {
+        return Apollo.useMutation<DeleteCommentMutation, DeleteCommentMutationVariables>(DeleteCommentDocument, baseOptions);
+      }
+export type DeleteCommentMutationHookResult = ReturnType<typeof useDeleteCommentMutation>;
+export type DeleteCommentMutationResult = Apollo.MutationResult<DeleteCommentMutation>;
+export type DeleteCommentMutationOptions = Apollo.BaseMutationOptions<DeleteCommentMutation, DeleteCommentMutationVariables>;
 export const DeleteQuizDocument = gql`
     mutation DeleteQuiz($quiz_id: Int!) {
   deleteQuiz(quiz_id: $quiz_id)

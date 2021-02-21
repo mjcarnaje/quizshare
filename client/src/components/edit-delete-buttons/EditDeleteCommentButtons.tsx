@@ -1,4 +1,4 @@
-import { ChevronDownIcon, DeleteIcon, EditIcon } from '@chakra-ui/icons';
+import { DeleteIcon } from '@chakra-ui/icons';
 import {
 	AlertDialog,
 	AlertDialogBody,
@@ -15,34 +15,34 @@ import {
 	MenuList,
 	Square,
 	SquareProps,
-	useColorModeValue,
 	useDisclosure,
 } from '@chakra-ui/react';
-import { useRouter } from 'next/dist/client/router';
 import React, { RefObject, useRef } from 'react';
+import { BiDotsVerticalRounded } from 'react-icons/bi';
 import {
-	QuizzesResponseFragment,
-	useDeleteQuizMutation,
+	CommentResponseFragment,
+	useDeleteCommentMutation,
 	useMeQuery,
-} from '../generated/graphql';
+} from '../../generated/graphql';
 
-type EditDeleteQuizButtonsProps = {
-	quiz: QuizzesResponseFragment;
+type EditDeleteCommentButtonsProps = {
+	comment: CommentResponseFragment;
+	quiz_id: number;
 } & SquareProps;
 
-export const EditDeleteQuizButtons: React.FC<EditDeleteQuizButtonsProps> = ({
-	quiz,
+export const EditDeleteCommentButtons: React.FC<EditDeleteCommentButtonsProps> = ({
+	comment,
+	quiz_id,
 	...props
 }) => {
 	const { data } = useMeQuery();
-	const router = useRouter();
 
-	const [deleteQuiz] = useDeleteQuizMutation();
+	const [deleteComment] = useDeleteCommentMutation();
 
 	const { isOpen, onOpen, onClose } = useDisclosure();
 	const cancelRef: RefObject<any> = useRef();
 
-	if (data?.me?.id !== quiz.author.id) {
+	if (data?.me?.id !== comment.author.id) {
 		return null;
 	}
 
@@ -52,24 +52,14 @@ export const EditDeleteQuizButtons: React.FC<EditDeleteQuizButtonsProps> = ({
 				<Menu>
 					<MenuButton
 						as={IconButton}
-						aria-label='delete or update quiz'
+						aria-label='Comment Options'
+						icon={<BiDotsVerticalRounded />}
 						variant='ghost'
-						size='sm'
 						isRound
-						colorScheme='gray'
-						icon={<ChevronDownIcon />}
 					/>
-					<MenuList
-						bg={useColorModeValue('rgb(255, 255, 255)', 'rgb(32, 32, 32)')}
-						color={useColorModeValue('gray.600', '#BDBDBD')}
-					>
-						<MenuItem onClick={onOpen}>
-							<DeleteIcon mr='12px' />
-							<span>Delete</span>
-						</MenuItem>
-						<MenuItem onClick={() => router.push(`/quiz/edit/${quiz.id}`)}>
-							<EditIcon mr='12px' />
-							<span>Edit</span>
+					<MenuList>
+						<MenuItem onClick={onOpen} icon={<DeleteIcon />}>
+							Delete
 						</MenuItem>
 					</MenuList>
 				</Menu>
@@ -87,7 +77,7 @@ export const EditDeleteQuizButtons: React.FC<EditDeleteQuizButtonsProps> = ({
 					<AlertDialogHeader>Delete quiz?</AlertDialogHeader>
 					<AlertDialogCloseButton />
 					<AlertDialogBody>
-						Are you sure you want to delete this quiz? You can't undo this
+						Are you sure you want to delete this comment? You can't undo this
 						action afterwards.
 					</AlertDialogBody>
 					<AlertDialogFooter>
@@ -98,12 +88,13 @@ export const EditDeleteQuizButtons: React.FC<EditDeleteQuizButtonsProps> = ({
 							colorScheme='red'
 							ml={3}
 							onClick={() => {
-								deleteQuiz({
+								deleteComment({
 									variables: {
-										quiz_id: parseInt(quiz.id),
+										comment_id: parseInt(comment.id),
+										quiz_id,
 									},
 									update: (cache) => {
-										cache.evict({ id: 'Quiz:' + quiz.id });
+										cache.evict({ id: 'Comment:' + comment.id });
 									},
 								});
 							}}

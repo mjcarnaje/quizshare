@@ -9,7 +9,7 @@ import { useRouter } from 'next/dist/client/router';
 import Head from 'next/head';
 import Image from 'next/image';
 import React, { useEffect, useState } from 'react';
-import { QuizzesCards } from '../components/QuizzesCards';
+import { QuizzesCards } from '../components/quiz-cards/QuizzesCards';
 import { useQuizzesQuery } from '../generated/graphql';
 import { MainContainer } from '../layouts/MainContainer';
 import { useIsAuth } from '../utils/useIsAuth';
@@ -56,7 +56,12 @@ const Index: React.FC = () => {
 					<AspectRatio ratio={1} minW='320px'>
 						<Image src={'/no-result.svg'} layout='fill' />
 					</AspectRatio>
-					<Text mb='10px'>No Results</Text>
+					<Text mb='10px' fontSize='24px' fontWeight='700'>
+						No results found
+					</Text>
+					<Text mb='10px'>
+						It seems we can’t find any results based on your search.
+					</Text>
 					<Button
 						variant='ghost'
 						colorScheme='purple'

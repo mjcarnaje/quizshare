@@ -1,8 +1,8 @@
 import { ApolloError } from '@apollo/client';
 import React from 'react';
-import { QuizzesResponseFragment } from '../generated/graphql';
-import { SubContainer } from '../layouts/SubContainer';
-import { QuizItemLoading } from './loading/QuizItemLoading';
+import { QuizzesResponseFragment } from '../../generated/graphql';
+import { SubContainer } from '../../layouts/SubContainer';
+import { QuizItemLoading } from '../loading/QuizItemLoading';
 import { Heading, Box, Text, VStack } from '@chakra-ui/react';
 import { QuizItem } from './QuizItem';
 

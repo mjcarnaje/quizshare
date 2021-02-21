@@ -22,6 +22,7 @@ import {
 	useCreateCommentMutation,
 	useMeQuery,
 } from '../../generated/graphql';
+import { EditDeleteCommentButtons } from '../edit-delete-buttons/EditDeleteCommentButtons';
 
 const LoadingSkeleton: React.FC = () => {
 	return (
@@ -192,7 +193,7 @@ const Comments: React.FC<SingleQuizCommentsProps> = ({
 									w='full'
 								>
 									<Avatar src={avatar || ''} name={name} />
-									<Box ml='15px'>
+									<Box ml='15px' w='full' position='relative'>
 										<HStack>
 											<Text fontWeight='bold'>{username}</Text>
 											<Text fontSize='14px'>{email}</Text>
@@ -203,6 +204,13 @@ const Comments: React.FC<SingleQuizCommentsProps> = ({
 										<Text wordBreak='break-word' whiteSpace='pre-line'>
 											{text}
 										</Text>
+										<EditDeleteCommentButtons
+											comment={comment}
+											quiz_id={quiz_id}
+											position='absolute'
+											right='0'
+											top='0'
+										/>
 									</Box>
 								</Flex>
 							);

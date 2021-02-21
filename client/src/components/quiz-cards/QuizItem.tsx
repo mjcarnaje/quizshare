@@ -16,11 +16,11 @@ import Image from 'next/image';
 import Link from 'next/link';
 import React from 'react';
 import { AiOutlineEye, AiOutlineUnorderedList } from 'react-icons/ai';
-import { QuizzesResponseFragment } from '../generated/graphql';
-import { CommentButton } from './CommentButton';
-import { EditDeleteQuizButtons } from './EditDeleteQuizButtons';
-import { LikeButton } from './LikeButton';
-import { UserAvatar } from './UserAvatar';
+import { QuizzesResponseFragment } from '../../generated/graphql';
+import { CommentButton } from '../CommentButton';
+import { EditDeleteQuizButtons } from '../edit-delete-buttons/EditDeleteQuizButtons';
+import { LikeButton } from '../LikeButton';
+import { UserAvatar } from '../UserAvatar';
 
 interface QuizItemProps {
 	quiz: QuizzesResponseFragment;
@@ -90,7 +90,7 @@ export const QuizItem: React.FC<QuizItemProps> = ({ quiz }) => {
 							right='4px'
 							display={['inline-block', 'inline-block', 'none']}
 						/>
-						<Flex mb='10px'>
+						<Flex mb='16px'>
 							<Text fontSize='14px'>
 								<Link href={`/quiz/${id}`}>{date}</Link>
 							</Text>
@@ -107,10 +107,10 @@ export const QuizItem: React.FC<QuizItemProps> = ({ quiz }) => {
 								</Text>
 							</Flex>
 						</Flex>
-						<Text lineHeight='22px' mb='12px' wordBreak='break-word'>
+						<Text lineHeight='22px' mb='16px' wordBreak='break-word'>
 							<Link href={`/quiz/${id}`}>{desc}</Link>
 						</Text>
-						<Box overflowWrap='break-word' mb='12px'>
+						<Box overflowWrap='break-word' mb='16px'>
 							{tags &&
 								tags.map((tag, i) => (
 									<Tag key={i} variant='subtle' mr='6px' my='3px'>

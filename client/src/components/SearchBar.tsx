@@ -1,14 +1,13 @@
-import React, { useState } from 'react';
+import { SearchIcon } from '@chakra-ui/icons';
 import {
 	Box,
 	Flex,
 	Input,
 	InputGroup,
 	InputLeftElement,
-	useColorModeValue,
 } from '@chakra-ui/react';
-import { SearchIcon } from '@chakra-ui/icons';
 import { useRouter } from 'next/router';
+import React, { useState } from 'react';
 
 export const SearchBar: React.FC = () => {
 	const router = useRouter();
@@ -27,12 +26,7 @@ export const SearchBar: React.FC = () => {
 						});
 					}}
 				>
-					<InputGroup
-						size='lg'
-						boxShadow='base'
-						variant='ghost'
-						borderRadius='md'
-					>
+					<InputGroup size='lg' variant='filled' borderRadius='md'>
 						<InputLeftElement
 							pointerEvents='none'
 							children={<SearchIcon color='gray.300' />}
@@ -41,10 +35,8 @@ export const SearchBar: React.FC = () => {
 							onChange={(e) => setText(e.target.value)}
 							value={text}
 							type='text'
-							fontFamily='inter'
-							placeholder='Search the quizzes'
+							placeholder='Search'
 							_focus={{ shadow: 'outline' }}
-							bg={useColorModeValue('white', 'rgb(32, 32, 32)')}
 						/>
 					</InputGroup>
 				</form>

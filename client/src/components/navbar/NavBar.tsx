@@ -12,9 +12,9 @@ import {
 import { useRouter } from 'next/dist/client/router';
 import NextLink from 'next/link';
 import React from 'react';
-import { useMeQuery } from '../generated/graphql';
-import { isServer } from '../utils/isServer';
-import { DarkModeSwitch } from './DarkModeSwitch';
+import { useMeQuery } from '../../generated/graphql';
+import { isServer } from '../../utils/isServer';
+import { DarkModeSwitch } from '../DarkModeSwitch';
 import { UserMenu } from './UserMenu';
 
 interface MainNavLinkProps {

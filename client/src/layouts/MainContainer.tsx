@@ -1,6 +1,6 @@
 import { Box, BoxProps, Flex, useColorModeValue } from '@chakra-ui/react';
 import { CloudinaryContext } from 'cloudinary-react';
-import { NavBar } from '../components/NavBar';
+import { NavBar } from '../components/navbar/NavBar';
 import { SearchBar } from '../components/SearchBar';
 
 interface MainContainerProps extends BoxProps {
