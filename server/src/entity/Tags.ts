@@ -9,7 +9,7 @@ export class Tag {
 	id: number;
 
 	@Field()
-	@Column('text', { unique: true })
+	@Column('text')
 	name: string;
 
 	@ManyToMany(() => Quiz, (quiz) => quiz.tags)

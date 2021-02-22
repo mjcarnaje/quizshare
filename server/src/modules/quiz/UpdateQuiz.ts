@@ -10,7 +10,7 @@ export class UpdateQuiz {
 	async updateQuiz(
 		@Arg('quiz_id') quiz_id: number,
 		@Arg('inputs')
-		{ title, description, quiz_photo, questions, results }: QuizInput,
+		{ title, description, quiz_photo, questions, results, tags }: QuizInput,
 		@Ctx() { req }: MyContext
 	): Promise<Quiz | null> {
 		const quiz = await Quiz.findOneOrFail(quiz_id, {
@@ -25,6 +25,10 @@ export class UpdateQuiz {
 		quiz.description = description ?? quiz.description;
 		quiz.results = results ?? quiz.results;
 		quiz.quiz_photo = quiz_photo;
+
+		quiz.tags = tags?.map((item, i) =>
+			Object.assign({}, item, quiz!.tags?.[i])
+		);
 
 		quiz.questions = questions.map((item, i) =>
 			Object.assign({}, item, quiz.questions[i])

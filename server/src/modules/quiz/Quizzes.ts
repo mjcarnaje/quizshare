@@ -233,7 +233,9 @@ export class QuizzesResolver {
 		@Arg('quiz_id', () => Int) quiz_id: number,
 		@Ctx() { req }: MyContext
 	): Promise<Quiz | null> {
-		const quiz = await Quiz.findOne(quiz_id, { relations: ['questions'] });
+		const quiz = await Quiz.findOne(quiz_id, {
+			relations: ['questions', 'tags'],
+		});
 		if (!quiz) {
 			return null;
 		}
