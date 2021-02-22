@@ -3,7 +3,7 @@ import {
 	Avatar,
 	Box,
 	Button,
-	Container as ChakraContainter,
+	Container as ChakraContainer,
 	Flex,
 	FormControl,
 	HStack,
@@ -86,7 +86,7 @@ const Comments: React.FC<SingleQuizCommentsProps> = ({
 	}
 
 	return (
-		<ChakraContainter maxW={['100%', '100%', '820px']} mb='36px' p='0'>
+		<ChakraContainer maxW={['100%', '100%', '820px']} mb='36px' p='0'>
 			<Flex p='10px' mb='30px'>
 				<Avatar
 					name={medata?.me?.profile.name}
@@ -244,7 +244,7 @@ const Comments: React.FC<SingleQuizCommentsProps> = ({
 					)}
 				</>
 			</VStack>
-		</ChakraContainter>
+		</ChakraContainer>
 	);
 };
 export default Comments;

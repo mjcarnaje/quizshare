@@ -104,6 +104,7 @@ const TagsArray: React.FC<TagsArrayProps> = ({}) => {
 						onKeyDown={(e) => keyDown(e, tag)}
 						value={tag}
 						variant='unstyled'
+						placeholder='Type here'
 						tabIndex={0}
 					/>
 				</WrapItem>

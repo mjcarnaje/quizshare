@@ -19,7 +19,7 @@ import { useRouter } from 'next/router';
 import React, { useEffect, useState } from 'react';
 import { AiFillCheckCircle, AiFillCloseCircle } from 'react-icons/ai';
 import { useSelector, useDispatch } from 'react-redux';
-import Comments from '../../../../components/single-quiz/Comments';
+import Comments from '../../../../components/quiz/Comments';
 import {
 	useQuestionsQuery,
 	useSingleQuizQuery,

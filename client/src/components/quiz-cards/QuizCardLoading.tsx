@@ -10,7 +10,7 @@ import {
 } from '@chakra-ui/react';
 import React from 'react';
 
-export const QuizItemLoading: React.FC = () => {
+const QuizCardLoading: React.FC = () => {
 	return (
 		<Box w={['100%', '460px', '820px']}>
 			<Stack
@@ -70,3 +70,5 @@ export const QuizItemLoading: React.FC = () => {
 		</Box>
 	);
 };
+
+export default QuizCardLoading;

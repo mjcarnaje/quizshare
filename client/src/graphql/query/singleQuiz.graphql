@@ -20,5 +20,8 @@ query SingleQuiz($quiz_id: Int!) {
 		questionsCount
 		scores_count
 		is_taken
+		tags {
+			name
+		}
 	}
 }

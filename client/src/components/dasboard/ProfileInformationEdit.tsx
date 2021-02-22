@@ -29,8 +29,8 @@ import {
 import MainInputUI from '../custom-inputs/MainInputUI';
 import TextareaAutosize from 'react-textarea-autosize';
 import { WarningIcon } from '@chakra-ui/icons';
-import { Months, Days, Years } from '../../utils/BirthdayDateOptions';
-import { Country } from '../Country';
+import { Months, Days, Years } from '../options/Birthday';
+import { Country } from '../options/Country';
 import { MeQuery, MeDocument } from '../../generated/graphql';
 import errorMapper from '../../utils/errorMapper';
 import {

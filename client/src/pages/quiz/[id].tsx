@@ -1,7 +1,7 @@
 import Head from 'next/head';
 import React from 'react';
-import Comments from '../../components/single-quiz/Comments';
-import SingleQuizHead from '../../components/single-quiz/SingleQuizHead';
+import Comments from '../../components/quiz/Comments';
+import QuizHead from '../../components/quiz/QuizHead';
 import { useSingleQuizQuery } from '../../generated/graphql';
 import { MainContainer } from '../../layouts/MainContainer';
 import { useGetIntId } from '../../utils/useGetIntId';
@@ -32,7 +32,7 @@ const Quiz: React.FC<QuizProps> = ({}) => {
 				<title>{quizdata?.singleQuiz?.title}</title>
 				<meta name='viewport' content='initial-scale=1.0, width=device-width' />
 			</Head>
-			<SingleQuizHead data={quizdata?.singleQuiz} quizLoading={quizLoading} />
+			<QuizHead data={quizdata?.singleQuiz} quizLoading={quizLoading} />
 			<Comments
 				quiz_id={quizId}
 				comments_count={quizdata?.singleQuiz?.comments_count ?? 0}

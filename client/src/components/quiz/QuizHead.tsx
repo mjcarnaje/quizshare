@@ -2,15 +2,13 @@ import {
 	AspectRatio,
 	Box,
 	Button,
-	Container as ChakraContainter,
+	Container as ChakraContainer,
 	Divider,
 	Flex,
 	Heading,
-	HStack,
 	IconButton,
-	Skeleton,
-	SkeletonCircle,
-	SkeletonText,
+	Spacer,
+	Tag,
 	Text,
 	Tooltip,
 } from '@chakra-ui/react';
@@ -21,71 +19,21 @@ import React from 'react';
 import { BiCheckDouble } from 'react-icons/bi';
 import { IoMdArrowRoundBack } from 'react-icons/io';
 import { CommentButton } from '../CommentButton';
+import { EditDeleteQuizButtons } from '../edit-delete-buttons/EditDeleteQuizButtons';
 import { LikeButton } from '../LikeButton';
 import { UserAvatar } from '../UserAvatar';
+import QuizHeadLoading from './QuizHeadLoading';
 
-interface SingleQuizHeadProps {
+interface QuizHeadProps {
 	data: any;
 	quizLoading: boolean;
 }
 
-const SingleQuizHead: React.FC<SingleQuizHeadProps> = ({
-	data,
-	quizLoading,
-}) => {
+const QuizHead: React.FC<QuizHeadProps> = ({ data, quizLoading }) => {
 	const router = useRouter();
 
 	if (quizLoading && !data) {
-		// loading skeleton
-		return (
-			<ChakraContainter
-				borderRadius='8px'
-				borderWidth='1px'
-				maxW={['100%', '100%', '820px']}
-				my='36px'
-				p='0'
-			>
-				<Flex p='10px' align='center'>
-					<SkeletonCircle size='10' />
-					<Skeleton ml='20px' height='20px' w='15%' />
-				</Flex>
-				<Skeleton>
-					<AspectRatio maxW='full' ratio={16 / 9}>
-						<Box></Box>
-					</AspectRatio>
-				</Skeleton>
-				<Box px='20px' pt='20px'>
-					<Flex justify='flex-start' align='center'>
-						<HStack w='30%'>
-							<Box>
-								<SkeletonCircle size='12' />
-							</Box>
-							<SkeletonText mt='2' noOfLines={2} spacing='2' w='full' />
-						</HStack>
-						<Divider orientation='vertical' h='50px' mx='20px' />
-						<Skeleton height='22px' w='18%' />
-					</Flex>
-					<Box my='24px'>
-						<SkeletonText mt='2' noOfLines={6} spacing='3' w='full' />
-					</Box>
-					<Box py='5px'>
-						<SkeletonText noOfLines={1} w='28%' />
-					</Box>
-					<Divider />
-					<Flex justify='space-around' py='15px'>
-						<SkeletonText ml='5px' noOfLines={1} w='17%' />
-						<SkeletonText ml='5px' noOfLines={1} w='17%' />
-						<SkeletonText ml='5px' noOfLines={1} w='17%' />
-					</Flex>
-					<Divider />
-					<Flex justify='space-around' py='18px' align='center'>
-						<SkeletonCircle size='8' />
-						<SkeletonCircle size='8' />
-						<Skeleton height='22px' w='15%' />
-					</Flex>
-				</Box>
-			</ChakraContainter>
-		);
+		return <QuizHeadLoading />;
 	}
 
 	const {
@@ -100,11 +48,12 @@ const SingleQuizHead: React.FC<SingleQuizHeadProps> = ({
 		questionsCount,
 		scores_count,
 		is_taken,
+		tags,
 	} = data;
 
 	return (
 		<>
-			<ChakraContainter
+			<ChakraContainer
 				borderRadius='8px'
 				borderWidth='1px'
 				maxW={['100%', '100%', '820px']}
@@ -129,6 +78,8 @@ const SingleQuizHead: React.FC<SingleQuizHeadProps> = ({
 					>
 						Quiz
 					</Heading>
+					<Spacer />
+					<EditDeleteQuizButtons quiz={data} />
 				</Flex>
 				<Divider w='full' />
 				{quiz_photo && (
@@ -190,6 +141,16 @@ const SingleQuizHead: React.FC<SingleQuizHeadProps> = ({
 					>
 						{description}
 					</Text>
+
+					<Box overflowWrap='break-word' mb='24px'>
+						{tags &&
+							tags.map((tag: { name: string }, i: number) => (
+								<Tag key={i} variant='subtle' mr='6px' my='3px'>
+									{tag.name}
+								</Tag>
+							))}
+					</Box>
+
 					<Text py='5px'>
 						{moment(new Date(parseInt(created_at)).toISOString()).format(
 							' h:mm A · MMM D, YYYY'
@@ -223,9 +184,9 @@ const SingleQuizHead: React.FC<SingleQuizHeadProps> = ({
 						</Button>
 					</Flex>
 				</Box>
-			</ChakraContainter>
+			</ChakraContainer>
 		</>
 	);
 };
 
-export default SingleQuizHead;
+export default QuizHead;

@@ -2,9 +2,9 @@ import { ApolloError } from '@apollo/client';
 import React from 'react';
 import { QuizzesResponseFragment } from '../../generated/graphql';
 import { SubContainer } from '../../layouts/SubContainer';
-import { QuizItemLoading } from '../loading/QuizItemLoading';
+import QuizCardLoading from './QuizCardLoading';
 import { Heading, Box, Text, VStack } from '@chakra-ui/react';
-import { QuizItem } from './QuizItem';
+import { QuizCard } from './QuizCard';
 
 interface QuizzesCardsProps {
 	quizzes?: QuizzesResponseFragment[] | null;
@@ -24,7 +24,7 @@ export const QuizzesCards: React.FC<QuizzesCardsProps> = ({
 				{!quizzes && isLoading && (
 					<>
 						{[...Array(3).keys()].map((_, i) => (
-							<QuizItemLoading key={i} />
+							<QuizCardLoading key={i} />
 						))}
 					</>
 				)}
@@ -35,11 +35,11 @@ export const QuizzesCards: React.FC<QuizzesCardsProps> = ({
 					</Box>
 				)}
 				{quizzes &&
-					quizzes.map((quiz) => <QuizItem key={quiz.id} quiz={quiz} />)}
+					quizzes.map((quiz) => <QuizCard key={quiz.id} quiz={quiz} />)}
 				{quizzes && isLoading && (
 					<>
 						{[...Array(2).keys()].map((_, i) => (
-							<QuizItemLoading key={i} />
+							<QuizCardLoading key={i} />
 						))}
 					</>
 				)}

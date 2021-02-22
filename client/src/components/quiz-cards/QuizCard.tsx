@@ -22,11 +22,11 @@ import { EditDeleteQuizButtons } from '../edit-delete-buttons/EditDeleteQuizButt
 import { LikeButton } from '../LikeButton';
 import { UserAvatar } from '../UserAvatar';
 
-interface QuizItemProps {
+interface QuizCardProps {
 	quiz: QuizzesResponseFragment;
 }
 
-export const QuizItem: React.FC<QuizItemProps> = ({ quiz }) => {
+export const QuizCard: React.FC<QuizCardProps> = ({ quiz }) => {
 	const { description, created_at } = quiz;
 	const descriptionCharacter = useBreakpointValue({ base: 172, md: 250 });
 

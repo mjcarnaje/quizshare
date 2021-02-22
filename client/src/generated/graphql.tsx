@@ -713,7 +713,10 @@ export type SingleQuizQuery = (
         { __typename?: 'Profile' }
         & Pick<Profile, 'name'>
       ) }
-    ) }
+    ), tags?: Maybe<Array<(
+      { __typename?: 'Tag' }
+      & Pick<Tag, 'name'>
+    )>> }
   )> }
 );
 
@@ -1499,6 +1502,9 @@ export const SingleQuizDocument = gql`
     questionsCount
     scores_count
     is_taken
+    tags {
+      name
+    }
   }
 }
     `;

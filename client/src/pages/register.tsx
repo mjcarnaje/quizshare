@@ -22,7 +22,7 @@ import { useRouter } from 'next/dist/client/router';
 import Head from 'next/head';
 import React, { useState } from 'react';
 import { useForm } from 'react-hook-form';
-import { Days, Months, Years } from '../utils/BirthdayDateOptions';
+import { Days, Months, Years } from '../components/options/Birthday';
 import { MainContainer } from '../layouts/MainContainer';
 import MainInputUI from '../components/custom-inputs/MainInputUI';
 import {

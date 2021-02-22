@@ -251,7 +251,7 @@ export class QuizzesResolver {
 		@Arg('quiz_id', () => Int) quiz_id: number
 	): Promise<Quiz | null> {
 		const quiz = await Quiz.findOne(quiz_id, {
-			relations: ['likes', 'comments', 'questions', 'author', 'scores'],
+			relations: ['likes', 'comments', 'questions', 'author', 'scores', 'tags'],
 		});
 		if (!quiz) {
 			return null;
