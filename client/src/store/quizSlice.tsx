@@ -12,6 +12,7 @@ const quizIS: QuizState = {
 	quiz_photo: null,
 	questions: [],
 	results: [],
+	tags: [],
 };
 
 const quizSlice = createSlice({
@@ -22,12 +23,13 @@ const quizSlice = createSlice({
 		setSettings: (
 			state,
 			{
-				payload: { title, description, quiz_photo },
+				payload: { title, description, quiz_photo, tags },
 			}: PayloadAction<SettingsInput>
 		) => {
 			state.title = title;
 			state.description = description;
 			state.quiz_photo = quiz_photo;
+			state.tags = tags;
 
 			toast({
 				description: 'Settings saved.',
@@ -71,6 +73,7 @@ const quizSlice = createSlice({
 			state.title = __typenameRemoved.title;
 			state.description = __typenameRemoved.description;
 			state.quiz_photo = __typenameRemoved?.quiz_photo;
+			state.tags = __typenameRemoved?.tags;
 		},
 	},
 });

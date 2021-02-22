@@ -454,6 +454,7 @@ export type CreateQuizMutationVariables = Exact<{
   quiz_photo?: Maybe<Scalars['String']>;
   questions: Array<QuestionInput>;
   results?: Maybe<Array<ResultInput>>;
+  tags?: Maybe<Array<TagInput>>;
 }>;
 
 
@@ -465,7 +466,10 @@ export type CreateQuizMutation = (
     & { questions: Array<(
       { __typename?: 'Question' }
       & Pick<Question, 'question_id' | 'question' | 'question_photo' | 'choices' | 'answer' | 'explanation' | 'with_explanation' | 'hint' | 'with_hint'>
-    )> }
+    )>, tags?: Maybe<Array<(
+      { __typename?: 'Tag' }
+      & Pick<Tag, 'name'>
+    )>> }
   ) }
 );
 
@@ -584,7 +588,10 @@ export type UpdateQuizMutation = (
     & { questions: Array<(
       { __typename?: 'Question' }
       & Pick<Question, 'question_id' | 'question' | 'question_photo' | 'choices' | 'answer' | 'explanation' | 'with_explanation' | 'hint' | 'with_hint'>
-    )> }
+    )>, tags?: Maybe<Array<(
+      { __typename?: 'Tag' }
+      & Pick<Tag, 'name'>
+    )>> }
   ) }
 );
 
@@ -663,7 +670,10 @@ export type QuizToUpdateQuery = (
     & { questions: Array<(
       { __typename?: 'Question' }
       & Pick<Question, 'question_id' | 'question' | 'question_photo' | 'choices' | 'answer' | 'explanation' | 'with_explanation' | 'hint' | 'with_hint'>
-    )> }
+    )>, tags?: Maybe<Array<(
+      { __typename?: 'Tag' }
+      & Pick<Tag, 'name'>
+    )>> }
   ) }
 );
 
@@ -866,9 +876,9 @@ export type CreateCommentMutationHookResult = ReturnType<typeof useCreateComment
 export type CreateCommentMutationResult = Apollo.MutationResult<CreateCommentMutation>;
 export type CreateCommentMutationOptions = Apollo.BaseMutationOptions<CreateCommentMutation, CreateCommentMutationVariables>;
 export const CreateQuizDocument = gql`
-    mutation CreateQuiz($title: String!, $description: String!, $quiz_photo: String, $questions: [QuestionInput!]!, $results: [ResultInput!]) {
+    mutation CreateQuiz($title: String!, $description: String!, $quiz_photo: String, $questions: [QuestionInput!]!, $results: [ResultInput!], $tags: [TagInput!]) {
   createQuiz(
-    data: {title: $title, description: $description, quiz_photo: $quiz_photo, questions: $questions, results: $results}
+    data: {title: $title, description: $description, quiz_photo: $quiz_photo, questions: $questions, results: $results, tags: $tags}
   ) {
     title
     description
@@ -885,6 +895,9 @@ export const CreateQuizDocument = gql`
       with_hint
     }
     results
+    tags {
+      name
+    }
   }
 }
     `;
@@ -908,6 +921,7 @@ export type CreateQuizMutationFn = Apollo.MutationFunction<CreateQuizMutation, C
  *      quiz_photo: // value for 'quiz_photo'
  *      questions: // value for 'questions'
  *      results: // value for 'results'
+ *      tags: // value for 'tags'
  *   },
  * });
  */
@@ -1195,6 +1209,9 @@ export const UpdateQuizDocument = gql`
       with_hint
     }
     results
+    tags {
+      name
+    }
   }
 }
     `;
@@ -1389,6 +1406,9 @@ export const QuizToUpdateDocument = gql`
       with_hint
     }
     results
+    tags {
+      name
+    }
   }
 }
     `;

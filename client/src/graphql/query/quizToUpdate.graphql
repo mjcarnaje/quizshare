@@ -15,5 +15,8 @@ query QuizToUpdate($quiz_id: Int!) {
 			with_hint
 		}
 		results
+		tags {
+			name
+		}
 	}
 }

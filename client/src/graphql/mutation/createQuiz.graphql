@@ -4,6 +4,7 @@ mutation CreateQuiz(
 	$quiz_photo: String
 	$questions: [QuestionInput!]!
 	$results: [ResultInput!]
+	$tags: [TagInput!]
 ) {
 	createQuiz(
 		data: {
@@ -12,6 +13,7 @@ mutation CreateQuiz(
 			quiz_photo: $quiz_photo
 			questions: $questions
 			results: $results
+			tags: $tags
 		}
 	) {
 		title
@@ -29,5 +31,8 @@ mutation CreateQuiz(
 			with_hint
 		}
 		results
+		tags {
+			name
+		}
 	}
 }

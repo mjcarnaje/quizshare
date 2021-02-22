@@ -4,12 +4,6 @@ import {
 	ScoreResponseFragment,
 } from '../generated/graphql';
 
-export type SettingsInput = {
-	title: string;
-	description: string;
-	quiz_photo?: string | null;
-};
-
 export type ResultProps = {
 	result_id: string;
 	title: string;
@@ -24,6 +18,10 @@ type ResultProp = {
 	result_photo?: string | null;
 };
 
+export type TagProps = {
+	name: string;
+};
+
 type QuizResultProps = {
 	score: ScoreResponseFragment;
 	percentage: number;
@@ -35,13 +33,17 @@ export type AnswerByUserProps = {
 	choice_id: string;
 };
 
-export type QuizState = {
+export type SettingsInput = {
 	title: string;
 	description: string;
-	quiz_photo?: string | null | undefined;
+	quiz_photo?: string | null;
+	tags: TagProps[];
+};
+
+export type QuizState = {
 	questions: QuestionInput[];
 	results: ResultProps[];
-};
+} & SettingsInput;
 
 export type ResultState = {
 	quizResult?: QuizResultProps | null;
