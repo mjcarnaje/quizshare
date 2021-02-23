@@ -37,6 +37,18 @@ const createClient = (ctx: NextPageContext) =>
 				Query: {
 					fields: {
 						quizzes: {
+							keyArgs: [],
+							merge(
+								existing: PaginatedQuizzes | undefined,
+								incoming: PaginatedQuizzes
+							): PaginatedQuizzes {
+								return {
+									...incoming,
+									quizzes: [...(existing?.quizzes || []), ...incoming.quizzes],
+								};
+							},
+						},
+						searched_quizzes: {
 							keyArgs: ['query'],
 							merge(
 								existing: PaginatedQuizzes | undefined,

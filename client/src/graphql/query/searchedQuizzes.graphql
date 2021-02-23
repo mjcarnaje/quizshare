@@ -1,0 +1,8 @@
+query SearchedQuizzes($limit: Int!, $query: String!, $cursor: String) {
+	searched_quizzes(limit: $limit, query: $query, cursor: $cursor) {
+		has_more
+		quizzes {
+			...QuizzesResponse
+		}
+	}
+}

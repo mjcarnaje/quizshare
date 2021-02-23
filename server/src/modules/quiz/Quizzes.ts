@@ -80,11 +80,68 @@ export class QuizzesResolver {
 	@Query(() => PaginatedQuizzes)
 	async quizzes(
 		@Arg('limit', () => Int) limit: number,
-		@Arg('cursor', () => String, { nullable: true }) cursor: string | null,
-		@Arg('query', () => String, { nullable: true }) query: string | null
+		@Arg('cursor', () => String, { nullable: true }) cursor: string | null
 	): Promise<PaginatedQuizzes> {
 		const realLimit = Math.min(20, limit);
 		const realLimitPlusOne = realLimit + 1;
+
+		let findOptions: FindManyOptions;
+
+		if (cursor) {
+			findOptions = {
+				relations: [
+					'author',
+					'author.profile',
+					'questions',
+					'likes',
+					'comments',
+					'tags',
+					'scores',
+				],
+				order: {
+					created_at: 'DESC',
+				},
+				take: realLimitPlusOne,
+				where: {
+					created_at: LessThan(new Date(parseInt(cursor))),
+				},
+			};
+		} else {
+			findOptions = {
+				relations: [
+					'author',
+					'author.profile',
+					'questions',
+					'likes',
+					'comments',
+					'tags',
+					'scores',
+				],
+				order: {
+					created_at: 'DESC',
+				},
+				take: realLimitPlusOne,
+			};
+		}
+
+		const quizzes = await Quiz.find(findOptions as FindManyOptions);
+
+		return {
+			quizzes: (quizzes as [Quiz]).slice(0, realLimit),
+			has_more: (quizzes as [Quiz]).length === realLimitPlusOne,
+		};
+	}
+
+	@UseMiddleware(isAuthenticated)
+	@Query(() => PaginatedQuizzes)
+	async searched_quizzes(
+		@Arg('limit', () => Int) limit: number,
+		@Arg('query', () => String) query: string,
+		@Arg('cursor', () => String, { nullable: true }) cursor: string | null
+	): Promise<PaginatedQuizzes> {
+		const realLimit = Math.min(20, limit);
+		const realLimitPlusOne = realLimit + 1;
+		const formattedQuery = query.trim().replace(/ /g, ' <-> ');
 
 		let findOptionsInitial: FindManyOptions = {
 			relations: [
@@ -104,9 +161,7 @@ export class QuizzesResolver {
 
 		let findOptions: FindManyOptions;
 
-		if (cursor && query) {
-			const formattedQuery = query.trim().replace(/ /g, ' <-> ');
-
+		if (cursor) {
 			findOptions = {
 				...findOptionsInitial,
 				where: [
@@ -129,44 +184,33 @@ export class QuizzesResolver {
 							}
 						),
 						created_at: LessThan(new Date(parseInt(cursor))),
-					},
-				],
-			};
-		} else if (cursor) {
-			findOptions = {
-				...findOptionsInitial,
-				where: {
-					created_at: LessThan(new Date(parseInt(cursor))),
-				},
-			};
-		} else if (query) {
-			const formattedQuery = query.trim().replace(/ /g, ' <-> ');
-
-			findOptions = {
-				...findOptionsInitial,
-				where: [
-					{
-						description: Raw(
-							(description) =>
-								`to_tsvector('simple', ${description}) @@ to_tsquery('simple', :query)`,
-							{
-								query: formattedQuery,
-							}
-						),
-					},
-					{
-						title: Raw(
-							(title) =>
-								`to_tsvector('simple', ${title}) @@ to_tsquery('simple', :query)`,
-							{
-								query: formattedQuery,
-							}
-						),
 					},
 				],
 			};
 		} else {
-			findOptions = findOptionsInitial;
+			findOptions = {
+				...findOptionsInitial,
+				where: [
+					{
+						description: Raw(
+							(description) =>
+								`to_tsvector('simple', ${description}) @@ to_tsquery('simple', :query)`,
+							{
+								query: formattedQuery,
+							}
+						),
+					},
+					{
+						title: Raw(
+							(title) =>
+								`to_tsvector('simple', ${title}) @@ to_tsquery('simple', :query)`,
+							{
+								query: formattedQuery,
+							}
+						),
+					},
+				],
+			};
 		}
 
 		const quizzes = await Quiz.find(findOptions as FindManyOptions);

@@ -35,7 +35,7 @@ export const SearchBar: React.FC = () => {
 					onSubmit={(e) => {
 						e.preventDefault();
 						router.push({
-							pathname: '/',
+							pathname: '/search/',
 							query: { q: text },
 						});
 					}}
