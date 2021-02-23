@@ -243,6 +243,7 @@ export type Query = {
   comments?: Maybe<PaginatedComments>;
   quizzes: PaginatedQuizzes;
   searched_quizzes: PaginatedQuizzes;
+  get_searched_quizzes_count: Scalars['Int'];
   me_quizzes: PaginatedMeQuizzes;
   quiz_to_update: Quiz;
   quiz?: Maybe<Quiz>;
@@ -269,6 +270,11 @@ export type QuerySearched_QuizzesArgs = {
   cursor?: Maybe<Scalars['String']>;
   query: Scalars['String'];
   limit: Scalars['Int'];
+};
+
+
+export type QueryGet_Searched_Quizzes_CountArgs = {
+  query: Scalars['String'];
 };
 
 
@@ -619,6 +625,16 @@ export type CommentsQuery = (
       & CommentResponseFragment
     )> }
   )> }
+);
+
+export type GetSearchedQuizzesCountQueryVariables = Exact<{
+  query: Scalars['String'];
+}>;
+
+
+export type GetSearchedQuizzesCountQuery = (
+  { __typename?: 'Query' }
+  & Pick<Query, 'get_searched_quizzes_count'>
 );
 
 export type MeQueryVariables = Exact<{ [key: string]: never; }>;
@@ -1307,6 +1323,37 @@ export function useCommentsLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<C
 export type CommentsQueryHookResult = ReturnType<typeof useCommentsQuery>;
 export type CommentsLazyQueryHookResult = ReturnType<typeof useCommentsLazyQuery>;
 export type CommentsQueryResult = Apollo.QueryResult<CommentsQuery, CommentsQueryVariables>;
+export const GetSearchedQuizzesCountDocument = gql`
+    query GetSearchedQuizzesCount($query: String!) {
+  get_searched_quizzes_count(query: $query)
+}
+    `;
+
+/**
+ * __useGetSearchedQuizzesCountQuery__
+ *
+ * To run a query within a React component, call `useGetSearchedQuizzesCountQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetSearchedQuizzesCountQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetSearchedQuizzesCountQuery({
+ *   variables: {
+ *      query: // value for 'query'
+ *   },
+ * });
+ */
+export function useGetSearchedQuizzesCountQuery(baseOptions: Apollo.QueryHookOptions<GetSearchedQuizzesCountQuery, GetSearchedQuizzesCountQueryVariables>) {
+        return Apollo.useQuery<GetSearchedQuizzesCountQuery, GetSearchedQuizzesCountQueryVariables>(GetSearchedQuizzesCountDocument, baseOptions);
+      }
+export function useGetSearchedQuizzesCountLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetSearchedQuizzesCountQuery, GetSearchedQuizzesCountQueryVariables>) {
+          return Apollo.useLazyQuery<GetSearchedQuizzesCountQuery, GetSearchedQuizzesCountQueryVariables>(GetSearchedQuizzesCountDocument, baseOptions);
+        }
+export type GetSearchedQuizzesCountQueryHookResult = ReturnType<typeof useGetSearchedQuizzesCountQuery>;
+export type GetSearchedQuizzesCountLazyQueryHookResult = ReturnType<typeof useGetSearchedQuizzesCountLazyQuery>;
+export type GetSearchedQuizzesCountQueryResult = Apollo.QueryResult<GetSearchedQuizzesCountQuery, GetSearchedQuizzesCountQueryVariables>;
 export const MeDocument = gql`
     query Me {
   me {

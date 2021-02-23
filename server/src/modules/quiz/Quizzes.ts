@@ -222,6 +222,39 @@ export class QuizzesResolver {
 	}
 
 	@UseMiddleware(isAuthenticated)
+	@Query(() => Int)
+	async get_searched_quizzes_count(
+		@Arg('query', () => String) query: string
+	): Promise<number> {
+		const formattedQuery = query.trim().replace(/ /g, ' <-> ');
+
+		const quizzes = await Quiz.find({
+			where: [
+				{
+					description: Raw(
+						(description) =>
+							`to_tsvector('simple', ${description}) @@ to_tsquery('simple', :query)`,
+						{
+							query: formattedQuery,
+						}
+					),
+				},
+				{
+					title: Raw(
+						(title) =>
+							`to_tsvector('simple', ${title}) @@ to_tsquery('simple', :query)`,
+						{
+							query: formattedQuery,
+						}
+					),
+				},
+			],
+		});
+
+		return quizzes.length;
+	}
+
+	@UseMiddleware(isAuthenticated)
 	@Query(() => PaginatedMeQuizzes)
 	async me_quizzes(
 		@Arg('limit', () => Int) limit: number,

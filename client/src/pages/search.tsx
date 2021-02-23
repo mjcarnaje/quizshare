@@ -2,6 +2,10 @@ import {
 	AspectRatio,
 	Button,
 	Center,
+	Flex,
+	Select,
+	Skeleton,
+	Spacer,
 	Text,
 	useColorModeValue,
 } from '@chakra-ui/react';
@@ -10,7 +14,10 @@ import Head from 'next/head';
 import Image from 'next/image';
 import React, { useEffect, useState } from 'react';
 import { QuizzesCards } from '../components/quiz-cards/QuizzesCards';
-import { useSearchedQuizzesQuery } from '../generated/graphql';
+import {
+	useGetSearchedQuizzesCountQuery,
+	useSearchedQuizzesQuery,
+} from '../generated/graphql';
 import { MainContainer } from '../layouts/MainContainer';
 import { useIsAuth } from '../utils/useIsAuth';
 import { withApollo } from '../utils/withApollo';
@@ -38,6 +45,13 @@ const Search: React.FC = () => {
 		notifyOnNetworkStatusChange: true,
 	});
 
+	const {
+		data: resultsCount,
+		loading: resultsLoading,
+	} = useGetSearchedQuizzesCountQuery({
+		variables: { query: query ?? '' },
+	});
+
 	useEffect(() => {
 		if (q && typeof q === 'string') {
 			setQuery(q);
@@ -50,6 +64,28 @@ const Search: React.FC = () => {
 				<title>QuizShare</title>
 				<meta name='viewport' content='initial-scale=1.0, width=device-width' />
 			</Head>
+
+			<Flex w={['100%', '460px', '820px']} align='center'>
+				<Skeleton isLoaded={!resultsLoading}>
+					<Text>
+						Found{' '}
+						<strong>{resultsCount?.get_searched_quizzes_count ?? 0}</strong>{' '}
+						results
+					</Text>
+				</Skeleton>
+				<Spacer />
+				<Flex align='center'>
+					<Text flexShrink={0} mr='16px'>
+						Sort by:
+					</Text>
+					<Select variant='outline' placeholder='Date'>
+						<option>Popularity</option>
+						<option>Name</option>
+						<option>Date</option>
+					</Select>
+				</Flex>
+			</Flex>
+
 			<QuizzesCards
 				quizzes={data?.searched_quizzes.quizzes}
 				isLoading={loading}

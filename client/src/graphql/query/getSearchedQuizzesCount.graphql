@@ -1,0 +1,3 @@
+query GetSearchedQuizzesCount($query: String!) {
+	get_searched_quizzes_count(query: $query)
+}
