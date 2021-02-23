@@ -11,7 +11,6 @@ import {
 	UseMiddleware,
 } from 'type-graphql';
 import { FindManyOptions, LessThan, Raw } from 'typeorm';
-import { Comment } from '../../entity/Comment';
 import { Question } from '../../entity/Question';
 import { Quiz } from '../../entity/Quiz';
 import { MyContext } from '../../types/MyContext';
@@ -22,21 +21,15 @@ class PaginatedQuizzes {
 	@Field(() => [Quiz])
 	quizzes: Quiz[];
 	@Field()
-	hasMore: boolean;
+	has_more: boolean;
 }
+
 @ObjectType()
 class PaginatedMeQuizzes {
 	@Field(() => [Quiz])
-	meQuizzes: Quiz[];
+	me_quizzes: Quiz[];
 	@Field()
 	meHasMore: boolean;
-}
-@ObjectType()
-class PaginatedComments {
-	@Field(() => [Comment])
-	comments: Comment[];
-	@Field()
-	hasMore: boolean;
 }
 
 @Resolver(Quiz)
@@ -74,7 +67,7 @@ export class QuizzesResolver {
 	}
 
 	@FieldResolver(() => Int)
-	questionsCount(@Root() quiz: Quiz) {
+	questions_count(@Root() quiz: Quiz) {
 		return quiz.questions.length;
 	}
 
@@ -180,13 +173,13 @@ export class QuizzesResolver {
 
 		return {
 			quizzes: (quizzes as [Quiz]).slice(0, realLimit),
-			hasMore: (quizzes as [Quiz]).length === realLimitPlusOne,
+			has_more: (quizzes as [Quiz]).length === realLimitPlusOne,
 		};
 	}
 
 	@UseMiddleware(isAuthenticated)
 	@Query(() => PaginatedMeQuizzes)
-	async meQuizzes(
+	async me_quizzes(
 		@Arg('limit', () => Int) limit: number,
 		@Arg('cursor', () => String, { nullable: true }) cursor: string | null,
 		@Ctx() { req }: MyContext
@@ -222,14 +215,14 @@ export class QuizzesResolver {
 		const quizzes = await Quiz.find(findOptions);
 
 		return {
-			meQuizzes: (quizzes as [Quiz]).slice(0, realLimit),
+			me_quizzes: (quizzes as [Quiz]).slice(0, realLimit),
 			meHasMore: (quizzes as [Quiz]).length === realLimitPlusOne,
 		};
 	}
 
 	@UseMiddleware(isAuthenticated)
 	@Query(() => Quiz)
-	async quizToUpdate(
+	async quiz_to_update(
 		@Arg('quiz_id', () => Int) quiz_id: number,
 		@Ctx() { req }: MyContext
 	): Promise<Quiz | null> {
@@ -247,9 +240,7 @@ export class QuizzesResolver {
 
 	@UseMiddleware(isAuthenticated)
 	@Query(() => Quiz, { nullable: true })
-	async singleQuiz(
-		@Arg('quiz_id', () => Int) quiz_id: number
-	): Promise<Quiz | null> {
+	async quiz(@Arg('quiz_id', () => Int) quiz_id: number): Promise<Quiz | null> {
 		const quiz = await Quiz.findOne(quiz_id, {
 			relations: ['likes', 'comments', 'questions', 'author', 'scores', 'tags'],
 		});
@@ -269,50 +260,5 @@ export class QuizzesResolver {
 			return null;
 		}
 		return questions;
-	}
-
-	@UseMiddleware(isAuthenticated)
-	@Query(() => PaginatedComments, { nullable: true })
-	async comments(
-		@Arg('quiz_id', () => Int) quiz_id: number,
-		@Arg('limit', () => Int) limit: number,
-		@Arg('cursor', () => String, { nullable: true }) cursor: string | null
-	): Promise<PaginatedComments | null> {
-		const realLimit = Math.min(10, limit);
-		const realLimitPlusOne = realLimit + 1;
-
-		let findOptions: FindManyOptions;
-
-		if (cursor) {
-			findOptions = {
-				take: realLimitPlusOne,
-				where: {
-					quiz_id: quiz_id,
-					created_at: LessThan(new Date(parseInt(cursor))),
-				},
-				order: {
-					created_at: 'DESC',
-				},
-			};
-		} else {
-			findOptions = {
-				where: { quiz_id: quiz_id },
-				take: realLimitPlusOne,
-				order: {
-					created_at: 'DESC',
-				},
-			};
-		}
-
-		const comments = await Comment.find(findOptions);
-
-		if (!comments) {
-			return null;
-		}
-
-		return {
-			comments: (comments as [Comment]).slice(0, realLimit),
-			hasMore: (comments as [Comment]).length === realLimitPlusOne,
-		};
 	}
 }

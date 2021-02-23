@@ -13,6 +13,16 @@ import { User } from '../../entity/User';
 import { MyContext } from '../../types/MyContext';
 import { isAuthenticated } from '../middleware/isAuthenticated';
 import { AuthenticationError } from 'apollo-server-express';
+import { FindManyOptions, LessThan } from 'typeorm';
+import { ObjectType, Field, Query } from 'type-graphql';
+
+@ObjectType()
+class PaginatedComments {
+	@Field(() => [Comment])
+	comments: Comment[];
+	@Field()
+	has_more: boolean;
+}
 
 @Resolver(Comment)
 export class CreateCommentResolver {
@@ -57,5 +67,50 @@ export class CreateCommentResolver {
 		await comment.remove();
 
 		return 'DELETED COMMENT';
+	}
+
+	@UseMiddleware(isAuthenticated)
+	@Query(() => PaginatedComments, { nullable: true })
+	async comments(
+		@Arg('quiz_id', () => Int) quiz_id: number,
+		@Arg('limit', () => Int) limit: number,
+		@Arg('cursor', () => String, { nullable: true }) cursor: string | null
+	): Promise<PaginatedComments | null> {
+		const realLimit = Math.min(10, limit);
+		const realLimitPlusOne = realLimit + 1;
+
+		let findOptions: FindManyOptions;
+
+		if (cursor) {
+			findOptions = {
+				take: realLimitPlusOne,
+				where: {
+					quiz_id: quiz_id,
+					created_at: LessThan(new Date(parseInt(cursor))),
+				},
+				order: {
+					created_at: 'DESC',
+				},
+			};
+		} else {
+			findOptions = {
+				where: { quiz_id: quiz_id },
+				take: realLimitPlusOne,
+				order: {
+					created_at: 'DESC',
+				},
+			};
+		}
+
+		const comments = await Comment.find(findOptions);
+
+		if (!comments) {
+			return null;
+		}
+
+		return {
+			comments: (comments as [Comment]).slice(0, realLimit),
+			has_more: (comments as [Comment]).length === realLimitPlusOne,
+		};
 	}
 }
