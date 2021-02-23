@@ -1,6 +1,6 @@
 query Quizzes($limit: Int!, $cursor: String, $query: String) {
 	quizzes(limit: $limit, cursor: $cursor, query: $query) {
-		hasMore
+		has_more
 		quizzes {
 			...QuizzesResponse
 		}

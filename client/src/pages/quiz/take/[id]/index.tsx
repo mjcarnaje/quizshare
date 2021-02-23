@@ -83,27 +83,27 @@ const TakeQuiz: React.FC<TakeQuizProps> = ({}) => {
 	return (
 		<MainContainer>
 			<Head>
-				<title>{`Take | ${quizdata?.singleQuiz?.title}`}</title>
+				<title>{`Take | ${quizdata?.quiz?.title}`}</title>
 				<meta name='viewport' content='initial-scale=1.0, width=device-width' />
 			</Head>
 			<SubContainer position='relative'>
 				<Flex justify='space-between'>
 					<Box ml='10px'>
 						<Heading as='h2' fontSize='24px'>
-							{quizdata?.singleQuiz?.title}
+							{quizdata?.quiz?.title}
 						</Heading>
 						<Flex mt='2px'>
 							<Avatar
 								size='xs'
-								src={quizdata?.singleQuiz?.author.avatar ?? ''}
-								name={quizdata?.singleQuiz?.author.profile.name ?? ''}
+								src={quizdata?.quiz?.author.avatar ?? ''}
+								name={quizdata?.quiz?.author.profile.name ?? ''}
 							/>
 							<Text ml='10px' as='p'>
-								{quizdata?.singleQuiz?.author.profile.name}
+								{quizdata?.quiz?.author.profile.name}
 							</Text>
 						</Flex>
 					</Box>
-					{quizdata?.singleQuiz?.is_taken && (
+					{quizdata?.quiz?.is_taken && (
 						<Tooltip label='You have taken this' aria-label='A tooltip'>
 							<Box>
 								<Icon as={BiCheckDouble} color='gray.500' boxSize='24px' />

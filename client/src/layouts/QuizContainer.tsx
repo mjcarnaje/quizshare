@@ -140,7 +140,7 @@ export const QuizContainer: React.FC<QuizContainerProps> = ({
 					},
 					update: (cache) => {
 						cache.evict({ fieldName: 'quizzes' });
-						cache.evict({ fieldName: 'quizToUpdate' });
+						cache.evict({ fieldName: 'quiz_to_update' });
 					},
 				});
 				if (!errors) {

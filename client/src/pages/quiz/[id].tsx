@@ -29,13 +29,13 @@ const Quiz: React.FC<QuizProps> = ({}) => {
 	return (
 		<MainContainer>
 			<Head>
-				<title>{quizdata?.singleQuiz?.title}</title>
+				<title>{quizdata?.quiz?.title}</title>
 				<meta name='viewport' content='initial-scale=1.0, width=device-width' />
 			</Head>
-			<QuizHead data={quizdata?.singleQuiz} quizLoading={quizLoading} />
+			<QuizHead data={quizdata?.quiz} quizLoading={quizLoading} />
 			<Comments
 				quiz_id={quizId}
-				comments_count={quizdata?.singleQuiz?.comments_count ?? 0}
+				comments_count={quizdata?.quiz?.comments_count ?? 0}
 			/>
 		</MainContainer>
 	);

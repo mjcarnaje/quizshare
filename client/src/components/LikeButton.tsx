@@ -9,7 +9,7 @@ interface LikeButtonProps {
 		is_liked?: boolean;
 		id: string;
 		likes_count: number;
-		questionsCount?: number;
+		questions_count?: number;
 	} & any;
 	withoutCount?: boolean;
 }

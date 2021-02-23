@@ -1,7 +1,7 @@
 query MeQuizzes($limit: Int!, $cursor: String) {
-	meQuizzes(limit: $limit, cursor: $cursor) {
+	me_quizzes(limit: $limit, cursor: $cursor) {
 		meHasMore
-		meQuizzes {
+		me_quizzes {
 			...QuizzesResponse
 		}
 	}

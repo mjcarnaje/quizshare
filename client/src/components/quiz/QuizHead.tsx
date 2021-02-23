@@ -45,7 +45,7 @@ const QuizHead: React.FC<QuizHeadProps> = ({ data, quizLoading }) => {
 		created_at,
 		likes_count,
 		comments_count,
-		questionsCount,
+		questions_count,
 		scores_count,
 		is_taken,
 		tags,
@@ -165,7 +165,7 @@ const QuizHead: React.FC<QuizHeadProps> = ({ data, quizLoading }) => {
 							<strong>{comments_count}</strong> Comments
 						</Text>
 						<Text ml='5px'>
-							<strong>{questionsCount}</strong> Questions
+							<strong>{questions_count}</strong> Questions
 						</Text>
 						<Text ml='5px'>
 							<strong>{scores_count}</strong> Submissions

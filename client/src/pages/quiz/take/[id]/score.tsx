@@ -94,22 +94,22 @@ const Score: React.FC<ScoreProps> = ({}) => {
 	return (
 		<MainContainer>
 			<Head>
-				<title>{`Score | ${quizdata?.singleQuiz?.title}`}</title>
+				<title>{`Score | ${quizdata?.quiz?.title}`}</title>
 				<meta name='viewport' content='initial-scale=1.0, width=device-width' />
 			</Head>
 			<SubContainer>
 				<Flex align='center' flexDirection='column' mb='30px'>
 					<Heading as='h2' fontSize='32px'>
-						{quizdata?.singleQuiz?.title}
+						{quizdata?.quiz?.title}
 					</Heading>
 					<Flex mt='2px'>
 						<Avatar
 							size='xs'
-							src={quizdata?.singleQuiz?.author.avatar ?? ''}
-							name={quizdata?.singleQuiz?.author.profile.name ?? ''}
+							src={quizdata?.quiz?.author.avatar ?? ''}
+							name={quizdata?.quiz?.author.profile.name ?? ''}
 						/>
 						<Text ml='10px' as='p'>
-							{quizdata?.singleQuiz?.author.profile.name}
+							{quizdata?.quiz?.author.profile.name}
 						</Text>
 					</Flex>
 				</Flex>
@@ -315,7 +315,7 @@ const Score: React.FC<ScoreProps> = ({}) => {
 				</Heading>
 				<Comments
 					quiz_id={parseInt(id as string)}
-					comments_count={quizdata?.singleQuiz?.comments_count ?? 0}
+					comments_count={quizdata?.quiz?.comments_count ?? 0}
 				/>
 			</SubContainer>
 		</MainContainer>

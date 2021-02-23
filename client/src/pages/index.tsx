@@ -51,7 +51,7 @@ const Index: React.FC = () => {
 				isLoading={loading}
 				isError={error}
 			/>
-			{!data?.quizzes.hasMore && data?.quizzes.quizzes.length === 0 && (
+			{!data?.quizzes.has_more && data?.quizzes.quizzes.length === 0 && (
 				<Center flexDirection='column' mt='20px' mb='60px'>
 					<AspectRatio ratio={1} minW='320px'>
 						<Image src={'/no-result.svg'} layout='fill' />
@@ -71,7 +71,7 @@ const Index: React.FC = () => {
 					</Button>
 				</Center>
 			)}
-			{data && data.quizzes.hasMore && (
+			{data && data.quizzes.has_more && (
 				<Button
 					size='sm'
 					colorScheme={useColorModeValue('purple', 'gray')}

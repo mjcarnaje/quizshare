@@ -25,8 +25,8 @@ function EditQuiz() {
 	}, []);
 
 	useEffect(() => {
-		if (data?.quizToUpdate) {
-			dispatch(fetchDataForEdit(data.quizToUpdate));
+		if (data?.quiz_to_update) {
+			dispatch(fetchDataForEdit(data.quiz_to_update));
 			router.push(`/quiz/edit/${id}/settings`, undefined, { shallow: true });
 		}
 	}, [data]);

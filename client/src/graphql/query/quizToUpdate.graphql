@@ -1,5 +1,5 @@
 query QuizToUpdate($quiz_id: Int!) {
-	quizToUpdate(quiz_id: $quiz_id) {
+	quiz_to_update(quiz_id: $quiz_id) {
 		title
 		description
 		quiz_photo

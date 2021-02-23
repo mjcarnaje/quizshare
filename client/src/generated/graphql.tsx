@@ -98,7 +98,7 @@ export type Quiz = {
   is_liked: Scalars['Boolean'];
   likes_count: Scalars['Int'];
   comments_count: Scalars['Int'];
-  questionsCount: Scalars['Int'];
+  questions_count: Scalars['Int'];
 };
 
 export type Comment = {
@@ -126,22 +126,22 @@ export type CheckAnswerResult = {
   result?: Maybe<ResultProps>;
 };
 
+export type PaginatedComments = {
+  __typename?: 'PaginatedComments';
+  comments: Array<Comment>;
+  has_more: Scalars['Boolean'];
+};
+
 export type PaginatedQuizzes = {
   __typename?: 'PaginatedQuizzes';
   quizzes: Array<Quiz>;
-  hasMore: Scalars['Boolean'];
+  has_more: Scalars['Boolean'];
 };
 
 export type PaginatedMeQuizzes = {
   __typename?: 'PaginatedMeQuizzes';
-  meQuizzes: Array<Quiz>;
+  me_quizzes: Array<Quiz>;
   meHasMore: Scalars['Boolean'];
-};
-
-export type PaginatedComments = {
-  __typename?: 'PaginatedComments';
-  comments: Array<Comment>;
-  hasMore: Scalars['Boolean'];
 };
 
 export type UsersAnswer = {
@@ -240,14 +240,21 @@ export type UpdateProfileInput = {
 
 export type Query = {
   __typename?: 'Query';
-  quizzes: PaginatedQuizzes;
-  meQuizzes: PaginatedMeQuizzes;
-  quizToUpdate: Quiz;
-  singleQuiz?: Maybe<Quiz>;
-  questions?: Maybe<Array<Question>>;
   comments?: Maybe<PaginatedComments>;
+  quizzes: PaginatedQuizzes;
+  me_quizzes: PaginatedMeQuizzes;
+  quiz_to_update: Quiz;
+  quiz?: Maybe<Quiz>;
+  questions?: Maybe<Array<Question>>;
   me?: Maybe<User>;
   getUsers: Array<User>;
+};
+
+
+export type QueryCommentsArgs = {
+  cursor?: Maybe<Scalars['String']>;
+  limit: Scalars['Int'];
+  quiz_id: Scalars['Int'];
 };
 
 
@@ -258,30 +265,23 @@ export type QueryQuizzesArgs = {
 };
 
 
-export type QueryMeQuizzesArgs = {
+export type QueryMe_QuizzesArgs = {
   cursor?: Maybe<Scalars['String']>;
   limit: Scalars['Int'];
 };
 
 
-export type QueryQuizToUpdateArgs = {
+export type QueryQuiz_To_UpdateArgs = {
   quiz_id: Scalars['Int'];
 };
 
 
-export type QuerySingleQuizArgs = {
+export type QueryQuizArgs = {
   quiz_id: Scalars['Int'];
 };
 
 
 export type QueryQuestionsArgs = {
-  quiz_id: Scalars['Int'];
-};
-
-
-export type QueryCommentsArgs = {
-  cursor?: Maybe<Scalars['String']>;
-  limit: Scalars['Int'];
   quiz_id: Scalars['Int'];
 };
 
@@ -375,7 +375,7 @@ export type CommentResponseFragment = (
 
 export type QuizzesResponseFragment = (
   { __typename?: 'Quiz' }
-  & Pick<Quiz, 'id' | 'title' | 'description' | 'quiz_photo' | 'created_at' | 'is_liked' | 'likes_count' | 'comments_count' | 'scores_count' | 'questionsCount'>
+  & Pick<Quiz, 'id' | 'title' | 'description' | 'quiz_photo' | 'created_at' | 'is_liked' | 'likes_count' | 'comments_count' | 'scores_count' | 'questions_count'>
   & { likes?: Maybe<Array<(
     { __typename?: 'Like' }
     & Pick<Like, 'quiz_id' | 'author_id'>
@@ -606,7 +606,7 @@ export type CommentsQuery = (
   { __typename?: 'Query' }
   & { comments?: Maybe<(
     { __typename?: 'PaginatedComments' }
-    & Pick<PaginatedComments, 'hasMore'>
+    & Pick<PaginatedComments, 'has_more'>
     & { comments: Array<(
       { __typename?: 'Comment' }
       & CommentResponseFragment
@@ -633,10 +633,10 @@ export type MeQuizzesQueryVariables = Exact<{
 
 export type MeQuizzesQuery = (
   { __typename?: 'Query' }
-  & { meQuizzes: (
+  & { me_quizzes: (
     { __typename?: 'PaginatedMeQuizzes' }
     & Pick<PaginatedMeQuizzes, 'meHasMore'>
-    & { meQuizzes: Array<(
+    & { me_quizzes: Array<(
       { __typename?: 'Quiz' }
       & QuizzesResponseFragment
     )> }
@@ -664,7 +664,7 @@ export type QuizToUpdateQueryVariables = Exact<{
 
 export type QuizToUpdateQuery = (
   { __typename?: 'Query' }
-  & { quizToUpdate: (
+  & { quiz_to_update: (
     { __typename?: 'Quiz' }
     & Pick<Quiz, 'title' | 'description' | 'quiz_photo' | 'results'>
     & { questions: Array<(
@@ -688,7 +688,7 @@ export type QuizzesQuery = (
   { __typename?: 'Query' }
   & { quizzes: (
     { __typename?: 'PaginatedQuizzes' }
-    & Pick<PaginatedQuizzes, 'hasMore'>
+    & Pick<PaginatedQuizzes, 'has_more'>
     & { quizzes: Array<(
       { __typename?: 'Quiz' }
       & QuizzesResponseFragment
@@ -703,9 +703,9 @@ export type SingleQuizQueryVariables = Exact<{
 
 export type SingleQuizQuery = (
   { __typename?: 'Query' }
-  & { singleQuiz?: Maybe<(
+  & { quiz?: Maybe<(
     { __typename?: 'Quiz' }
-    & Pick<Quiz, 'id' | 'quiz_photo' | 'title' | 'description' | 'is_liked' | 'likes_count' | 'comments_count' | 'created_at' | 'questionsCount' | 'scores_count' | 'is_taken'>
+    & Pick<Quiz, 'id' | 'quiz_photo' | 'title' | 'description' | 'is_liked' | 'likes_count' | 'comments_count' | 'created_at' | 'questions_count' | 'scores_count' | 'is_taken'>
     & { author: (
       { __typename?: 'User' }
       & Pick<User, 'id' | 'username' | 'avatar' | 'email'>
@@ -764,7 +764,7 @@ export const QuizzesResponseFragmentDoc = gql`
   likes_count
   comments_count
   scores_count
-  questionsCount
+  questions_count
 }
     `;
 export const ScoreResponseFragmentDoc = gql`
@@ -1247,7 +1247,7 @@ export type UpdateQuizMutationOptions = Apollo.BaseMutationOptions<UpdateQuizMut
 export const CommentsDocument = gql`
     query Comments($limit: Int!, $cursor: String, $quiz_id: Int!) {
   comments(limit: $limit, cursor: $cursor, quiz_id: $quiz_id) {
-    hasMore
+    has_more
     comments {
       ...CommentResponse
     }
@@ -1316,9 +1316,9 @@ export type MeLazyQueryHookResult = ReturnType<typeof useMeLazyQuery>;
 export type MeQueryResult = Apollo.QueryResult<MeQuery, MeQueryVariables>;
 export const MeQuizzesDocument = gql`
     query MeQuizzes($limit: Int!, $cursor: String) {
-  meQuizzes(limit: $limit, cursor: $cursor) {
+  me_quizzes(limit: $limit, cursor: $cursor) {
     meHasMore
-    meQuizzes {
+    me_quizzes {
       ...QuizzesResponse
     }
   }
@@ -1393,7 +1393,7 @@ export type QuestionsLazyQueryHookResult = ReturnType<typeof useQuestionsLazyQue
 export type QuestionsQueryResult = Apollo.QueryResult<QuestionsQuery, QuestionsQueryVariables>;
 export const QuizToUpdateDocument = gql`
     query QuizToUpdate($quiz_id: Int!) {
-  quizToUpdate(quiz_id: $quiz_id) {
+  quiz_to_update(quiz_id: $quiz_id) {
     title
     description
     quiz_photo
@@ -1444,7 +1444,7 @@ export type QuizToUpdateQueryResult = Apollo.QueryResult<QuizToUpdateQuery, Quiz
 export const QuizzesDocument = gql`
     query Quizzes($limit: Int!, $cursor: String, $query: String) {
   quizzes(limit: $limit, cursor: $cursor, query: $query) {
-    hasMore
+    has_more
     quizzes {
       ...QuizzesResponse
     }
@@ -1481,7 +1481,7 @@ export type QuizzesLazyQueryHookResult = ReturnType<typeof useQuizzesLazyQuery>;
 export type QuizzesQueryResult = Apollo.QueryResult<QuizzesQuery, QuizzesQueryVariables>;
 export const SingleQuizDocument = gql`
     query SingleQuiz($quiz_id: Int!) {
-  singleQuiz(quiz_id: $quiz_id) {
+  quiz(quiz_id: $quiz_id) {
     id
     quiz_photo
     title
@@ -1499,7 +1499,7 @@ export const SingleQuizDocument = gql`
     likes_count
     comments_count
     created_at
-    questionsCount
+    questions_count
     scores_count
     is_taken
     tags {

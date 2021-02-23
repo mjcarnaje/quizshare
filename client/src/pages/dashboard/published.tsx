@@ -26,11 +26,11 @@ const Published: React.FC = () => {
 			</Head>
 			<DashboardContainer display='grid' justifyItems='center'>
 				<QuizzesCards
-					quizzes={data?.meQuizzes.meQuizzes}
+					quizzes={data?.me_quizzes.me_quizzes}
 					isLoading={loading}
 					isError={error}
 				/>
-				{data && data.meQuizzes.meHasMore && (
+				{data && data.me_quizzes.meHasMore && (
 					<Button
 						size='sm'
 						colorScheme={buttonColorScheme}
@@ -42,8 +42,8 @@ const Published: React.FC = () => {
 								variables: {
 									limit: variables?.limit,
 									cursor:
-										data.meQuizzes.meQuizzes[
-											data.meQuizzes.meQuizzes.length - 1
+										data.me_quizzes.me_quizzes[
+											data.me_quizzes.me_quizzes.length - 1
 										].created_at,
 								},
 							})

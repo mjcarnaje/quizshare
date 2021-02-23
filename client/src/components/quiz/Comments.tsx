@@ -218,7 +218,7 @@ const Comments: React.FC<SingleQuizCommentsProps> = ({
 
 					{loading && <LoadingSkeleton />}
 
-					{data && data.comments?.hasMore && (
+					{data && data.comments?.has_more && (
 						<Button
 							size='sm'
 							colorScheme={buttonColorScheme}

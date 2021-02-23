@@ -1,5 +1,5 @@
 query SingleQuiz($quiz_id: Int!) {
-	singleQuiz(quiz_id: $quiz_id) {
+	quiz(quiz_id: $quiz_id) {
 		id
 		quiz_photo
 		title
@@ -17,7 +17,7 @@ query SingleQuiz($quiz_id: Int!) {
 		likes_count
 		comments_count
 		created_at
-		questionsCount
+		questions_count
 		scores_count
 		is_taken
 		tags {

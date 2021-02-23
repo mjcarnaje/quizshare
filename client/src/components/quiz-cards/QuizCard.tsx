@@ -59,7 +59,7 @@ export const QuizCard: React.FC<QuizCardProps> = ({ quiz }) => {
 		title,
 		author,
 		scores_count,
-		questionsCount,
+		questions_count,
 		tags,
 	} = quiz;
 
@@ -103,7 +103,7 @@ export const QuizCard: React.FC<QuizCardProps> = ({ quiz }) => {
 							<Flex align='center' ml='20px'>
 								<Icon as={AiOutlineUnorderedList} />
 								<Text ml='4px' fontSize='14px'>
-									{questionsCount} Questions
+									{questions_count} Questions
 								</Text>
 							</Flex>
 						</Flex>

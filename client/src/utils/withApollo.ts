@@ -59,7 +59,7 @@ const createClient = (ctx: NextPageContext) =>
 								};
 							},
 						},
-						meQuizzes: {
+						me_quizzes: {
 							keyArgs: [],
 							merge(
 								existing: PaginatedMeQuizzes | undefined,
@@ -67,9 +67,9 @@ const createClient = (ctx: NextPageContext) =>
 							): PaginatedMeQuizzes {
 								return {
 									...incoming,
-									meQuizzes: [
-										...(existing?.meQuizzes || []),
-										...incoming.meQuizzes,
+									me_quizzes: [
+										...(existing?.me_quizzes || []),
+										...incoming.me_quizzes,
 									],
 								};
 							},
