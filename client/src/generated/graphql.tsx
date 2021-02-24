@@ -268,6 +268,7 @@ export type QueryQuizzesArgs = {
 
 export type QuerySearched_QuizzesArgs = {
   cursor?: Maybe<Scalars['String']>;
+  sort_by?: Maybe<Scalars['String']>;
   query: Scalars['String'];
   limit: Scalars['Int'];
 };
@@ -722,6 +723,7 @@ export type SearchedQuizzesQueryVariables = Exact<{
   limit: Scalars['Int'];
   query: Scalars['String'];
   cursor?: Maybe<Scalars['String']>;
+  sort_by?: Maybe<Scalars['String']>;
 }>;
 
 
@@ -1551,8 +1553,13 @@ export type QuizzesQueryHookResult = ReturnType<typeof useQuizzesQuery>;
 export type QuizzesLazyQueryHookResult = ReturnType<typeof useQuizzesLazyQuery>;
 export type QuizzesQueryResult = Apollo.QueryResult<QuizzesQuery, QuizzesQueryVariables>;
 export const SearchedQuizzesDocument = gql`
-    query SearchedQuizzes($limit: Int!, $query: String!, $cursor: String) {
-  searched_quizzes(limit: $limit, query: $query, cursor: $cursor) {
+    query SearchedQuizzes($limit: Int!, $query: String!, $cursor: String, $sort_by: String) {
+  searched_quizzes(
+    limit: $limit
+    query: $query
+    cursor: $cursor
+    sort_by: $sort_by
+  ) {
     has_more
     quizzes {
       ...QuizzesResponse
@@ -1576,6 +1583,7 @@ export const SearchedQuizzesDocument = gql`
  *      limit: // value for 'limit'
  *      query: // value for 'query'
  *      cursor: // value for 'cursor'
+ *      sort_by: // value for 'sort_by'
  *   },
  * });
  */

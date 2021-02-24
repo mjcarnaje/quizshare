@@ -1,7 +1,6 @@
 import { Box, BoxProps, Flex, useColorModeValue } from '@chakra-ui/react';
 import { CloudinaryContext } from 'cloudinary-react';
 import { NavBar } from '../components/navbar/NavBar';
-import { SearchBar } from '../components/SearchBar';
 
 interface MainContainerProps extends BoxProps {
 	withSearchBar?: boolean;
@@ -23,7 +22,6 @@ export const MainContainer: React.FC<MainContainerProps> = ({
 				minHeight='100vh'
 			>
 				<NavBar />
-				{withSearchBar && <SearchBar />}
 				<Box px={['10px', '16px', '24px']} {...props}>
 					{children}
 				</Box>

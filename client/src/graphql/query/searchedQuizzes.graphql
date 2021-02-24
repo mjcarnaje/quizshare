@@ -1,5 +1,15 @@
-query SearchedQuizzes($limit: Int!, $query: String!, $cursor: String) {
-	searched_quizzes(limit: $limit, query: $query, cursor: $cursor) {
+query SearchedQuizzes(
+	$limit: Int!
+	$query: String!
+	$cursor: String
+	$sort_by: String
+) {
+	searched_quizzes(
+		limit: $limit
+		query: $query
+		cursor: $cursor
+		sort_by: $sort_by
+	) {
 		has_more
 		quizzes {
 			...QuizzesResponse

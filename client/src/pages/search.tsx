@@ -2,18 +2,15 @@ import {
 	AspectRatio,
 	Button,
 	Center,
-	Flex,
-	Select,
-	Skeleton,
-	Spacer,
 	Text,
 	useColorModeValue,
 } from '@chakra-ui/react';
 import { useRouter } from 'next/dist/client/router';
 import Head from 'next/head';
 import Image from 'next/image';
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import { QuizzesCards } from '../components/quiz-cards/QuizzesCards';
+import { SearchBar } from '../components/SearchBar';
 import {
 	useGetSearchedQuizzesCountQuery,
 	useSearchedQuizzesQuery,
@@ -23,12 +20,8 @@ import { useIsAuth } from '../utils/useIsAuth';
 import { withApollo } from '../utils/withApollo';
 
 const Search: React.FC = () => {
-	const {
-		push,
-		query: { q },
-	} = useRouter();
+	const { push, query } = useRouter();
 	useIsAuth();
-	const [query, setQuery] = useState<string>('');
 
 	const {
 		data,
@@ -40,7 +33,8 @@ const Search: React.FC = () => {
 		variables: {
 			limit: 5,
 			cursor: null,
-			query: query ?? '',
+			query: query.q as string,
+			sort_by: query.sort_by as string,
 		},
 		notifyOnNetworkStatusChange: true,
 	});
@@ -49,48 +43,27 @@ const Search: React.FC = () => {
 		data: resultsCount,
 		loading: resultsLoading,
 	} = useGetSearchedQuizzesCountQuery({
-		variables: { query: query ?? '' },
+		variables: { query: query.q as string },
 	});
 
-	useEffect(() => {
-		if (q && typeof q === 'string') {
-			setQuery(q);
-		}
-	}, [q]);
-
 	return (
-		<MainContainer display='grid' justifyItems='center' withSearchBar>
+		<MainContainer display='grid' justifyItems='center'>
 			<Head>
 				<title>QuizShare</title>
 				<meta name='viewport' content='initial-scale=1.0, width=device-width' />
 			</Head>
 
-			<Flex w={['100%', '460px', '820px']} align='center'>
-				<Skeleton isLoaded={!resultsLoading}>
-					<Text>
-						Found{' '}
-						<strong>{resultsCount?.get_searched_quizzes_count ?? 0}</strong>{' '}
-						results
-					</Text>
-				</Skeleton>
-				<Spacer />
-				<Flex align='center'>
-					<Text flexShrink={0} mr='16px'>
-						Sort by:
-					</Text>
-					<Select variant='outline' placeholder='Date'>
-						<option>Popularity</option>
-						<option>Name</option>
-						<option>Date</option>
-					</Select>
-				</Flex>
-			</Flex>
+			<SearchBar
+				quizzes_count={resultsCount?.get_searched_quizzes_count}
+				resultsLoading={resultsLoading}
+			/>
 
 			<QuizzesCards
 				quizzes={data?.searched_quizzes.quizzes}
 				isLoading={loading}
 				isError={error}
 			/>
+
 			{!data?.searched_quizzes.has_more &&
 				data?.searched_quizzes.quizzes.length === 0 && (
 					<Center flexDirection='column' mt='20px' mb='60px'>
@@ -112,6 +85,7 @@ const Search: React.FC = () => {
 						</Button>
 					</Center>
 				)}
+
 			{data && data.searched_quizzes.has_more && (
 				<Button
 					size='sm'

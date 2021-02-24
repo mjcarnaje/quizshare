@@ -6,6 +6,7 @@ import { useQuizzesQuery } from '../generated/graphql';
 import { MainContainer } from '../layouts/MainContainer';
 import { useIsAuth } from '../utils/useIsAuth';
 import { withApollo } from '../utils/withApollo';
+import { SearchBar } from '../components/SearchBar';
 
 const Index: React.FC = () => {
 	useIsAuth();
@@ -19,11 +20,12 @@ const Index: React.FC = () => {
 	});
 
 	return (
-		<MainContainer display='grid' justifyItems='center' withSearchBar>
+		<MainContainer display='grid' justifyItems='center'>
 			<Head>
 				<title>QuizShare</title>
 				<meta name='viewport' content='initial-scale=1.0, width=device-width' />
 			</Head>
+			<SearchBar />
 			<QuizzesCards
 				quizzes={data?.quizzes.quizzes}
 				isLoading={loading}

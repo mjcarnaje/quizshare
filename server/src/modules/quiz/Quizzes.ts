@@ -10,7 +10,7 @@ import {
 	Root,
 	UseMiddleware,
 } from 'type-graphql';
-import { FindManyOptions, LessThan, Raw } from 'typeorm';
+import { FindManyOptions, getConnection, LessThan } from 'typeorm';
 import { Question } from '../../entity/Question';
 import { Quiz } from '../../entity/Quiz';
 import { MyContext } from '../../types/MyContext';
@@ -137,83 +137,53 @@ export class QuizzesResolver {
 	async searched_quizzes(
 		@Arg('limit', () => Int) limit: number,
 		@Arg('query', () => String) query: string,
+		@Arg('sort_by', () => String, { nullable: true }) sort_by: 'ASC' | 'DESC',
 		@Arg('cursor', () => String, { nullable: true }) cursor: string | null
 	): Promise<PaginatedQuizzes> {
 		const realLimit = Math.min(20, limit);
 		const realLimitPlusOne = realLimit + 1;
-		const formattedQuery = query.trim().replace(/ /g, ' <-> ');
 
-		let findOptionsInitial: FindManyOptions = {
-			relations: [
-				'author',
-				'author.profile',
-				'questions',
-				'likes',
-				'comments',
-				'tags',
-				'scores',
-			],
-			order: {
-				created_at: 'DESC',
-			},
-			take: realLimitPlusOne,
-		};
-
-		let findOptions: FindManyOptions;
+		const qs = await getConnection()
+			.getRepository(Quiz)
+			.createQueryBuilder('q')
+			.leftJoinAndSelect('q.author', 'author')
+			.leftJoinAndSelect('author.profile', 'profile')
+			.leftJoinAndSelect('q.questions', 'questions')
+			.leftJoinAndSelect('q.likes', 'likes')
+			.leftJoinAndSelect('q.comments', 'comments')
+			.leftJoinAndSelect('q.tags', 'tags')
+			.leftJoinAndSelect('q.scores', 'scores');
 
 		if (cursor) {
-			findOptions = {
-				...findOptionsInitial,
-				where: [
-					{
-						description: Raw(
-							(description) =>
-								`to_tsvector('simple', ${description}) @@ to_tsquery('simple', :query)`,
-							{
-								query: formattedQuery,
-							}
-						),
-						created_at: LessThan(new Date(parseInt(cursor))),
-					},
-					{
-						title: Raw(
-							(title) =>
-								`to_tsvector('simple', ${title}) @@ to_tsquery('simple', :query)`,
-							{
-								query: formattedQuery,
-							}
-						),
-						created_at: LessThan(new Date(parseInt(cursor))),
-					},
-				],
-			};
+			qs.where(
+				`q.title ILIKE :title AND	q.created_at ${
+					sort_by === 'DESC' ? '>' : '<'
+				} :cursor`,
+				{
+					title: `%${query}%`,
+					cursor: new Date(parseInt(cursor)),
+				}
+			).orWhere(
+				`q.description ILIKE :description AND	q.created_at ${
+					sort_by === 'DESC' ? '>' : '<'
+				} :cursor`,
+				{
+					description: `%${query}%`,
+					cursor: new Date(parseInt(cursor)),
+				}
+			);
 		} else {
-			findOptions = {
-				...findOptionsInitial,
-				where: [
-					{
-						description: Raw(
-							(description) =>
-								`to_tsvector('simple', ${description}) @@ to_tsquery('simple', :query)`,
-							{
-								query: formattedQuery,
-							}
-						),
-					},
-					{
-						title: Raw(
-							(title) =>
-								`to_tsvector('simple', ${title}) @@ to_tsquery('simple', :query)`,
-							{
-								query: formattedQuery,
-							}
-						),
-					},
-				],
-			};
+			qs.where('q.title ILIKE :title', {
+				title: `%${query}%`,
+			}).orWhere('q.description ILIKE :description', {
+				description: `%${query}%`,
+			});
 		}
 
-		const quizzes = await Quiz.find(findOptions as FindManyOptions);
+		const quizzes = await qs
+			.orderBy('q.created_at', sort_by ?? 'DESC')
+			.take(realLimitPlusOne)
+			.getMany();
 
 		return {
 			quizzes: (quizzes as [Quiz]).slice(0, realLimit),
@@ -226,32 +196,18 @@ export class QuizzesResolver {
 	async get_searched_quizzes_count(
 		@Arg('query', () => String) query: string
 	): Promise<number> {
-		const formattedQuery = query.trim().replace(/ /g, ' <-> ');
+		const quizzesCount = await getConnection()
+			.getRepository(Quiz)
+			.createQueryBuilder('q')
+			.where('q.title ILIKE :title', {
+				title: `%${query}%`,
+			})
+			.orWhere('q.description ILIKE :description', {
+				description: `%${query}%`,
+			})
+			.getCount();
 
-		const quizzes = await Quiz.find({
-			where: [
-				{
-					description: Raw(
-						(description) =>
-							`to_tsvector('simple', ${description}) @@ to_tsquery('simple', :query)`,
-						{
-							query: formattedQuery,
-						}
-					),
-				},
-				{
-					title: Raw(
-						(title) =>
-							`to_tsvector('simple', ${title}) @@ to_tsquery('simple', :query)`,
-						{
-							query: formattedQuery,
-						}
-					),
-				},
-			],
-		});
-
-		return quizzes.length;
+		return quizzesCount;
 	}
 
 	@UseMiddleware(isAuthenticated)

@@ -49,7 +49,7 @@ const createClient = (ctx: NextPageContext) =>
 							},
 						},
 						searched_quizzes: {
-							keyArgs: ['query'],
+							keyArgs: ['query', 'sort_by'],
 							merge(
 								existing: PaginatedQuizzes | undefined,
 								incoming: PaginatedQuizzes,
