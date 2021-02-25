@@ -2,6 +2,7 @@ import { Skeleton, AspectRatio, Box } from '@chakra-ui/react';
 import { useRouter } from 'next/router';
 import { useEffect } from 'react';
 import { useDispatch } from 'react-redux';
+import Meta from '../../../../components/Meta';
 import { useQuizToUpdateQuery } from '../../../../generated/graphql';
 import { MainContainer } from '../../../../layouts/MainContainer';
 import { QuizContainer } from '../../../../layouts/QuizContainer';
@@ -33,6 +34,8 @@ function EditQuiz() {
 
 	return (
 		<MainContainer>
+			<Meta title='Fetching...' />
+
 			<QuizContainer type='update' quizId={router.query?.id as string}>
 				<SubContainer w='764px' my='0'>
 					<Skeleton opacity='.4' mb='20px'>

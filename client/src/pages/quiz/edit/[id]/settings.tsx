@@ -1,13 +1,14 @@
 import { Button, Center, Flex, VStack } from '@chakra-ui/react';
-import Head from 'next/head';
 import { useRouter } from 'next/router';
 import React, { useEffect } from 'react';
 import { FormProvider, useForm } from 'react-hook-form';
 import { MdPhotoSizeSelectActual } from 'react-icons/md';
 import { useDispatch, useSelector } from 'react-redux';
 import TextareaAutosize from 'react-textarea-autosize';
+import TagsArray from '../../../../components/create-update-quiz/TagsArray';
 import QuizInputUI from '../../../../components/custom-inputs/QuizInputUI';
 import ImageHolder from '../../../../components/ImageHolder';
+import Meta from '../../../../components/Meta';
 import { QuizInput } from '../../../../generated/graphql';
 import { MainContainer } from '../../../../layouts/MainContainer';
 import { QuizContainer } from '../../../../layouts/QuizContainer';
@@ -16,7 +17,6 @@ import { setSettings } from '../../../../store/quizSlice';
 import { SettingsInput, State } from '../../../../store/type';
 import { useUploadSinglePhoto } from '../../../../utils/useUploadPhoto';
 import { withApollo } from '../../../../utils/withApollo';
-import TagsArray from '../../../../components/create-update-quiz/TagsArray';
 
 const Settings: React.FC = () => {
 	const router = useRouter();
@@ -57,10 +57,8 @@ const Settings: React.FC = () => {
 
 	return (
 		<MainContainer py='40px'>
-			<Head>
-				<title>Create Quiz</title>
-				<meta name='viewport' content='initial-scale=1.0, width=device-width' />
-			</Head>
+			<Meta title='Update Quiz' />
+
 			<QuizContainer type='update' quizId={router.query.id as string}>
 				<SubContainer w='764px' my='0'>
 					<FormProvider {...methods}>

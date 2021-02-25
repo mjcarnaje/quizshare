@@ -1,5 +1,5 @@
-import Head from 'next/head';
 import React from 'react';
+import Meta from '../../components/Meta';
 import Comments from '../../components/quiz/Comments';
 import QuizHead from '../../components/quiz/QuizHead';
 import { useSingleQuizQuery } from '../../generated/graphql';
@@ -28,10 +28,8 @@ const Quiz: React.FC<QuizProps> = ({}) => {
 
 	return (
 		<MainContainer>
-			<Head>
-				<title>{quizdata?.quiz?.title}</title>
-				<meta name='viewport' content='initial-scale=1.0, width=device-width' />
-			</Head>
+			<Meta title={`${quizdata?.quiz?.title}`} />
+
 			<QuizHead data={quizdata?.quiz} quizLoading={quizLoading} />
 			<Comments
 				quiz_id={quizId}

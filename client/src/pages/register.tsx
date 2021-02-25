@@ -19,20 +19,20 @@ import {
 	VStack,
 } from '@chakra-ui/react';
 import { useRouter } from 'next/dist/client/router';
-import Head from 'next/head';
 import React, { useState } from 'react';
 import { useForm } from 'react-hook-form';
-import { Days, Months, Years } from '../components/options/Birthday';
-import { MainContainer } from '../layouts/MainContainer';
 import MainInputUI from '../components/custom-inputs/MainInputUI';
+import Meta from '../components/Meta';
+import { Days, Months, Years } from '../components/options/Birthday';
 import {
+	MeDocument,
+	MeQuery,
 	RegisterInput,
 	useRegisterMutation,
-	MeQuery,
 } from '../generated/graphql';
+import { MainContainer } from '../layouts/MainContainer';
 import errorMapper from '../utils/errorMapper';
 import { withApollo } from '../utils/withApollo';
-import { MeDocument } from '../generated/graphql';
 
 const Register: React.FC = () => {
 	const router = useRouter();
@@ -73,10 +73,8 @@ const Register: React.FC = () => {
 			alignItems='center'
 			my='50px'
 		>
-			<Head>
-				<title>Register</title>
-				<meta name='viewport' content='initial-scale=1.0, width=device-width' />
-			</Head>
+			<Meta title='Register' />
+
 			<Box
 				borderWidth='1px'
 				borderColor={useColorModeValue('gray.200', '')}

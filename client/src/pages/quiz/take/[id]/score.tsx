@@ -13,12 +13,12 @@ import {
 	useColorModeValue,
 	VStack,
 } from '@chakra-ui/react';
-import Head from 'next/head';
 import Image from 'next/image';
 import { useRouter } from 'next/router';
 import React, { useEffect, useState } from 'react';
 import { AiFillCheckCircle, AiFillCloseCircle } from 'react-icons/ai';
-import { useSelector, useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
+import Meta from '../../../../components/Meta';
 import Comments from '../../../../components/quiz/Comments';
 import {
 	useQuestionsQuery,
@@ -26,10 +26,10 @@ import {
 } from '../../../../generated/graphql';
 import { MainContainer } from '../../../../layouts/MainContainer';
 import { SubContainer } from '../../../../layouts/SubContainer';
-import { State } from '../../../../store/type';
-import { withApollo } from '../../../../utils/withApollo';
-import { useGetIntId } from '../../../../utils/useGetIntId';
 import { resetResultState } from '../../../../store/resultSlice';
+import { State } from '../../../../store/type';
+import { useGetIntId } from '../../../../utils/useGetIntId';
+import { withApollo } from '../../../../utils/withApollo';
 
 interface ScoreProps {}
 
@@ -77,6 +77,7 @@ const Score: React.FC<ScoreProps> = ({}) => {
 				justifyContent='center'
 				h='100vh'
 			>
+				<Meta title={`Checking... | ${quizdata?.quiz?.title}`} />
 				<Flex>
 					<Spinner mr='5px' />
 					<Text>Checking...</Text>
@@ -93,10 +94,8 @@ const Score: React.FC<ScoreProps> = ({}) => {
 
 	return (
 		<MainContainer>
-			<Head>
-				<title>{`Score | ${quizdata?.quiz?.title}`}</title>
-				<meta name='viewport' content='initial-scale=1.0, width=device-width' />
-			</Head>
+			<Meta title={`Score | ${quizdata?.quiz?.title}`} />
+
 			<SubContainer>
 				<Flex align='center' flexDirection='column' mb='30px'>
 					<Heading as='h2' fontSize='32px'>

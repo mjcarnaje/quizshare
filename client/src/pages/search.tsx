@@ -6,9 +6,9 @@ import {
 	useColorModeValue,
 } from '@chakra-ui/react';
 import { useRouter } from 'next/dist/client/router';
-import Head from 'next/head';
 import Image from 'next/image';
 import React from 'react';
+import Meta from '../components/Meta';
 import { QuizzesCards } from '../components/quiz-cards/QuizzesCards';
 import { SearchBar } from '../components/SearchBar';
 import {
@@ -48,10 +48,7 @@ const Search: React.FC = () => {
 
 	return (
 		<MainContainer display='grid' justifyItems='center'>
-			<Head>
-				<title>QuizShare</title>
-				<meta name='viewport' content='initial-scale=1.0, width=device-width' />
-			</Head>
+			<Meta title='Search | QuizShare' />
 
 			<SearchBar
 				quizzes_count={resultsCount?.get_searched_quizzes_count}

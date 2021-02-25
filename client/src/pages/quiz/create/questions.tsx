@@ -8,7 +8,6 @@ import {
 	Text,
 	Tooltip,
 } from '@chakra-ui/react';
-import Head from 'next/head';
 import React, { useEffect, useState } from 'react';
 import { Controller, useFieldArray, useForm } from 'react-hook-form';
 import { BsPlusSquareFill } from 'react-icons/bs';
@@ -19,6 +18,7 @@ import { v4 as uuid } from 'uuid';
 import ChoiceArray from '../../../components/create-update-quiz/ChoiceArray';
 import QuizInputUI from '../../../components/custom-inputs/QuizInputUI';
 import ImageHolder from '../../../components/ImageHolder';
+import Meta from '../../../components/Meta';
 import { QuestionInput } from '../../../generated/graphql';
 import { MainContainer } from '../../../layouts/MainContainer';
 import { QuizContainer } from '../../../layouts/QuizContainer';
@@ -74,10 +74,7 @@ const Questions: React.FC = () => {
 
 	return (
 		<MainContainer py='40px' height='100.1vh'>
-			<Head>
-				<title>Create Quiz</title>
-				<meta name='viewport' content='initial-scale=1.0, width=device-width' />
-			</Head>
+			<Meta title='Create Quiz' />
 			<QuizContainer type='create'>
 				<SubContainer w='764px' my='0'>
 					<form onSubmit={handleSubmit(onSubmit)}>

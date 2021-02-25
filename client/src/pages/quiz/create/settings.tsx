@@ -1,5 +1,4 @@
 import { Button, Center, Flex, VStack } from '@chakra-ui/react';
-import Head from 'next/head';
 import React, { useEffect } from 'react';
 import { FormProvider, useForm } from 'react-hook-form';
 import { MdPhotoSizeSelectActual } from 'react-icons/md';
@@ -16,6 +15,7 @@ import { setSettings } from '../../../store/quizSlice';
 import { SettingsInput, State } from '../../../store/type';
 import { useUploadSinglePhoto } from '../../../utils/useUploadPhoto';
 import { withApollo } from '../../../utils/withApollo';
+import Meta from '../../../components/Meta';
 
 const Settings: React.FC = () => {
 	const dispatch = useDispatch();
@@ -56,10 +56,7 @@ const Settings: React.FC = () => {
 
 	return (
 		<MainContainer py='40px'>
-			<Head>
-				<title>Create Quiz</title>
-				<meta name='viewport' content='initial-scale=1.0, width=device-width' />
-			</Head>
+			<Meta title='Create Quiz' />
 			<QuizContainer type='create'>
 				<SubContainer w='764px' my='0'>
 					<FormProvider {...methods}>

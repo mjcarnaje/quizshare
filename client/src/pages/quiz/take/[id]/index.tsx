@@ -14,11 +14,11 @@ import {
 	VStack,
 } from '@chakra-ui/react';
 import { useRouter } from 'next/dist/client/router';
-import Head from 'next/head';
 import Image from 'next/image';
 import React, { RefObject, useRef, useState } from 'react';
 import { BiCheckDouble } from 'react-icons/bi';
 import { useDispatch } from 'react-redux';
+import Meta from '../../../../components/Meta';
 import {
 	useCheckAnswerMutation,
 	useQuestionsQuery,
@@ -82,10 +82,8 @@ const TakeQuiz: React.FC<TakeQuizProps> = ({}) => {
 
 	return (
 		<MainContainer>
-			<Head>
-				<title>{`Take | ${quizdata?.quiz?.title}`}</title>
-				<meta name='viewport' content='initial-scale=1.0, width=device-width' />
-			</Head>
+			<Meta title={`${quizdata?.quiz?.title} | Take`} />
+
 			<SubContainer position='relative'>
 				<Flex justify='space-between'>
 					<Box ml='10px'>

@@ -2,18 +2,16 @@ import { Grid } from '@chakra-ui/react';
 import React from 'react';
 import { AccountInformation } from '../../components/dasboard/AccountInformation';
 import { ProfileInformation } from '../../components/dasboard/ProfileInformation';
+import Meta from '../../components/Meta';
 import { DashboardContainer } from '../../layouts/DashboardContainer';
 import { MainContainer } from '../../layouts/MainContainer';
 import { withApollo } from '../../utils/withApollo';
-import Head from 'next/head';
 
 const Profile: React.FC = () => {
 	return (
 		<MainContainer>
-			<Head>
-				<title>Profile | Dashboard</title>
-				<meta name='viewport' content='initial-scale=1.0, width=device-width' />
-			</Head>
+			<Meta title='Profile | Dashboard' />
+
 			<DashboardContainer>
 				<Grid
 					templateColumns='repeat(10, 1fr)'

@@ -1,12 +1,12 @@
 import { Button, useColorModeValue } from '@chakra-ui/react';
-import Head from 'next/head';
 import React from 'react';
+import Meta from '../components/Meta';
 import { QuizzesCards } from '../components/quiz-cards/QuizzesCards';
+import { SearchBar } from '../components/SearchBar';
 import { useQuizzesQuery } from '../generated/graphql';
 import { MainContainer } from '../layouts/MainContainer';
 import { useIsAuth } from '../utils/useIsAuth';
 import { withApollo } from '../utils/withApollo';
-import { SearchBar } from '../components/SearchBar';
 
 const Index: React.FC = () => {
 	useIsAuth();
@@ -21,10 +21,8 @@ const Index: React.FC = () => {
 
 	return (
 		<MainContainer display='grid' justifyItems='center'>
-			<Head>
-				<title>QuizShare</title>
-				<meta name='viewport' content='initial-scale=1.0, width=device-width' />
-			</Head>
+			<Meta title='Home | QuizShare' />
+
 			<SearchBar />
 			<QuizzesCards
 				quizzes={data?.quizzes.quizzes}

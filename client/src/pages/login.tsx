@@ -1,16 +1,16 @@
 import { Box, Button, Text, useColorModeValue, VStack } from '@chakra-ui/react';
 import { useRouter } from 'next/dist/client/router';
-import Head from 'next/head';
 import React from 'react';
 import { useForm } from 'react-hook-form';
-import { MainContainer } from '../layouts/MainContainer';
 import MainInputUI from '../components/custom-inputs/MainInputUI';
+import Meta from '../components/Meta';
 import {
 	LoginInput,
 	MeDocument,
 	MeQuery,
 	useLoginMutation,
 } from '../generated/graphql';
+import { MainContainer } from '../layouts/MainContainer';
 import errorMapper from '../utils/errorMapper';
 import { withApollo } from '../utils/withApollo';
 
@@ -49,10 +49,8 @@ const Login: React.FC = () => {
 			justifyContent='center'
 			alignItems='center'
 		>
-			<Head>
-				<title>Login</title>
-				<meta name='viewport' content='initial-scale=1.0, width=device-width' />
-			</Head>
+			<Meta title='Login' />
+
 			<Box
 				borderWidth='1px'
 				borderColor={useColorModeValue('gray.200', '')}

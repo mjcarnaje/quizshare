@@ -8,7 +8,6 @@ import {
 	Text,
 	Tooltip,
 } from '@chakra-ui/react';
-import Head from 'next/head';
 import { useRouter } from 'next/router';
 import React, { useEffect, useState } from 'react';
 import { Controller, useFieldArray, useForm } from 'react-hook-form';
@@ -20,14 +19,15 @@ import { v4 as uuid } from 'uuid';
 import ChoiceArray from '../../../../components/create-update-quiz/ChoiceArray';
 import QuizInputUI from '../../../../components/custom-inputs/QuizInputUI';
 import ImageHolder from '../../../../components/ImageHolder';
+import Meta from '../../../../components/Meta';
 import { QuestionInput } from '../../../../generated/graphql';
 import { MainContainer } from '../../../../layouts/MainContainer';
 import { QuizContainer } from '../../../../layouts/QuizContainer';
 import { SubContainer } from '../../../../layouts/SubContainer';
 import { setQuestions } from '../../../../store/quizSlice';
 import { State } from '../../../../store/type';
-import { useUploadForArrayPhotos } from '../../../../utils/useUploadPhoto';
 import { useGetIntId } from '../../../../utils/useGetIntId';
+import { useUploadForArrayPhotos } from '../../../../utils/useUploadPhoto';
 import { withApollo } from '../../../../utils/withApollo';
 
 const Questions: React.FC = () => {
@@ -85,10 +85,8 @@ const Questions: React.FC = () => {
 
 	return (
 		<MainContainer py='40px' height='100.1vh'>
-			<Head>
-				<title>Create Quiz</title>
-				<meta name='viewport' content='initial-scale=1.0, width=device-width' />
-			</Head>
+			<Meta title='Update Quiz' />
+
 			<QuizContainer type='update' quizId={router.query?.id as string}>
 				<SubContainer w='764px' my='0'>
 					<form onSubmit={handleSubmit(onSubmit)}>

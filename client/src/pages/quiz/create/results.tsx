@@ -12,7 +12,6 @@ import {
 	Tooltip,
 	useToast,
 } from '@chakra-ui/react';
-import Head from 'next/head';
 import React from 'react';
 import { Controller, useFieldArray, useForm } from 'react-hook-form';
 import { BsPlusSquareFill } from 'react-icons/bs';
@@ -22,6 +21,7 @@ import TextareaAutosize from 'react-textarea-autosize';
 import { v4 as uuid } from 'uuid';
 import QuizInputUI from '../../../components/custom-inputs/QuizInputUI';
 import ImageHolder from '../../../components/ImageHolder';
+import Meta from '../../../components/Meta';
 import { MainContainer } from '../../../layouts/MainContainer';
 import { QuizContainer } from '../../../layouts/QuizContainer';
 import { SubContainer } from '../../../layouts/SubContainer';
@@ -80,10 +80,8 @@ const Results: React.FC = () => {
 
 	return (
 		<MainContainer py='40px' height='100.1vh'>
-			<Head>
-				<title>Create Quiz</title>
-				<meta name='viewport' content='initial-scale=1.0, width=device-width' />
-			</Head>
+			<Meta title='Create Quiz' />
+
 			<QuizContainer type='create'>
 				<SubContainer w='764px' my='0'>
 					<form onSubmit={handleSubmit(onSubmit)}>
