@@ -4,9 +4,9 @@ import { Arg, Ctx, Mutation, Query, Resolver } from "type-graphql";
 import { getConnection } from "typeorm";
 import { User } from "../../entity/User";
 import { MyContext } from "../../types/types";
-import { SignUpInput } from "./userInputs";
-import { validateSignUp } from "./userValidation";
-import { userCheckIfExist } from "./userCheckIfExist";
+import { checkIfExistUser } from "./validators/checkIfExistUser";
+import { SignUpInput } from "./validators/userInputs";
+import { validateSignUp } from "./validators/userValidation";
 
 @Resolver(User)
 export class UserResolver {
@@ -42,7 +42,7 @@ export class UserResolver {
       throw new UserInputError("Error", { errorInputs });
     }
 
-    const { valid, errors } = await userCheckIfExist(signUpInput);
+    const { valid, errors } = await checkIfExistUser(signUpInput);
 
     if (!valid) {
       throw new UserInputError("Error", { errors });

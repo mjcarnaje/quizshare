@@ -18,6 +18,10 @@ export class User extends BaseEntity {
   id: string;
 
   @Field()
+  @Column("text", { nullable: true })
+  googleId: string;
+
+  @Field()
   @Column("text", { unique: true })
   username: string;
 
@@ -25,7 +29,7 @@ export class User extends BaseEntity {
   @Column("text", { unique: true })
   email: string;
 
-  @Column()
+  @Column({ nullable: true })
   password: string;
 
   @Field({ nullable: true })
@@ -44,12 +48,12 @@ export class User extends BaseEntity {
   @Column("text", { nullable: true })
   lastName?: string;
 
-  @Field()
-  @Column("date")
+  @Field({ nullable: true })
+  @Column("date", { nullable: true })
   birthday: string;
 
-  @Field()
-  @Column("text")
+  @Field({ nullable: true })
+  @Column("text", { nullable: true })
   gender: Gender;
 
   @Field({ nullable: true })

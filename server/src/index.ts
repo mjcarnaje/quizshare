@@ -4,11 +4,13 @@ import cors from "cors";
 import express from "express";
 import session from "express-session";
 import Redis from "ioredis";
+import passport from "passport";
 import "reflect-metadata";
 import { buildSchema } from "type-graphql";
 import { createConnection } from "typeorm";
 import { User } from "./entity/User";
-import { UserResolver } from "./resolvers/user/user";
+import { UserResolver } from "./resolvers/auth/auth";
+import GoogleAuth from "./resolvers/auth/passport";
 
 require("dotenv").config();
 
@@ -26,6 +28,8 @@ const main = async () => {
       logging: true,
       entities: [User],
     });
+
+    GoogleAuth();
 
     const app = express();
 
@@ -54,6 +58,25 @@ const main = async () => {
           secure: process.env.NODE_ENV === "production",
           maxAge: 1000 * 60 * 60 * 24 * 365, // one year
         },
+      })
+    );
+
+    app.use(passport.initialize());
+
+    app.use(passport.session());
+
+    app.get(
+      "/google",
+      passport.authenticate("google", {
+        scope: ["profile", "email"],
+      })
+    );
+
+    app.get(
+      "/google/callback",
+      passport.authenticate("google", {
+        successRedirect: "http://localhost:4000/graphql",
+        failureRedirect: "/failed",
       })
     );
 

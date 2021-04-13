@@ -1,5 +1,5 @@
 import { InputType, Field } from "type-graphql";
-import { Gender } from "../../types/types";
+import { Gender } from "../../../types/types";
 
 @InputType()
 export class SignUpInput {

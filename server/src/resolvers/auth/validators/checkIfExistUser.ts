@@ -1,8 +1,8 @@
-import { User } from "../../entity/User";
-import { IError } from "../../types/types";
+import { User } from "../../../entity/User";
+import { IError } from "../../../types/types";
 import { SignUpInput } from "./userInputs";
 
-export const userCheckIfExist = async (
+export const checkIfExistUser = async (
   userInputs: SignUpInput
 ): Promise<{ errors: IError; valid: boolean }> => {
   const { username, email } = userInputs;

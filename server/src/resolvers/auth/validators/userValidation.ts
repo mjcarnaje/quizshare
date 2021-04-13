@@ -1,4 +1,4 @@
-import { IError } from "../../types/types";
+import { IError } from "../../../types/types";
 import { SignUpInput } from "./userInputs";
 
 export const validateSignUp = (
