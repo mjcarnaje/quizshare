@@ -11,39 +11,35 @@ const GoogleAuth = () => {
         clientSecret: "qoCXd2yxocWJjGysx-GD3xpF",
         callbackURL: "http://localhost:4000/google/callback",
       },
-      async (
-        _accessToken: any,
-        _refreshToken: any,
-        profile: any,
-        done: any
-      ) => {
-        console.log(profile);
-        const oldUser = await User.findOne({ googleId: profile.id });
+      async (_: any, __: any, profile: any, done: any) => {
+        const { id, displayName, name, emails, photos } = profile;
+
+        const oldUser = await User.findOne({ googleId: id });
 
         if (oldUser) {
           return done(null, oldUser);
         } else {
           const newUser = await User.create({
-            googleId: profile.id,
-            username: profile.displayName,
-            firstName: profile.name.givenName,
-            lastName: profile.name.familyName,
-            email: profile.emails[0].value,
-            avatar: profile.photos[0].value,
+            googleId: id,
+            username: displayName,
+            firstName: name.givenName,
+            lastName: name.familyName,
+            email: emails[0].value,
+            avatar: photos[0].value,
           }).save();
 
-          return done(null, newUser);
+          return done(null, { userId: newUser.id });
         }
       }
     )
   );
 
   passport.serializeUser((user: any, done) => {
-    done(null, user.id);
+    done(null, { userId: user.id });
   });
 
-  passport.deserializeUser(async (id, done) => {
-    const user = await User.findOne({ where: { id } });
+  passport.deserializeUser(async (userId, done) => {
+    const user = await User.findOne({ where: { id: userId } });
     done(null, user);
   });
 };

@@ -12,7 +12,7 @@ import { validateSignUp } from "./validators/userValidation";
 export class UserResolver {
   @Query(() => User, { nullable: true })
   async me(@Ctx() ctx: MyContext): Promise<User | undefined | null> {
-    if (ctx.req.session.userId) {
+    if (!ctx.req.session.userId) {
       return null;
     }
 
@@ -71,5 +71,21 @@ export class UserResolver {
     ctx.req.session.userId = user.id;
 
     return user;
+  }
+
+  @Mutation(() => Boolean)
+  async logout(@Ctx() ctx: MyContext): Promise<Boolean> {
+    return new Promise((res, rej) =>
+      ctx.req.session!.destroy((err) => {
+        if (err) {
+          console.error(err);
+          return rej(false);
+        }
+        ctx.req.logout();
+
+        ctx.res.clearCookie(process.env.SESSION_NAME as string);
+        return res(true);
+      })
+    );
   }
 }

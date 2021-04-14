@@ -29,8 +29,6 @@ const main = async () => {
       entities: [User],
     });
 
-    GoogleAuth();
-
     const app = express();
 
     const RedisStore = connectRedis(session);
@@ -38,15 +36,8 @@ const main = async () => {
     const redis = new Redis();
 
     app.use(
-      cors({
-        origin: process.env.CORS_ORIGIN,
-        credentials: true,
-      })
-    );
-
-    app.use(
       session({
-        name: process.env.SESSION_NAME,
+        name: "qid",
         store: new RedisStore({
           client: redis,
         }),
@@ -60,6 +51,15 @@ const main = async () => {
         },
       })
     );
+
+    app.use(
+      cors({
+        credentials: true,
+        origin: process.env.CORS_ORIGIN,
+      })
+    );
+
+    GoogleAuth();
 
     app.use(passport.initialize());
 

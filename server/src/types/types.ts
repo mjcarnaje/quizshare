@@ -1,5 +1,6 @@
 import { Redis } from "ioredis";
 import { Session, SessionData } from "express-session";
+import { Request, Response } from "express";
 
 export enum Gender {
   Male = "Male",
