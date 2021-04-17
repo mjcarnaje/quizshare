@@ -21,8 +21,8 @@ const main = async () => {
       type: "postgres",
       host: "localhost",
       port: 5432,
-      username: "postgres",
-      password: "admin",
+      username: process.env.DATABASE_USERNAME,
+      password: process.env.DATABASE_PASSWORD,
       database: process.env.DATABASE,
       synchronize: true,
       logging: true,
@@ -45,7 +45,7 @@ const main = async () => {
 
     app.use(
       session({
-        name: "qid",
+        name: process.env.SESSION_NAME,
         store: new RedisStore({
           client: redis,
         }),
@@ -70,15 +70,15 @@ const main = async () => {
     passport.use(
       new GoogleStrategy(
         {
-          clientID:
-            "316858224159-0gha9ls9bp32srveo92agk6lkn6anlrh.apps.googleusercontent.com",
-          clientSecret: "qoCXd2yxocWJjGysx-GD3xpF",
+          clientID: process.env.GOOGLE_CLIENT_ID,
+          clientSecret: process.env.GOOGLE_CLIENT_SERCRET,
           callbackURL: "http://localhost:4000/auth/google/callback",
         },
-        async (_: any, __: any, profile: any, done: any) => {
+        // @ts-ignore
+        async (_, __, profile, done) => {
           const { id, displayName, name, emails, photos } = profile;
 
-          const oldUser = await connection
+          const existedUser = await connection
             .getRepository(User)
             .createQueryBuilder("user")
             .where("user.googleId = :id", { id });
@@ -87,10 +87,10 @@ const main = async () => {
 
           if (emails) {
             email = emails[0].value;
-            oldUser.orWhere("user.email = :email", { email });
+            existedUser.orWhere("user.email = :email", { email });
           }
 
-          let user = await oldUser.getOne();
+          let user = await existedUser.getOne();
 
           if (!user) {
             user = await User.create({
