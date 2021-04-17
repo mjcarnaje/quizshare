@@ -5,7 +5,7 @@ import { getConnection } from "typeorm";
 import { User } from "../../entity/User";
 import { MyContext } from "../../types/types";
 import { checkIfExistUser } from "./validators/checkIfExistUser";
-import { SignUpInput } from "./validators/userInputs";
+import { SignInInput, SignUpInput } from "./validators/userInputs";
 import { validateSignUp } from "./validators/userValidation";
 
 @Resolver(User)
@@ -67,6 +67,32 @@ export class UserResolver {
       .execute();
 
     const user = result.raw[0];
+
+    ctx.req.session.userId = user.id;
+
+    return user;
+  }
+
+  @Mutation(() => User, { nullable: true })
+  async signIn(
+    @Arg("SignInInput") { usernameOrEmail, password }: SignInInput,
+    @Ctx() ctx: MyContext
+  ): Promise<User | null> {
+    const user = await User.findOne(
+      usernameOrEmail.includes("@")
+        ? { email: usernameOrEmail }
+        : { username: usernameOrEmail }
+    );
+
+    if (!user) {
+      throw new Error("User not found");
+    }
+
+    const valid = await bcrypt.compare(password, user.password);
+
+    if (!valid) {
+      throw new Error("Wrong Credentials");
+    }
 
     ctx.req.session.userId = user.id;
 

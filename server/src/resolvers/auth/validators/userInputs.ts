@@ -27,3 +27,12 @@ export class SignUpInput {
   @Field()
   gender: Gender;
 }
+
+@InputType()
+export class SignInInput {
+  @Field()
+  usernameOrEmail: string;
+
+  @Field()
+  password: string;
+}
