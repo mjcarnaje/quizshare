@@ -26,7 +26,7 @@ const LoginInput: React.FC<props> = ({
       <input
         id={name}
         type={type}
-        className="relative block w-full px-3 py-2 mt-1 text-gray-900 placeholder-gray-500 border border-gray-300 rounded-md appearance-none focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm"
+        className="relative block w-full px-3 py-2 mt-1 rounded-md focus:ring-purple-600"
         placeholder={placeholder}
         {...register(name, { required })}
       />
@@ -35,3 +35,5 @@ const LoginInput: React.FC<props> = ({
 };
 
 export default LoginInput;
+
+// text-gray-900 placeholder-gray-500 border border-gray-300 rounded-md appearance-none focus:outline-none focus:ring focus:border-purple-500 focus:z-10 sm:text-sm

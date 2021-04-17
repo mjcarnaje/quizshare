@@ -1,4 +1,4 @@
-import { Gender } from "../types/types";
+import { GraphQLJSONObject } from "graphql-type-json";
 import { Field, ID, ObjectType } from "type-graphql";
 import {
   BaseEntity,
@@ -8,16 +8,16 @@ import {
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from "typeorm";
-import { GraphQLJSONObject } from "graphql-type-json";
+import { Gender } from "../types/types";
 
 @ObjectType()
 @Entity()
 export class User extends BaseEntity {
   @Field(() => ID)
-  @PrimaryGeneratedColumn("uuid")
+  @PrimaryGeneratedColumn()
   id: string;
 
-  @Field()
+  @Field({ nullable: true })
   @Column("text", { nullable: true })
   googleId: string;
 
