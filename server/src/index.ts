@@ -133,7 +133,7 @@ const main = async () => {
 
         // redirect to the front-end
 
-        res.redirect("/");
+        res.redirect("http://localhost:3000/");
       }
     );
 

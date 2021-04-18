@@ -3,6 +3,7 @@ import Layout from "@components/Layout";
 import withApollo from "@lib/withApollo";
 import { SignInInput } from "generated/graphql";
 import { useRouter } from "next/dist/client/router";
+import Link from "next/link";
 import React from "react";
 import { useForm } from "react-hook-form";
 import { MeDocument, MeQuery, useSignInMutation } from "../generated/graphql";
@@ -35,7 +36,7 @@ const LoginPage = () => {
   };
 
   return (
-    <Layout title="Login">
+    <Layout title="Login" header={false}>
       <div className="flex items-center justify-center min-h-screen px-4 py-12 bg-gray-50 sm:px-6 lg:px-8">
         <div className="w-full max-w-md space-y-8">
           <div>
@@ -94,16 +95,18 @@ const LoginPage = () => {
             </form>
             <div className="border" />
             <div className="space-y-2">
-              <button className="flex items-center justify-center w-full px-3 py-2 bg-white border-2 border-gray-100 rounded-lg shadow focus:ring-offset-2 focus:outline-none focus:ring-2 focus:ring-purple-600">
-                <img
-                  className="w-6 h-6"
-                  src="./google-logo.svg"
-                  alt="google-logo"
-                />
-                <p className="ml-4 text-sm font-semibold">
-                  Sign in with google
-                </p>
-              </button>
+              <Link href="http://localhost:4000/auth/google">
+                <a className="flex items-center justify-center w-full px-3 py-2 bg-white border-2 border-gray-100 rounded-lg shadow focus:ring-offset-2 focus:outline-none focus:ring-2 focus:ring-purple-600">
+                  <img
+                    className="w-6 h-6"
+                    src="./google-logo.svg"
+                    alt="google-logo"
+                  />
+                  <p className="ml-4 text-sm font-semibold">
+                    Sign in with google
+                  </p>
+                </a>
+              </Link>
               <button className="flex items-center justify-center w-full px-3 py-2 bg-[#4267B2] rounded-lg shadow focus:ring-offset-2 focus:outline-none focus:ring-2 focus:ring-purple-600">
                 <img
                   className="w-6 h-6"
