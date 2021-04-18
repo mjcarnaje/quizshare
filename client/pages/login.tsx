@@ -1,9 +1,10 @@
 import LoginInput from "@components/inputs/LoginInput";
 import Layout from "@components/Layout";
+import withApollo from "@lib/withApollo";
 import React from "react";
 import { useForm } from "react-hook-form";
 
-export default function LoginPage() {
+const LoginPage = () => {
   const { register, handleSubmit } = useForm();
 
   const onSubmit = (data: any) => {
@@ -96,4 +97,6 @@ export default function LoginPage() {
       </div>
     </Layout>
   );
-}
+};
+
+export default withApollo({ ssr: false })(LoginPage);

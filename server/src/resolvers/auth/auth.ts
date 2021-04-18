@@ -102,7 +102,7 @@ export class UserResolver {
   @Mutation(() => Boolean)
   async logout(@Ctx() ctx: MyContext): Promise<Boolean> {
     return new Promise((res, rej) =>
-      ctx.req.session!.destroy((err) => {
+      ctx.req.session.destroy((err) => {
         if (err) {
           console.error(err);
           return rej(false);
@@ -110,6 +110,7 @@ export class UserResolver {
         ctx.req.logout();
 
         ctx.res.clearCookie(process.env.SESSION_NAME as string);
+
         return res(true);
       })
     );

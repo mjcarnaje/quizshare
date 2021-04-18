@@ -1,0 +1,17 @@
+fragment userResponse on User {
+  id
+  googleId
+  username
+  email
+  avatar
+  coverPhoto
+  firstName
+  lastName
+  birthday
+  gender
+  country
+  bio
+  social
+  createdAt
+  updatedAt
+}
