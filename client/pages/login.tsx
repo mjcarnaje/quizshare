@@ -1,14 +1,37 @@
 import LoginInput from "@components/inputs/LoginInput";
 import Layout from "@components/Layout";
 import withApollo from "@lib/withApollo";
+import { SignInInput } from "generated/graphql";
+import { useRouter } from "next/dist/client/router";
 import React from "react";
 import { useForm } from "react-hook-form";
+import { MeDocument, MeQuery, useSignInMutation } from "../generated/graphql";
 
 const LoginPage = () => {
-  const { register, handleSubmit } = useForm();
+  const router = useRouter();
+  const [signIn, { loading }] = useSignInMutation();
+  const { register, handleSubmit } = useForm<SignInInput>();
 
-  const onSubmit = (data: any) => {
-    alert(JSON.stringify(data));
+  const onSubmit = async (values: SignInInput) => {
+    try {
+      const { data } = await signIn({
+        variables: values,
+        update: (cache, { data }) => {
+          cache.writeQuery<MeQuery>({
+            query: MeDocument,
+            data: {
+              __typename: "Query",
+              me: data?.signIn,
+            },
+          });
+        },
+      });
+      if (data?.signIn) {
+        router.push("/");
+      }
+    } catch (err) {
+      alert(JSON.stringify(err, null, 2));
+    }
   };
 
   return (
@@ -65,7 +88,7 @@ const LoginPage = () => {
                   type="submit"
                   className="relative flex justify-center w-full px-4 py-2 mt-6 text-sm font-medium text-white bg-purple-600 border border-transparent rounded-md group hover:bg-purple-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500"
                 >
-                  Sign in
+                  {loading ? "Loading..." : "Sign in"}
                 </button>
               </div>
             </form>

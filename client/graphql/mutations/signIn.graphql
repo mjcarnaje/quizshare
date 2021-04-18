@@ -2,20 +2,6 @@ mutation SignIn($usernameOrEmail: String!, $password: String!) {
   signIn(
     SignInInput: { usernameOrEmail: $usernameOrEmail, password: $password }
   ) {
-    id
-    googleId
-    username
-    email
-    avatar
-    coverPhoto
-    firstName
-    lastName
-    birthday
-    gender
-    country
-    bio
-    social
-    createdAt
-    updatedAt
+    ...userResponse
   }
 }
