@@ -1,6 +1,8 @@
-import Layout from "../components/Layout";
-import { useIsAuthenticated } from "../utils/useIsAuthenticated";
+import React from "react";
+
+import Layout from "@components/Layout";
 import withApollo from "@lib/withApollo";
+import { useIsAuthenticated } from "@utils/useIsAuthenticated";
 
 const IndexPage = () => {
   useIsAuthenticated();

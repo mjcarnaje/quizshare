@@ -1,12 +1,17 @@
+import React from "react";
+
 import LoginInput from "@components/inputs/LoginInput";
 import Layout from "@components/Layout";
+import {
+  MeDocument,
+  MeQuery,
+  SignInInput,
+  useSignInMutation,
+} from "@generated/graphql";
 import withApollo from "@lib/withApollo";
-import { SignInInput } from "generated/graphql";
 import { useRouter } from "next/dist/client/router";
 import Link from "next/link";
-import React from "react";
 import { useForm } from "react-hook-form";
-import { MeDocument, MeQuery, useSignInMutation } from "../generated/graphql";
 
 const LoginPage = () => {
   const router = useRouter();
@@ -107,16 +112,18 @@ const LoginPage = () => {
                   </p>
                 </a>
               </Link>
-              <button className="flex items-center justify-center w-full px-3 py-2 bg-[#4267B2] rounded-lg shadow focus:ring-offset-2 focus:outline-none focus:ring-2 focus:ring-purple-600">
-                <img
-                  className="w-6 h-6"
-                  src="./facebook-logo.svg"
-                  alt="facebook-logo"
-                />
-                <p className="ml-4 text-sm font-semibold text-white">
-                  Sign in with facebook
-                </p>
-              </button>
+              <Link href="http://localhost:4000/auth/facebook">
+                <a className="flex items-center justify-center w-full px-3 py-2 bg-[#4267B2] rounded-lg shadow focus:ring-offset-2 focus:outline-none focus:ring-2 focus:ring-purple-600">
+                  <img
+                    className="w-6 h-6"
+                    src="./facebook-logo.svg"
+                    alt="facebook-logo"
+                  />
+                  <p className="ml-4 text-sm font-semibold text-white">
+                    Sign in with facebook
+                  </p>
+                </a>
+              </Link>
             </div>
           </div>
         </div>

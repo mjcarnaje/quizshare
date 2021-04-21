@@ -21,6 +21,10 @@ export class User extends BaseEntity {
   @Column("text", { nullable: true })
   googleId: string;
 
+  @Field({ nullable: true })
+  @Column("text", { nullable: true })
+  facebookId: string;
+
   @Field()
   @Column("text", { unique: true })
   username: string;
