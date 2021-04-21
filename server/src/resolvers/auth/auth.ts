@@ -75,7 +75,7 @@ export class UserResolver {
 
   @Mutation(() => User, { nullable: true })
   async signIn(
-    @Arg("SignInInput") { usernameOrEmail, password }: SignInInput,
+    @Arg("SignInInput") { usernameOrEmail, password, rememberMe }: SignInInput,
     @Ctx() ctx: MyContext
   ): Promise<User | null> {
     const user = await User.findOne(
@@ -95,6 +95,11 @@ export class UserResolver {
     }
 
     ctx.req.session.userId = user.id;
+
+    // if remember me ~ the cookie expires in 10 years
+    if (rememberMe) {
+      ctx.req.session.cookie.maxAge = 1000 * 60 * 60 * 24 * 365 * 10;
+    }
 
     return user;
   }

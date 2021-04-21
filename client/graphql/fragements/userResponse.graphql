@@ -1,6 +1,7 @@
 fragment userResponse on User {
   id
   googleId
+  facebookId
   username
   email
   avatar

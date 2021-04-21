@@ -68,13 +68,13 @@ const LoginPage = () => {
               <div className="flex items-center justify-between">
                 <div className="flex items-center">
                   <input
-                    id="remember_me"
-                    name="remember_me"
+                    id="rememberMe"
                     type="checkbox"
+                    {...register("rememberMe")}
                     className="w-4 h-4 text-indigo-600 border-gray-300 rounded focus:ring-indigo-500"
                   />
                   <label
-                    htmlFor="remember_me"
+                    htmlFor="rememberMe"
                     className="block ml-2 text-sm text-gray-900"
                   >
                     Remember me
@@ -101,7 +101,7 @@ const LoginPage = () => {
             <div className="border" />
             <div className="space-y-2">
               <Link href="http://localhost:4000/auth/google">
-                <a className="flex items-center justify-center w-full px-3 py-2 bg-white border-2 border-gray-100 rounded-lg shadow focus:ring-offset-2 focus:outline-none focus:ring-2 focus:ring-purple-600">
+                <a className="flex items-center justify-center w-full px-3 py-2 text-gray-700 bg-white border-2 border-gray-100 rounded-lg shadow focus:ring-offset-2 focus:outline-none focus:ring-2 focus:ring-purple-600">
                   <img
                     className="w-6 h-6"
                     src="./google-logo.svg"
@@ -119,11 +119,19 @@ const LoginPage = () => {
                     src="./facebook-logo.svg"
                     alt="facebook-logo"
                   />
-                  <p className="ml-4 text-sm font-semibold text-white">
+                  <p className="ml-4 text-sm font-semibold text-white ">
                     Sign in with facebook
                   </p>
                 </a>
               </Link>
+            </div>
+            <div className="flex justify-center">
+              <p className="">
+                Don't have an account yet?{" "}
+                <Link href="/signup">
+                  <a>Sign up</a>
+                </Link>
+              </p>
             </div>
           </div>
         </div>

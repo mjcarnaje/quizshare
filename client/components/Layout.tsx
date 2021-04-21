@@ -1,9 +1,10 @@
+import React, { ReactNode } from "react";
+
 import { useApolloClient } from "@apollo/client";
 import { useMeQuery, useSignOutMutation } from "generated/graphql";
 import { useRouter } from "next/dist/client/router";
 import Head from "next/head";
 import Link from "next/link";
-import React, { ReactNode } from "react";
 
 type Props = {
   children?: ReactNode;

@@ -56,7 +56,7 @@ const main = async () => {
         cookie: {
           httpOnly: true,
           secure: process.env.NODE_ENV === "production",
-          maxAge: 1000 * 60 * 60 * 24 * 365, // one year
+          maxAge: 1000 * 60 * 60 * 24, // one day
         },
       })
     );

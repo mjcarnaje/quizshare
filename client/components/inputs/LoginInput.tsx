@@ -1,4 +1,5 @@
 import React from "react";
+
 import { UseFormRegister } from "react-hook-form";
 
 interface props {
@@ -20,7 +21,7 @@ const LoginInput: React.FC<props> = ({
 }) => {
   return (
     <div>
-      <label className="font-medium text-gray-600 " htmlFor={name}>
+      <label className="text-sm font-medium text-gray-600 " htmlFor={name}>
         {label}
       </label>
       <input

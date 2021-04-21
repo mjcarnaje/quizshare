@@ -42,6 +42,7 @@ export type Query = {
 export type SignInInput = {
   usernameOrEmail: Scalars['String'];
   password: Scalars['String'];
+  rememberMe: Scalars['Boolean'];
 };
 
 export type SignUpInput = {
@@ -59,6 +60,7 @@ export type User = {
   __typename?: 'User';
   id: Scalars['ID'];
   googleId?: Maybe<Scalars['String']>;
+  facebookId?: Maybe<Scalars['String']>;
   username: Scalars['String'];
   email: Scalars['String'];
   avatar?: Maybe<Scalars['String']>;
@@ -76,7 +78,7 @@ export type User = {
 
 export type UserResponseFragment = (
   { __typename?: 'User' }
-  & Pick<User, 'id' | 'googleId' | 'username' | 'email' | 'avatar' | 'coverPhoto' | 'firstName' | 'lastName' | 'birthday' | 'gender' | 'country' | 'bio' | 'social' | 'createdAt' | 'updatedAt'>
+  & Pick<User, 'id' | 'googleId' | 'facebookId' | 'username' | 'email' | 'avatar' | 'coverPhoto' | 'firstName' | 'lastName' | 'birthday' | 'gender' | 'country' | 'bio' | 'social' | 'createdAt' | 'updatedAt'>
 );
 
 export type SignOutMutationVariables = Exact<{ [key: string]: never; }>;
@@ -90,6 +92,7 @@ export type SignOutMutation = (
 export type SignInMutationVariables = Exact<{
   usernameOrEmail: Scalars['String'];
   password: Scalars['String'];
+  rememberMe: Scalars['Boolean'];
 }>;
 
 
@@ -116,6 +119,7 @@ export const UserResponseFragmentDoc = gql`
     fragment userResponse on User {
   id
   googleId
+  facebookId
   username
   email
   avatar
@@ -162,8 +166,10 @@ export type SignOutMutationHookResult = ReturnType<typeof useSignOutMutation>;
 export type SignOutMutationResult = Apollo.MutationResult<SignOutMutation>;
 export type SignOutMutationOptions = Apollo.BaseMutationOptions<SignOutMutation, SignOutMutationVariables>;
 export const SignInDocument = gql`
-    mutation SignIn($usernameOrEmail: String!, $password: String!) {
-  signIn(SignInInput: {usernameOrEmail: $usernameOrEmail, password: $password}) {
+    mutation SignIn($usernameOrEmail: String!, $password: String!, $rememberMe: Boolean!) {
+  signIn(
+    SignInInput: {usernameOrEmail: $usernameOrEmail, password: $password, rememberMe: $rememberMe}
+  ) {
     ...userResponse
   }
 }
@@ -185,6 +191,7 @@ export type SignInMutationFn = Apollo.MutationFunction<SignInMutation, SignInMut
  *   variables: {
  *      usernameOrEmail: // value for 'usernameOrEmail'
  *      password: // value for 'password'
+ *      rememberMe: // value for 'rememberMe'
  *   },
  * });
  */

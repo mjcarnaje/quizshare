@@ -35,4 +35,7 @@ export class SignInInput {
 
   @Field()
   password: string;
+
+  @Field()
+  rememberMe: boolean;
 }
