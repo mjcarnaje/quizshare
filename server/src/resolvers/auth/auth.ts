@@ -4,9 +4,9 @@ import { Arg, Ctx, Mutation, Query, Resolver } from "type-graphql";
 import { getConnection } from "typeorm";
 import { User } from "../../entity/User";
 import { MyContext } from "../../types/types";
-import { checkIfExistUser } from "./validators/checkIfExistUser";
-import { SignInInput, SignUpInput } from "./validators/userInputs";
-import { validateSignUp } from "./validators/userValidation";
+import { checkIfExistUser } from "./auth-utils/checkIfExistUser";
+import { SignInInput, SignUpInput } from "./auth-utils/userInputs";
+import { validateSignUp } from "./auth-utils/userValidation";
 
 @Resolver(User)
 export class UserResolver {

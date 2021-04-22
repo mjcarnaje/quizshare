@@ -5,10 +5,12 @@ import {
   Column,
   CreateDateColumn,
   Entity,
+  OneToMany,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from "typeorm";
 import { Gender } from "../types/types";
+import { Quiz } from "./Quiz";
 
 @ObjectType()
 @Entity()
@@ -76,6 +78,10 @@ export class User extends BaseEntity {
     instagram?: string;
     youtube?: string;
   };
+
+  @Field(() => [Quiz])
+  @OneToMany(() => Quiz, (quiz) => quiz.author)
+  quizzes: Quiz[];
 
   @Field(() => String)
   @CreateDateColumn()
