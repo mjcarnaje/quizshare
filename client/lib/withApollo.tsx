@@ -1,6 +1,6 @@
-import { withApollo } from "next-apollo";
 import { ApolloClient, InMemoryCache } from "@apollo/client";
 import { NextPageContext } from "next";
+import { withApollo } from "next-apollo";
 
 const apolloClient = (ctx?: NextPageContext | undefined) =>
   new ApolloClient({
