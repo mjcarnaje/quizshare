@@ -8,8 +8,6 @@ import passport from "passport";
 import "reflect-metadata";
 import { buildSchema } from "type-graphql";
 import { createConnection } from "typeorm";
-import { User } from "./entity/User";
-import { UserResolver } from "./resolvers/auth/auth";
 import { facebookAuth } from "./resolvers/auth/facebook";
 import { googleAuth } from "./resolvers/auth/google";
 
@@ -27,12 +25,16 @@ const main = async () => {
       database: process.env.DATABASE,
       synchronize: true,
       logging: true,
-      entities: [User],
+      entities: ["src/entity/*.*"],
     });
+
+    // await Question.delete({});
+    // await Quiz.delete({});
+    // await User.delete({});
 
     const apolloServer = await new ApolloServer({
       schema: await buildSchema({
-        resolvers: [UserResolver],
+        resolvers: [__dirname + "/resolvers/**/*.ts"],
         validate: false,
       }),
       context: ({ req, res }) => ({ req, res }),

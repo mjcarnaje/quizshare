@@ -1,23 +1,22 @@
-import { Field, ObjectType, ID } from "type-graphql";
+import { GraphQLJSONObject } from "graphql-type-json";
+import { Field, ObjectType } from "type-graphql";
 import {
-  Entity,
   BaseEntity,
-  PrimaryGeneratedColumn,
   Column,
-  ManyToOne,
+  Entity,
   JoinColumn,
+  ManyToOne,
+  PrimaryColumn,
 } from "typeorm";
 import { Quiz } from "./Quiz";
-import { GraphQLJSONObject } from "graphql-type-json";
 
 @ObjectType()
 @Entity()
 export class Question extends BaseEntity {
-  @Field(() => ID)
-  @PrimaryGeneratedColumn()
+  @Field(() => String)
+  @PrimaryColumn()
   id: string;
 
-  @Field()
   @Column()
   quizId: string;
 

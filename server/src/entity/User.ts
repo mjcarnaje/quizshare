@@ -1,5 +1,5 @@
 import { GraphQLJSONObject } from "graphql-type-json";
-import { Field, ID, ObjectType } from "type-graphql";
+import { Field, ObjectType } from "type-graphql";
 import {
   BaseEntity,
   Column,
@@ -15,8 +15,8 @@ import { Quiz } from "./Quiz";
 @ObjectType()
 @Entity()
 export class User extends BaseEntity {
-  @Field(() => ID)
-  @PrimaryGeneratedColumn()
+  @Field(() => String)
+  @PrimaryGeneratedColumn("uuid")
   id: string;
 
   @Field({ nullable: true })
