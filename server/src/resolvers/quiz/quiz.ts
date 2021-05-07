@@ -14,7 +14,7 @@ import {
   CreateQuizInput,
   PaginatedQuizzes,
   QueryQuizzesInput,
-} from "./quiz-utils/quizInput";
+} from "./quizInput";
 
 @Resolver(Quiz)
 export class QuizResolver {

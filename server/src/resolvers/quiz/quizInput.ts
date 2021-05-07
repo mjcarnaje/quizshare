@@ -1,5 +1,5 @@
 import { Field, InputType, Int, ObjectType } from "type-graphql";
-import { Quiz } from "../../../entity/Quiz";
+import { Quiz } from "../../entity/Quiz";
 
 @InputType()
 export class ChoiceInput {

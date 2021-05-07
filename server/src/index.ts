@@ -35,7 +35,6 @@ const main = async () => {
     const apolloServer = await new ApolloServer({
       schema: await buildSchema({
         resolvers: [__dirname + "/resolvers/**/*.ts"],
-        validate: false,
       }),
       context: ({ req, res }) => ({ req, res }),
     });
@@ -123,7 +122,7 @@ const main = async () => {
     );
   } catch (e) {
     console.error(e);
-    throw e;
+    process.exit(1);
   }
 };
 

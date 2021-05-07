@@ -1,12 +1,9 @@
-import { UserInputError } from "apollo-server-errors";
 import * as bcrypt from "bcryptjs";
 import { Arg, Ctx, Mutation, Query, Resolver } from "type-graphql";
 import { getConnection } from "typeorm";
 import { User } from "../../entity/User";
 import { MyContext } from "../../types/types";
-import { checkIfExistUser } from "./auth-utils/checkIfExistUser";
-import { SignInInput, SignUpInput } from "./auth-utils/userInputs";
-import { validateSignUp } from "./auth-utils/userValidation";
+import { SignInInput, SignUpInput } from "./authInputs";
 
 @Resolver(User)
 export class UserResolver {
@@ -33,20 +30,6 @@ export class UserResolver {
       birthday,
       gender,
     } = signUpInput;
-
-    const { valid: validInputs, errors: errorInputs } = validateSignUp(
-      signUpInput
-    );
-
-    if (!validInputs) {
-      throw new UserInputError("Error", { errorInputs });
-    }
-
-    const { valid, errors } = await checkIfExistUser(signUpInput);
-
-    if (!valid) {
-      throw new UserInputError("Error", { errors });
-    }
 
     const hashedPassword = await bcrypt.hash(password, 12);
 
