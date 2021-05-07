@@ -16,12 +16,26 @@ export type Scalars = {
   JSONObject: any;
 };
 
+export type ChoiceInput = {
+  id: Scalars['String'];
+  text: Scalars['String'];
+  choicePhoto?: Maybe<Scalars['String']>;
+};
+
+export type CreateQuizInput = {
+  title: Scalars['String'];
+  description: Scalars['String'];
+  quizPhoto?: Maybe<Scalars['String']>;
+  questions: Array<QuestionInput>;
+};
+
 
 export type Mutation = {
   __typename?: 'Mutation';
   signUp: User;
   signIn?: Maybe<User>;
   logout: Scalars['Boolean'];
+  createQuiz: Quiz;
 };
 
 
@@ -34,9 +48,66 @@ export type MutationSignInArgs = {
   SignInInput: SignInInput;
 };
 
+
+export type MutationCreateQuizArgs = {
+  createQuizInput: CreateQuizInput;
+};
+
+export type PaginatedQuizzes = {
+  __typename?: 'PaginatedQuizzes';
+  quizzes: Array<Quiz>;
+  hasMore: Scalars['Boolean'];
+};
+
 export type Query = {
   __typename?: 'Query';
   me?: Maybe<User>;
+  quizzes: PaginatedQuizzes;
+};
+
+
+export type QueryQuizzesArgs = {
+  queryQuizzesInput: QueryQuizzesInput;
+};
+
+export type QueryQuizzesInput = {
+  query?: Maybe<Scalars['String']>;
+  limit: Scalars['Int'];
+  cursor?: Maybe<Scalars['String']>;
+};
+
+export type Question = {
+  __typename?: 'Question';
+  id: Scalars['String'];
+  question: Scalars['String'];
+  questionPhoto?: Maybe<Scalars['String']>;
+  choices: Array<Scalars['JSONObject']>;
+  answer: Scalars['String'];
+  explanation?: Maybe<Scalars['String']>;
+  hint?: Maybe<Scalars['String']>;
+};
+
+export type QuestionInput = {
+  id: Scalars['String'];
+  question: Scalars['String'];
+  questionPhoto?: Maybe<Scalars['String']>;
+  choices: Array<ChoiceInput>;
+  answer: Scalars['String'];
+  explanation?: Maybe<Scalars['String']>;
+  hint?: Maybe<Scalars['String']>;
+};
+
+export type Quiz = {
+  __typename?: 'Quiz';
+  id: Scalars['String'];
+  authorId: Scalars['String'];
+  author: User;
+  title: Scalars['String'];
+  description: Scalars['String'];
+  quizPhoto?: Maybe<Scalars['String']>;
+  questions: Array<Question>;
+  createdAt: Scalars['String'];
+  updatedAt: Scalars['String'];
 };
 
 export type SignInInput = {
@@ -58,7 +129,7 @@ export type SignUpInput = {
 
 export type User = {
   __typename?: 'User';
-  id: Scalars['ID'];
+  id: Scalars['String'];
   googleId?: Maybe<Scalars['String']>;
   facebookId?: Maybe<Scalars['String']>;
   username: Scalars['String'];
@@ -72,9 +143,15 @@ export type User = {
   country?: Maybe<Scalars['String']>;
   bio?: Maybe<Scalars['String']>;
   social?: Maybe<Scalars['JSONObject']>;
+  quizzes: Array<Quiz>;
   createdAt: Scalars['String'];
   updatedAt: Scalars['String'];
 };
+
+export type QuizCardResponseFragment = (
+  { __typename?: 'Quiz' }
+  & Pick<Quiz, 'title' | 'description' | 'quizPhoto' | 'createdAt'>
+);
 
 export type UserResponseFragment = (
   { __typename?: 'User' }
@@ -115,6 +192,31 @@ export type MeQuery = (
   )> }
 );
 
+export type QuizzesQueryVariables = Exact<{
+  queryQuizzesInput: QueryQuizzesInput;
+}>;
+
+
+export type QuizzesQuery = (
+  { __typename?: 'Query' }
+  & { quizzes: (
+    { __typename?: 'PaginatedQuizzes' }
+    & Pick<PaginatedQuizzes, 'hasMore'>
+    & { quizzes: Array<(
+      { __typename?: 'Quiz' }
+      & QuizCardResponseFragment
+    )> }
+  ) }
+);
+
+export const QuizCardResponseFragmentDoc = gql`
+    fragment quizCardResponse on Quiz {
+  title
+  description
+  quizPhoto
+  createdAt
+}
+    `;
 export const UserResponseFragmentDoc = gql`
     fragment userResponse on User {
   id
@@ -236,3 +338,41 @@ export function useMeLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<MeQuery
 export type MeQueryHookResult = ReturnType<typeof useMeQuery>;
 export type MeLazyQueryHookResult = ReturnType<typeof useMeLazyQuery>;
 export type MeQueryResult = Apollo.QueryResult<MeQuery, MeQueryVariables>;
+export const QuizzesDocument = gql`
+    query Quizzes($queryQuizzesInput: QueryQuizzesInput!) {
+  quizzes(queryQuizzesInput: $queryQuizzesInput) {
+    quizzes {
+      ...quizCardResponse
+    }
+    hasMore
+  }
+}
+    ${QuizCardResponseFragmentDoc}`;
+
+/**
+ * __useQuizzesQuery__
+ *
+ * To run a query within a React component, call `useQuizzesQuery` and pass it any options that fit your needs.
+ * When your component renders, `useQuizzesQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useQuizzesQuery({
+ *   variables: {
+ *      queryQuizzesInput: // value for 'queryQuizzesInput'
+ *   },
+ * });
+ */
+export function useQuizzesQuery(baseOptions: Apollo.QueryHookOptions<QuizzesQuery, QuizzesQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<QuizzesQuery, QuizzesQueryVariables>(QuizzesDocument, options);
+      }
+export function useQuizzesLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<QuizzesQuery, QuizzesQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<QuizzesQuery, QuizzesQueryVariables>(QuizzesDocument, options);
+        }
+export type QuizzesQueryHookResult = ReturnType<typeof useQuizzesQuery>;
+export type QuizzesLazyQueryHookResult = ReturnType<typeof useQuizzesLazyQuery>;
+export type QuizzesQueryResult = Apollo.QueryResult<QuizzesQuery, QuizzesQueryVariables>;

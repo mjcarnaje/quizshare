@@ -1,0 +1,6 @@
+fragment quizCardResponse on Quiz {
+  title
+  description
+  quizPhoto
+  createdAt
+}

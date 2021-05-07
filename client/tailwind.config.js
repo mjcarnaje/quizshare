@@ -4,11 +4,27 @@ module.exports = {
   darkMode: false, // or 'media' or 'class'
   theme: {
     fontFamily: {
-      sans: ["Inter", "system-ui"],
+      sans: [
+        "Inter",
+        "-apple-system",
+        "BlinkMacSystemFont",
+        "Segoe UI",
+        "Roboto",
+        "Helvetica",
+        "Arial",
+        "sans-serif",
+      ],
+      mono: ["Menlo", "Monaco", "Courier New", "monospace"],
     },
     extend: {
       fontFamily: {
         berkshire: "Berkshire Swash",
+      },
+      gridTemplateRows: {
+        "main-container": "64px 1fr",
+      },
+      gridTemplateColumns: {
+        "content-container": "1fr 3fr 1fr",
       },
     },
   },

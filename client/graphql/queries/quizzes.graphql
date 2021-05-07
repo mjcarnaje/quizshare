@@ -1,0 +1,8 @@
+query Quizzes($queryQuizzesInput: QueryQuizzesInput!) {
+  quizzes(queryQuizzesInput: $queryQuizzesInput) {
+    quizzes {
+      ...quizCardResponse
+    }
+    hasMore
+  }
+}
