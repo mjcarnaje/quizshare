@@ -1,10 +1,9 @@
 import React, { ReactNode } from "react";
 
-import { useApolloClient } from "@apollo/client";
-import { useMeQuery, useSignOutMutation } from "generated/graphql";
 import { useRouter } from "next/dist/client/router";
 import Head from "next/head";
-import Link from "next/link";
+
+import UserDropDown from "./dropdowns/UserDropdown";
 
 type Props = {
   children?: ReactNode;
@@ -18,43 +17,6 @@ const Layout = ({
   header = true,
 }: Props) => {
   const router = useRouter();
-  const apolloClient = useApolloClient();
-
-  const { data } = useMeQuery({ skip: typeof window === undefined });
-  const [signOut] = useSignOutMutation();
-
-  let body;
-
-  if (data?.me) {
-    body = (
-      <>
-        <Link href="/">
-          <a>Home</a>
-        </Link>
-        <button
-          onClick={async () => {
-            await signOut();
-            router.push("/login");
-            apolloClient.clearStore();
-          }}
-          className="px-4 py-2"
-        >
-          Logout
-        </button>
-      </>
-    );
-  } else {
-    body = (
-      <>
-        <Link href="/">
-          <a>Home</a>
-        </Link>
-        <Link href="/login">
-          <a>Login</a>
-        </Link>
-      </>
-    );
-  }
 
   return (
     <div>
@@ -65,13 +27,16 @@ const Layout = ({
       </Head>
       {header ? (
         <header className="sticky top-0">
-          <nav className="flex items-center justify-between w-full h-12 px-8 shadow">
-            <div>
+          <nav className="flex items-center justify-between w-full px-8 shadow h-14">
+            <button
+              className="focus:outline-none"
+              onClick={() => router.push("/")}
+            >
               <h1 className="text-xl font-semibold text-purple-500 font-berkshire">
                 QuizShare
               </h1>
-            </div>
-            <div>{body}</div>
+            </button>
+            <UserDropDown />
           </nav>
         </header>
       ) : null}
