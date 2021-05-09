@@ -20,12 +20,6 @@ module.exports = {
       fontFamily: {
         berkshire: "Berkshire Swash",
       },
-      gridTemplateRows: {
-        "main-container": "64px 1fr",
-      },
-      gridTemplateColumns: {
-        "content-container": "1fr 3fr 1fr",
-      },
     },
   },
   variants: {

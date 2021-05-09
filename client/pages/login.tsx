@@ -44,12 +44,10 @@ const LoginPage = () => {
     <Layout title="Login" header={false}>
       <div className="flex items-center justify-center min-h-screen px-4 py-12 bg-gray-50 sm:px-6 lg:px-8">
         <div className="w-full max-w-md space-y-8">
-          <div>
-            <h2 className="text-3xl font-extrabold text-center text-gray-900 ">
-              Sign in to your account
-            </h2>
-          </div>
-          <div className="py-16 mt-8 space-y-4 bg-white rounded-md shadow-md px-14">
+          <h2 className="text-5xl font-extrabold text-center text-gray-900 ">
+            Sign in to your account
+          </h2>
+          <div className="mt-8 space-y-4 bg-white rounded-md shadow-md py-14 px-14">
             <form onSubmit={handleSubmit(onSubmit)} className="space-y-2">
               <LoginInput
                 name="usernameOrEmail"
@@ -66,25 +64,9 @@ const LoginPage = () => {
                 required
               />
               <div className="flex items-center justify-between">
-                <div className="flex items-center">
-                  <input
-                    id="rememberMe"
-                    type="checkbox"
-                    {...register("rememberMe")}
-                    className="w-4 h-4 text-indigo-600 border-gray-300 rounded focus:ring-indigo-500"
-                  />
-                  <label
-                    htmlFor="rememberMe"
-                    className="block ml-2 text-sm text-gray-900"
-                  >
-                    Remember me
-                  </label>
-                </div>
-                <div className="text-sm">
-                  <a
-                    href="#"
-                    className="font-medium text-indigo-600 hover:text-indigo-500"
-                  >
+                <div />
+                <div>
+                  <a className="text-xs font-medium text-black hover:text-gray-900">
                     Forgot your password?
                   </a>
                 </div>
@@ -92,44 +74,42 @@ const LoginPage = () => {
               <div>
                 <button
                   type="submit"
-                  className="relative flex justify-center w-full px-4 py-2 mt-6 text-sm font-medium text-white bg-purple-600 border border-transparent rounded-md group hover:bg-purple-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500"
+                  className="relative flex justify-center w-full px-4 py-2 mt-4 text-sm font-medium text-white bg-black border border-transparent rounded-md group hover:bg-gray-900 focus:outline-none"
                 >
                   {loading ? "Loading..." : "Sign in"}
                 </button>
               </div>
             </form>
-            <div className="border" />
-            <div className="space-y-2">
+            <div className="flex items-center justify-center flex-nowrap">
+              <hr className="flex-grow" />
+              <p className="mx-4 text-center">or sign in with</p>
+              <hr className="flex-grow " />
+            </div>
+            <div className="flex space-x-2">
               <Link href="http://localhost:4000/auth/google">
-                <a className="flex items-center justify-center w-full px-3 py-2 text-gray-700 bg-white border-2 border-gray-100 rounded-lg shadow focus:ring-offset-2 focus:outline-none focus:ring-2 focus:ring-purple-600">
+                <a className="flex items-center justify-center w-full px-3 py-2 bg-white rounded-lg shadow-md">
                   <img
                     className="w-6 h-6"
                     src="./google-logo.svg"
                     alt="google-logo"
                   />
-                  <p className="ml-4 text-sm font-semibold">
-                    Sign in with google
-                  </p>
                 </a>
               </Link>
               <Link href="http://localhost:4000/auth/facebook">
-                <a className="flex items-center justify-center w-full px-3 py-2 bg-[#4267B2] rounded-lg shadow focus:ring-offset-2 focus:outline-none focus:ring-2 focus:ring-purple-600">
+                <a className="flex items-center justify-center w-full px-3 py-2 bg-[#4267B2] rounded-lg shadow-md">
                   <img
                     className="w-6 h-6"
                     src="./facebook-logo.svg"
                     alt="facebook-logo"
                   />
-                  <p className="ml-4 text-sm font-semibold text-white ">
-                    Sign in with facebook
-                  </p>
                 </a>
               </Link>
             </div>
             <div className="flex justify-center">
-              <p className="">
+              <p className="text-sm">
                 Don't have an account yet?{" "}
                 <Link href="/signup">
-                  <a>Sign up</a>
+                  <a className="font-semibold">Sign up</a>
                 </Link>
               </p>
             </div>
