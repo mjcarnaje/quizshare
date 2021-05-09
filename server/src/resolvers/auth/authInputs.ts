@@ -1,4 +1,5 @@
 import {
+  IsBoolean,
   IsEmail,
   IsEnum,
   IsNotEmpty,
@@ -10,8 +11,8 @@ import {
   ValidatorConstraint,
   ValidatorConstraintInterface,
 } from "class-validator";
+import { Field, InputType } from "type-graphql";
 import { User } from "../../entity/User";
-import { InputType, Field } from "type-graphql";
 import { Gender } from "../../types/types";
 
 @ValidatorConstraint({ async: true })
@@ -89,12 +90,12 @@ export class SignUpInput {
   @Field()
   @Length(3, 72)
   @IsEmail()
-  @IsEmailAlreadyExist()
+  @IsEmailAlreadyExist({ message: "Email address is already taken" })
   email: string;
 
   @Field()
   @Length(3, 32)
-  @IsUsernameAlreadyExist()
+  @IsUsernameAlreadyExist({ message: "Username is already taken" })
   username: string;
 
   @Field()
@@ -125,11 +126,14 @@ export class SignUpInput {
 @InputType()
 export class SignInInput {
   @Field()
+  @MinLength(3)
   usernameOrEmail: string;
 
   @Field()
+  @MinLength(3)
   password: string;
 
   @Field()
+  @IsBoolean()
   rememberMe: boolean;
 }

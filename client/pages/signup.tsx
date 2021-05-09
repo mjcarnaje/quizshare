@@ -5,42 +5,44 @@ import Layout from "@components/Layout";
 import {
   MeDocument,
   MeQuery,
-  SignInInput,
-  useSignInMutation,
+  SignUpInput,
+  useSignUpMutation,
 } from "@generated/graphql";
 import withApollo from "@lib/withApollo";
-import errorMapper from "@utils/errorMapper";
 import { useRouter } from "next/dist/client/router";
 import Link from "next/link";
 import { useForm } from "react-hook-form";
 
-import { FormErrors } from "../constant/index";
+import FormSelect from "../components/inputs/FormSelect";
+import errorMapper from "../utils/errorMapper";
 
-const LoginPage = () => {
+const SignUpPage = () => {
   const router = useRouter();
-  const [signIn, { loading }] = useSignInMutation();
+  const [signUp, { loading }] = useSignUpMutation();
   const {
     register,
     handleSubmit,
     setError,
     formState: { errors },
-  } = useForm<SignInInput & FormErrors>();
+  } = useForm<SignUpInput>();
 
-  const onSubmit = async (values: SignInInput) => {
+  const onSubmit = async (values: SignUpInput) => {
     try {
-      const { data } = await signIn({
-        variables: { ...values, rememberMe: true },
+      const { data } = await signUp({
+        variables: {
+          signUpInput: values,
+        },
         update: (cache, { data }) => {
           cache.writeQuery<MeQuery>({
             query: MeDocument,
             data: {
               __typename: "Query",
-              me: data?.signIn,
+              me: data?.signUp,
             },
           });
         },
       });
-      if (data?.signIn) {
+      if (data?.signUp) {
         router.push("/");
       }
     } catch (err) {
@@ -53,21 +55,23 @@ const LoginPage = () => {
       <div className="flex items-center justify-center min-h-screen px-4 py-12 bg-gray-50 sm:px-6 lg:px-8">
         <div className="w-full max-w-md space-y-8">
           <h2 className="text-5xl font-extrabold text-center text-gray-900 ">
-            Sign in to your account
+            Sign up
           </h2>
           <div className="mt-8 space-y-4 bg-white rounded-md shadow-md py-14 px-14">
-            {errors.GENERAL_ERROR && (
-              <div className="flex items-center justify-center py-2 border border-red-500 rounded-md bg-red-50">
-                <p className="block">{errors.GENERAL_ERROR.message}</p>
-              </div>
-            )}
             <form onSubmit={handleSubmit(onSubmit)} className="space-y-2">
               <FormInput
-                name="usernameOrEmail"
-                label="Email or username"
+                name="email"
+                label="Email"
                 type="text"
                 register={register}
-                error={errors.usernameOrEmail}
+                error={errors.email}
+              />
+              <FormInput
+                name="username"
+                label="Username"
+                type="text"
+                register={register}
+                error={errors.username}
               />
               <FormInput
                 name="password"
@@ -76,26 +80,55 @@ const LoginPage = () => {
                 register={register}
                 error={errors.password}
               />
-              <div className="flex items-center justify-between">
-                <div />
-                <div>
-                  <a className="text-xs font-medium text-black hover:text-gray-900">
-                    Forgot your password?
-                  </a>
-                </div>
-              </div>
+              <FormInput
+                name="confirmPassword"
+                label="Confirm Password"
+                type="password"
+                register={register}
+                error={errors.confirmPassword}
+              />
+              <FormInput
+                name="firstName"
+                label="First Name"
+                type="text"
+                register={register}
+                error={errors.firstName}
+              />
+              <FormInput
+                name="lastName"
+                label="Last Name"
+                type="text"
+                register={register}
+                error={errors.lastName}
+              />
+              <FormInput
+                name="birthday"
+                label="Birthday"
+                type="date"
+                register={register}
+                error={errors.birthday}
+              />
+
+              <FormSelect
+                name="gender"
+                label="Gender"
+                options={["Male", "Female"]}
+                register={register}
+                error={errors.gender}
+              />
+
               <div>
                 <button
                   type="submit"
                   className="relative flex justify-center w-full px-4 py-2 mt-4 text-sm font-medium text-white bg-black border border-transparent rounded-md group hover:bg-gray-900 focus:outline-none"
                 >
-                  {loading ? "Loading..." : "Sign in"}
+                  {loading ? "Loading..." : "Sign up"}
                 </button>
               </div>
             </form>
             <div className="flex items-center justify-center flex-nowrap">
               <hr className="flex-grow" />
-              <p className="mx-4 text-center">or sign in with</p>
+              <p className="mx-4 text-center">or sign up with</p>
               <hr className="flex-grow " />
             </div>
             <div className="flex space-x-2">
@@ -120,9 +153,9 @@ const LoginPage = () => {
             </div>
             <div className="flex justify-center">
               <p className="text-sm">
-                Don't have an account yet?{" "}
-                <Link href="/signup">
-                  <a className="font-semibold">Sign up</a>
+                Do you have an account already?{" "}
+                <Link href="/login">
+                  <a className="font-semibold">Sign in</a>
                 </Link>
               </p>
             </div>
@@ -133,4 +166,4 @@ const LoginPage = () => {
   );
 };
 
-export default withApollo({ ssr: false })(LoginPage);
+export default withApollo({ ssr: false })(SignUpPage);
