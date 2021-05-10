@@ -4,19 +4,18 @@ import { useApolloClient } from "@apollo/client";
 import { Disclosure, Menu, Transition } from "@headlessui/react";
 import { MenuIcon, XIcon } from "@heroicons/react/outline";
 import { useRouter } from "next/dist/client/router";
+import NextLink from "next/link";
 
 import { useMeQuery, useSignOutMutation } from "../../generated/graphql";
 
 const navigation = [
   {
     name: "Home",
-    href: "#",
-    current: true,
+    href: "/",
   },
   {
     name: "Create Quiz",
-    href: "#",
-    current: false,
+    href: "/create",
   },
 ];
 
@@ -62,19 +61,18 @@ const HeaderNav = () => {
                 <div className="hidden sm:block sm:ml-6">
                   <div className="flex space-x-4">
                     {navigation.map((item) => (
-                      <a
-                        key={item.name}
-                        href={item.href}
-                        className={classNames(
-                          item.current
-                            ? "text-black font-medium"
-                            : "text-gray-500  hover:text-gray-800",
-                          "px-3 py-2 rounded-md"
-                        )}
-                        aria-current={item.current ? "page" : undefined}
-                      >
-                        {item.name}
-                      </a>
+                      <NextLink key={item.name} href={item.href}>
+                        <a
+                          className={classNames(
+                            router.pathname === item.href
+                              ? "text-black font-medium"
+                              : "text-gray-500  hover:text-gray-800",
+                            "px-3 py-2 rounded-md"
+                          )}
+                        >
+                          {item.name}
+                        </a>
+                      </NextLink>
                     ))}
                   </div>
                 </div>
@@ -154,10 +152,11 @@ const HeaderNav = () => {
                   key={item.name}
                   href={item.href}
                   className={classNames(
-                    item.current ? "text-black font-semibold" : "text-gray-500",
+                    router.pathname === item.href
+                      ? "text-black font-semibold"
+                      : "text-gray-500",
                     "block px-3 py-2 rounded-md text-base font-medium"
                   )}
-                  aria-current={item.current ? "page" : undefined}
                 >
                   {item.name}
                 </a>
