@@ -2,7 +2,8 @@ import React, { ReactNode } from "react";
 
 import Head from "next/head";
 
-import HeaderNav from "./header/HeaderNav";
+import HeaderNav from "./HeaderNav";
+import Sidebar from "./Sidebar";
 
 interface props {
   children?: ReactNode;
@@ -23,7 +24,10 @@ const Layout: React.FC<props> = ({
         <meta name="viewport" content="initial-scale=1.0, width=device-width" />
       </Head>
       {header ? <HeaderNav /> : null}
-      {children}
+      <div className="relative flex min-h-screen pt-14 bg-gray-50">
+        <Sidebar />
+        <div className="flex">{children}</div>
+      </div>
     </div>
   );
 };

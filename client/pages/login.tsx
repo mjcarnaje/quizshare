@@ -1,7 +1,7 @@
 import React from "react";
 
 import FormInput from "@components/inputs/FormInput";
-import Layout from "@components/Layout";
+import Layout from "@components/ui/Layout";
 import {
   MeDocument,
   MeQuery,

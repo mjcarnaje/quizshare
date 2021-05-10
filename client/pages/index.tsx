@@ -1,7 +1,7 @@
 import React from "react";
 
 import { QuizCard } from "@components/cards/QuizCard";
-import Layout from "@components/Layout";
+import Layout from "@components/ui/Layout";
 import { useQuizzesQuery } from "@generated/graphql";
 import withApollo from "@lib/withApollo";
 import { useIsAuthenticated } from "@utils/useIsAuthenticated";
