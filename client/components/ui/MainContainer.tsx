@@ -2,19 +2,15 @@ import React, { ReactNode } from "react";
 
 import Head from "next/head";
 
-import HeaderNav from "./HeaderNav";
-import Sidebar from "./Sidebar";
-
 interface props {
   children?: ReactNode;
   title?: string;
   header?: boolean;
 }
 
-const Layout: React.FC<props> = ({
+const MainContainer: React.FC<props> = ({
   children,
   title = "This is the default title",
-  header = true,
 }) => {
   return (
     <div>
@@ -23,13 +19,11 @@ const Layout: React.FC<props> = ({
         <meta charSet="utf-8" />
         <meta name="viewport" content="initial-scale=1.0, width=device-width" />
       </Head>
-      {header ? <HeaderNav /> : null}
-      <div className="relative flex min-h-screen pt-14 bg-gray-50">
-        <Sidebar />
-        <div className="flex">{children}</div>
+      <div className="relative flex min-h-screen mx-auto overflow-hidden bg-gray-100">
+        {children}
       </div>
     </div>
   );
 };
 
-export default Layout;
+export default MainContainer;

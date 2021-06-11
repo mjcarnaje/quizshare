@@ -1,7 +1,7 @@
 import React from "react";
 
 import FormInput from "@components/inputs/FormInput";
-import Layout from "@components/ui/Layout";
+import MainContainer from "@components/ui/MainContainer";
 import {
   MeDocument,
   MeQuery,
@@ -49,13 +49,13 @@ const LoginPage = () => {
   };
 
   return (
-    <Layout title="Login" header={false}>
-      <div className="flex items-center justify-center min-h-screen px-4 py-12 bg-gray-50 sm:px-6 lg:px-8">
-        <div className="w-full max-w-md space-y-8">
-          <h2 className="text-5xl font-extrabold text-center text-gray-900 ">
+    <MainContainer title="Login">
+      <div className="flex items-center justify-center w-full min-h-screen px-4 py-12 sm:px-6 lg:px-8">
+        <div className="flex-1 max-w-md mx-auto space-y-8">
+          <h2 className="text-4xl font-extrabold text-center text-gray-900 md:text-5xl ">
             Sign in to your account
           </h2>
-          <div className="mt-8 space-y-4 bg-white rounded-md shadow-md py-14 px-14">
+          <div className="p-6 mt-8 space-y-4 bg-white rounded-md shadow-md sm:p-8 md:p-14">
             {errors.GENERAL_ERROR && (
               <div className="flex items-center justify-center py-2 border border-red-500 rounded-md bg-red-50">
                 <p className="block">{errors.GENERAL_ERROR.message}</p>
@@ -129,7 +129,7 @@ const LoginPage = () => {
           </div>
         </div>
       </div>
-    </Layout>
+    </MainContainer>
   );
 };
 
