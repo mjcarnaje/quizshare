@@ -11,9 +11,9 @@ import { Quiz } from "../../entity/Quiz";
 import { isAuthenticated } from "../../middleware/isAuthenticated";
 import { MyContext } from "../../types/types";
 import {
-  CreateQuizInput,
   PaginatedQuizzes,
   QueryQuizzesInput,
+  QuestionInput,
 } from "./quizInput";
 
 @Resolver(Quiz)
@@ -28,7 +28,9 @@ export class QuizResolver {
       .getRepository(Quiz)
       .createQueryBuilder("quiz")
       .leftJoinAndSelect("quiz.author", "author")
-      .leftJoinAndSelect("quiz.questions", "questions");
+      .leftJoinAndSelect("quiz.questions", "questions")
+      .leftJoinAndSelect("quiz.results", "results")
+      .leftJoinAndSelect("quiz.tags", "tags");
 
     if (queryQuizzesInput.query) {
       quizzesDB = quizzesDB
@@ -55,16 +57,86 @@ export class QuizResolver {
   }
 
   @UseMiddleware(isAuthenticated)
-  @Mutation(() => Quiz)
+  @Mutation(() => String)
   async createQuiz(
-    @Arg("createQuizInput") createQuizInput: CreateQuizInput,
+    @Arg("title") title: string,
+    @Arg("description") description: string,
     @Ctx() ctx: MyContext
-  ): Promise<Quiz> {
+  ): Promise<string> {
     const newQuiz = await Quiz.create({
-      ...createQuizInput,
+      title,
+      description,
       authorId: ctx.req.session.userId,
     }).save();
 
-    return newQuiz;
+    return newQuiz.id;
+  }
+
+  @UseMiddleware(isAuthenticated)
+  @Mutation(() => Boolean)
+  async addQuestion(
+    @Arg("quizId") quizId: string,
+    @Arg("data") data: QuestionInput
+  ): Promise<boolean> {
+    await getConnection()
+      .createQueryBuilder()
+      .relation(Quiz, "questions")
+      .of(quizId)
+      .add(data);
+
+    return true;
+  }
+
+  @UseMiddleware(isAuthenticated)
+  @Mutation(() => Boolean)
+  async deleteQuiz(
+    @Arg("id") id: string,
+    @Ctx() ctx: MyContext
+  ): Promise<boolean> {
+    await getConnection()
+      .createQueryBuilder()
+      .delete()
+      .from(Quiz)
+      .where("id = :id", { id })
+      .andWhere("authorId = :authorId", { authorId: ctx.req.session.userId })
+      .execute();
+
+    return true;
+  }
+
+  @UseMiddleware(isAuthenticated)
+  @Mutation(() => Quiz)
+  async publishQuiz(
+    @Arg("id") id: string,
+    @Ctx() ctx: MyContext
+  ): Promise<Quiz> {
+    const quiz = await getConnection()
+      .getRepository(Quiz)
+      .createQueryBuilder("quiz")
+      .leftJoinAndSelect("quiz.questions", "questions")
+      .where("quiz.id = :id", { id })
+      .getOne();
+
+    if (!quiz) {
+      throw new Error("No quiz no found");
+    }
+
+    if (quiz.authorId !== ctx.req.session.userId) {
+      throw new Error("You are not the author of this quiz");
+    }
+
+    if (quiz.questions.length === 0) {
+      throw new Error("Cannot published if there is no question");
+    }
+
+    const updatedQuiz = await getConnection()
+      .createQueryBuilder()
+      .update(Quiz)
+      .set({ isPublished: true })
+      .where("id = :id", { id })
+      .returning("*")
+      .execute();
+
+    return updatedQuiz.raw[0];
   }
 }

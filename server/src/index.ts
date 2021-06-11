@@ -10,6 +10,7 @@ import { buildSchema } from "type-graphql";
 import { createConnection } from "typeorm";
 import { facebookAuth } from "./resolvers/auth/facebook";
 import { googleAuth } from "./resolvers/auth/google";
+// import { Question, Quiz, User } from "./entity";
 
 require("dotenv").config();
 

@@ -38,7 +38,10 @@ export class QuestionInput {
 }
 
 @InputType()
-export class CreateQuizInput {
+export class ResultInput {
+  @Field()
+  id: string;
+
   @Field()
   title: string;
 
@@ -46,10 +49,19 @@ export class CreateQuizInput {
   description: string;
 
   @Field({ nullable: true })
-  quizPhoto?: string;
+  resultPhoto?: string;
 
+  @Field(() => Int)
+  minimumPassingPercentage: number;
+}
+
+@InputType()
+export class SaveAsDraftInput {
   @Field(() => [QuestionInput])
   questions: QuestionInput[];
+
+  @Field(() => [ResultInput])
+  results: ResultInput[];
 }
 
 @InputType()
