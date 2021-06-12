@@ -5,12 +5,31 @@ import Image from "next/image";
 
 import { Quiz } from "../../generated/graphql";
 
+function truncateText(text: string, len: number = 320): string {
+  if (text.length > len) {
+    return `${text.slice(0, len)}...`;
+  }
+  return text;
+}
+
+function formatDate(date: string): string {
+  const moreThanOneDay = moment(parseInt(date))
+    .fromNow(true)
+    .includes("day" || "week" || "month" || "year");
+
+  if (moreThanOneDay) {
+    return moment(parseInt(date)).format("ll");
+  }
+
+  return `${moment(parseInt(date)).fromNow(true)} ago`;
+}
+
 export const QuizCard: React.FC<
   Pick<Quiz, "title" | "description" | "quizPhoto" | "createdAt">
 > = ({ title, description, quizPhoto, createdAt }) => {
   return (
-    <div className="p-2 bg-white rounded-md shadow-md md:flex">
-      <div className="self-center flex-shrink-0 mr-4">
+    <div className="w-full p-2 rounded-md cursor-pointer active:bg-gray-200 active:ring-1 ring-gray-300 group md:flex ">
+      <div className="self-start flex-shrink-0 mr-4">
         {quizPhoto && (
           <div className="w-full overflow-hidden bg-gray-100 rounded-md md:w-60">
             <div className="relative w-full pb-[56.25%]">
@@ -24,39 +43,15 @@ export const QuizCard: React.FC<
           </div>
         )}
       </div>
-      <div>
-        <h3 className="text-lg font-bold">{title}</h3>
-        <p className="mt-1">{description}</p>
-        <span className="mt-1 text-sm">
-          {`${moment(new Date(parseInt(createdAt))).fromNow(true)} ago`}
-        </span>
+      <div className="w-full">
+        <h2 className="text-xl font-bold">{title}</h2>
+        <div className="flex gap-2">
+          <span className="text-sm font-light">{formatDate(createdAt)}</span>
+          <span className="text-sm font-light">30 Submitted</span>
+          <span className="text-sm font-light">2 Questions</span>
+        </div>
+        <p className="mt-1">{truncateText(description)}</p>
       </div>
     </div>
   );
 };
-
-//  <div className="flex">
-//    <div className="self-center flex-shrink-0 mr-4">
-//      <svg
-//        className="w-16 h-16 text-gray-300 bg-white border border-gray-300"
-//        preserveAspectRatio="none"
-//        stroke="currentColor"
-//        fill="none"
-//        viewBox="0 0 200 200"
-//        aria-hidden="true"
-//      >
-//        <path
-//          vectorEffect="non-scaling-stroke"
-//          strokeWidth={1}
-//          d="M0 0l200 200M0 200L200 0"
-//        />
-//      </svg>
-//    </div>
-//    <div>
-//      <h4 className="text-lg font-bold">Lorem ipsum</h4>
-//      <p className="mt-1">
-//        Repudiandae sint consequuntur vel. Amet ut nobis explicabo numquam
-//        expedita quia omnis voluptatem. Minus quidem ipsam quia iusto.
-//      </p>
-//    </div>
-//  </div>;

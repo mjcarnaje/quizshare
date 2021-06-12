@@ -30,7 +30,7 @@ const IndexPage = () => {
         <main className="relative flex-1 overflow-y-auto focus:outline-none">
           <div className="py-6">
             <div className="px-4 mx-auto mt-3 max-w-7xl sm:px-6 md:px-8">
-              <div className="max-w-2xl mx-auto space-y-4">
+              <div className="max-w-2xl mx-auto space-y-8">
                 {data?.quizzes.quizzes.map(({ id, ...props }) => (
                   <QuizCard key={id} {...props} />
                 ))}
