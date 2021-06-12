@@ -22,13 +22,6 @@ export type ChoiceInput = {
   choicePhoto?: Maybe<Scalars['String']>;
 };
 
-export type CreateQuizInput = {
-  title: Scalars['String'];
-  description: Scalars['String'];
-  quizPhoto?: Maybe<Scalars['String']>;
-  questions: Array<QuestionInput>;
-};
-
 
 export type Mutation = {
   __typename?: 'Mutation';
@@ -36,6 +29,10 @@ export type Mutation = {
   signIn?: Maybe<User>;
   logout: Scalars['Boolean'];
   createQuiz: Quiz;
+  createQuizV2: Scalars['String'];
+  addQuestionV2: Scalars['Boolean'];
+  deleteQuiz: Scalars['Boolean'];
+  publishQuiz: Quiz;
 };
 
 
@@ -50,7 +47,29 @@ export type MutationSignInArgs = {
 
 
 export type MutationCreateQuizArgs = {
-  createQuizInput: CreateQuizInput;
+  quizInput: QuizInput;
+};
+
+
+export type MutationCreateQuizV2Args = {
+  description: Scalars['String'];
+  title: Scalars['String'];
+};
+
+
+export type MutationAddQuestionV2Args = {
+  data: QuestionInput;
+  quizId: Scalars['String'];
+};
+
+
+export type MutationDeleteQuizArgs = {
+  id: Scalars['String'];
+};
+
+
+export type MutationPublishQuizArgs = {
+  id: Scalars['String'];
 };
 
 export type PaginatedQuizzes = {
@@ -105,9 +124,43 @@ export type Quiz = {
   title: Scalars['String'];
   description: Scalars['String'];
   quizPhoto?: Maybe<Scalars['String']>;
-  questions: Array<Question>;
+  questions?: Maybe<Array<Question>>;
+  results?: Maybe<Array<Result>>;
+  tags?: Maybe<Array<Tag>>;
+  isPublished: Scalars['Boolean'];
   createdAt: Scalars['String'];
   updatedAt: Scalars['String'];
+};
+
+export type QuizInput = {
+  title: Scalars['String'];
+  description: Scalars['String'];
+  quizPhoto?: Maybe<Scalars['String']>;
+  questions: Array<QuestionInput>;
+  results: Array<ResultInput>;
+  tags: Array<TagInput>;
+};
+
+export type Result = {
+  __typename?: 'Result';
+  id: Scalars['String'];
+  title: Scalars['String'];
+  description: Scalars['String'];
+  resultPhoto?: Maybe<Scalars['String']>;
+  minimumPassingPercentage: Scalars['Int'];
+};
+
+export type ResultInput = {
+  id: Scalars['String'];
+  title: Scalars['String'];
+  description: Scalars['String'];
+  resultPhoto?: Maybe<Scalars['String']>;
+  minimumPassingPercentage: Scalars['Int'];
+};
+
+export type SaveAsDraftInput = {
+  questions: Array<QuestionInput>;
+  results: Array<ResultInput>;
 };
 
 export type SignInInput = {
@@ -125,6 +178,17 @@ export type SignUpInput = {
   lastName: Scalars['String'];
   birthday: Scalars['String'];
   gender: Scalars['String'];
+};
+
+export type Tag = {
+  __typename?: 'Tag';
+  id: Scalars['String'];
+  name: Scalars['String'];
+};
+
+export type TagInput = {
+  id: Scalars['String'];
+  name: Scalars['String'];
 };
 
 export type User = {
@@ -150,7 +214,7 @@ export type User = {
 
 export type QuizCardResponseFragment = (
   { __typename?: 'Quiz' }
-  & Pick<Quiz, 'title' | 'description' | 'quizPhoto' | 'createdAt'>
+  & Pick<Quiz, 'id' | 'title' | 'description' | 'quizPhoto' | 'createdAt'>
 );
 
 export type UserResponseFragment = (
@@ -224,6 +288,7 @@ export type QuizzesQuery = (
 
 export const QuizCardResponseFragmentDoc = gql`
     fragment quizCardResponse on Quiz {
+  id
   title
   description
   quizPhoto

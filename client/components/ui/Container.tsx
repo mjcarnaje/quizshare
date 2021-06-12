@@ -26,7 +26,9 @@ const navigation = [
   },
 ];
 
-const Container: React.FC = ({ children }) => {
+interface props {}
+
+const Container: React.FC<props> = ({ children }) => {
   const [sidebarOpen, setSidebarOpen] = useState(false);
 
   return (

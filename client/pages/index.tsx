@@ -1,12 +1,17 @@
+import React from "react";
+
 import MainContainer from "@components/ui/MainContainer";
 import { useIsAuthenticated } from "@utils/useIsAuthenticated";
+import { selectQuery } from "store/globalState";
 
 import { QuizCard } from "../components/cards/QuizCard";
 import Container from "../components/ui/Container";
 import { useQuizzesQuery } from "../generated/graphql";
 import withApollo from "../lib/withApollo";
+import { useAppSelector } from "../store/index";
 
 const IndexPage = () => {
+  const query = useAppSelector(selectQuery);
   useIsAuthenticated();
 
   const { data } = useQuizzesQuery({
@@ -14,7 +19,7 @@ const IndexPage = () => {
       queryQuizzesInput: {
         limit: 10,
         cursor: null,
-        query: null,
+        query: query,
       },
     },
   });
@@ -26,13 +31,9 @@ const IndexPage = () => {
           <div className="py-6">
             <div className="px-4 mx-auto mt-3 max-w-7xl sm:px-6 md:px-8">
               <div className="max-w-2xl mx-auto space-y-4">
-                {data?.quizzes.quizzes.map(
-                  ({ title, description, quizPhoto, createdAt }) => (
-                    <QuizCard
-                      {...{ title, description, quizPhoto, createdAt }}
-                    />
-                  )
-                )}
+                {data?.quizzes.quizzes.map(({ id, ...props }) => (
+                  <QuizCard key={id} {...props} />
+                ))}
               </div>
             </div>
           </div>

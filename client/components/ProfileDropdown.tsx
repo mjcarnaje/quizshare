@@ -32,7 +32,7 @@ const ProfileDropdown: React.FC = () => {
               <img
                 className="w-8 h-8 rounded-full"
                 src={avatar ?? ""}
-                alt={username ? `${username}-s-avatar` : "your-avatar"}
+                alt={username}
               />
             </Menu.Button>
           </div>

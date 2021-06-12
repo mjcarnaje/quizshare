@@ -56,6 +56,36 @@ export class ResultInput {
 }
 
 @InputType()
+export class TagInput {
+  @Field()
+  id: string;
+
+  @Field()
+  name: string;
+}
+
+@InputType()
+export class QuizInput {
+  @Field()
+  title: string;
+
+  @Field()
+  description: string;
+
+  @Field({ nullable: true })
+  quizPhoto?: string;
+
+  @Field(() => [QuestionInput])
+  questions: QuestionInput[];
+
+  @Field(() => [ResultInput])
+  results: ResultInput[];
+
+  @Field(() => [TagInput])
+  tags: TagInput[];
+}
+
+@InputType()
 export class SaveAsDraftInput {
   @Field(() => [QuestionInput])
   questions: QuestionInput[];

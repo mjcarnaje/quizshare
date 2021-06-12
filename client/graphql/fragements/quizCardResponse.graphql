@@ -1,4 +1,5 @@
 fragment quizCardResponse on Quiz {
+  id
   title
   description
   quizPhoto

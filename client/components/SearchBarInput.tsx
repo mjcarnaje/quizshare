@@ -1,11 +1,21 @@
-import React from "react";
+import React, { useState } from "react";
 
 import { SearchIcon } from "@heroicons/react/solid";
+import { useAppDispatch } from "store";
+import { setQuery } from "store/globalState";
 
 const SearchBarInput: React.FC = () => {
+  const dispath = useAppDispatch();
+  const [text, setText] = useState("");
+
+  const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    dispath(setQuery(text));
+  };
+
   return (
-    <div className="flex flex-1">
-      <form className="flex w-full md:ml-0" action="#" method="GET">
+    <form onSubmit={handleSubmit} className="flex flex-1">
+      <div className="flex w-full md:ml-0">
         <label htmlFor="search_field" className="sr-only">
           Search
         </label>
@@ -19,10 +29,11 @@ const SearchBarInput: React.FC = () => {
             placeholder="Search"
             type="search"
             name="search"
+            onChange={(e) => setText(e.target.value)}
           />
         </div>
-      </form>
-    </div>
+      </div>
+    </form>
   );
 };
 

@@ -7,7 +7,7 @@ import { Quiz } from "./Quiz";
 export class Tag {
   @Field(() => String)
   @PrimaryColumn()
-  id: number;
+  id: string;
 
   @Field()
   @Column()

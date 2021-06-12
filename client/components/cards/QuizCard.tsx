@@ -3,26 +3,21 @@ import React from "react";
 import moment from "moment";
 import Image from "next/image";
 
-import { QuizCardResponseFragment } from "../../generated/graphql";
+import { Quiz } from "../../generated/graphql";
 
-interface QuizCardProps extends QuizCardResponseFragment {}
-
-export const QuizCard: React.FC<QuizCardProps> = ({
-  title,
-  description,
-  quizPhoto,
-  createdAt,
-}) => {
+export const QuizCard: React.FC<
+  Pick<Quiz, "title" | "description" | "quizPhoto" | "createdAt">
+> = ({ title, description, quizPhoto, createdAt }) => {
   return (
     <div className="p-2 bg-white rounded-md shadow-md md:flex">
       <div className="self-center flex-shrink-0 mr-4">
         {quizPhoto && (
-          <div className="w-full overflow-hidden rounded-md md:w-60 ">
+          <div className="w-full overflow-hidden bg-gray-100 rounded-md md:w-60">
             <div className="relative w-full pb-[56.25%]">
               <Image
                 src={quizPhoto}
                 layout="fill"
-                objectFit="contain"
+                objectFit="cover"
                 alt="thumbnail"
               />
             </div>

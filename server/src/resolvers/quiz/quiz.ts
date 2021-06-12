@@ -14,6 +14,7 @@ import {
   PaginatedQuizzes,
   QueryQuizzesInput,
   QuestionInput,
+  QuizInput,
 } from "./quizInput";
 
 @Resolver(Quiz)
@@ -57,8 +58,22 @@ export class QuizResolver {
   }
 
   @UseMiddleware(isAuthenticated)
-  @Mutation(() => String)
+  @Mutation(() => Quiz)
   async createQuiz(
+    @Arg("quizInput") quizInput: QuizInput,
+    @Ctx() ctx: MyContext
+  ): Promise<Quiz> {
+    const newQuiz = await Quiz.create({
+      ...quizInput,
+      authorId: ctx.req.session.userId,
+    }).save();
+
+    return newQuiz;
+  }
+
+  @UseMiddleware(isAuthenticated)
+  @Mutation(() => String)
+  async createQuizV2(
     @Arg("title") title: string,
     @Arg("description") description: string,
     @Ctx() ctx: MyContext
@@ -74,7 +89,7 @@ export class QuizResolver {
 
   @UseMiddleware(isAuthenticated)
   @Mutation(() => Boolean)
-  async addQuestion(
+  async addQuestionV2(
     @Arg("quizId") quizId: string,
     @Arg("data") data: QuestionInput
   ): Promise<boolean> {
