@@ -215,6 +215,10 @@ export type User = {
 export type QuizCardResponseFragment = (
   { __typename?: 'Quiz' }
   & Pick<Quiz, 'id' | 'title' | 'description' | 'quizPhoto' | 'createdAt'>
+  & { author: (
+    { __typename?: 'User' }
+    & Pick<User, 'firstName' | 'lastName' | 'avatar'>
+  ) }
 );
 
 export type UserResponseFragment = (
@@ -293,6 +297,11 @@ export const QuizCardResponseFragmentDoc = gql`
   description
   quizPhoto
   createdAt
+  author {
+    firstName
+    lastName
+    avatar
+  }
 }
     `;
 export const UserResponseFragmentDoc = gql`

@@ -3,7 +3,8 @@ import React from "react";
 import moment from "moment";
 import Image from "next/image";
 
-import { Quiz } from "../../generated/graphql";
+import { Quiz, User } from "../../generated/graphql";
+import Avatar from "../ui/Avatar";
 
 function truncateText(text: string, len: number = 320): string {
   if (text.length > len) {
@@ -25,33 +26,99 @@ function formatDate(date: string): string {
 }
 
 export const QuizCard: React.FC<
-  Pick<Quiz, "title" | "description" | "quizPhoto" | "createdAt">
-> = ({ title, description, quizPhoto, createdAt }) => {
+  Pick<Quiz, "title" | "description" | "quizPhoto" | "createdAt"> & {
+    author: Pick<User, "firstName" | "lastName" | "avatar">;
+  }
+> = ({ title, description, quizPhoto, createdAt, author }) => {
+  const { firstName, lastName, avatar = "" } = author;
+
   return (
-    <div className="w-full p-2 rounded-md cursor-pointer active:bg-gray-200 active:ring-1 ring-gray-300 group md:flex ">
-      <div className="self-start flex-shrink-0 mr-4">
-        {quizPhoto && (
-          <div className="w-full overflow-hidden bg-gray-100 rounded-md md:w-60">
-            <div className="relative w-full pb-[56.25%]">
-              <Image
-                src={quizPhoto}
-                layout="fill"
-                objectFit="cover"
-                alt="thumbnail"
-              />
-            </div>
+    <li className="p-4 overflow-hidden bg-white ">
+      <Avatar name={`${firstName} ${lastName}`} img={avatar as string} />
+      <div className="w-full p-2 mt-2 rounded-md cursor-pointer group md:flex ">
+        <div className="w-full">
+          <h2 className="text-3xl font-bold leading-tight tracking-tight">
+            {title}
+          </h2>
+          <div className="flex gap-4 mb-4">
+            <span className="flex items-center text-sm font-medium text-gray-700">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                className="w-4 h-4 mr-1"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"
+                />
+              </svg>
+
+              {formatDate(createdAt)}
+            </span>
+            <span className="flex items-center text-sm font-medium text-gray-700">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                className="w-4 h-4 mr-1"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"
+                />
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"
+                />
+              </svg>
+              30 Submitted
+            </span>
+            <span className="flex items-center text-sm font-medium text-gray-700">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                className="w-4 h-4 mr-1"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"
+                />
+              </svg>
+              2 Questions
+            </span>
           </div>
-        )}
-      </div>
-      <div className="w-full">
-        <h2 className="text-xl font-bold">{title}</h2>
-        <div className="flex gap-2">
-          <span className="text-sm font-light">{formatDate(createdAt)}</span>
-          <span className="text-sm font-light">30 Submitted</span>
-          <span className="text-sm font-light">2 Questions</span>
+          <p className="mt-1 text-lg leading-snug tracking-tight break-words">
+            {truncateText(description)}
+          </p>
         </div>
-        <p className="mt-1">{truncateText(description)}</p>
+        <div className="self-start flex-shrink-0 ml-8">
+          {quizPhoto && (
+            <div className="w-full overflow-hidden bg-gray-100 rounded-md md:w-60">
+              <div className="relative w-full pb-[56.25%]">
+                <Image
+                  src={quizPhoto}
+                  layout="fill"
+                  objectFit="cover"
+                  alt="thumbnail"
+                />
+              </div>
+            </div>
+          )}
+        </div>
       </div>
-    </div>
+    </li>
   );
 };
