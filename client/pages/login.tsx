@@ -63,17 +63,17 @@ const LoginPage = () => {
             )}
             <form onSubmit={handleSubmit(onSubmit)} className="space-y-2">
               <FormInput
-                name="usernameOrEmail"
+                id="usernameOrEmail"
                 label="Email or username"
                 type="text"
-                register={register}
                 error={errors.usernameOrEmail}
+                {...register("usernameOrEmail")}
               />
               <FormInput
-                name="password"
+                id="password"
                 label="Password"
                 type="password"
-                register={register}
+                {...register("usernameOrEmail")}
                 error={errors.password}
               />
               <div className="flex items-center justify-between">

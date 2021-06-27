@@ -1,8 +1,8 @@
 // firstName should  no be empty => First name should not be empty
 // camelCase to proper
 
-export const errorStringFormatter = (error: string) =>
-  error.split(" ").map((x, i) => {
+export const errorStringFormatter = (error: string) => {
+  return error.split(" ").map((x, i) => {
     if (i !== 0) {
       return " " + x + " ";
     } else {
@@ -11,3 +11,4 @@ export const errorStringFormatter = (error: string) =>
       );
     }
   });
+};

@@ -5,7 +5,12 @@ import Container from "@components/ui/Container";
 import MainContainer from "@components/ui/MainContainer";
 import { QuizInput } from "@generated/graphql";
 import withApollo from "@lib/withApollo";
-import { FormProvider, useFieldArray, useForm } from "react-hook-form";
+import {
+  FieldArrayMethodProps,
+  FormProvider,
+  useFieldArray,
+  useForm,
+} from "react-hook-form";
 import { v4 as uuid } from "uuid";
 
 const CreateQuiz = () => {
@@ -27,11 +32,11 @@ const CreateQuiz = () => {
     name: "questions",
   });
 
-  const onSubmit = (data: any) => {
-    alert(JSON.stringify(data, null, 2));
+  const onSubmit = (data: QuizInput) => {
+    alert(JSON.stringify(data.title, null, 2));
   };
 
-  const addQuestion = (shouldFocus: boolean) => {
+  const addQuestion = (options?: FieldArrayMethodProps) => {
     append(
       {
         id: uuid(),
@@ -41,13 +46,13 @@ const CreateQuiz = () => {
         explanation: "",
         hint: "",
       },
-      { shouldFocus }
+      options
     );
   };
 
   useEffect(() => {
     if (fields.length === 0) {
-      addQuestion(false);
+      addQuestion({ shouldFocus: false });
     }
   }, []);
 
@@ -70,13 +75,13 @@ const CreateQuiz = () => {
                   <textarea
                     maxLength={138}
                     placeholder="Title…"
-                    className="w-full px-4 mt-2 mb-5 text-3xl font-bold leading-snug bg-transparent outline-none appearance-none resize-none"
+                    className="w-full px-4 mt-2 mb-5 text-3xl font-bold leading-snug border-gray-300 rounded-md outline-none appearance-none resize-none"
                     {...register("title", { required: true })}
                   />
-                  <input
-                    type="text"
-                    className="block w-full"
+                  <textarea
+                    maxLength={280}
                     placeholder="Description"
+                    className="block w-full border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm min-h-[120px]"
                     {...register("description", { required: true })}
                   />
 
@@ -86,34 +91,44 @@ const CreateQuiz = () => {
                         <QuestionCard
                           key={question.id}
                           {...{ question, control, register }}
-                          deleteButtonDisabled={fields.length < 2}
+                          isDisabled={fields.length < 2}
                           questionIdx={idx}
                           questionRemove={remove}
                         />
                       );
                     })}
                   </div>
-                  <button
-                    type="button"
-                    onClick={() => addQuestion(true)}
-                    className="flex px-2 py-1 rounded hover:bg-gray-200 focus:outline-none"
-                  >
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      className="w-6 h-6 mr-1"
-                      fill="none"
-                      viewBox="0 0 24 24"
-                      stroke="currentColor"
+                  <div className="flex items-center justify-end">
+                    <button
+                      type="button"
+                      onClick={() => addQuestion({ shouldFocus: true })}
+                      className="flex px-2 py-1 rounded hover:bg-gray-200 focus:outline-none"
                     >
-                      <path
-                        stroke-linecap="round"
-                        stroke-linejoin="round"
-                        stroke-width="2"
-                        d="M9 13h6m-3-3v6m-9 1V7a2 2 0 012-2h6l2 2h6a2 2 0 012 2v8a2 2 0 01-2 2H5a2 2 0 01-2-2z"
-                      />
-                    </svg>
-                    Add Question
-                  </button>
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        className="w-6 h-6 mr-1"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                        stroke="currentColor"
+                      >
+                        <path
+                          stroke-linecap="round"
+                          stroke-linejoin="round"
+                          stroke-width="2"
+                          d="M9 13h6m-3-3v6m-9 1V7a2 2 0 012-2h6l2 2h6a2 2 0 012 2v8a2 2 0 01-2 2H5a2 2 0 01-2-2z"
+                        />
+                      </svg>
+                      Add Question
+                    </button>
+                  </div>
+                  <div className="mt-4">
+                    <button
+                      type="submit"
+                      className="w-full px-4 py-3 text-white bg-black rounded-md focus:outline-none font-inter"
+                    >
+                      Save
+                    </button>
+                  </div>
                 </form>
               </FormProvider>
             </div>

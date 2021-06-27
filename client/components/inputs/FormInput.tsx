@@ -1,42 +1,45 @@
 import React from "react";
 
-import { FieldError, UseFormRegister } from "react-hook-form";
+import { classNames } from "@utils/index";
+import { FieldError, UseFormRegisterReturn } from "react-hook-form";
 
 import { errorStringFormatter } from "../../utils/errorStringFormatter";
 
-interface Props {
-  name: string;
-  label: string;
+interface Props extends UseFormRegisterReturn {
+  id: string;
+  label?: string;
   placeholder?: string;
-  register: UseFormRegister<any>;
   type?: string;
   error?: FieldError;
 }
 
 const FormInput: React.FC<Props> = ({
-  name,
+  id,
   label,
   placeholder,
   type,
-  register,
   error,
+  ...props
 }) => {
   return (
     <div>
-      <label className="text-sm font-medium text-gray-600 " htmlFor={name}>
-        {label}
-      </label>
-      <div className="relative mt-1 rounded-md shadow-sm">
+      {!!label && (
+        <label className="text-sm font-medium text-gray-600 " htmlFor={id}>
+          {label}
+        </label>
+      )}
+      <div className="relative mt-1">
         <input
-          id={name}
+          id={id}
           type={type}
-          className={`relative block w-full px-3 py-2 mt-1 rounded-md focus:ring-0  ${
-            error ? "border-red-500 focus:border-red-500" : "focus:border-black"
-          }`}
+          className={`relative block border-gray-300 focus:outline-none bg-gray-50 w-full px-3 py-2 mt-1 rounded-md ${classNames(
+            error ? "border-red-500 focus:border-red-500" : ""
+          )}
+            `}
           placeholder={placeholder}
-          {...register(name)}
+          {...props}
         />
-        {error && type !== "date" && (
+        {error && (
           <div className="absolute inset-y-0 right-0 flex items-center pr-3 text-red-500 pointer-events-none">
             <svg
               xmlns="http://www.w3.org/2000/svg"

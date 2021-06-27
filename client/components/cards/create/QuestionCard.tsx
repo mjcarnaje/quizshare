@@ -6,12 +6,14 @@ import { classNames } from "@utils/index";
 import {
   Control,
   Controller,
+  FieldArrayMethodProps,
   FieldArrayWithId,
   useFieldArray,
   UseFormRegister,
 } from "react-hook-form";
 import { v4 as uuid } from "uuid";
 
+import FormInput from "../../inputs/FormInput";
 import ChoiceCard from "./ChoiceCard";
 
 interface Props {
@@ -20,7 +22,7 @@ interface Props {
   register: UseFormRegister<QuizInput>;
   questionRemove: (index?: number | number[] | undefined) => void;
   control: Control<QuizInput>;
-  deleteButtonDisabled?: boolean;
+  isDisabled?: boolean;
 }
 
 const QuestionCard: React.FC<Props> = ({
@@ -29,7 +31,7 @@ const QuestionCard: React.FC<Props> = ({
   register,
   questionRemove,
   control,
-  deleteButtonDisabled,
+  isDisabled,
 }) => {
   const {
     fields: choiceFields,
@@ -40,19 +42,20 @@ const QuestionCard: React.FC<Props> = ({
     name: `questions.${questionIdx}.choices`,
   });
 
-  const addChoice = (shouldFocus: boolean) => {
+  const addChoice = (options?: FieldArrayMethodProps) => {
     choiceAppend(
       {
         id: uuid(),
         text: "",
       },
-      { shouldFocus }
+      options
     );
   };
 
   useEffect(() => {
-    if (choiceFields.length === 0) {
-      addChoice(false);
+    if (choiceFields.length < 1) {
+      addChoice({ shouldFocus: false });
+      addChoice({ shouldFocus: false });
     }
   }, []);
 
@@ -67,11 +70,11 @@ const QuestionCard: React.FC<Props> = ({
           defaultValue={question.id}
           {...register(`questions.${questionIdx}.id`)}
         />
-        <input
-          type="text"
-          className="block w-full"
+        <FormInput
+          id={`questions.${questionIdx}.question`}
+          type="string"
+          placeholder="Type question"
           {...register(`questions.${questionIdx}.question`)}
-          placeholder="Question"
         />
         <Controller
           control={control}
@@ -80,18 +83,16 @@ const QuestionCard: React.FC<Props> = ({
           render={({ field: { value, onChange } }) => (
             <RadioGroup value={value} onChange={onChange}>
               <ul className="grid grid-cols-1 gap-6 mt-2 lg:grid-cols-2">
-                {choiceFields.map((choice, idx) => (
+                {choiceFields.map((choice, choiceIdx) => (
                   <ChoiceCard
-                    choice={choice}
-                    questionIdx={questionIdx}
-                    choiceIdx={idx}
-                    register={register}
-                    deleteButtonDisabled={choiceFields.length < 2}
+                    key={choice.id}
+                    {...{ choice, questionIdx, choiceIdx, register }}
+                    isDisabled={choiceFields.length < 3}
                     deleteChoice={() => {
-                      if (value === choiceFields[idx].id) {
+                      if (value === choiceFields[choiceIdx].id) {
                         onChange(null);
                       }
-                      choiceRemove(idx);
+                      choiceRemove(choiceIdx);
                     }}
                   />
                 ))}
@@ -104,7 +105,7 @@ const QuestionCard: React.FC<Props> = ({
       <div className="flex items-center justify-end px-3 py-1 bg-gray-100 sm:px-6">
         <button
           type="button"
-          onClick={() => addChoice(true)}
+          onClick={() => addChoice({ shouldFocus: true })}
           className="flex items-center px-2 py-1 mr-2 rounded hover:bg-gray-200 focus:outline-none"
         >
           <svg
@@ -125,16 +126,14 @@ const QuestionCard: React.FC<Props> = ({
         </button>
 
         <button
-          disabled={deleteButtonDisabled}
+          disabled={isDisabled}
           type="button"
           onClick={() => questionRemove(questionIdx)}
           className="p-2 rounded hover:bg-gray-200 focus:outline-none"
         >
           <svg
             xmlns="http://www.w3.org/2000/svg"
-            className={` h-6 w-6 ${classNames(
-              deleteButtonDisabled ? "opacity-30" : ""
-            )}`}
+            className={` h-6 w-6 ${classNames(isDisabled ? "opacity-30" : "")}`}
             fill="none"
             viewBox="0 0 24 24"
             stroke="currentColor"

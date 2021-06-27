@@ -5,12 +5,14 @@ import { RadioGroup } from "@headlessui/react";
 import { classNames } from "@utils/index";
 import { FieldArrayWithId, UseFormRegister } from "react-hook-form";
 
+import FormInput from "../../inputs/FormInput";
+
 interface Props {
   choice: FieldArrayWithId<QuestionInput, "choices", "id">;
   questionIdx: number;
   choiceIdx: number;
   register: UseFormRegister<QuizInput>;
-  deleteButtonDisabled?: boolean;
+  isDisabled?: boolean;
   deleteChoice: () => void;
 }
 
@@ -19,17 +21,17 @@ const ChoiceCard: React.FC<Props> = ({
   questionIdx,
   choiceIdx,
   register,
-  deleteButtonDisabled,
+  isDisabled,
   deleteChoice,
 }) => {
   return (
     <li className="col-span-1 overflow-hidden bg-white divide-y divide-gray-200 rounded-md shadow">
       <div className="bg-white">
         <div className="p-2">
-          <input
-            type="text"
-            className="z-10 block w-full"
-            placeholder="Description"
+          <FormInput
+            id={`questions.${questionIdx}.choices.${choiceIdx}.text`}
+            type="string"
+            placeholder="Type choice"
             {...register(`questions.${questionIdx}.choices.${choiceIdx}.text`)}
           />
         </div>
@@ -86,14 +88,14 @@ const ChoiceCard: React.FC<Props> = ({
 
           <button
             type="button"
-            disabled={deleteButtonDisabled}
+            disabled={isDisabled}
             onClick={deleteChoice}
             className="p-1 rounded hover:bg-gray-200 focus:outline-none"
           >
             <svg
               xmlns="http://www.w3.org/2000/svg"
               className={` h-5 w-5 ${classNames(
-                deleteButtonDisabled ? "opacity-30" : ""
+                isDisabled ? "opacity-30" : ""
               )}`}
               fill="none"
               viewBox="0 0 24 24"
