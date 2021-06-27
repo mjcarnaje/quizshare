@@ -17,7 +17,8 @@ import { Gender } from "../../types/types";
 
 @ValidatorConstraint({ async: true })
 export class IsEmailAlreadyExistConstraint
-  implements ValidatorConstraintInterface {
+  implements ValidatorConstraintInterface
+{
   validate(email: string) {
     return User.findOne({ where: { email } }).then((user) => {
       if (user) return false;
@@ -62,7 +63,8 @@ function IsUsernameAlreadyExist(validationOptions?: ValidationOptions) {
 
 @ValidatorConstraint({ name: "IsPasswordMatched" })
 export class IsPasswordMatchedConstraint
-  implements ValidatorConstraintInterface {
+  implements ValidatorConstraintInterface
+{
   validate(value: any, args: ValidationArguments) {
     const [relatedPropertyName] = args.constraints;
     const relatedValue = (args.object as any)[relatedPropertyName];
@@ -126,11 +128,11 @@ export class SignUpInput {
 @InputType()
 export class SignInInput {
   @Field()
-  @MinLength(3)
+  @IsNotEmpty()
   usernameOrEmail: string;
 
   @Field()
-  @MinLength(3)
+  @IsNotEmpty()
   password: string;
 
   @Field()

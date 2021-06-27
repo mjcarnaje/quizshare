@@ -1,3 +1,4 @@
+import { AuthenticationError, UserInputError } from "apollo-server-express";
 import * as bcrypt from "bcryptjs";
 import { Arg, Ctx, Mutation, Query, Resolver } from "type-graphql";
 import { getConnection } from "typeorm";
@@ -21,15 +22,8 @@ export class UserResolver {
     @Arg("signUpInput") signUpInput: SignUpInput,
     @Ctx() ctx: MyContext
   ): Promise<User> {
-    const {
-      email,
-      username,
-      password,
-      firstName,
-      lastName,
-      birthday,
-      gender,
-    } = signUpInput;
+    const { email, username, password, firstName, lastName, birthday, gender } =
+      signUpInput;
 
     const hashedPassword = await bcrypt.hash(password, 12);
 
@@ -68,13 +62,13 @@ export class UserResolver {
     );
 
     if (!user) {
-      throw new Error("User not found");
+      throw new AuthenticationError("User not found");
     }
 
     const valid = await bcrypt.compare(password, user.password);
 
     if (!valid) {
-      throw new Error("Wrong Credentials");
+      throw new UserInputError("Wrong Credentials");
     }
 
     ctx.req.session.userId = user.id;

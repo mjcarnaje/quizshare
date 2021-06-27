@@ -26,10 +26,10 @@ const navigation = [
 
 interface Props {
   showSearchBar?: boolean;
-  headerJSX?: JSX.Element;
+  header?: JSX.Element;
 }
 
-const Container: React.FC<Props> = ({ children, showSearchBar, headerJSX }) => {
+const Container: React.FC<Props> = ({ children, showSearchBar, header }) => {
   const [sidebarOpen, setSidebarOpen] = useState(false);
 
   return (
@@ -37,7 +37,7 @@ const Container: React.FC<Props> = ({ children, showSearchBar, headerJSX }) => {
       <HiddenSidebar {...{ sidebarOpen, setSidebarOpen, navigation }} />
       <StaticSidebar {...{ navigation }} />
       <div className="flex flex-col flex-1 w-0 overflow-hidden">
-        <ContentHeader {...{ setSidebarOpen, showSearchBar, headerJSX }} />
+        <ContentHeader {...{ setSidebarOpen, showSearchBar, header }} />
         {children}
       </div>
     </>

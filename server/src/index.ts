@@ -70,49 +70,10 @@ const main = async () => {
       })
     );
 
-    passport.use(googleAuth());
-
-    passport.use(facebookAuth());
-
     app.use(passport.initialize());
 
-    app.get(
-      "/auth/google",
-      passport.authenticate("google", {
-        scope: ["profile", "email"],
-      })
-    );
-
-    app.get(
-      "/auth/google/callback",
-      passport.authenticate("google", {
-        session: false,
-        scope: ["profile", "email"],
-      }),
-      (req, res) => {
-        (req.session as any).userId = (req.user as any).id;
-
-        // redirect to the front-end
-
-        res.redirect("http://localhost:3000/");
-      }
-    );
-
-    app.get("/auth/facebook", passport.authenticate("facebook"));
-
-    app.get(
-      "/auth/facebook/callback",
-      passport.authenticate("facebook", {
-        session: false,
-      }),
-      (req, res) => {
-        (req.session as any).userId = (req.user as any).id;
-
-        // redirect to the front-end
-
-        res.redirect("http://localhost:3000/");
-      }
-    );
+    googleAuth(app);
+    facebookAuth(app);
 
     apolloServer.applyMiddleware({ app, cors: false });
 

@@ -27,24 +27,26 @@ const LoginPage = () => {
   } = useForm<SignInInput & FormErrors>();
 
   const onSubmit = async (values: SignInInput) => {
-    try {
-      const { data } = await signIn({
-        variables: { ...values, rememberMe: true },
-        update: (cache, { data }) => {
-          cache.writeQuery<MeQuery>({
-            query: MeDocument,
-            data: {
-              __typename: "Query",
-              me: data?.signIn,
-            },
-          });
-        },
-      });
-      if (data?.signIn) {
-        router.push("/");
-      }
-    } catch (err) {
-      errorMapper(err, setError);
+    const { data, errors } = await signIn({
+      variables: { ...values, rememberMe: true },
+      update: (cache, { data }) => {
+        cache.writeQuery<MeQuery>({
+          query: MeDocument,
+          data: {
+            __typename: "Query",
+            me: data?.signIn,
+          },
+        });
+      },
+    });
+
+    if (errors) {
+      alert(JSON.stringify(errors, null, 2));
+      return errorMapper(errors, setError);
+    }
+
+    if (data?.signIn) {
+      router.push("/");
     }
   };
 
@@ -73,7 +75,7 @@ const LoginPage = () => {
                 id="password"
                 label="Password"
                 type="password"
-                {...register("usernameOrEmail")}
+                {...register("password")}
                 error={errors.password}
               />
               <div className="flex items-center justify-between">
