@@ -1,9 +1,7 @@
 import React, { useState } from "react";
 
-import ContentContainer from "@components/ui/ContentContainer";
 import ContentHeader from "@components/ui/ContentHeader";
 import HiddenSidebar from "@components/ui/HiddenSidebar";
-import MenuButton from "@components/ui/MenuButton";
 import StaticSidebar from "@components/ui/StaticSidebar";
 import { HomeIcon, PlusCircleIcon } from "@heroicons/react/outline";
 import {
@@ -26,21 +24,22 @@ const navigation = [
   },
 ];
 
-interface props {}
+interface Props {
+  showSearchBar?: boolean;
+  headerJSX?: JSX.Element;
+}
 
-const Container: React.FC<props> = ({ children }) => {
+const Container: React.FC<Props> = ({ children, showSearchBar, headerJSX }) => {
   const [sidebarOpen, setSidebarOpen] = useState(false);
 
   return (
     <>
       <HiddenSidebar {...{ sidebarOpen, setSidebarOpen, navigation }} />
       <StaticSidebar {...{ navigation }} />
-      <ContentContainer>
-        <ContentHeader
-          buttonToOpenSidebar={<MenuButton {...{ setSidebarOpen }} />}
-        />
+      <div className="flex flex-col flex-1 w-0 overflow-hidden">
+        <ContentHeader {...{ setSidebarOpen, showSearchBar, headerJSX }} />
         {children}
-      </ContentContainer>
+      </div>
     </>
   );
 };

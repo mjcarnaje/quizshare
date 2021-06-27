@@ -221,9 +221,40 @@ export type QuizCardResponseFragment = (
   ) }
 );
 
+export type QuizResponseFragment = (
+  { __typename?: 'Quiz' }
+  & Pick<Quiz, 'id' | 'authorId' | 'title' | 'description' | 'quizPhoto' | 'isPublished' | 'createdAt' | 'updatedAt'>
+  & { author: (
+    { __typename?: 'User' }
+    & Pick<User, 'firstName' | 'lastName' | 'avatar' | 'email'>
+  ), questions?: Maybe<Array<(
+    { __typename?: 'Question' }
+    & Pick<Question, 'id' | 'question' | 'questionPhoto' | 'choices' | 'answer' | 'explanation' | 'hint'>
+  )>>, tags?: Maybe<Array<(
+    { __typename?: 'Tag' }
+    & Pick<Tag, 'id' | 'name'>
+  )>>, results?: Maybe<Array<(
+    { __typename?: 'Result' }
+    & Pick<Result, 'id' | 'title' | 'description' | 'resultPhoto' | 'minimumPassingPercentage'>
+  )>> }
+);
+
 export type UserResponseFragment = (
   { __typename?: 'User' }
   & Pick<User, 'id' | 'googleId' | 'facebookId' | 'username' | 'email' | 'avatar' | 'coverPhoto' | 'firstName' | 'lastName' | 'birthday' | 'gender' | 'country' | 'bio' | 'social' | 'createdAt' | 'updatedAt'>
+);
+
+export type CreateQuizMutationVariables = Exact<{
+  quizInput: QuizInput;
+}>;
+
+
+export type CreateQuizMutation = (
+  { __typename?: 'Mutation' }
+  & { createQuiz: (
+    { __typename?: 'Quiz' }
+    & Pick<Quiz, 'id'>
+  ) }
 );
 
 export type SignOutMutationVariables = Exact<{ [key: string]: never; }>;
@@ -304,6 +335,44 @@ export const QuizCardResponseFragmentDoc = gql`
   }
 }
     `;
+export const QuizResponseFragmentDoc = gql`
+    fragment quizResponse on Quiz {
+  id
+  authorId
+  author {
+    firstName
+    lastName
+    avatar
+    email
+  }
+  title
+  description
+  quizPhoto
+  questions {
+    id
+    question
+    questionPhoto
+    choices
+    answer
+    explanation
+    hint
+  }
+  tags {
+    id
+    name
+  }
+  results {
+    id
+    title
+    description
+    resultPhoto
+    minimumPassingPercentage
+  }
+  isPublished
+  createdAt
+  updatedAt
+}
+    `;
 export const UserResponseFragmentDoc = gql`
     fragment userResponse on User {
   id
@@ -324,6 +393,39 @@ export const UserResponseFragmentDoc = gql`
   updatedAt
 }
     `;
+export const CreateQuizDocument = gql`
+    mutation CreateQuiz($quizInput: QuizInput!) {
+  createQuiz(quizInput: $quizInput) {
+    id
+  }
+}
+    `;
+export type CreateQuizMutationFn = Apollo.MutationFunction<CreateQuizMutation, CreateQuizMutationVariables>;
+
+/**
+ * __useCreateQuizMutation__
+ *
+ * To run a mutation, you first call `useCreateQuizMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useCreateQuizMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [createQuizMutation, { data, loading, error }] = useCreateQuizMutation({
+ *   variables: {
+ *      quizInput: // value for 'quizInput'
+ *   },
+ * });
+ */
+export function useCreateQuizMutation(baseOptions?: Apollo.MutationHookOptions<CreateQuizMutation, CreateQuizMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<CreateQuizMutation, CreateQuizMutationVariables>(CreateQuizDocument, options);
+      }
+export type CreateQuizMutationHookResult = ReturnType<typeof useCreateQuizMutation>;
+export type CreateQuizMutationResult = Apollo.MutationResult<CreateQuizMutation>;
+export type CreateQuizMutationOptions = Apollo.BaseMutationOptions<CreateQuizMutation, CreateQuizMutationVariables>;
 export const SignOutDocument = gql`
     mutation SignOut {
   logout

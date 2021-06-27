@@ -2,13 +2,13 @@ import React, { ReactNode } from "react";
 
 import Head from "next/head";
 
-interface props {
+interface Props {
   children?: ReactNode;
   title?: string;
   header?: boolean;
 }
 
-const MainContainer: React.FC<props> = ({
+const MainContainer: React.FC<Props> = ({
   children,
   title = "This is the default title",
 }) => {

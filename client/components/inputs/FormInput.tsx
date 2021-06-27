@@ -4,7 +4,7 @@ import { FieldError, UseFormRegister } from "react-hook-form";
 
 import { errorStringFormatter } from "../../utils/errorStringFormatter";
 
-interface props {
+interface Props {
   name: string;
   label: string;
   placeholder?: string;
@@ -13,7 +13,7 @@ interface props {
   error?: FieldError;
 }
 
-const FormInput: React.FC<props> = ({
+const FormInput: React.FC<Props> = ({
   name,
   label,
   placeholder,

@@ -1,11 +1,11 @@
 import React from "react";
 
-interface props {
+interface Props {
   name: string;
   img: string;
 }
 
-const Avatar: React.FC<props> = ({ name, img }) => {
+const Avatar: React.FC<Props> = ({ name, img }) => {
   return (
     <a href="#" className="flex-shrink-0 block group">
       <div className="flex items-center">

@@ -2,7 +2,7 @@ import React from "react";
 
 import { UseFormRegister, FieldError } from "react-hook-form";
 
-interface props {
+interface Props {
   register: UseFormRegister<any>;
   options: string[];
   label: string;
@@ -10,7 +10,7 @@ interface props {
   error?: FieldError;
 }
 
-const FormSelect: React.FC<props> = ({
+const FormSelect: React.FC<Props> = ({
   register,
   options,
   label,

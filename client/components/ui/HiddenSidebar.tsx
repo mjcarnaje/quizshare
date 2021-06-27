@@ -8,13 +8,13 @@ import { useRouter } from "next/dist/client/router";
 
 import { INavigation } from "../../types/global-types";
 
-interface props {
+interface Props {
   sidebarOpen: boolean;
   setSidebarOpen: Dispatch<SetStateAction<boolean>>;
   navigation: INavigation;
 }
 
-const HiddenSidebar: React.FC<props> = ({
+const HiddenSidebar: React.FC<Props> = ({
   sidebarOpen,
   setSidebarOpen,
   navigation,

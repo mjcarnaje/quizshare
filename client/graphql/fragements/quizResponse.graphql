@@ -1,0 +1,36 @@
+fragment quizResponse on Quiz {
+  id
+  authorId
+  author {
+    firstName
+    lastName
+    avatar
+    email
+  }
+  title
+  description
+  quizPhoto
+  questions {
+    id
+    question
+    questionPhoto
+    choices
+    answer
+    explanation
+    hint
+  }
+  tags {
+    id
+    name
+  }
+  results {
+    id
+    title
+    description
+    resultPhoto
+    minimumPassingPercentage
+  }
+  isPublished
+  createdAt
+  updatedAt
+}

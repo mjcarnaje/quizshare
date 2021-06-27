@@ -5,11 +5,11 @@ import { INavigation } from "types/global-types";
 
 import { classNames } from "../../utils/index";
 
-interface props {
+interface Props {
   navigation: INavigation;
 }
 
-const StaticSidebar: React.FC<props> = ({ navigation }) => {
+const StaticSidebar: React.FC<Props> = ({ navigation }) => {
   const router = useRouter();
 
   return (
