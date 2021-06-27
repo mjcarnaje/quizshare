@@ -60,68 +60,58 @@ const SignUpPage = () => {
           <div className="p-6 mt-8 space-y-4 bg-white rounded-md shadow-md sm:p-8 md:p-14">
             <form onSubmit={handleSubmit(onSubmit)} className="space-y-2">
               <FormInput
-                name="email"
+                type="text"
                 label="Email"
-                type="text"
-                register={register}
                 error={errors.email}
+                {...register("email", { required: true })}
               />
               <FormInput
-                name="username"
+                type="text"
                 label="Username"
-                type="text"
-                register={register}
                 error={errors.username}
+                {...register("username", { required: true })}
               />
               <FormInput
-                name="password"
+                type="password"
                 label="Password"
-                type="password"
-                register={register}
                 error={errors.password}
+                {...register("password", { required: true })}
               />
               <FormInput
-                name="confirmPassword"
-                label="Confirm Password"
                 type="password"
-                register={register}
+                label="Confirm Password"
                 error={errors.confirmPassword}
+                {...register("confirmPassword", { required: true })}
               />
               <FormInput
-                name="firstName"
+                type="text"
                 label="First Name"
-                type="text"
-                register={register}
                 error={errors.firstName}
+                {...register("firstName", { required: true })}
               />
               <FormInput
-                name="lastName"
-                label="Last Name"
                 type="text"
-                register={register}
+                label="Last Name"
                 error={errors.lastName}
+                {...register("lastName", { required: true })}
               />
               <FormInput
-                name="birthday"
-                label="Birthday"
                 type="date"
-                register={register}
+                label="Birthday"
                 error={errors.birthday}
+                {...register("birthday", { required: true })}
               />
 
               <FormSelect
-                name="gender"
                 label="Gender"
                 options={["Male", "Female"]}
-                register={register}
                 error={errors.gender}
+                {...register("gender", { required: true })}
               />
 
               <div>
-                <button
-                  type="submit"
-                  className="relative flex justify-center w-full px-4 py-2 mt-4 text-sm font-medium text-white bg-black border border-transparent rounded-md group hover:bg-gray-900 focus:outline-none"
-                >
+                type="submit"
+                <button className="relative flex justify-center w-full px-4 py-2 mt-4 text-sm font-medium text-white bg-black border border-transparent rounded-md group hover:bg-gray-900 focus:outline-none">
                   {loading ? "Loading..." : "Sign up"}
                 </button>
               </div>

@@ -6,7 +6,6 @@ import { FieldError, UseFormRegisterReturn } from "react-hook-form";
 import { errorStringFormatter } from "../../utils/errorStringFormatter";
 
 interface Props extends UseFormRegisterReturn {
-  id: string;
   label?: string;
   placeholder?: string;
   type?: string;
@@ -14,7 +13,6 @@ interface Props extends UseFormRegisterReturn {
 }
 
 const FormInput: React.FC<Props> = ({
-  id,
   label,
   placeholder,
   type,
@@ -24,17 +22,21 @@ const FormInput: React.FC<Props> = ({
   return (
     <div>
       {!!label && (
-        <label className="text-sm font-medium text-gray-600 " htmlFor={id}>
+        <label
+          className="text-sm font-medium text-gray-600 "
+          htmlFor={props.name}
+        >
           {label}
         </label>
       )}
       <div className="relative mt-1">
         <input
-          id={id}
+          id={props.name}
           type={type}
-          className={`relative block border-gray-300 focus:outline-none bg-gray-50 w-full px-3 py-2 mt-1 rounded-md ${classNames(
-            error ? "border-red-500 focus:border-red-500" : ""
-          )}
+          className={`relative block focus:outline-none bg-gray-50 w-full px-3 py-2 mt-1 rounded-md
+           ${classNames(
+             error ? "border-red-500 focus:border-red-500" : "border-gray-300"
+           )}
             `}
           placeholder={placeholder}
           {...props}
@@ -48,18 +50,20 @@ const FormInput: React.FC<Props> = ({
               fill="currentColor"
             >
               <path
-                fill-rule="evenodd"
+                fillRule="evenodd"
                 d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z"
-                clip-rule="evenodd"
+                clipRule="evenodd"
               />
             </svg>
           </div>
         )}
       </div>
-      {error && error.message && (
+      {error && (
         <div className="mt-1">
           <p className="text-xs text-red-500 capitalize-first">
-            {errorStringFormatter(error.message)}
+            {error.type === "required"
+              ? errorStringFormatter(`${props.name} is required`)
+              : errorStringFormatter(error?.message)}
           </p>
         </div>
       )}

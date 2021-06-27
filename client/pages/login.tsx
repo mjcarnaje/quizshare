@@ -27,26 +27,25 @@ const LoginPage = () => {
   } = useForm<SignInInput & FormErrors>();
 
   const onSubmit = async (values: SignInInput) => {
-    const { data, errors } = await signIn({
-      variables: { ...values, rememberMe: true },
-      update: (cache, { data }) => {
-        cache.writeQuery<MeQuery>({
-          query: MeDocument,
-          data: {
-            __typename: "Query",
-            me: data?.signIn,
-          },
-        });
-      },
-    });
+    try {
+      const { data } = await signIn({
+        variables: { ...values, rememberMe: true },
+        update: (cache, { data }) => {
+          cache.writeQuery<MeQuery>({
+            query: MeDocument,
+            data: {
+              __typename: "Query",
+              me: data?.signIn,
+            },
+          });
+        },
+      });
 
-    if (errors) {
-      alert(JSON.stringify(errors, null, 2));
-      return errorMapper(errors, setError);
-    }
-
-    if (data?.signIn) {
-      router.push("/");
+      if (data?.signIn) {
+        router.push("/");
+      }
+    } catch (err) {
+      errorMapper(err, setError);
     }
   };
 
@@ -65,18 +64,16 @@ const LoginPage = () => {
             )}
             <form onSubmit={handleSubmit(onSubmit)} className="space-y-2">
               <FormInput
-                id="usernameOrEmail"
-                label="Email or username"
                 type="text"
+                label="Email or username"
                 error={errors.usernameOrEmail}
-                {...register("usernameOrEmail")}
+                {...register("usernameOrEmail", { required: true })}
               />
               <FormInput
-                id="password"
-                label="Password"
                 type="password"
-                {...register("password")}
+                label="Password"
                 error={errors.password}
+                {...register("password", { required: true })}
               />
               <div className="flex items-center justify-between">
                 <div />

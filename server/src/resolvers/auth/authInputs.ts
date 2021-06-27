@@ -129,10 +129,12 @@ export class SignUpInput {
 export class SignInInput {
   @Field()
   @IsNotEmpty()
+  @Length(3, 256)
   usernameOrEmail: string;
 
   @Field()
   @IsNotEmpty()
+  @Length(3, 256)
   password: string;
 
   @Field()
