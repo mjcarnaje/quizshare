@@ -3,8 +3,9 @@ import { getConnection } from "typeorm";
 import { User } from "../../entity/User";
 const GoogleStrategy = require("passport-google-oauth20").Strategy;
 import * as core from "express-serve-static-core";
+import { Request } from "../../types/types";
 
-export const googleAuth = (app: core.Express) => {
+export const googlePassport = (app: core.Express) => {
   passport.use(
     new GoogleStrategy(
       {
@@ -65,8 +66,8 @@ export const googleAuth = (app: core.Express) => {
       session: false,
       scope: ["profile", "email"],
     }),
-    (req, res) => {
-      (req.session as any).userId = (req.user as any).id;
+    (req: Request, res: any) => {
+      req.session.userId = (req.user as any).id;
 
       res.redirect("http://localhost:3000/");
     }

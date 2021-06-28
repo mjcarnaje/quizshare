@@ -1,6 +1,6 @@
 import { Redis } from "ioredis";
 import { Session, SessionData } from "express-session";
-import { Request, Response } from "express";
+import { Request as Req, Response as Res } from "express";
 
 export enum Gender {
   Male = "Male",
@@ -8,10 +8,13 @@ export enum Gender {
   Other = "Other",
 }
 
+export type Response = Res;
+export type Request = Req & {
+  session: Session & Partial<SessionData> & { userId: string };
+};
+
 export type MyContext = {
-  req: Request & {
-    session: Session & Partial<SessionData> & { userId: string };
-  };
+  req: Request;
   redis: Redis;
   res: Response;
 };

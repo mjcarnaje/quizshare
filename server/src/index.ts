@@ -8,8 +8,8 @@ import passport from "passport";
 import "reflect-metadata";
 import { buildSchema } from "type-graphql";
 import { createConnection } from "typeorm";
-import { facebookAuth } from "./resolvers/auth/facebook";
-import { googleAuth } from "./resolvers/auth/google";
+import { facebookPassport } from "./resolvers/auth/facebook";
+import { googlePassport } from "./resolvers/auth/google";
 // import { Question, Quiz, User } from "./entity";
 
 require("dotenv").config();
@@ -72,8 +72,8 @@ const main = async () => {
 
     app.use(passport.initialize());
 
-    googleAuth(app);
-    facebookAuth(app);
+    googlePassport(app);
+    facebookPassport(app);
 
     apolloServer.applyMiddleware({ app, cors: false });
 

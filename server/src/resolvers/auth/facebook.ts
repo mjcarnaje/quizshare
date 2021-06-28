@@ -3,8 +3,9 @@ import { getConnection } from "typeorm";
 import { User } from "../../entity/User";
 const FacebookStrategy = require("passport-facebook").Strategy;
 import * as core from "express-serve-static-core";
+import { Request } from "../../types/types";
 
-export const facebookAuth = (app: core.Express) => {
+export const facebookPassport = (app: core.Express) => {
   passport.use(
     new FacebookStrategy(
       {
@@ -45,9 +46,6 @@ export const facebookAuth = (app: core.Express) => {
         } else if (!user.facebookId) {
           user.facebookId = id;
           await user.save();
-        } else {
-          // we have facebook id
-          // login
         }
 
         return done(null, { id: user.id });
@@ -62,10 +60,8 @@ export const facebookAuth = (app: core.Express) => {
     passport.authenticate("facebook", {
       session: false,
     }),
-    (req, res) => {
-      (req.session as any).userId = (req.user as any).id;
-
-      // redirect to the front-end
+    (req: Request, res: any) => {
+      req.session.userId = (req.user as any).id;
 
       res.redirect("http://localhost:3000/");
     }
