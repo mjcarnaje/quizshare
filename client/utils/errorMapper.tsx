@@ -1,6 +1,9 @@
 const errorMapper = (error: any, setError: Function) => {
   if (!error.graphQLErrors[0]) {
-    return null;
+    setError("GENERAL_ERROR", {
+      type: "server",
+      message: "There is an error.",
+    });
   }
 
   if (error.graphQLErrors[0].message.includes("Argument Validation Error")) {

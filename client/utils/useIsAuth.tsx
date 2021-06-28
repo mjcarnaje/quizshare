@@ -1,8 +1,10 @@
-import { useRouter } from "next/dist/client/router";
 import { useEffect } from "react";
+
+import { useRouter } from "next/dist/client/router";
+
 import { useMeQuery } from "../generated/graphql";
 
-export const useIsAuthenticated = () => {
+export const useIsAuth = () => {
   const { data, loading } = useMeQuery();
   const router = useRouter();
 

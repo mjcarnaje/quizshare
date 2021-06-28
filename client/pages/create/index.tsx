@@ -4,8 +4,8 @@ import QuestionCard from "@components/cards/create/QuestionCard";
 import Container from "@components/ui/Container";
 import MainContainer from "@components/ui/MainContainer";
 import { QuizInput } from "@generated/graphql";
-import withApollo from "@lib/withApollo";
 import { useUploadPhoto } from "@utils/useUploadImage";
+import withApollo from "@utils/withApollo";
 import { CloudinaryContext } from "cloudinary-react";
 import Image from "next/image";
 import {

@@ -1,18 +1,19 @@
 import React from "react";
 
 import MainContainer from "@components/ui/MainContainer";
-import { useIsAuthenticated } from "@utils/useIsAuthenticated";
+import { useIsAuth } from "@utils/useIsAuth";
 import { selectQuery } from "store/globalState";
 
 import { QuizCard } from "../components/cards/QuizCard";
 import Container from "../components/ui/Container";
 import { useQuizzesQuery } from "../generated/graphql";
-import withApollo from "../lib/withApollo";
 import { useAppSelector } from "../store/index";
+import withApollo from "../utils/withApollo";
 
 const IndexPage = () => {
+  useIsAuth();
+
   const query = useAppSelector(selectQuery);
-  useIsAuthenticated();
 
   const { data } = useQuizzesQuery({
     variables: {

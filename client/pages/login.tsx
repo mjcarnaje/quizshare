@@ -8,8 +8,8 @@ import {
   SignInInput,
   useSignInMutation,
 } from "@generated/graphql";
-import withApollo from "@lib/withApollo";
 import errorMapper from "@utils/errorMapper";
+import withApollo from "@utils/withApollo";
 import { useRouter } from "next/dist/client/router";
 import Link from "next/link";
 import { useForm } from "react-hook-form";

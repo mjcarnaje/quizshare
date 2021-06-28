@@ -7,8 +7,6 @@ import { useRouter } from "next/dist/client/router";
 
 import { useSignOutMutation, useMeQuery } from "../generated/graphql";
 
-const userNavigation = [{ name: "Sign out", href: "/login" }];
-
 const ProfileDropdown: React.FC = () => {
   const router = useRouter();
   const apolloClient = useApolloClient();
@@ -22,6 +20,20 @@ const ProfileDropdown: React.FC = () => {
 
   const { username, avatar } = data.me;
 
+  const logout = async () => {
+    await signOut();
+    await apolloClient.clearStore();
+    router.push("/login");
+  };
+
+  const userNavigation = [
+    {
+      name: "Sign out",
+      href: "/login",
+      onClick: logout,
+    },
+  ];
+
   return (
     <Menu as="div" className="relative ml-3">
       {({ open }) => (
@@ -31,7 +43,10 @@ const ProfileDropdown: React.FC = () => {
               <span className="sr-only">Open user menu</span>
               <img
                 className="w-8 h-8 rounded-full"
-                src={avatar ?? ""}
+                src={
+                  avatar ??
+                  "https://images.pexels.com/photos/7223805/pexels-photo-7223805.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940"
+                }
                 alt={username}
               />
             </Menu.Button>
@@ -50,23 +65,17 @@ const ProfileDropdown: React.FC = () => {
               static
               className="absolute right-0 w-48 py-1 mt-2 origin-top-right bg-white rounded-md shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none"
             >
-              {userNavigation.map((item) => (
-                <Menu.Item key={item.name}>
+              {userNavigation.map(({ name, onClick }) => (
+                <Menu.Item key={name}>
                   {({ active }) => (
                     <button
-                      onClick={async () => {
-                        if (item.name === "Sign out") {
-                          await signOut();
-                          router.push("/login");
-                          apolloClient.clearStore();
-                        }
-                      }}
+                      onClick={onClick}
                       className={classNames(
                         active ? "bg-gray-100" : "",
                         "w-full block px-4 py-2 text-sm text-gray-700"
                       )}
                     >
-                      {item.name}
+                      {name}
                     </button>
                   )}
                 </Menu.Item>

@@ -8,7 +8,7 @@ import {
   SignUpInput,
   useSignUpMutation,
 } from "@generated/graphql";
-import withApollo from "@lib/withApollo";
+import withApollo from "@utils/withApollo";
 import { useRouter } from "next/dist/client/router";
 import Link from "next/link";
 import { useForm } from "react-hook-form";
@@ -110,7 +110,6 @@ const SignUpPage = () => {
               />
 
               <div>
-                type="submit"
                 <button className="relative flex justify-center w-full px-4 py-2 mt-4 text-sm font-medium text-white bg-black border border-transparent rounded-md group hover:bg-gray-900 focus:outline-none">
                   {loading ? "Loading..." : "Sign up"}
                 </button>
