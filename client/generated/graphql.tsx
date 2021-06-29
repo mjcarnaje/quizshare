@@ -125,6 +125,7 @@ export type Quiz = {
   description: Scalars['String'];
   quizPhoto?: Maybe<Scalars['String']>;
   questions?: Maybe<Array<Question>>;
+  questionsLength: Scalars['Int'];
   results?: Maybe<Array<Result>>;
   tags?: Maybe<Array<Tag>>;
   isPublished: Scalars['Boolean'];
@@ -214,7 +215,7 @@ export type User = {
 
 export type QuizCardResponseFragment = (
   { __typename?: 'Quiz' }
-  & Pick<Quiz, 'id' | 'title' | 'description' | 'quizPhoto' | 'createdAt'>
+  & Pick<Quiz, 'id' | 'title' | 'description' | 'quizPhoto' | 'createdAt' | 'questionsLength'>
   & { author: (
     { __typename?: 'User' }
     & Pick<User, 'firstName' | 'lastName' | 'avatar'>
@@ -328,6 +329,7 @@ export const QuizCardResponseFragmentDoc = gql`
   description
   quizPhoto
   createdAt
+  questionsLength
   author {
     firstName
     lastName

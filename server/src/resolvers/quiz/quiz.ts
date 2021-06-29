@@ -49,7 +49,10 @@ export class QuizResolver {
       });
     }
 
-    const results = await quizzesDB.take(limit + 1).getMany();
+    const results = await quizzesDB
+      .orderBy("quiz.created_at", "DESC")
+      .limit(limit + 1)
+      .getMany();
 
     return {
       quizzes: results.slice(0, limit),
@@ -65,6 +68,7 @@ export class QuizResolver {
   ): Promise<Quiz> {
     const newQuiz = await Quiz.create({
       ...quizInput,
+      questionsLength: quizInput.questions.length,
       authorId: ctx.req.session.userId,
     }).save();
 

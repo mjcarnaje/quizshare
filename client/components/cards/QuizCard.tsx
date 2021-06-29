@@ -3,7 +3,7 @@ import React from "react";
 import moment from "moment";
 import Image from "next/image";
 
-import { Quiz, User } from "../../generated/graphql";
+import { Quiz, QuizCardResponseFragment, User } from "../../generated/graphql";
 import Avatar from "../ui/Avatar";
 
 function truncateText(text: string, len: number = 320): string {
@@ -25,11 +25,14 @@ function formatDate(date: string): string {
   return `${moment(parseInt(date)).fromNow(true)} ago`;
 }
 
-export const QuizCard: React.FC<
-  Pick<Quiz, "title" | "description" | "quizPhoto" | "createdAt"> & {
-    author: Pick<User, "firstName" | "lastName" | "avatar">;
-  }
-> = ({ title, description, quizPhoto, createdAt, author }) => {
+export const QuizCard: React.FC<QuizCardResponseFragment> = ({
+  title,
+  description,
+  quizPhoto,
+  questionsLength,
+  createdAt,
+  author,
+}) => {
   const { firstName, lastName, avatar = "" } = author;
 
   return (
@@ -80,7 +83,7 @@ export const QuizCard: React.FC<
                   d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"
                 />
               </svg>
-              30 Submitted
+              0 Submitted
             </span>
             <span className="flex items-center text-sm font-medium text-gray-700">
               <svg
@@ -97,7 +100,7 @@ export const QuizCard: React.FC<
                   d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"
                 />
               </svg>
-              2 Questions
+              {`${questionsLength} Questions`}
             </span>
           </div>
           <p className="mt-1 text-lg leading-snug tracking-tight break-words">

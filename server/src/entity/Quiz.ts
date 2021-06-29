@@ -1,4 +1,4 @@
-import { Field, ObjectType } from "type-graphql";
+import { Field, Int, ObjectType } from "type-graphql";
 import {
   BaseEntity,
   Column,
@@ -52,6 +52,10 @@ export class Quiz extends BaseEntity {
   })
   questions: Question[];
 
+  @Field(() => Int)
+  @Column({ default: 0 })
+  questionsLength: number;
+
   @Field(() => [Result], { nullable: true })
   @OneToMany(() => Result, (result) => result.quiz, {
     cascade: true,
@@ -72,7 +76,7 @@ export class Quiz extends BaseEntity {
   isPublished: boolean;
 
   @Field(() => String)
-  @CreateDateColumn()
+  @CreateDateColumn({ name: "created_at" })
   createdAt: Date;
 
   @Field(() => String)

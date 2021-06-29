@@ -1,9 +1,14 @@
 import React from "react";
 
-import { QuestionInput, QuizInput } from "@generated/graphql";
+import { ChoiceInput, QuestionInput, QuizInput } from "@generated/graphql";
 import { RadioGroup } from "@headlessui/react";
 import { classNames } from "@utils/index";
-import { FieldArrayWithId, UseFormRegister } from "react-hook-form";
+import {
+  DeepMap,
+  FieldArrayWithId,
+  FieldError,
+  UseFormRegister,
+} from "react-hook-form";
 
 import FormInput from "../../inputs/FormInput";
 
@@ -14,6 +19,7 @@ interface Props {
   register: UseFormRegister<QuizInput>;
   isDisabled?: boolean;
   deleteChoice: () => void;
+  errors?: DeepMap<ChoiceInput, FieldError>;
 }
 
 const ChoiceCard: React.FC<Props> = ({
@@ -23,16 +29,19 @@ const ChoiceCard: React.FC<Props> = ({
   register,
   isDisabled,
   deleteChoice,
+  errors,
 }) => {
   return (
     <li className="col-span-1 overflow-hidden bg-white divide-y divide-gray-200 rounded-md shadow">
       <div className="bg-white">
         <div className="p-2">
           <FormInput
-            id={`questions.${questionIdx}.choices.${choiceIdx}.text`}
-            type="string"
+            version="auto-resize"
             placeholder="Type choice"
-            {...register(`questions.${questionIdx}.choices.${choiceIdx}.text`)}
+            error={errors?.text}
+            {...register(`questions.${questionIdx}.choices.${choiceIdx}.text`, {
+              required: true,
+            })}
           />
         </div>
         <div className="flex justify-between px-2 py-1 mt-2 text-right bg-gray-100">
@@ -41,6 +50,7 @@ const ChoiceCard: React.FC<Props> = ({
             value={choice.id}
             as="button"
             className="flex items-center justify-between focus:outline-none"
+            type="button"
           >
             {({ checked }) => (
               <>

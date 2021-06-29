@@ -4,6 +4,7 @@ fragment quizCardResponse on Quiz {
   description
   quizPhoto
   createdAt
+  questionsLength
   author {
     firstName
     lastName

@@ -1,13 +1,15 @@
 import React, { useEffect } from "react";
 
-import { QuizInput } from "@generated/graphql";
+import { QuestionInput, QuizInput } from "@generated/graphql";
 import { RadioGroup } from "@headlessui/react";
 import { classNames } from "@utils/index";
 import {
   Control,
   Controller,
+  DeepMap,
   FieldArrayMethodProps,
   FieldArrayWithId,
+  FieldError,
   useFieldArray,
   UseFormRegister,
 } from "react-hook-form";
@@ -23,6 +25,7 @@ interface Props {
   questionRemove: (index?: number | number[] | undefined) => void;
   control: Control<QuizInput>;
   isDisabled?: boolean;
+  errors?: DeepMap<QuestionInput, FieldError>;
 }
 
 const QuestionCard: React.FC<Props> = ({
@@ -32,6 +35,7 @@ const QuestionCard: React.FC<Props> = ({
   questionRemove,
   control,
   isDisabled,
+  errors,
 }) => {
   const {
     fields: choiceFields,
@@ -71,10 +75,10 @@ const QuestionCard: React.FC<Props> = ({
           {...register(`questions.${questionIdx}.id`)}
         />
         <FormInput
-          id={`questions.${questionIdx}.question`}
-          type="string"
+          version="auto-resize"
           placeholder="Type question"
-          {...register(`questions.${questionIdx}.question`)}
+          {...register(`questions.${questionIdx}.question`, { required: true })}
+          error={errors?.question}
         />
         <Controller
           control={control}
@@ -87,19 +91,26 @@ const QuestionCard: React.FC<Props> = ({
                   <ChoiceCard
                     key={choice.id}
                     {...{ choice, questionIdx, choiceIdx, register }}
-                    isDisabled={choiceFields.length < 3}
+                    isDisabled={choiceFields.length < 2}
                     deleteChoice={() => {
                       if (value === choiceFields[choiceIdx].id) {
                         onChange(null);
                       }
                       choiceRemove(choiceIdx);
                     }}
+                    errors={errors?.choices?.[choiceIdx]}
                   />
                 ))}
               </ul>
             </RadioGroup>
           )}
         />
+
+        {errors?.answer?.type === "required" && (
+          <div className="flex items-center justify-center py-2 mt-4 border border-red-500 rounded-md bg-red-50">
+            <p className="block">Choosing the correct answer is required.</p>
+          </div>
+        )}
       </div>
 
       <div className="flex items-center justify-end px-3 py-1 bg-gray-100 sm:px-6">

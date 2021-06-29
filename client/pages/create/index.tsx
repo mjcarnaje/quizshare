@@ -3,11 +3,10 @@ import React, { useEffect } from "react";
 import QuestionCard from "@components/cards/create/QuestionCard";
 import Container from "@components/ui/Container";
 import MainContainer from "@components/ui/MainContainer";
-import { QuizInput } from "@generated/graphql";
-import { useUploadPhoto } from "@utils/useUploadImage";
+import { QuizInput, useCreateQuizMutation } from "@generated/graphql";
 import withApollo from "@utils/withApollo";
 import { CloudinaryContext } from "cloudinary-react";
-import Image from "next/image";
+import { useRouter } from "next/dist/client/router";
 import {
   FieldArrayMethodProps,
   FormProvider,
@@ -16,13 +15,14 @@ import {
 } from "react-hook-form";
 import { v4 as uuid } from "uuid";
 
-const CreateQuiz = () => {
-  const [uploadImage, { data, loading }] = useUploadPhoto();
+import FormInput from "../../components/inputs/FormInput";
+import errorMapper from "../../utils/errorMapper";
 
+const CreateQuiz = () => {
+  const router = useRouter();
+  const [createQuiz, { loading }] = useCreateQuizMutation();
   const methods = useForm<QuizInput>({
     defaultValues: {
-      title: "",
-      description: "",
       questions: [],
       quizPhoto: "",
       results: [],
@@ -30,15 +30,34 @@ const CreateQuiz = () => {
     },
   });
 
-  const { control, register, handleSubmit } = methods;
+  const {
+    control,
+    register,
+    handleSubmit,
+    setError,
+    formState: { errors },
+  } = methods;
 
   const { fields, append, remove } = useFieldArray({
     control,
     name: "questions",
   });
 
-  const onSubmit = (data: QuizInput) => {
-    alert(JSON.stringify(data.title, null, 2));
+  const onSubmit = async (data: QuizInput) => {
+    try {
+      const { errors } = await createQuiz({
+        variables: { quizInput: data },
+        update: (cache) => {
+          cache.evict({ fieldName: "quizzes" });
+        },
+      });
+
+      if (!errors) {
+        router.push("/");
+      }
+    } catch (err) {
+      errorMapper(err, setError);
+    }
   };
 
   const addQuestion = (options?: FieldArrayMethodProps) => {
@@ -78,33 +97,27 @@ const CreateQuiz = () => {
               <div className="max-w-4xl px-4 mx-auto sm:px-6 md:px-8">
                 <FormProvider {...methods}>
                   <form onSubmit={handleSubmit(onSubmit)}>
-                    {data && <Image src={data} alt="picture" layout="fill" />}
-                    {loading && <p>Loading...</p>}
-                    <button type="button" onClick={uploadImage}>
-                      Upload Image
-                    </button>
-                    <textarea
-                      maxLength={138}
-                      placeholder="Title…"
-                      className="w-full px-4 mt-2 mb-5 text-3xl font-bold leading-snug border-gray-300 rounded-md outline-none appearance-none resize-none"
+                    <FormInput
+                      placeholder="Title..."
+                      error={errors.title}
                       {...register("title", { required: true })}
                     />
-                    <textarea
-                      maxLength={280}
-                      placeholder="Description"
-                      className="block w-full border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm min-h-[120px]"
+                    <FormInput
+                      version="auto-resize"
+                      placeholder="Description..."
+                      error={errors.description}
                       {...register("description", { required: true })}
                     />
 
                     <div className="my-4 space-y-4">
-                      {fields.map((question, idx) => {
+                      {fields.map((question, questionIdx) => {
                         return (
                           <QuestionCard
                             key={question.id}
-                            {...{ question, control, register }}
+                            {...{ question, questionIdx, control, register }}
                             isDisabled={fields.length < 2}
-                            questionIdx={idx}
                             questionRemove={remove}
+                            errors={errors.questions?.[questionIdx]}
                           />
                         );
                       })}
@@ -135,9 +148,10 @@ const CreateQuiz = () => {
                     <div className="mt-4">
                       <button
                         type="submit"
+                        disabled={loading}
                         className="w-full px-4 py-3 text-white bg-black rounded-md focus:outline-none font-inter"
                       >
-                        Save
+                        {loading ? "...Loading" : "Save"}
                       </button>
                     </div>
                   </form>

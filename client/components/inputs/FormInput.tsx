@@ -2,6 +2,7 @@ import React from "react";
 
 import { classNames } from "@utils/index";
 import { FieldError, UseFormRegisterReturn } from "react-hook-form";
+import TextareaAutosize from "react-textarea-autosize";
 
 import { errorStringFormatter } from "../../utils/errorStringFormatter";
 
@@ -10,6 +11,7 @@ interface Props extends UseFormRegisterReturn {
   placeholder?: string;
   type?: string;
   error?: FieldError;
+  version?: "normal" | "auto-resize";
 }
 
 const FormInput: React.FC<Props> = ({
@@ -17,6 +19,7 @@ const FormInput: React.FC<Props> = ({
   placeholder,
   type,
   error,
+  version = "normal",
   ...props
 }) => {
   return (
@@ -30,17 +33,31 @@ const FormInput: React.FC<Props> = ({
         </label>
       )}
       <div className="relative mt-1">
-        <input
-          id={props.name}
-          type={type}
-          className={`relative block focus:outline-none bg-gray-50 w-full px-3 py-2 mt-1 rounded-md
-           ${classNames(
-             error ? "border-red-500 focus:border-red-500" : "border-gray-300"
-           )}
+        {version === "auto-resize" ? (
+          <TextareaAutosize
+            id={props.name}
+            className={`relative block focus:outline-none border bg-gray-50 w-full px-3 py-2 mt-1 rounded-md
+          ${classNames(
+            error ? "border-red-500 focus:border-red-500" : "border-gray-300"
+          )}
             `}
-          placeholder={placeholder}
-          {...props}
-        />
+            placeholder={placeholder}
+            {...props}
+          />
+        ) : (
+          <input
+            id={props.name}
+            type={type}
+            className={`relative block focus:outline-none  border bg-gray-50 w-full px-3 py-2 mt-1 rounded-md
+          ${classNames(
+            error ? "border-red-500 focus:border-red-500" : "border-gray-300"
+          )}
+            `}
+            placeholder={placeholder}
+            {...props}
+          />
+        )}
+
         {error && (
           <div className="absolute inset-y-0 right-0 flex items-center pr-3 text-red-500 pointer-events-none">
             <svg
