@@ -88,7 +88,13 @@ const CreateQuiz = () => {
           header={
             <div className="flex flex-row items-center justify-between flex-grow px-4">
               <h1>Create Quiz</h1>
-              <p>Saved</p>
+
+              <button
+                type="button"
+                className="inline-flex items-center px-4 py-2 text-sm font-medium text-white bg-indigo-600 border border-transparent rounded-md shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:border-blue-300"
+              >
+                Publish
+              </button>
             </div>
           }
         >

@@ -1,8 +1,9 @@
-import React from "react";
+import React, { useEffect } from "react";
 
 import MainContainer from "@components/ui/MainContainer";
 import { useIsAuth } from "@utils/useIsAuth";
 import { CloudinaryContext } from "cloudinary-react";
+import { useRouter } from "next/router";
 import { selectQuery } from "store/globalState";
 
 import { QuizCard } from "../components/cards/QuizCard";
@@ -16,15 +17,25 @@ const IndexPage = () => {
 
   const query = useAppSelector(selectQuery);
 
+  const router = useRouter();
+
   const { data } = useQuizzesQuery({
     variables: {
-      queryQuizzesInput: {
+      quizzesInput: {
         limit: 10,
         cursor: null,
-        query: query,
+        query: router.query.search as string,
       },
     },
   });
+
+  useEffect(() => {
+    if (query === "") {
+      router.push("/");
+    } else {
+      router.push({ pathname: "/", query: { search: query } });
+    }
+  }, [query]);
 
   return (
     <CloudinaryContext cloudName={process.env.CLOUDINARY_CLOUD_NAME}>
@@ -35,8 +46,8 @@ const IndexPage = () => {
               <div className="px-4 mx-auto mt-3 max-w-7xl sm:px-6 md:px-8">
                 <div className="max-w-3xl overflow-hidden bg-white shadow sm:rounded-md">
                   <ul className="mx-auto divide-y divide-gray-200 ">
-                    {data?.quizzes.quizzes.map(({ id, ...Props }) => (
-                      <QuizCard key={id} {...Props} />
+                    {data?.quizzes.quizzes.map((quiz) => (
+                      <QuizCard key={quiz.id} {...quiz} />
                     ))}
                   </ul>
                 </div>

@@ -5,7 +5,7 @@ import { Menu, Transition } from "@headlessui/react";
 import { classNames } from "@utils/index";
 import { useRouter } from "next/dist/client/router";
 
-import { useSignOutMutation, useMeQuery } from "../generated/graphql";
+import { useSignOutMutation, useMeQuery } from "../../generated/graphql";
 
 const ProfileDropdown: React.FC = () => {
   const router = useRouter();

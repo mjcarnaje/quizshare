@@ -95,7 +95,7 @@ export class SaveAsDraftInput {
 }
 
 @InputType()
-export class QueryQuizzesInput {
+export class QuizzesInput {
   @Field(() => String, { nullable: true })
   query?: string;
 
@@ -104,6 +104,9 @@ export class QueryQuizzesInput {
 
   @Field(() => String, { nullable: true })
   cursor?: string;
+
+  @Field(() => Boolean, { nullable: true })
+  isPublished?: boolean;
 }
 
 @ObjectType()

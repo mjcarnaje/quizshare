@@ -12,7 +12,10 @@ const Avatar: React.FC<Props> = ({ name, img }) => {
         <div>
           <img
             className="inline-block rounded-full h-9 w-9"
-            src={img || ""}
+            src={
+              img ??
+              "https://images.pexels.com/photos/7223805/pexels-photo-7223805.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940"
+            }
             alt=""
           />
         </div>
@@ -20,9 +23,6 @@ const Avatar: React.FC<Props> = ({ name, img }) => {
           <p className="text-sm font-semibold text-gray-700 group-hover:text-gray-900">
             {name}
           </p>
-          {/* <p className="text-xs font-medium text-gray-500 group-hover:text-gray-700">
-            View profile
-          </p> */}
         </div>
       </div>
     </a>

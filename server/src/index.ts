@@ -10,7 +10,7 @@ import { buildSchema } from "type-graphql";
 import { createConnection } from "typeorm";
 import { facebookPassport } from "./resolvers/auth/facebook";
 import { googlePassport } from "./resolvers/auth/google";
-import { Question, Quiz, User } from "./entity";
+// import { Question, Quiz, User } from "./entity";
 
 require("dotenv").config();
 
@@ -29,9 +29,9 @@ const main = async () => {
       entities: ["src/entity/*.*"],
     });
 
-    await Question.delete({});
-    await Quiz.delete({});
-    await User.delete({});
+    // await Question.delete({});
+    // await Quiz.delete({});
+    // await User.delete({});
 
     const apolloServer = await new ApolloServer({
       schema: await buildSchema({

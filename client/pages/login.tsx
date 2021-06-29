@@ -43,7 +43,11 @@ const LoginPage = () => {
       });
 
       if (data?.signIn) {
-        router.push("/");
+        if (router.query?.next) {
+          router.push(router.query.next as string);
+        } else {
+          router.push("/");
+        }
       }
     } catch (err) {
       errorMapper(err, setError);

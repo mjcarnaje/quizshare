@@ -1,9 +1,10 @@
 import React from "react";
 
+import { classNames } from "@utils/index";
 import moment from "moment";
 import Image from "next/image";
 
-import { Quiz, QuizCardResponseFragment, User } from "../../generated/graphql";
+import { QuizCardResponseFragment } from "../../generated/graphql";
 import Avatar from "../ui/Avatar";
 
 function truncateText(text: string, len: number = 320): string {
@@ -25,24 +26,47 @@ function formatDate(date: string): string {
   return `${moment(parseInt(date)).fromNow(true)} ago`;
 }
 
-export const QuizCard: React.FC<QuizCardResponseFragment> = ({
+interface Props extends QuizCardResponseFragment {
+  me?: boolean;
+}
+
+export const QuizCard: React.FC<Props> = ({
   title,
   description,
   quizPhoto,
   questionsLength,
   createdAt,
   author,
+  isPublished,
+  me,
 }) => {
   const { firstName, lastName, avatar = "" } = author;
 
   return (
     <li className="p-4 overflow-hidden bg-white ">
-      <Avatar name={`${firstName} ${lastName}`} img={avatar as string} />
-      <div className="w-full p-2 mt-2 rounded-md cursor-pointer group md:flex ">
+      {me ? null : (
+        <div className="mb-2">
+          <Avatar name={`${firstName} ${lastName}`} img={avatar as string} />
+        </div>
+      )}
+      <div className="w-full p-2 rounded-md cursor-pointer group md:flex ">
         <div className="w-full">
-          <h2 className="text-3xl font-bold leading-tight tracking-tight">
-            {title}
-          </h2>
+          <div className="flex justify-between">
+            <h2 className="text-3xl font-bold leading-tight tracking-tight">
+              {title}
+            </h2>
+            {me && (
+              <span
+                className={`inline-flex items-center px-2.5 py-0.5 rounded-md text-sm font-medium ${classNames(
+                  isPublished
+                    ? "bg-green-100 text-green-800"
+                    : "bg-gray-100 text-gray-800"
+                )} `}
+              >
+                {isPublished ? "Published" : "Unpublish"}
+              </span>
+            )}
+          </div>
           <div className="flex gap-4 mb-4">
             <span className="flex items-center text-sm font-medium text-gray-700">
               <svg
@@ -107,8 +131,8 @@ export const QuizCard: React.FC<QuizCardResponseFragment> = ({
             {truncateText(description)}
           </p>
         </div>
-        <div className="self-start flex-shrink-0 ml-8">
-          {quizPhoto && (
+        {quizPhoto && (
+          <div className="self-start flex-shrink-0 ml-8">
             <div className="w-full overflow-hidden bg-gray-100 rounded-md md:w-60">
               <div className="relative w-full pb-[56.25%]">
                 <Image
@@ -119,8 +143,8 @@ export const QuizCard: React.FC<QuizCardResponseFragment> = ({
                 />
               </div>
             </div>
-          )}
-        </div>
+          </div>
+        )}
       </div>
     </li>
   );

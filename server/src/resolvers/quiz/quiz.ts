@@ -12,7 +12,7 @@ import { isAuthenticated } from "../../middleware/isAuthenticated";
 import { MyContext } from "../../types/types";
 import {
   PaginatedQuizzes,
-  QueryQuizzesInput,
+  QuizzesInput,
   QuestionInput,
   QuizInput,
 } from "./quizInput";
@@ -21,9 +21,9 @@ import {
 export class QuizResolver {
   @Query(() => PaginatedQuizzes)
   async quizzes(
-    @Arg("queryQuizzesInput") queryQuizzesInput: QueryQuizzesInput
+    @Arg("quizzesInput") quizzesInput: QuizzesInput
   ): Promise<PaginatedQuizzes> {
-    const { limit } = queryQuizzesInput;
+    const { limit } = quizzesInput;
 
     let quizzesDB = await getConnection()
       .getRepository(Quiz)
@@ -31,27 +31,76 @@ export class QuizResolver {
       .leftJoinAndSelect("quiz.author", "author")
       .leftJoinAndSelect("quiz.questions", "questions")
       .leftJoinAndSelect("quiz.results", "results")
-      .leftJoinAndSelect("quiz.tags", "tags");
+      .leftJoinAndSelect("quiz.tags", "tags")
+      .andWhere("quiz.isPublished = :isPublished", { isPublished: true });
 
-    if (queryQuizzesInput.query) {
+    if (quizzesInput.query) {
       quizzesDB = quizzesDB
         .andWhere("quiz.title ilike :title", {
-          title: `%${queryQuizzesInput.query}%`,
+          title: `%${quizzesInput.query}%`,
         })
-        .orWhere("quiz.description ilike :description", {
-          description: `%${queryQuizzesInput.query}%`,
+        .andWhere("quiz.description ilike :description", {
+          description: `%${quizzesInput.query}%`,
         });
     }
 
-    if (queryQuizzesInput.cursor) {
+    if (quizzesInput.cursor) {
       quizzesDB = quizzesDB.andWhere("quiz.createdAt > :cursor", {
-        cursor: new Date(parseInt(queryQuizzesInput.cursor)),
+        cursor: new Date(parseInt(quizzesInput.cursor)),
       });
     }
 
     const results = await quizzesDB
-      .orderBy("quiz.created_at", "DESC")
-      .limit(limit + 1)
+      .orderBy("quiz.createdAt", "DESC")
+      .take(limit + 1)
+      .getMany();
+
+    return {
+      quizzes: results.slice(0, limit),
+      hasMore: results.length === limit + 1,
+    };
+  }
+
+  @Query(() => PaginatedQuizzes)
+  async myQuizzes(
+    @Arg("quizzesInput") quizzesInput: QuizzesInput,
+    @Ctx() ctx: MyContext
+  ): Promise<PaginatedQuizzes> {
+    const { limit } = quizzesInput;
+
+    let quizzesDB = await getConnection()
+      .getRepository(Quiz)
+      .createQueryBuilder("quiz")
+      .leftJoinAndSelect("quiz.author", "author")
+      .leftJoinAndSelect("quiz.questions", "questions")
+      .leftJoinAndSelect("quiz.results", "results")
+      .leftJoinAndSelect("quiz.tags", "tags")
+      .andWhere("quiz.authorId = :authorId", {
+        authorId: ctx.req.session.userId,
+      })
+      .andWhere("quiz.isPublished = :isPublished", {
+        isPublished: quizzesInput.isPublished,
+      });
+
+    if (quizzesInput.query) {
+      quizzesDB = quizzesDB
+        .andWhere("quiz.title ilike :title", {
+          title: `%${quizzesInput.query}%`,
+        })
+        .andWhere("quiz.description ilike :description", {
+          description: `%${quizzesInput.query}%`,
+        });
+    }
+
+    if (quizzesInput.cursor) {
+      quizzesDB = quizzesDB.andWhere("quiz.createdAt > :cursor", {
+        cursor: new Date(parseInt(quizzesInput.cursor)),
+      });
+    }
+
+    const results = await quizzesDB
+      .orderBy("quiz.createdAt", "DESC")
+      .take(limit + 1)
       .getMany();
 
     return {

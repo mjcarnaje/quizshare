@@ -1,9 +1,9 @@
 import React from "react";
 
+import MenuButton from "@components/buttons/MenuButton";
 import SearchBarInput from "@components/SearchBarInput";
-import MenuButton from "@components/ui/MenuButton";
 
-import ProfileDropdown from "../ProfileDropdown";
+import ProfileDropdown from "../dropdowns/ProfileDropdown";
 
 interface Props {
   setSidebarOpen: React.Dispatch<React.SetStateAction<boolean>>;

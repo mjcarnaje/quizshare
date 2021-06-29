@@ -11,7 +11,7 @@ export const useIsAuth = () => {
   useEffect(() => {
     // if there is no session id or user not found
     if (!loading && !data?.me) {
-      router.replace("login?next=" + router.pathname);
+      router.replace("/login?next=" + router.pathname);
     }
   }, [loading, data, router]);
 };

@@ -82,17 +82,17 @@ export type Query = {
   __typename?: 'Query';
   me?: Maybe<User>;
   quizzes: PaginatedQuizzes;
+  myQuizzes: PaginatedQuizzes;
 };
 
 
 export type QueryQuizzesArgs = {
-  queryQuizzesInput: QueryQuizzesInput;
+  quizzesInput: QuizzesInput;
 };
 
-export type QueryQuizzesInput = {
-  query?: Maybe<Scalars['String']>;
-  limit: Scalars['Int'];
-  cursor?: Maybe<Scalars['String']>;
+
+export type QueryMyQuizzesArgs = {
+  quizzesInput: QuizzesInput;
 };
 
 export type Question = {
@@ -140,6 +140,13 @@ export type QuizInput = {
   questions: Array<QuestionInput>;
   results: Array<ResultInput>;
   tags: Array<TagInput>;
+};
+
+export type QuizzesInput = {
+  query?: Maybe<Scalars['String']>;
+  limit: Scalars['Int'];
+  cursor?: Maybe<Scalars['String']>;
+  isPublished?: Maybe<Scalars['Boolean']>;
 };
 
 export type Result = {
@@ -215,7 +222,7 @@ export type User = {
 
 export type QuizCardResponseFragment = (
   { __typename?: 'Quiz' }
-  & Pick<Quiz, 'id' | 'title' | 'description' | 'quizPhoto' | 'createdAt' | 'questionsLength'>
+  & Pick<Quiz, 'id' | 'title' | 'description' | 'quizPhoto' | 'createdAt' | 'questionsLength' | 'isPublished'>
   & { author: (
     { __typename?: 'User' }
     & Pick<User, 'firstName' | 'lastName' | 'avatar'>
@@ -305,8 +312,25 @@ export type MeQuery = (
   )> }
 );
 
+export type MyQuizzesQueryVariables = Exact<{
+  quizzesInput: QuizzesInput;
+}>;
+
+
+export type MyQuizzesQuery = (
+  { __typename?: 'Query' }
+  & { myQuizzes: (
+    { __typename?: 'PaginatedQuizzes' }
+    & Pick<PaginatedQuizzes, 'hasMore'>
+    & { quizzes: Array<(
+      { __typename?: 'Quiz' }
+      & QuizCardResponseFragment
+    )> }
+  ) }
+);
+
 export type QuizzesQueryVariables = Exact<{
-  queryQuizzesInput: QueryQuizzesInput;
+  quizzesInput: QuizzesInput;
 }>;
 
 
@@ -330,6 +354,7 @@ export const QuizCardResponseFragmentDoc = gql`
   quizPhoto
   createdAt
   questionsLength
+  isPublished
   author {
     firstName
     lastName
@@ -562,9 +587,47 @@ export function useMeLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<MeQuery
 export type MeQueryHookResult = ReturnType<typeof useMeQuery>;
 export type MeLazyQueryHookResult = ReturnType<typeof useMeLazyQuery>;
 export type MeQueryResult = Apollo.QueryResult<MeQuery, MeQueryVariables>;
+export const MyQuizzesDocument = gql`
+    query MyQuizzes($quizzesInput: QuizzesInput!) {
+  myQuizzes(quizzesInput: $quizzesInput) {
+    quizzes {
+      ...quizCardResponse
+    }
+    hasMore
+  }
+}
+    ${QuizCardResponseFragmentDoc}`;
+
+/**
+ * __useMyQuizzesQuery__
+ *
+ * To run a query within a React component, call `useMyQuizzesQuery` and pass it any options that fit your needs.
+ * When your component renders, `useMyQuizzesQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useMyQuizzesQuery({
+ *   variables: {
+ *      quizzesInput: // value for 'quizzesInput'
+ *   },
+ * });
+ */
+export function useMyQuizzesQuery(baseOptions: Apollo.QueryHookOptions<MyQuizzesQuery, MyQuizzesQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<MyQuizzesQuery, MyQuizzesQueryVariables>(MyQuizzesDocument, options);
+      }
+export function useMyQuizzesLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<MyQuizzesQuery, MyQuizzesQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<MyQuizzesQuery, MyQuizzesQueryVariables>(MyQuizzesDocument, options);
+        }
+export type MyQuizzesQueryHookResult = ReturnType<typeof useMyQuizzesQuery>;
+export type MyQuizzesLazyQueryHookResult = ReturnType<typeof useMyQuizzesLazyQuery>;
+export type MyQuizzesQueryResult = Apollo.QueryResult<MyQuizzesQuery, MyQuizzesQueryVariables>;
 export const QuizzesDocument = gql`
-    query Quizzes($queryQuizzesInput: QueryQuizzesInput!) {
-  quizzes(queryQuizzesInput: $queryQuizzesInput) {
+    query Quizzes($quizzesInput: QuizzesInput!) {
+  quizzes(quizzesInput: $quizzesInput) {
     quizzes {
       ...quizCardResponse
     }
@@ -585,7 +648,7 @@ export const QuizzesDocument = gql`
  * @example
  * const { data, loading, error } = useQuizzesQuery({
  *   variables: {
- *      queryQuizzesInput: // value for 'queryQuizzesInput'
+ *      quizzesInput: // value for 'quizzesInput'
  *   },
  * });
  */
