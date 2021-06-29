@@ -32,7 +32,7 @@ function formatDate(date: string): string {
 }
 
 interface Props extends QuizCardResponseFragment {
-  type?: "draft" | "published";
+  type: "timeline" | "draft" | "published";
 }
 
 export const QuizCard: React.FC<Props> = ({
@@ -69,7 +69,7 @@ export const QuizCard: React.FC<Props> = ({
   return (
     <li className="p-4 overflow-hidden bg-white ">
       <DeleteQuizModal {...{ open, setOpen, deleteQuiz, cancelButtonRef }} />
-      {!type ? null : (
+      {type === "timeline" && (
         <div className="mb-2">
           <Avatar name={`${firstName} ${lastName}`} img={avatar as string} />
         </div>
@@ -159,7 +159,7 @@ export const QuizCard: React.FC<Props> = ({
         )}
       </div>
       <div className="flex justify-end w-full mt-2">
-        {type && (
+        {type !== "timeline" && (
           <div className="flex space-x-3">
             <button
               onClick={() => setOpen(true)}

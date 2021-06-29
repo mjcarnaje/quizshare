@@ -47,7 +47,7 @@ const IndexPage = () => {
                 <div className="max-w-3xl overflow-hidden bg-white shadow sm:rounded-md">
                   <ul className="mx-auto divide-y divide-gray-200 ">
                     {data?.quizzes.quizzes.map((quiz) => (
-                      <QuizCard key={quiz.id} {...quiz} />
+                      <QuizCard type="timeline" key={quiz.id} {...quiz} />
                     ))}
                   </ul>
                 </div>
