@@ -165,7 +165,7 @@ export class QuizResolver {
       .createQueryBuilder()
       .delete()
       .from(Quiz)
-      .where("id = :id", { id })
+      .andWhere("id = :id", { id })
       .andWhere("authorId = :authorId", { authorId: ctx.req.session.userId })
       .execute();
 

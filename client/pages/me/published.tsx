@@ -48,7 +48,7 @@ const PublishedPage: React.FC<Props> = () => {
               <div className="max-w-3xl overflow-hidden bg-white shadow sm:rounded-md">
                 <ul className="mx-auto divide-y divide-gray-200 ">
                   {data?.myQuizzes.quizzes.map((quiz) => (
-                    <QuizCard me={true} key={quiz.id} {...quiz} />
+                    <QuizCard type="published" key={quiz.id} {...quiz} />
                   ))}
                 </ul>
               </div>

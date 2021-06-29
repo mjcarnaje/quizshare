@@ -265,6 +265,16 @@ export type CreateQuizMutation = (
   ) }
 );
 
+export type DeleteQuizMutationVariables = Exact<{
+  id: Scalars['String'];
+}>;
+
+
+export type DeleteQuizMutation = (
+  { __typename?: 'Mutation' }
+  & Pick<Mutation, 'deleteQuiz'>
+);
+
 export type SignOutMutationVariables = Exact<{ [key: string]: never; }>;
 
 
@@ -453,6 +463,37 @@ export function useCreateQuizMutation(baseOptions?: Apollo.MutationHookOptions<C
 export type CreateQuizMutationHookResult = ReturnType<typeof useCreateQuizMutation>;
 export type CreateQuizMutationResult = Apollo.MutationResult<CreateQuizMutation>;
 export type CreateQuizMutationOptions = Apollo.BaseMutationOptions<CreateQuizMutation, CreateQuizMutationVariables>;
+export const DeleteQuizDocument = gql`
+    mutation DeleteQuiz($id: String!) {
+  deleteQuiz(id: $id)
+}
+    `;
+export type DeleteQuizMutationFn = Apollo.MutationFunction<DeleteQuizMutation, DeleteQuizMutationVariables>;
+
+/**
+ * __useDeleteQuizMutation__
+ *
+ * To run a mutation, you first call `useDeleteQuizMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useDeleteQuizMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [deleteQuizMutation, { data, loading, error }] = useDeleteQuizMutation({
+ *   variables: {
+ *      id: // value for 'id'
+ *   },
+ * });
+ */
+export function useDeleteQuizMutation(baseOptions?: Apollo.MutationHookOptions<DeleteQuizMutation, DeleteQuizMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<DeleteQuizMutation, DeleteQuizMutationVariables>(DeleteQuizDocument, options);
+      }
+export type DeleteQuizMutationHookResult = ReturnType<typeof useDeleteQuizMutation>;
+export type DeleteQuizMutationResult = Apollo.MutationResult<DeleteQuizMutation>;
+export type DeleteQuizMutationOptions = Apollo.BaseMutationOptions<DeleteQuizMutation, DeleteQuizMutationVariables>;
 export const SignOutDocument = gql`
     mutation SignOut {
   logout

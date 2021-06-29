@@ -1,10 +1,15 @@
-import React from "react";
+import React, { useState } from "react";
+import { useRef } from "react";
 
-import { classNames } from "@utils/index";
+import { PencilIcon, TrashIcon } from "@heroicons/react/outline";
 import moment from "moment";
 import Image from "next/image";
 
-import { QuizCardResponseFragment } from "../../generated/graphql";
+import {
+  QuizCardResponseFragment,
+  useDeleteQuizMutation,
+} from "../../generated/graphql";
+import DeleteQuizModal from "../modals/DeleteQuizModal";
 import Avatar from "../ui/Avatar";
 
 function truncateText(text: string, len: number = 320): string {
@@ -27,46 +32,53 @@ function formatDate(date: string): string {
 }
 
 interface Props extends QuizCardResponseFragment {
-  me?: boolean;
+  type?: "draft" | "published";
 }
 
 export const QuizCard: React.FC<Props> = ({
+  id,
   title,
   description,
   quizPhoto,
   questionsLength,
   createdAt,
   author,
-  isPublished,
-  me,
+  type,
 }) => {
+  const [open, setOpen] = useState(false);
+  const cancelButtonRef = useRef(null);
+
+  const [deleteQuizMutation, { loading: deletingQuiz }] =
+    useDeleteQuizMutation();
+
+  const deleteQuiz = async () => {
+    try {
+      await deleteQuizMutation({
+        variables: { id },
+        update: (cache) => {
+          cache.evict({ id: "Quiz:" + id });
+        },
+      });
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
   const { firstName, lastName, avatar = "" } = author;
 
   return (
     <li className="p-4 overflow-hidden bg-white ">
-      {me ? null : (
+      <DeleteQuizModal {...{ open, setOpen, deleteQuiz, cancelButtonRef }} />
+      {!type ? null : (
         <div className="mb-2">
           <Avatar name={`${firstName} ${lastName}`} img={avatar as string} />
         </div>
       )}
       <div className="w-full p-2 rounded-md cursor-pointer group md:flex ">
-        <div className="w-full">
-          <div className="flex justify-between">
-            <h2 className="text-3xl font-bold leading-tight tracking-tight">
-              {title}
-            </h2>
-            {me && (
-              <span
-                className={`inline-flex items-center px-2.5 py-0.5 rounded-md text-sm font-medium ${classNames(
-                  isPublished
-                    ? "bg-green-100 text-green-800"
-                    : "bg-gray-100 text-gray-800"
-                )} `}
-              >
-                {isPublished ? "Published" : "Unpublish"}
-              </span>
-            )}
-          </div>
+        <div className="w-full ">
+          <h2 className="text-3xl font-bold leading-tight tracking-tight">
+            {title}
+          </h2>
           <div className="flex gap-4 mb-4">
             <span className="flex items-center text-sm font-medium text-gray-700">
               <svg
@@ -143,6 +155,23 @@ export const QuizCard: React.FC<Props> = ({
                 />
               </div>
             </div>
+          </div>
+        )}
+      </div>
+      <div className="flex justify-end w-full mt-2">
+        {type && (
+          <div className="flex space-x-3">
+            <button
+              onClick={() => setOpen(true)}
+              className="inline-flex items-center px-3 py-1.5 font-medium  hover:bg-gray-200 rounded-md focus:outline-none"
+            >
+              <TrashIcon className="w-5 h-5 mr-1 -ml-1 text-gray-600" />
+              {deletingQuiz ? "Deleting" : "Delete"}
+            </button>
+            <button className="inline-flex items-center px-3 py-1.5 font-medium border border-gray-600 hover:bg-gray-200  rounded-md focus:outline-none">
+              <PencilIcon className="w-5 h-5 mr-1 -ml-1 text-gray-600" />
+              {type === "draft" ? "Continue" : "Edit"}
+            </button>
           </div>
         )}
       </div>
