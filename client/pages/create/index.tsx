@@ -1,12 +1,17 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 
 import QuestionCard from "@components/cards/create/QuestionCard";
 import Container from "@components/ui/Container";
 import MainContainer from "@components/ui/MainContainer";
-import { QuizInput, useCreateQuizMutation } from "@generated/graphql";
+import {
+  QuizInput,
+  useSaveQuizMutation,
+  usePublishQuizMutation,
+} from "@generated/graphql";
+import { PaperAirplaneIcon, SaveAsIcon } from "@heroicons/react/outline";
 import withApollo from "@utils/withApollo";
 import { CloudinaryContext } from "cloudinary-react";
-import { useRouter } from "next/dist/client/router";
+import { useRouter } from "next/router";
 import {
   FieldArrayMethodProps,
   FormProvider,
@@ -20,7 +25,11 @@ import errorMapper from "../../utils/errorMapper";
 
 const CreateQuiz = () => {
   const router = useRouter();
-  const [createQuiz, { loading }] = useCreateQuizMutation();
+  const [id, setId] = useState<string | null>(null);
+
+  const [saveQuiz, { loading: savingQuiz }] = useSaveQuizMutation();
+  const [publishQuiz, { loading: publishingQuiz }] = usePublishQuizMutation();
+
   const methods = useForm<QuizInput>({
     defaultValues: {
       questions: [],
@@ -45,16 +54,13 @@ const CreateQuiz = () => {
 
   const onSubmit = async (data: QuizInput) => {
     try {
-      const { errors } = await createQuiz({
+      const { data: quizData } = await saveQuiz({
         variables: { quizInput: data },
         update: (cache) => {
           cache.evict({ fieldName: "quizzes" });
         },
       });
-
-      if (!errors) {
-        router.push("/");
-      }
+      setId(quizData?.saveQuiz.id ?? null);
     } catch (err) {
       errorMapper(err, setError);
     }
@@ -87,14 +93,41 @@ const CreateQuiz = () => {
           showSearchBar={false}
           header={
             <div className="flex flex-row items-center justify-between flex-grow px-4">
-              <h1>Create Quiz</h1>
+              <h1>{id}</h1>
 
-              <button
-                type="button"
-                className="inline-flex items-center px-4 py-2 text-sm font-medium text-white bg-indigo-600 border border-transparent rounded-md shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:border-blue-300"
-              >
-                Publish
-              </button>
+              <div className="inline-flex space-x-2">
+                <button
+                  type="button"
+                  onClick={handleSubmit(onSubmit)}
+                  className="inline-flex items-center px-4 py-2 text-sm font-medium text-[#222831] bg-white border border-transparent rounded-md  hover:bg-gray-100 focus:outline-none "
+                >
+                  <SaveAsIcon className="w-5 h-5 mr-2 -ml-1" />
+                  {savingQuiz ? "Saving" : "Save as draft"}
+                </button>
+                <button
+                  type="button"
+                  disabled={!id}
+                  onClick={async () => {
+                    try {
+                      if (id) {
+                        const { errors } = await publishQuiz({
+                          variables: { id },
+                        });
+
+                        if (!errors) {
+                          router.push("/");
+                        }
+                      }
+                    } catch (err) {
+                      console.error(err);
+                    }
+                  }}
+                  className="inline-flex items-center px-4 py-2 text-sm font-medium border-[#222831] text-[#222831] bg-white border border-transparent rounded-md shadow-sm hover:bg-gray-200 focus:outline-none "
+                >
+                  <PaperAirplaneIcon className="w-5 h-5 mr-2 -ml-1" />
+                  {publishingQuiz ? "Published" : "Publish"}
+                </button>
+              </div>
             </div>
           }
         >
@@ -102,7 +135,7 @@ const CreateQuiz = () => {
             <div className="py-6">
               <div className="max-w-4xl px-4 mx-auto sm:px-6 md:px-8">
                 <FormProvider {...methods}>
-                  <form onSubmit={handleSubmit(onSubmit)}>
+                  <form>
                     <FormInput
                       placeholder="Title..."
                       error={errors.title}
@@ -149,15 +182,6 @@ const CreateQuiz = () => {
                           />
                         </svg>
                         Add Question
-                      </button>
-                    </div>
-                    <div className="mt-4">
-                      <button
-                        type="submit"
-                        disabled={loading}
-                        className="w-full px-4 py-3 text-white bg-black rounded-md focus:outline-none font-inter"
-                      >
-                        {loading ? "...Loading" : "Save"}
                       </button>
                     </div>
                   </form>

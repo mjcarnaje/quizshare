@@ -1,0 +1,5 @@
+mutation PublishQuiz($id: String!) {
+  publishQuiz(id: $id) {
+    id
+  }
+}

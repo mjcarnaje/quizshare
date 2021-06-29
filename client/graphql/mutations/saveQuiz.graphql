@@ -1,0 +1,5 @@
+mutation SaveQuiz($quizInput: QuizInput!) {
+  saveQuiz(quizInput: $quizInput) {
+    id
+  }
+}

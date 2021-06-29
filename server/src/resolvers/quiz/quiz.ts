@@ -1,3 +1,4 @@
+import { AuthenticationError } from "apollo-server-express";
 import {
   Arg,
   Ctx,
@@ -111,7 +112,7 @@ export class QuizResolver {
 
   @UseMiddleware(isAuthenticated)
   @Mutation(() => Quiz)
-  async createQuiz(
+  async saveQuiz(
     @Arg("quizInput") quizInput: QuizInput,
     @Ctx() ctx: MyContext
   ): Promise<Quiz> {
@@ -190,7 +191,7 @@ export class QuizResolver {
     }
 
     if (quiz.authorId !== ctx.req.session.userId) {
-      throw new Error("You are not the author of this quiz");
+      throw new AuthenticationError("You are not the author of this quiz");
     }
 
     if (quiz.questions.length === 0) {
