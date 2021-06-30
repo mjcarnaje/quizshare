@@ -4,6 +4,8 @@ import { useRef } from "react";
 import { PencilIcon, TrashIcon } from "@heroicons/react/outline";
 import moment from "moment";
 import Image from "next/image";
+import Link from "next/link";
+import { useRouter } from "next/router";
 
 import {
   QuizCardResponseFragment,
@@ -45,6 +47,7 @@ export const QuizCard: React.FC<Props> = ({
   author,
   type,
 }) => {
+  const router = useRouter();
   const [open, setOpen] = useState(false);
   const cancelButtonRef = useRef(null);
 
@@ -54,7 +57,7 @@ export const QuizCard: React.FC<Props> = ({
   const deleteQuiz = async () => {
     try {
       await deleteQuizMutation({
-        variables: { id },
+        variables: { quizId: id },
         update: (cache) => {
           cache.evict({ id: "Quiz:" + id });
         },
@@ -76,9 +79,11 @@ export const QuizCard: React.FC<Props> = ({
       )}
       <div className="w-full p-2 rounded-md cursor-pointer group md:flex ">
         <div className="w-full ">
-          <h2 className="text-3xl font-bold leading-tight tracking-tight">
-            {title}
-          </h2>
+          <Link href={`/quiz/${id}`}>
+            <h2 className="text-3xl font-bold leading-tight tracking-tight">
+              {title}
+            </h2>
+          </Link>
           <div className="flex gap-4 mb-4">
             <span className="flex items-center text-sm font-medium text-gray-700">
               <svg
@@ -139,23 +144,27 @@ export const QuizCard: React.FC<Props> = ({
               {`${questionsLength} Questions`}
             </span>
           </div>
-          <p className="mt-1 text-lg leading-snug tracking-tight break-words">
-            {truncateText(description)}
-          </p>
+          <Link href={`/quiz/${id}`}>
+            <p className="mt-1 text-lg leading-snug tracking-tight break-words">
+              {truncateText(description)}
+            </p>
+          </Link>
         </div>
         {quizPhoto && (
-          <div className="self-start flex-shrink-0 ml-8">
-            <div className="w-full overflow-hidden bg-gray-100 rounded-md md:w-60">
-              <div className="relative w-full pb-[56.25%]">
-                <Image
-                  src={quizPhoto}
-                  layout="fill"
-                  objectFit="cover"
-                  alt="thumbnail"
-                />
+          <Link href={`/quiz/${id}`}>
+            <div className="self-start flex-shrink-0 ml-8">
+              <div className="w-full overflow-hidden bg-gray-100 rounded-md md:w-60">
+                <div className="relative w-full pb-[56.25%]">
+                  <Image
+                    src={quizPhoto}
+                    layout="fill"
+                    objectFit="cover"
+                    alt="thumbnail"
+                  />
+                </div>
               </div>
             </div>
-          </div>
+          </Link>
         )}
       </div>
       <div className="flex justify-end w-full mt-2">
@@ -168,7 +177,11 @@ export const QuizCard: React.FC<Props> = ({
               <TrashIcon className="w-5 h-5 mr-1 -ml-1 text-gray-600" />
               {deletingQuiz ? "Deleting" : "Delete"}
             </button>
-            <button className="inline-flex items-center px-3 py-1.5 font-medium border border-gray-600 hover:bg-gray-200  rounded-md focus:outline-none">
+
+            <button
+              onClick={() => router.push(`/me/drafts/${id}`)}
+              className="inline-flex items-center px-3 py-1.5 font-medium border border-gray-600 hover:bg-gray-200  rounded-md focus:outline-none"
+            >
               <PencilIcon className="w-5 h-5 mr-1 -ml-1 text-gray-600" />
               {type === "draft" ? "Continue" : "Edit"}
             </button>

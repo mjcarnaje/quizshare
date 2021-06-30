@@ -12,6 +12,7 @@ interface Props extends UseFormRegisterReturn {
   type?: string;
   error?: FieldError;
   version?: "normal" | "auto-resize";
+  defaultValue?: string | number | readonly string[];
 }
 
 const FormInput: React.FC<Props> = ({
@@ -20,6 +21,7 @@ const FormInput: React.FC<Props> = ({
   type,
   error,
   version = "normal",
+  defaultValue,
   ...props
 }) => {
   return (
@@ -35,6 +37,7 @@ const FormInput: React.FC<Props> = ({
       <div className="relative mt-1">
         {version === "auto-resize" ? (
           <TextareaAutosize
+            {...props}
             id={props.name}
             className={`relative block focus:outline-none border bg-gray-50 w-full px-3 py-2 mt-1 rounded-md
           ${classNames(
@@ -42,19 +45,22 @@ const FormInput: React.FC<Props> = ({
           )}
             `}
             placeholder={placeholder}
-            {...props}
+            defaultValue={defaultValue}
           />
         ) : (
           <input
+            {...props}
             id={props.name}
             type={type}
             className={`relative block focus:outline-none  border bg-gray-50 w-full px-3 py-2 mt-1 rounded-md
-          ${classNames(
-            error ? "border-red-500 focus:border-red-500" : "border-gray-300"
-          )}
-            `}
+              ${classNames(
+                error
+                  ? "border-red-500 focus:border-red-500"
+                  : "border-gray-300"
+              )}
+                `}
             placeholder={placeholder}
-            {...props}
+            defaultValue={defaultValue}
           />
         )}
 

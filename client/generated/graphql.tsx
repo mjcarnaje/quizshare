@@ -29,7 +29,6 @@ export type Mutation = {
   signIn?: Maybe<User>;
   logout: Scalars['Boolean'];
   saveQuiz: Quiz;
-  getQuiz: Quiz;
   editQuiz: Quiz;
   deleteQuiz: Scalars['Boolean'];
   publishQuiz: Quiz;
@@ -47,12 +46,8 @@ export type MutationSignInArgs = {
 
 
 export type MutationSaveQuizArgs = {
+  quizId: QuizIdInput;
   quizInput: QuizInput;
-};
-
-
-export type MutationGetQuizArgs = {
-  quizId: Scalars['String'];
 };
 
 
@@ -81,6 +76,7 @@ export type Query = {
   me?: Maybe<User>;
   getPublishedQuizzes: PaginatedQuizzes;
   getMyQuizzes: PaginatedQuizzes;
+  getQuiz: Quiz;
 };
 
 
@@ -91,6 +87,11 @@ export type QueryGetPublishedQuizzesArgs = {
 
 export type QueryGetMyQuizzesArgs = {
   quizzesInput: QuizzesInput;
+};
+
+
+export type QueryGetQuizArgs = {
+  quizId: Scalars['String'];
 };
 
 export type Question = {
@@ -129,6 +130,10 @@ export type Quiz = {
   isPublished: Scalars['Boolean'];
   createdAt: Scalars['String'];
   updatedAt: Scalars['String'];
+};
+
+export type QuizIdInput = {
+  quizId?: Maybe<Scalars['String']>;
 };
 
 export type QuizInput = {
@@ -283,6 +288,7 @@ export type PublishQuizMutation = (
 
 export type SaveQuizMutationVariables = Exact<{
   quizInput: QuizInput;
+  quizId: QuizIdInput;
 }>;
 
 
@@ -353,6 +359,33 @@ export type GetPublishedQuizzesQuery = (
       { __typename?: 'Quiz' }
       & QuizCardResponseFragment
     )> }
+  ) }
+);
+
+export type GetQuizQueryVariables = Exact<{
+  quizId: Scalars['String'];
+  isInput: Scalars['Boolean'];
+}>;
+
+
+export type GetQuizQuery = (
+  { __typename?: 'Query' }
+  & { getQuiz: (
+    { __typename?: 'Quiz' }
+    & MakeOptional<Pick<Quiz, 'id' | 'authorId' | 'title' | 'description' | 'quizPhoto' | 'isPublished' | 'createdAt' | 'updatedAt'>, 'id' | 'authorId' | 'isPublished' | 'createdAt' | 'updatedAt'>
+    & { author?: Maybe<(
+      { __typename?: 'User' }
+      & Pick<User, 'firstName' | 'lastName' | 'avatar' | 'email'>
+    )>, questions?: Maybe<Array<(
+      { __typename?: 'Question' }
+      & Pick<Question, 'id' | 'question' | 'questionPhoto' | 'choices' | 'answer' | 'explanation' | 'hint'>
+    )>>, tags?: Maybe<Array<(
+      { __typename?: 'Tag' }
+      & Pick<Tag, 'id' | 'name'>
+    )>>, results?: Maybe<Array<(
+      { __typename?: 'Result' }
+      & Pick<Result, 'id' | 'title' | 'description' | 'resultPhoto' | 'minimumPassingPercentage'>
+    )>> }
   ) }
 );
 
@@ -536,8 +569,8 @@ export type PublishQuizMutationHookResult = ReturnType<typeof usePublishQuizMuta
 export type PublishQuizMutationResult = Apollo.MutationResult<PublishQuizMutation>;
 export type PublishQuizMutationOptions = Apollo.BaseMutationOptions<PublishQuizMutation, PublishQuizMutationVariables>;
 export const SaveQuizDocument = gql`
-    mutation SaveQuiz($quizInput: QuizInput!) {
-  saveQuiz(quizInput: $quizInput) {
+    mutation SaveQuiz($quizInput: QuizInput!, $quizId: QuizIdInput!) {
+  saveQuiz(quizInput: $quizInput, quizId: $quizId) {
     id
   }
 }
@@ -558,6 +591,7 @@ export type SaveQuizMutationFn = Apollo.MutationFunction<SaveQuizMutation, SaveQ
  * const [saveQuizMutation, { data, loading, error }] = useSaveQuizMutation({
  *   variables: {
  *      quizInput: // value for 'quizInput'
+ *      quizId: // value for 'quizId'
  *   },
  * });
  */
@@ -714,6 +748,75 @@ export function useGetPublishedQuizzesLazyQuery(baseOptions?: Apollo.LazyQueryHo
 export type GetPublishedQuizzesQueryHookResult = ReturnType<typeof useGetPublishedQuizzesQuery>;
 export type GetPublishedQuizzesLazyQueryHookResult = ReturnType<typeof useGetPublishedQuizzesLazyQuery>;
 export type GetPublishedQuizzesQueryResult = Apollo.QueryResult<GetPublishedQuizzesQuery, GetPublishedQuizzesQueryVariables>;
+export const GetQuizDocument = gql`
+    query GetQuiz($quizId: String!, $isInput: Boolean!) {
+  getQuiz(quizId: $quizId) {
+    id @skip(if: $isInput)
+    authorId @skip(if: $isInput)
+    author @skip(if: $isInput) {
+      firstName
+      lastName
+      avatar
+      email
+    }
+    title
+    description
+    quizPhoto
+    questions {
+      id
+      question
+      questionPhoto
+      choices
+      answer
+      explanation
+      hint
+    }
+    tags {
+      id
+      name
+    }
+    results {
+      id
+      title
+      description
+      resultPhoto
+      minimumPassingPercentage
+    }
+    isPublished @skip(if: $isInput)
+    createdAt @skip(if: $isInput)
+    updatedAt @skip(if: $isInput)
+  }
+}
+    `;
+
+/**
+ * __useGetQuizQuery__
+ *
+ * To run a query within a React component, call `useGetQuizQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetQuizQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetQuizQuery({
+ *   variables: {
+ *      quizId: // value for 'quizId'
+ *      isInput: // value for 'isInput'
+ *   },
+ * });
+ */
+export function useGetQuizQuery(baseOptions: Apollo.QueryHookOptions<GetQuizQuery, GetQuizQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<GetQuizQuery, GetQuizQueryVariables>(GetQuizDocument, options);
+      }
+export function useGetQuizLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetQuizQuery, GetQuizQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<GetQuizQuery, GetQuizQueryVariables>(GetQuizDocument, options);
+        }
+export type GetQuizQueryHookResult = ReturnType<typeof useGetQuizQuery>;
+export type GetQuizLazyQueryHookResult = ReturnType<typeof useGetQuizLazyQuery>;
+export type GetQuizQueryResult = Apollo.QueryResult<GetQuizQuery, GetQuizQueryVariables>;
 export const MeDocument = gql`
     query Me {
   me {

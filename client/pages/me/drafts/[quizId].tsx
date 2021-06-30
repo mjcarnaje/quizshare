@@ -1,14 +1,11 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect } from "react";
 
 import QuestionCard from "@components/cards/create/QuestionCard";
 import Container from "@components/ui/Container";
 import MainContainer from "@components/ui/MainContainer";
-import {
-  QuizInput,
-  useSaveQuizMutation,
-  usePublishQuizMutation,
-} from "@generated/graphql";
+import { QuizInput, useSaveQuizMutation } from "@generated/graphql";
 import { PaperAirplaneIcon, SaveAsIcon } from "@heroicons/react/outline";
+import { cleanTypeName } from "@utils/index";
 import withApollo from "@utils/withApollo";
 import { CloudinaryContext } from "cloudinary-react";
 import { useRouter } from "next/router";
@@ -20,30 +17,35 @@ import {
 } from "react-hook-form";
 import { v4 as uuid } from "uuid";
 
-import FormInput from "../../components/inputs/FormInput";
-import errorMapper from "../../utils/errorMapper";
+import FormInput from "../../../components/inputs/FormInput";
+import { useGetQuizQuery } from "../../../generated/graphql";
+import errorMapper from "../../../utils/errorMapper";
 
-const CreateQuiz = () => {
+interface Props {}
+
+const DraftEditQuizPage: React.FC<Props> = () => {
   const router = useRouter();
-  const [id, setId] = useState<string | null>(null);
+  const quizId = router.query.quizId as string;
 
-  const [saveQuiz, { loading: savingQuiz }] = useSaveQuizMutation();
-  const [publishQuiz, { loading: publishingQuiz }] = usePublishQuizMutation();
-
-  const methods = useForm<QuizInput>({
-    defaultValues: {
-      questions: [],
-      quizPhoto: "",
-      results: [],
-      tags: [],
+  const { data, loading: gettingInput } = useGetQuizQuery({
+    variables: {
+      quizId,
+      isInput: true,
     },
   });
+
+  const [saveQuiz, { loading: savingQuiz }] = useSaveQuizMutation();
+  // const [publishQuiz, { loading: publishingQuiz }] = usePublishQuizMutation();
+
+  const methods = useForm<QuizInput>();
 
   const {
     control,
     register,
     handleSubmit,
     setError,
+    reset,
+    getValues,
     formState: { errors },
   } = methods;
 
@@ -55,12 +57,15 @@ const CreateQuiz = () => {
   const onSubmit = async (data: QuizInput) => {
     try {
       const { data: quizData } = await saveQuiz({
-        variables: { quizInput: data },
+        variables: { quizInput: data, quizId: { quizId } },
         update: (cache) => {
           cache.evict({ fieldName: "quizzes" });
         },
       });
-      setId(quizData?.saveQuiz.id ?? null);
+
+      if (quizData?.saveQuiz.id) {
+        router.replace(`/me/drafts/${quizData.saveQuiz.id}`);
+      }
     } catch (err) {
       errorMapper(err, setError);
     }
@@ -81,21 +86,32 @@ const CreateQuiz = () => {
   };
 
   useEffect(() => {
-    if (fields.length === 0) {
-      addQuestion({ shouldFocus: false });
+    if (data?.getQuiz && !gettingInput) {
+      reset(cleanTypeName(data.getQuiz) as QuizInput);
     }
-  }, []);
+  }, [data?.getQuiz, gettingInput]);
 
   return (
     <CloudinaryContext cloudName={process.env.CLOUDINARY_CLOUD_NAME}>
-      <MainContainer title="Create Quiz">
+      <MainContainer title={data?.getQuiz.title}>
         <Container
           showSearchBar={false}
           header={
             <div className="flex flex-row items-center justify-between flex-grow px-4">
-              <h1>{id}</h1>
-
+              <div />
               <div className="inline-flex space-x-2">
+                <button
+                  type="button"
+                  onClick={() =>
+                    console.log(
+                      "VALUES " + JSON.stringify(getValues(), null, 2)
+                    )
+                  }
+                  className="inline-flex items-center px-4 py-2 text-sm font-medium text-[#222831] bg-white border border-transparent rounded-md  hover:bg-gray-100 focus:outline-none "
+                >
+                  <SaveAsIcon className="w-5 h-5 mr-2 -ml-1" />
+                  Log Values
+                </button>
                 <button
                   type="button"
                   onClick={handleSubmit(onSubmit)}
@@ -106,26 +122,10 @@ const CreateQuiz = () => {
                 </button>
                 <button
                   type="button"
-                  disabled={!id}
-                  onClick={async () => {
-                    try {
-                      if (id) {
-                        const { errors } = await publishQuiz({
-                          variables: { quizId: id },
-                        });
-
-                        if (!errors) {
-                          router.push("/");
-                        }
-                      }
-                    } catch (err) {
-                      console.error(err);
-                    }
-                  }}
-                  className="inline-flex items-center px-4 py-2 text-sm font-medium border-[#222831] text-[#222831] bg-white border border-transparent rounded-md shadow-sm hover:bg-gray-200 focus:outline-none "
+                  className="inline-flex  opacity-50 items-center px-4 py-2 text-sm font-medium border-[#222831] text-[#222831] bg-white border border-transparent rounded-md shadow-sm hover:bg-gray-200 focus:outline-none "
                 >
                   <PaperAirplaneIcon className="w-5 h-5 mr-2 -ml-1" />
-                  {publishingQuiz ? "Published" : "Publish"}
+                  Publish
                 </button>
               </div>
             </div>
@@ -195,4 +195,4 @@ const CreateQuiz = () => {
   );
 };
 
-export default withApollo({ ssr: false })(CreateQuiz);
+export default withApollo({ ssr: true })(DraftEditQuizPage);

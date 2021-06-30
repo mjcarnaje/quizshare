@@ -84,6 +84,11 @@ export class QuizInput {
   @Field(() => [TagInput])
   tags: TagInput[];
 }
+@InputType()
+export class QuizIdInput {
+  @Field({ nullable: true })
+  quizId?: string;
+}
 
 @InputType()
 export class SaveAsDraftInput {

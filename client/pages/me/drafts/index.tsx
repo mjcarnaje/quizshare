@@ -6,10 +6,10 @@ import { useRouter } from "next/router";
 import { useAppSelector } from "store";
 import { selectQuery } from "store/globalState";
 
-import { QuizCard } from "../../components/cards/QuizCard";
-import Container from "../../components/ui/Container";
-import { useGetMyQuizzesQuery } from "../../generated/graphql";
-import { useIsAuth } from "../../utils/useIsAuth";
+import { QuizCard } from "../../../components/cards/QuizCard";
+import Container from "../../../components/ui/Container";
+import { useGetMyQuizzesQuery } from "../../../generated/graphql";
+import { useIsAuth } from "../../../utils/useIsAuth";
 
 interface Props {}
 

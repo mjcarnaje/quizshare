@@ -13,6 +13,7 @@ import {
 import FormInput from "../../inputs/FormInput";
 
 interface Props {
+  answer: string;
   choice: FieldArrayWithId<QuestionInput, "choices", "id">;
   questionIdx: number;
   choiceIdx: number;
@@ -23,6 +24,7 @@ interface Props {
 }
 
 const ChoiceCard: React.FC<Props> = ({
+  answer,
   choice,
   questionIdx,
   choiceIdx,
@@ -34,6 +36,11 @@ const ChoiceCard: React.FC<Props> = ({
   return (
     <li className="col-span-1 overflow-hidden bg-white divide-y divide-gray-200 rounded-md shadow">
       <div className="bg-white">
+        <input
+          type="hidden"
+          defaultValue={choice.id}
+          {...register(`questions.${questionIdx}.choices.${choiceIdx}.id`)}
+        />
         <div className="p-2">
           <FormInput
             version="auto-resize"
@@ -42,6 +49,7 @@ const ChoiceCard: React.FC<Props> = ({
             {...register(`questions.${questionIdx}.choices.${choiceIdx}.text`, {
               required: true,
             })}
+            defaultValue={choice.text}
           />
         </div>
         <div className="flex justify-between px-2 py-1 mt-2 text-right bg-gray-100">
@@ -51,6 +59,7 @@ const ChoiceCard: React.FC<Props> = ({
             as="button"
             className="flex items-center justify-between focus:outline-none"
             type="button"
+            defaultValue={answer}
           >
             {({ checked }) => (
               <>

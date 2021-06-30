@@ -1,0 +1,38 @@
+query GetQuiz($quizId: String!, $isInput: Boolean!) {
+  getQuiz(quizId: $quizId) {
+    id @skip(if: $isInput)
+    authorId @skip(if: $isInput)
+    author @skip(if: $isInput) {
+      firstName
+      lastName
+      avatar
+      email
+    }
+    title
+    description
+    quizPhoto
+    questions {
+      id
+      question
+      questionPhoto
+      choices
+      answer
+      explanation
+      hint
+    }
+    tags {
+      id
+      name
+    }
+    results {
+      id
+      title
+      description
+      resultPhoto
+      minimumPassingPercentage
+    }
+    isPublished @skip(if: $isInput)
+    createdAt @skip(if: $isInput)
+    updatedAt @skip(if: $isInput)
+  }
+}

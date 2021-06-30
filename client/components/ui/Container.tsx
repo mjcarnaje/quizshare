@@ -37,7 +37,7 @@ const navigation = [
   },
   {
     name: "Create Quiz",
-    href: "/create",
+    href: "/create/quiz",
     icon: PlusCircleIcon,
     activeIcon: PlusCircleIconSolid,
   },

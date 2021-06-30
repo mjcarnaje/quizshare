@@ -79,11 +79,13 @@ const QuestionCard: React.FC<Props> = ({
           placeholder="Type question"
           {...register(`questions.${questionIdx}.question`, { required: true })}
           error={errors?.question}
+          defaultValue={question.question}
         />
         <Controller
           control={control}
           name={`questions.${questionIdx}.answer`}
           rules={{ required: true }}
+          defaultValue={question.answer}
           render={({ field: { value, onChange } }) => (
             <RadioGroup value={value} onChange={onChange}>
               <ul className="grid grid-cols-1 gap-6 mt-2 lg:grid-cols-2">
@@ -91,6 +93,7 @@ const QuestionCard: React.FC<Props> = ({
                   <ChoiceCard
                     key={choice.id}
                     {...{ choice, questionIdx, choiceIdx, register }}
+                    answer={value}
                     isDisabled={choiceFields.length < 2}
                     deleteChoice={() => {
                       if (value === choiceFields[choiceIdx].id) {

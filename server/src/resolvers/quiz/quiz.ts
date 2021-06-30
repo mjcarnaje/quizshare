@@ -15,7 +15,12 @@ import { getConnection } from "typeorm";
 import { Quiz } from "../../entity/Quiz";
 import { isAuthenticated } from "../../middleware/isAuthenticated";
 import { MyContext } from "../../types/types";
-import { PaginatedQuizzes, QuizzesInput, QuizInput } from "./quizInput";
+import {
+  PaginatedQuizzes,
+  QuizzesInput,
+  QuizInput,
+  QuizIdInput,
+} from "./quizInput";
 
 @Resolver(Quiz)
 export class QuizResolver {
@@ -115,19 +120,38 @@ export class QuizResolver {
   @Mutation(() => Quiz)
   async saveQuiz(
     @Arg("quizInput") quizInput: QuizInput,
-    @Ctx() ctx: MyContext
+    @Ctx() ctx: MyContext,
+    @Arg("quizId") quizId: QuizIdInput
   ): Promise<Quiz> {
-    const newQuiz = await Quiz.create({
-      ...quizInput,
-      questionsLength: quizInput.questions.length,
-      authorId: ctx.req.session.userId,
-    }).save();
+    let newQuiz: Quiz;
+
+    if (quizId.quizId) {
+      const updatedQuiz = await getConnection()
+        .createQueryBuilder()
+        .update(Quiz)
+        .set({
+          title: quizInput.title,
+          description: quizInput.description,
+          questionsLength: quizInput.questions.length,
+        })
+        .where("id = :quizId", { quizId: quizId.quizId })
+        .returning("*")
+        .execute();
+
+      newQuiz = updatedQuiz.raw[0];
+    } else {
+      newQuiz = await Quiz.create({
+        ...quizInput,
+        questionsLength: quizInput.questions.length,
+        authorId: ctx.req.session.userId,
+      }).save();
+    }
 
     return newQuiz;
   }
 
   @UseMiddleware(isAuthenticated)
-  @Mutation(() => Quiz)
+  @Query(() => Quiz)
   async getQuiz(
     @Arg("quizId") quizId: string,
     @Ctx() ctx: MyContext
