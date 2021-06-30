@@ -1,8 +1,0 @@
-query MyQuizzes($quizzesInput: QuizzesInput!) {
-  myQuizzes(quizzesInput: $quizzesInput) {
-    quizzes {
-      ...quizCardResponse
-    }
-    hasMore
-  }
-}

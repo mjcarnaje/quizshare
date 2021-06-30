@@ -8,7 +8,7 @@ import { selectQuery } from "store/globalState";
 
 import { QuizCard } from "../../components/cards/QuizCard";
 import Container from "../../components/ui/Container";
-import { useMyQuizzesQuery } from "../../generated/graphql";
+import { useGetMyQuizzesQuery } from "../../generated/graphql";
 import { useIsAuth } from "../../utils/useIsAuth";
 
 interface Props {}
@@ -20,7 +20,7 @@ const DraftsPage: React.FC<Props> = () => {
 
   const query = useAppSelector(selectQuery);
 
-  const { data } = useMyQuizzesQuery({
+  const { data } = useGetMyQuizzesQuery({
     variables: {
       quizzesInput: {
         limit: 10,
@@ -54,8 +54,8 @@ const DraftsPage: React.FC<Props> = () => {
             </div>
             <div className="max-w-3xl overflow-hidden bg-white shadow sm:rounded-md">
               <ul className="mx-auto divide-y divide-gray-200 ">
-                {data?.myQuizzes.quizzes.map((quiz) => (
-                  <QuizCard type="draft" key={quiz.id} {...quiz} />
+                {data?.getMyQuizzes.quizzes.map((quiz) => (
+                  <QuizCard key={quiz.id} type="draft" {...quiz} />
                 ))}
               </ul>
             </div>

@@ -111,7 +111,7 @@ const CreateQuiz = () => {
                     try {
                       if (id) {
                         const { errors } = await publishQuiz({
-                          variables: { id },
+                          variables: { quizId: id },
                         });
 
                         if (!errors) {

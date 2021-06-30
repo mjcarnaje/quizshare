@@ -1,4 +1,8 @@
-import { AuthenticationError } from "apollo-server-express";
+import {
+  AuthenticationError,
+  ForbiddenError,
+  UserInputError,
+} from "apollo-server-express";
 import {
   Arg,
   Ctx,
@@ -11,22 +15,18 @@ import { getConnection } from "typeorm";
 import { Quiz } from "../../entity/Quiz";
 import { isAuthenticated } from "../../middleware/isAuthenticated";
 import { MyContext } from "../../types/types";
-import {
-  PaginatedQuizzes,
-  QuizzesInput,
-  QuestionInput,
-  QuizInput,
-} from "./quizInput";
+import { PaginatedQuizzes, QuizzesInput, QuizInput } from "./quizInput";
 
 @Resolver(Quiz)
 export class QuizResolver {
   @Query(() => PaginatedQuizzes)
-  async quizzes(
+  async getPublishedQuizzes(
     @Arg("quizzesInput") quizzesInput: QuizzesInput
   ): Promise<PaginatedQuizzes> {
-    const { limit } = quizzesInput;
+    const { limit, query, cursor } = quizzesInput;
+    const limitPlusOne = limit + 1;
 
-    let quizzesDB = await getConnection()
+    let quizzes = await getConnection()
       .getRepository(Quiz)
       .createQueryBuilder("quiz")
       .leftJoinAndSelect("quiz.author", "author")
@@ -35,41 +35,42 @@ export class QuizResolver {
       .leftJoinAndSelect("quiz.tags", "tags")
       .andWhere("quiz.isPublished = :isPublished", { isPublished: true });
 
-    if (quizzesInput.query) {
-      quizzesDB = quizzesDB
+    if (query) {
+      quizzes = quizzes
         .andWhere("quiz.title ilike :title", {
-          title: `%${quizzesInput.query}%`,
+          title: `%${query}%`,
         })
         .andWhere("quiz.description ilike :description", {
-          description: `%${quizzesInput.query}%`,
+          description: `%${query}%`,
         });
     }
 
-    if (quizzesInput.cursor) {
-      quizzesDB = quizzesDB.andWhere("quiz.createdAt > :cursor", {
-        cursor: new Date(parseInt(quizzesInput.cursor)),
+    if (cursor) {
+      quizzes = quizzes.andWhere("quiz.createdAt > :cursor", {
+        cursor: new Date(parseInt(cursor)),
       });
     }
 
-    const results = await quizzesDB
+    const results = await quizzes
       .orderBy("quiz.createdAt", "DESC")
-      .take(limit + 1)
+      .take(limitPlusOne)
       .getMany();
 
     return {
       quizzes: results.slice(0, limit),
-      hasMore: results.length === limit + 1,
+      hasMore: results.length === limitPlusOne,
     };
   }
 
   @Query(() => PaginatedQuizzes)
-  async myQuizzes(
+  async getMyQuizzes(
     @Arg("quizzesInput") quizzesInput: QuizzesInput,
     @Ctx() ctx: MyContext
   ): Promise<PaginatedQuizzes> {
-    const { limit } = quizzesInput;
+    const { limit, query, cursor, isPublished } = quizzesInput;
+    const limitPlusOne = limit + 1;
 
-    let quizzesDB = await getConnection()
+    let quizzes = await getConnection()
       .getRepository(Quiz)
       .createQueryBuilder("quiz")
       .leftJoinAndSelect("quiz.author", "author")
@@ -80,33 +81,33 @@ export class QuizResolver {
         authorId: ctx.req.session.userId,
       })
       .andWhere("quiz.isPublished = :isPublished", {
-        isPublished: quizzesInput.isPublished,
+        isPublished,
       });
 
-    if (quizzesInput.query) {
-      quizzesDB = quizzesDB
+    if (query) {
+      quizzes = quizzes
         .andWhere("quiz.title ilike :title", {
-          title: `%${quizzesInput.query}%`,
+          title: `%${query}%`,
         })
         .andWhere("quiz.description ilike :description", {
-          description: `%${quizzesInput.query}%`,
+          description: `%${query}%`,
         });
     }
 
-    if (quizzesInput.cursor) {
-      quizzesDB = quizzesDB.andWhere("quiz.createdAt > :cursor", {
-        cursor: new Date(parseInt(quizzesInput.cursor)),
+    if (cursor) {
+      quizzes = quizzes.andWhere("quiz.createdAt > :cursor", {
+        cursor: new Date(parseInt(cursor)),
       });
     }
 
-    const results = await quizzesDB
+    const results = await quizzes
       .orderBy("quiz.createdAt", "DESC")
-      .take(limit + 1)
+      .take(limitPlusOne)
       .getMany();
 
     return {
       quizzes: results.slice(0, limit),
-      hasMore: results.length === limit + 1,
+      hasMore: results.length === limitPlusOne,
     };
   }
 
@@ -126,47 +127,61 @@ export class QuizResolver {
   }
 
   @UseMiddleware(isAuthenticated)
-  @Mutation(() => String)
-  async createQuizV2(
-    @Arg("title") title: string,
-    @Arg("description") description: string,
+  @Mutation(() => Quiz)
+  async getQuiz(
+    @Arg("quizId") quizId: string,
     @Ctx() ctx: MyContext
-  ): Promise<string> {
-    const newQuiz = await Quiz.create({
-      title,
-      description,
-      authorId: ctx.req.session.userId,
-    }).save();
+  ): Promise<Quiz> {
+    const authorId = ctx.req.session.userId;
 
-    return newQuiz.id;
+    const quiz = await getConnection()
+      .getRepository(Quiz)
+      .createQueryBuilder("quiz")
+      .leftJoinAndSelect("quiz.author", "author")
+      .leftJoinAndSelect("quiz.questions", "questions")
+      .leftJoinAndSelect("quiz.results", "results")
+      .leftJoinAndSelect("quiz.tags", "tags")
+      .andWhere("quiz.id = :quizId", { quizId })
+      .getOne();
+
+    if (!quiz) {
+      throw new UserInputError("Quiz does not exist");
+    }
+
+    if (authorId !== quiz.authorId) {
+      throw new ForbiddenError("You are not the owner of the quiz");
+    }
+
+    return quiz;
   }
 
   @UseMiddleware(isAuthenticated)
-  @Mutation(() => Boolean)
-  async addQuestionV2(
-    @Arg("quizId") quizId: string,
-    @Arg("data") data: QuestionInput
-  ): Promise<boolean> {
-    await getConnection()
-      .createQueryBuilder()
-      .relation(Quiz, "questions")
-      .of(quizId)
-      .add(data);
+  @Mutation(() => Quiz)
+  async editQuiz(
+    // @Arg("quizId") quizId: string,
+    @Arg("quizInput") quizInput: QuizInput,
+    @Ctx() ctx: MyContext
+  ): Promise<Quiz> {
+    const newQuiz = await Quiz.create({
+      ...quizInput,
+      questionsLength: quizInput.questions.length,
+      authorId: ctx.req.session.userId,
+    }).save();
 
-    return true;
+    return newQuiz;
   }
 
   @UseMiddleware(isAuthenticated)
   @Mutation(() => Boolean)
   async deleteQuiz(
-    @Arg("id") id: string,
+    @Arg("quizId") quizId: string,
     @Ctx() ctx: MyContext
   ): Promise<boolean> {
     await getConnection()
       .createQueryBuilder()
       .delete()
       .from(Quiz)
-      .andWhere("id = :id", { id })
+      .andWhere("id = :quizId", { quizId })
       .andWhere("authorId = :authorId", { authorId: ctx.req.session.userId })
       .execute();
 
@@ -176,14 +191,14 @@ export class QuizResolver {
   @UseMiddleware(isAuthenticated)
   @Mutation(() => Quiz)
   async publishQuiz(
-    @Arg("id") id: string,
+    @Arg("quizId") quizId: string,
     @Ctx() ctx: MyContext
   ): Promise<Quiz> {
     const quiz = await getConnection()
       .getRepository(Quiz)
       .createQueryBuilder("quiz")
       .leftJoinAndSelect("quiz.questions", "questions")
-      .where("quiz.id = :id", { id })
+      .where("quiz.id = :quizId", { quizId })
       .getOne();
 
     if (!quiz) {
@@ -202,7 +217,7 @@ export class QuizResolver {
       .createQueryBuilder()
       .update(Quiz)
       .set({ isPublished: true })
-      .where("id = :id", { id })
+      .where("id = :quizId", { quizId })
       .returning("*")
       .execute();
 
