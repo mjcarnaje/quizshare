@@ -122,7 +122,10 @@ export class QuizResolver {
 
     if (quizId) {
       const toUpdate = await Quiz.findOne({ id: quizId });
-      let updated = Object.assign(toUpdate, quizInput);
+      let updated = Object.assign(toUpdate, {
+        ...quizInput,
+        questionsLength: quizInput.questions.length,
+      });
       newQuiz = await Quiz.save(updated);
     } else {
       newQuiz = await Quiz.create({
