@@ -15,12 +15,7 @@ import { getConnection } from "typeorm";
 import { Quiz } from "../../entity/Quiz";
 import { isAuthenticated } from "../../middleware/isAuthenticated";
 import { MyContext } from "../../types/types";
-import {
-  PaginatedQuizzes,
-  QuizzesInput,
-  QuizInput,
-  QuizIdInput,
-} from "./quizInput";
+import { PaginatedQuizzes, QuizzesInput, QuizInput } from "./quizInput";
 
 @Resolver(Quiz)
 export class QuizResolver {
@@ -121,24 +116,14 @@ export class QuizResolver {
   async saveQuiz(
     @Arg("quizInput") quizInput: QuizInput,
     @Ctx() ctx: MyContext,
-    @Arg("quizId") quizId: QuizIdInput
+    @Arg("quizId", { nullable: true }) quizId?: string
   ): Promise<Quiz> {
     let newQuiz: Quiz;
 
-    if (quizId.quizId) {
-      const updatedQuiz = await getConnection()
-        .createQueryBuilder()
-        .update(Quiz)
-        .set({
-          title: quizInput.title,
-          description: quizInput.description,
-          questionsLength: quizInput.questions.length,
-        })
-        .where("id = :quizId", { quizId: quizId.quizId })
-        .returning("*")
-        .execute();
-
-      newQuiz = updatedQuiz.raw[0];
+    if (quizId) {
+      const toUpdate = await Quiz.findOne({ id: quizId });
+      let updated = Object.assign(toUpdate, quizInput);
+      newQuiz = await Quiz.save(updated);
     } else {
       newQuiz = await Quiz.create({
         ...quizInput,

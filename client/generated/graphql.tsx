@@ -46,7 +46,7 @@ export type MutationSignInArgs = {
 
 
 export type MutationSaveQuizArgs = {
-  quizId: QuizIdInput;
+  quizId?: Maybe<Scalars['String']>;
   quizInput: QuizInput;
 };
 
@@ -130,10 +130,6 @@ export type Quiz = {
   isPublished: Scalars['Boolean'];
   createdAt: Scalars['String'];
   updatedAt: Scalars['String'];
-};
-
-export type QuizIdInput = {
-  quizId?: Maybe<Scalars['String']>;
 };
 
 export type QuizInput = {
@@ -288,7 +284,7 @@ export type PublishQuizMutation = (
 
 export type SaveQuizMutationVariables = Exact<{
   quizInput: QuizInput;
-  quizId: QuizIdInput;
+  quizId?: Maybe<Scalars['String']>;
 }>;
 
 
@@ -569,7 +565,7 @@ export type PublishQuizMutationHookResult = ReturnType<typeof usePublishQuizMuta
 export type PublishQuizMutationResult = Apollo.MutationResult<PublishQuizMutation>;
 export type PublishQuizMutationOptions = Apollo.BaseMutationOptions<PublishQuizMutation, PublishQuizMutationVariables>;
 export const SaveQuizDocument = gql`
-    mutation SaveQuiz($quizInput: QuizInput!, $quizId: QuizIdInput!) {
+    mutation SaveQuiz($quizInput: QuizInput!, $quizId: String) {
   saveQuiz(quizInput: $quizInput, quizId: $quizId) {
     id
   }

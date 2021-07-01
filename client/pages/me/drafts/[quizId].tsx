@@ -57,7 +57,7 @@ const DraftEditQuizPage: React.FC<Props> = () => {
   const onSubmit = async (data: QuizInput) => {
     try {
       const { data: quizData } = await saveQuiz({
-        variables: { quizInput: data, quizId: { quizId } },
+        variables: { quizInput: data, quizId },
         update: (cache) => {
           cache.evict({ fieldName: "quizzes" });
         },

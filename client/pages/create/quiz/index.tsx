@@ -51,7 +51,7 @@ const CreateQuiz = () => {
   const onSubmit = async (data: QuizInput) => {
     try {
       const { data: quizData } = await saveQuiz({
-        variables: { quizInput: data, quizId: {} },
+        variables: { quizInput: data },
         update: (cache) => {
           cache.evict({ fieldName: "quizzes" });
         },
