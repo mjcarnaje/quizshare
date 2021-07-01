@@ -14,11 +14,8 @@ query GetQuiz($quizId: String!, $isInput: Boolean!) {
     questions {
       id
       question
-      questionPhoto
       choices
       answer
-      explanation
-      hint
     }
     tags {
       id

@@ -123,10 +123,10 @@ export type Quiz = {
   title: Scalars['String'];
   description: Scalars['String'];
   quizPhoto?: Maybe<Scalars['String']>;
-  questions?: Maybe<Array<Question>>;
+  questions: Array<Question>;
   questionsLength: Scalars['Int'];
-  results?: Maybe<Array<Result>>;
-  tags?: Maybe<Array<Tag>>;
+  results: Array<Result>;
+  tags: Array<Tag>;
   isPublished: Scalars['Boolean'];
   createdAt: Scalars['String'];
   updatedAt: Scalars['String'];
@@ -234,16 +234,16 @@ export type QuizResponseFragment = (
   & { author: (
     { __typename?: 'User' }
     & Pick<User, 'firstName' | 'lastName' | 'avatar' | 'email'>
-  ), questions?: Maybe<Array<(
+  ), questions: Array<(
     { __typename?: 'Question' }
     & Pick<Question, 'id' | 'question' | 'questionPhoto' | 'choices' | 'answer' | 'explanation' | 'hint'>
-  )>>, tags?: Maybe<Array<(
+  )>, tags: Array<(
     { __typename?: 'Tag' }
     & Pick<Tag, 'id' | 'name'>
-  )>>, results?: Maybe<Array<(
+  )>, results: Array<(
     { __typename?: 'Result' }
     & Pick<Result, 'id' | 'title' | 'description' | 'resultPhoto' | 'minimumPassingPercentage'>
-  )>> }
+  )> }
 );
 
 export type UserResponseFragment = (
@@ -292,7 +292,17 @@ export type SaveQuizMutation = (
   { __typename?: 'Mutation' }
   & { saveQuiz: (
     { __typename?: 'Quiz' }
-    & Pick<Quiz, 'id'>
+    & Pick<Quiz, 'id' | 'title' | 'description' | 'quizPhoto'>
+    & { questions: Array<(
+      { __typename?: 'Question' }
+      & Pick<Question, 'id' | 'question' | 'choices' | 'answer'>
+    )>, tags: Array<(
+      { __typename?: 'Tag' }
+      & Pick<Tag, 'id' | 'name'>
+    )>, results: Array<(
+      { __typename?: 'Result' }
+      & Pick<Result, 'id' | 'title' | 'description' | 'resultPhoto' | 'minimumPassingPercentage'>
+    )> }
   ) }
 );
 
@@ -372,16 +382,16 @@ export type GetQuizQuery = (
     & { author?: Maybe<(
       { __typename?: 'User' }
       & Pick<User, 'firstName' | 'lastName' | 'avatar' | 'email'>
-    )>, questions?: Maybe<Array<(
+    )>, questions: Array<(
       { __typename?: 'Question' }
-      & Pick<Question, 'id' | 'question' | 'questionPhoto' | 'choices' | 'answer' | 'explanation' | 'hint'>
-    )>>, tags?: Maybe<Array<(
+      & Pick<Question, 'id' | 'question' | 'choices' | 'answer'>
+    )>, tags: Array<(
       { __typename?: 'Tag' }
       & Pick<Tag, 'id' | 'name'>
-    )>>, results?: Maybe<Array<(
+    )>, results: Array<(
       { __typename?: 'Result' }
       & Pick<Result, 'id' | 'title' | 'description' | 'resultPhoto' | 'minimumPassingPercentage'>
-    )>> }
+    )> }
   ) }
 );
 
@@ -568,6 +578,26 @@ export const SaveQuizDocument = gql`
     mutation SaveQuiz($quizInput: QuizInput!, $quizId: String) {
   saveQuiz(quizInput: $quizInput, quizId: $quizId) {
     id
+    title
+    description
+    quizPhoto
+    questions {
+      id
+      question
+      choices
+      answer
+    }
+    tags {
+      id
+      name
+    }
+    results {
+      id
+      title
+      description
+      resultPhoto
+      minimumPassingPercentage
+    }
   }
 }
     `;
@@ -761,11 +791,8 @@ export const GetQuizDocument = gql`
     questions {
       id
       question
-      questionPhoto
       choices
       answer
-      explanation
-      hint
     }
     tags {
       id

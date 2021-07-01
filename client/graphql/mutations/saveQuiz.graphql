@@ -1,5 +1,25 @@
 mutation SaveQuiz($quizInput: QuizInput!, $quizId: String) {
   saveQuiz(quizInput: $quizInput, quizId: $quizId) {
     id
+    title
+    description
+    quizPhoto
+    questions {
+      id
+      question
+      choices
+      answer
+    }
+    tags {
+      id
+      name
+    }
+    results {
+      id
+      title
+      description
+      resultPhoto
+      minimumPassingPercentage
+    }
   }
 }

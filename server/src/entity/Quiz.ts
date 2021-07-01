@@ -45,10 +45,9 @@ export class Quiz extends BaseEntity {
   @Column("text", { nullable: true })
   quizPhoto?: string;
 
-  @Field(() => [Question], { nullable: true })
+  @Field(() => [Question])
   @OneToMany(() => Question, (question) => question.quiz, {
     cascade: true,
-    nullable: true,
   })
   questions: Question[];
 
@@ -56,17 +55,15 @@ export class Quiz extends BaseEntity {
   @Column({ default: 0 })
   questionsLength: number;
 
-  @Field(() => [Result], { nullable: true })
+  @Field(() => [Result])
   @OneToMany(() => Result, (result) => result.quiz, {
     cascade: true,
-    nullable: true,
   })
   results: Result[];
 
-  @Field(() => [Tag], { nullable: true })
+  @Field(() => [Tag])
   @ManyToMany(() => Tag, (tag) => tag.quiz, {
     cascade: true,
-    nullable: true,
   })
   @JoinTable()
   tags: Tag[];
