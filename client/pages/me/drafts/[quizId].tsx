@@ -19,7 +19,10 @@ import { v4 as uuid } from "uuid";
 
 import Input from "../../../components/inputs/Input";
 import TextareaAutoResize from "../../../components/inputs/TextareaAutoResize";
-import { useGetQuizQuery } from "../../../generated/graphql";
+import {
+  useGetQuizQuery,
+  usePublishQuizMutation,
+} from "../../../generated/graphql";
 import errorMapper from "../../../utils/errorMapper";
 
 interface Props {}
@@ -36,7 +39,7 @@ const DraftEditQuizPage: React.FC<Props> = () => {
   });
 
   const [saveQuiz, { loading: savingQuiz }] = useSaveQuizMutation();
-  // const [publishQuiz, { loading: publishingQuiz }] = usePublishQuizMutation();
+  const [publishQuiz, { loading: publishingQuiz }] = usePublishQuizMutation();
 
   const methods = useForm<QuizInput>({
     defaultValues: {
@@ -123,10 +126,23 @@ const DraftEditQuizPage: React.FC<Props> = () => {
                 </button>
                 <button
                   type="button"
-                  className="inline-flex  opacity-50 items-center px-4 py-2 text-sm font-medium border-[#222831] text-[#222831] bg-white border border-transparent rounded-md shadow-sm hover:bg-gray-200 focus:outline-none "
+                  onClick={async () => {
+                    try {
+                      const { errors } = await publishQuiz({
+                        variables: { quizId },
+                      });
+
+                      if (!errors) {
+                        router.push("/");
+                      }
+                    } catch (err) {
+                      console.error(err);
+                    }
+                  }}
+                  className="inline-flex items-center px-4 py-2 text-sm font-medium border-[#222831] text-[#222831] bg-white border border-transparent rounded-md shadow-sm hover:bg-gray-200 focus:outline-none "
                 >
                   <PaperAirplaneIcon className="w-5 h-5 mr-2 -ml-1" />
-                  Publish
+                  {publishingQuiz ? "Publishing" : "Publish"}
                 </button>
               </div>
             </div>
