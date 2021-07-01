@@ -2,6 +2,7 @@ import React, { useEffect } from "react";
 
 import { QuestionInput, QuizInput } from "@generated/graphql";
 import { RadioGroup } from "@headlessui/react";
+import { DocumentAddIcon, TrashIcon } from "@heroicons/react/outline";
 import { classNames } from "@utils/index";
 import {
   Control,
@@ -15,7 +16,7 @@ import {
 } from "react-hook-form";
 import { v4 as uuid } from "uuid";
 
-import FormInput from "../../inputs/FormInput";
+import TextareaAutoResize from "../../inputs/TextareaAutoResize";
 import ChoiceCard from "./ChoiceCard";
 
 interface Props {
@@ -74,12 +75,11 @@ const QuestionCard: React.FC<Props> = ({
           defaultValue={question.id}
           {...register(`questions.${questionIdx}.id`)}
         />
-        <FormInput
-          version="auto-resize"
-          placeholder="Type question"
-          {...register(`questions.${questionIdx}.question`, { required: true })}
+        <TextareaAutoResize<QuizInput>
+          name={`questions.${questionIdx}.question`}
           error={errors?.question}
-          defaultValue={question.question}
+          register={register}
+          required
         />
         <Controller
           control={control}
@@ -122,20 +122,7 @@ const QuestionCard: React.FC<Props> = ({
           onClick={() => addChoice({ shouldFocus: true })}
           className="flex items-center px-2 py-1 mr-2 rounded hover:bg-gray-200 focus:outline-none"
         >
-          <svg
-            xmlns="http://www.w3.org/200 focus:outline-none0/svg"
-            className="w-5 h-5 mr-1"
-            fill="none"
-            viewBox="0 0 24 24"
-            stroke="currentColor"
-          >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth="2"
-              d="M9 13h6m-3-3v6m5 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
-            />
-          </svg>
+          <DocumentAddIcon className="w-5 h-5 mr-1" />
           <p>Add Choice</p>
         </button>
 
@@ -145,20 +132,9 @@ const QuestionCard: React.FC<Props> = ({
           onClick={() => questionRemove(questionIdx)}
           className="p-2 rounded hover:bg-gray-200 focus:outline-none"
         >
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
+          <TrashIcon
             className={` h-6 w-6 ${classNames(isDisabled ? "opacity-30" : "")}`}
-            fill="none"
-            viewBox="0 0 24 24"
-            stroke="currentColor"
-          >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth="2"
-              d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"
-            />
-          </svg>
+          />
         </button>
       </div>
     </div>

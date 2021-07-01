@@ -2,6 +2,11 @@ import React from "react";
 
 import { ChoiceInput, QuestionInput, QuizInput } from "@generated/graphql";
 import { RadioGroup } from "@headlessui/react";
+import {
+  CheckCircleIcon as CheckCircleIconOutline,
+  TrashIcon,
+} from "@heroicons/react/outline";
+import { CheckCircleIcon as CheckCircleIconSolid } from "@heroicons/react/solid";
 import { classNames } from "@utils/index";
 import {
   DeepMap,
@@ -10,7 +15,7 @@ import {
   UseFormRegister,
 } from "react-hook-form";
 
-import FormInput from "../../inputs/FormInput";
+import TextareaAutoResize from "../../inputs/TextareaAutoResize";
 
 interface Props {
   answer: string;
@@ -42,14 +47,11 @@ const ChoiceCard: React.FC<Props> = ({
           {...register(`questions.${questionIdx}.choices.${choiceIdx}.id`)}
         />
         <div className="p-2">
-          <FormInput
-            version="auto-resize"
-            placeholder="Type choice"
+          <TextareaAutoResize<QuizInput>
+            name={`questions.${questionIdx}.choices.${choiceIdx}.text`}
             error={errors?.text}
-            {...register(`questions.${questionIdx}.choices.${choiceIdx}.text`, {
-              required: true,
-            })}
-            defaultValue={choice.text}
+            register={register}
+            required
           />
         </div>
         <div className="flex justify-between px-2 py-1 mt-2 text-right bg-gray-100">
@@ -64,33 +66,9 @@ const ChoiceCard: React.FC<Props> = ({
             {({ checked }) => (
               <>
                 {checked ? (
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    className="w-5 h-5 text-green-600"
-                    viewBox="0 0 20 20"
-                    fill="currentColor"
-                  >
-                    <path
-                      fill-rule="evenodd"
-                      d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
-                      clip-rule="evenodd"
-                    />
-                  </svg>
+                  <CheckCircleIconSolid className="w-5 h-5 text-green-600" />
                 ) : (
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    className="w-5 h-5 text-gray-500"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                    stroke="currentColor"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth="2"
-                      d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"
-                    />
-                  </svg>
+                  <CheckCircleIconOutline className="w-5 h-5 text-gray-500" />
                 )}
                 <p
                   className={classNames(
@@ -111,22 +89,11 @@ const ChoiceCard: React.FC<Props> = ({
             onClick={deleteChoice}
             className="p-1 rounded hover:bg-gray-200 focus:outline-none"
           >
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
+            <TrashIcon
               className={` h-5 w-5 ${classNames(
                 isDisabled ? "opacity-30" : ""
               )}`}
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke="currentColor"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth="2"
-                d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"
-              />
-            </svg>
+            />
           </button>
         </div>
       </div>

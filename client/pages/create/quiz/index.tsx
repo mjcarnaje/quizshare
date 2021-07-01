@@ -16,7 +16,8 @@ import {
 } from "react-hook-form";
 import { v4 as uuid } from "uuid";
 
-import FormInput from "../../../components/inputs/FormInput";
+import Input from "../../../components/inputs/Input";
+import TextareaAutoResize from "../../../components/inputs/TextareaAutoResize";
 import errorMapper from "../../../utils/errorMapper";
 
 const CreateQuiz = () => {
@@ -130,16 +131,19 @@ const CreateQuiz = () => {
               <div className="max-w-4xl px-4 mx-auto sm:px-6 md:px-8">
                 <FormProvider {...methods}>
                   <form>
-                    <FormInput
-                      placeholder="Title..."
+                    <Input<QuizInput>
+                      type="text"
+                      name="title"
+                      register={register}
+                      required
                       error={errors.title}
-                      {...register("title", { required: true })}
                     />
-                    <FormInput
-                      version="auto-resize"
-                      placeholder="Description..."
+
+                    <TextareaAutoResize<QuizInput>
+                      name="description"
                       error={errors.description}
-                      {...register("description", { required: true })}
+                      register={register}
+                      required
                     />
 
                     <div className="my-4 space-y-4">

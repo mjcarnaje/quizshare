@@ -1,6 +1,6 @@
 import React from "react";
 
-import FormInput from "@components/inputs/FormInput";
+import Input from "@components/inputs/Input";
 import MainContainer from "@components/ui/MainContainer";
 import {
   MeDocument,
@@ -13,7 +13,7 @@ import { useRouter } from "next/dist/client/router";
 import Link from "next/link";
 import { useForm } from "react-hook-form";
 
-import FormSelect from "../components/inputs/FormSelect";
+import Select from "../components/inputs/Select";
 import errorMapper from "../utils/errorMapper";
 
 const SignUpPage = () => {
@@ -59,54 +59,68 @@ const SignUpPage = () => {
           </h2>
           <div className="p-6 mt-8 space-y-4 bg-white rounded-md shadow-md sm:p-8 md:p-14">
             <form onSubmit={handleSubmit(onSubmit)} className="space-y-2">
-              <FormInput
-                type="text"
+              <Input<SignUpInput>
+                type="email"
                 label="Email"
+                name="email"
                 error={errors.email}
-                {...register("email", { required: true })}
+                register={register}
+                required
               />
-              <FormInput
+              <Input<SignUpInput>
                 type="text"
                 label="Username"
+                name="username"
                 error={errors.username}
-                {...register("username", { required: true })}
+                register={register}
+                required
               />
-              <FormInput
+              <Input<SignUpInput>
                 type="password"
                 label="Password"
+                name="password"
                 error={errors.password}
-                {...register("password", { required: true })}
+                register={register}
+                required
               />
-              <FormInput
+              <Input<SignUpInput>
                 type="password"
-                label="Confirm Password"
+                label="Confirm password"
+                name="confirmPassword"
                 error={errors.confirmPassword}
-                {...register("confirmPassword", { required: true })}
+                register={register}
+                required
               />
-              <FormInput
+              <Input<SignUpInput>
                 type="text"
-                label="First Name"
+                label="First name"
+                name="firstName"
                 error={errors.firstName}
-                {...register("firstName", { required: true })}
+                register={register}
+                required
               />
-              <FormInput
+              <Input<SignUpInput>
                 type="text"
-                label="Last Name"
+                label="Last name"
+                name="lastName"
                 error={errors.lastName}
-                {...register("lastName", { required: true })}
+                register={register}
+                required
               />
-              <FormInput
+              <Input<SignUpInput>
                 type="date"
                 label="Birthday"
+                name="birthday"
                 error={errors.birthday}
-                {...register("birthday", { required: true })}
+                register={register}
+                required
               />
-
-              <FormSelect
+              <Select<SignUpInput>
                 label="Gender"
+                name="gender"
                 options={["Male", "Female"]}
-                error={errors.gender}
-                {...register("gender", { required: true })}
+                register={register}
+                required
               />
 
               <div>

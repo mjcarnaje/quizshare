@@ -1,6 +1,6 @@
 import React from "react";
 
-import FormInput from "@components/inputs/FormInput";
+import Input from "@components/inputs/Input";
 import MainContainer from "@components/ui/MainContainer";
 import {
   MeDocument,
@@ -68,17 +68,21 @@ const LoginPage = () => {
               </div>
             )}
             <form onSubmit={handleSubmit(onSubmit)} className="space-y-2">
-              <FormInput
+              <Input<SignInInput>
                 type="text"
-                label="Email or username"
+                label="Username or email"
+                name="usernameOrEmail"
                 error={errors.usernameOrEmail}
-                {...register("usernameOrEmail", { required: true })}
+                register={register}
+                required
               />
-              <FormInput
-                type="password"
+              <Input<SignInInput>
+                type="text"
                 label="Password"
-                error={errors.password}
-                {...register("password", { required: true })}
+                name="password"
+                error={errors.usernameOrEmail}
+                register={register}
+                required
               />
               <div className="flex items-center justify-between">
                 <div />

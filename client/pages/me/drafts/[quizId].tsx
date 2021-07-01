@@ -17,7 +17,8 @@ import {
 } from "react-hook-form";
 import { v4 as uuid } from "uuid";
 
-import FormInput from "../../../components/inputs/FormInput";
+import Input from "../../../components/inputs/Input";
+import TextareaAutoResize from "../../../components/inputs/TextareaAutoResize";
 import { useGetQuizQuery } from "../../../generated/graphql";
 import errorMapper from "../../../utils/errorMapper";
 
@@ -37,7 +38,16 @@ const DraftEditQuizPage: React.FC<Props> = () => {
   const [saveQuiz, { loading: savingQuiz }] = useSaveQuizMutation();
   // const [publishQuiz, { loading: publishingQuiz }] = usePublishQuizMutation();
 
-  const methods = useForm<QuizInput>();
+  const methods = useForm<QuizInput>({
+    defaultValues: {
+      title: "",
+      description: "",
+      quizPhoto: null,
+      questions: [],
+      results: [],
+      tags: [],
+    },
+  });
 
   const {
     control,
@@ -45,7 +55,7 @@ const DraftEditQuizPage: React.FC<Props> = () => {
     handleSubmit,
     setError,
     reset,
-    getValues,
+    watch,
     formState: { errors },
   } = methods;
 
@@ -91,6 +101,8 @@ const DraftEditQuizPage: React.FC<Props> = () => {
     }
   }, [data?.getQuiz, gettingInput]);
 
+  console.log(watch());
+
   return (
     <CloudinaryContext cloudName={process.env.CLOUDINARY_CLOUD_NAME}>
       <MainContainer title={data?.getQuiz.title}>
@@ -100,18 +112,7 @@ const DraftEditQuizPage: React.FC<Props> = () => {
             <div className="flex flex-row items-center justify-between flex-grow px-4">
               <div />
               <div className="inline-flex space-x-2">
-                <button
-                  type="button"
-                  onClick={() =>
-                    console.log(
-                      "VALUES " + JSON.stringify(getValues(), null, 2)
-                    )
-                  }
-                  className="inline-flex items-center px-4 py-2 text-sm font-medium text-[#222831] bg-white border border-transparent rounded-md  hover:bg-gray-100 focus:outline-none "
-                >
-                  <SaveAsIcon className="w-5 h-5 mr-2 -ml-1" />
-                  Log Values
-                </button>
+                <div />
                 <button
                   type="button"
                   onClick={handleSubmit(onSubmit)}
@@ -136,16 +137,19 @@ const DraftEditQuizPage: React.FC<Props> = () => {
               <div className="max-w-4xl px-4 mx-auto sm:px-6 md:px-8">
                 <FormProvider {...methods}>
                   <form>
-                    <FormInput
-                      placeholder="Title..."
+                    <Input<QuizInput>
+                      type="text"
+                      name="title"
+                      register={register}
+                      required
                       error={errors.title}
-                      {...register("title", { required: true })}
                     />
-                    <FormInput
-                      version="auto-resize"
-                      placeholder="Description..."
+
+                    <TextareaAutoResize<QuizInput>
+                      name="description"
                       error={errors.description}
-                      {...register("description", { required: true })}
+                      register={register}
+                      required
                     />
 
                     <div className="my-4 space-y-4">

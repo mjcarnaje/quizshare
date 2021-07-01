@@ -1,29 +1,33 @@
 import React from "react";
 
 import { errorStringFormatter } from "@utils/errorStringFormatter";
-import { UseFormRegisterReturn, FieldError } from "react-hook-form";
+import { FieldError, Path, UseFormRegister } from "react-hook-form";
 
-interface Props extends UseFormRegisterReturn {
-  options: string[];
-  label: string;
+type InputProps<T> = {
+  label?: string;
+  name: Path<T>;
+  register: UseFormRegister<T>;
+  required: boolean;
   error?: FieldError;
-}
+  options: string[];
+};
 
-const FormSelect: React.FC<Props> = ({ options, label, error, ...props }) => {
+function Select<T>(props: InputProps<T>) {
+  const { label, register, required, error, name, options } = props;
+
   return (
     <div>
-      <label
-        className="text-sm font-medium text-gray-600 "
-        htmlFor={props.name}
-      >
-        {label}
-      </label>
+      {label && (
+        <label className="text-sm font-medium text-gray-600 " htmlFor={label}>
+          {label}
+        </label>
+      )}
       <select
-        id={props.name}
+        id={label}
         className={`relative block w-full px-3 py-2 mt-1 rounded-md focus:ring-0 focus:border-black ${
           error ? "border-red-500 focus:border-red-500" : "focus:border-black"
         }`}
-        {...props}
+        {...register(name, { required })}
       >
         {options.map((value) => (
           <option key={value} value={value}>
@@ -35,13 +39,15 @@ const FormSelect: React.FC<Props> = ({ options, label, error, ...props }) => {
         <div className="mt-1">
           <p className="text-xs text-red-500 capitalize-first">
             {error.type === "required"
-              ? errorStringFormatter(`${props.name} is required`)
+              ? label
+                ? `${label} is required`
+                : errorStringFormatter(`${name} is required`)
               : errorStringFormatter(error?.message)}{" "}
           </p>
         </div>
       )}
     </div>
   );
-};
+}
 
-export default FormSelect;
+export default Select;
