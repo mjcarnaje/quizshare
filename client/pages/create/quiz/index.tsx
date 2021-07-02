@@ -9,6 +9,7 @@ import {
   SaveAsIcon,
   PlusCircleIcon,
 } from "@heroicons/react/outline";
+import { PhotographIcon } from "@heroicons/react/outline";
 import withApollo from "@utils/withApollo";
 import { CloudinaryContext } from "cloudinary-react";
 import { useRouter } from "next/router";
@@ -21,14 +22,18 @@ import {
 } from "react-hook-form";
 import { v4 as uuid } from "uuid";
 
+import ImageHolder from "../../../components/cards/ImageHolder";
 import Input from "../../../components/inputs/Input";
 import TextareaAutoResize from "../../../components/inputs/TextareaAutoResize";
 import errorMapper from "../../../utils/errorMapper";
+import { useUploadPhoto } from "../../../utils/useUploadImage";
 
 const CreateQuiz = () => {
   const router = useRouter();
 
   const [saveQuiz, { loading: savingQuiz }] = useSaveQuizMutation();
+  const [uploadImage, { data: quizPhoto, loading: quizPhotoLoading }] =
+    useUploadPhoto();
 
   const methods = useForm<QuizInput>({
     defaultValues: {
@@ -44,7 +49,7 @@ const CreateQuiz = () => {
     register,
     handleSubmit,
     setError,
-
+    setValue,
     formState: { errors },
   } = methods;
 
@@ -90,8 +95,14 @@ const CreateQuiz = () => {
     }
   }, []);
 
+  useEffect(() => {
+    setValue("quizPhoto", quizPhoto);
+  }, [quizPhoto]);
+
   return (
-    <CloudinaryContext cloudName={process.env.CLOUDINARY_CLOUD_NAME}>
+    <CloudinaryContext
+      cloudName={process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME}
+    >
       <MainContainer title="Create Quiz">
         <Container
           showSearchBar={false}
@@ -125,6 +136,19 @@ const CreateQuiz = () => {
               <div className="max-w-4xl px-4 mx-auto sm:px-6 md:px-8">
                 <FormProvider {...methods}>
                   <form>
+                    <div className="mb-2">
+                      <button
+                        type="button"
+                        className="flex px-2 py-1 text-gray-700 rounded-md text-medium hover:bg-gray-200 focus:outline-none"
+                        onClick={uploadImage}
+                      >
+                        <PhotographIcon className="w-6 h-6 mr-1" />
+                        {`${quizPhoto ? "Replace" : "Add"} Cover Photo`}
+                      </button>
+                    </div>
+                    <input type="hidden" {...register("quizPhoto")} />
+                    <ImageHolder image={quizPhoto} loading={quizPhotoLoading} />
+
                     <Input<QuizInput>
                       type="text"
                       name="title"
@@ -137,6 +161,7 @@ const CreateQuiz = () => {
                     <TextareaAutoResize<QuizInput>
                       name="description"
                       placeholder="Type you description"
+                      minRows={3}
                       error={errors.description}
                       register={register}
                       required
@@ -161,12 +186,7 @@ const CreateQuiz = () => {
                               return (
                                 <QuestionCard
                                   key={question.id}
-                                  {...{
-                                    question,
-                                    questionIdx,
-                                    control,
-                                    register,
-                                  }}
+                                  {...{ question, questionIdx }}
                                   isDisabled={fields.length < 2}
                                   questionRemove={remove}
                                   errors={errors.questions?.[questionIdx]}
@@ -186,7 +206,7 @@ const CreateQuiz = () => {
         <button
           type="button"
           onClick={() => addQuestion({ shouldFocus: true })}
-          className="fixed bottom-6 right-6 p-2 flex items-center justify-center rounded-xl bg-black hover:bg-[#1d1d1d] text-white focus:outline-none"
+          className="fixed bottom-6 right-6 p-2 flex items-center justify-center rounded-xl bg-black hover:bg-[#1d1d1d] active:opacity-80 text-white focus:outline-none"
         >
           <PlusCircleIcon className="w-8 h-8" />
         </button>

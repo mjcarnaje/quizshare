@@ -3,29 +3,29 @@ import React, { useEffect } from "react";
 import { QuestionInput, QuizInput } from "@generated/graphql";
 import { RadioGroup } from "@headlessui/react";
 import { DocumentAddIcon, MenuIcon, TrashIcon } from "@heroicons/react/outline";
+import { PhotographIcon } from "@heroicons/react/outline";
 import { classNames } from "@utils/index";
+import { useUploadPhoto } from "@utils/useUploadImage";
 import { Draggable } from "react-beautiful-dnd";
 import {
-  Control,
   Controller,
   DeepMap,
   FieldArrayMethodProps,
   FieldArrayWithId,
   FieldError,
   useFieldArray,
-  UseFormRegister,
+  useFormContext,
 } from "react-hook-form";
 import { v4 as uuid } from "uuid";
 
 import TextareaAutoResize from "../../inputs/TextareaAutoResize";
+import ImageHolder from "../ImageHolder";
 import ChoiceCard from "./ChoiceCard";
 
 interface Props {
   question: FieldArrayWithId<QuizInput, "questions", "id">;
   questionIdx: number;
-  register: UseFormRegister<QuizInput>;
   questionRemove: (index?: number | number[] | undefined) => void;
-  control: Control<QuizInput>;
   isDisabled?: boolean;
   errors?: DeepMap<QuestionInput, FieldError>;
 }
@@ -33,12 +33,14 @@ interface Props {
 const QuestionCard: React.FC<Props> = ({
   question,
   questionIdx,
-  register,
   questionRemove,
-  control,
   isDisabled,
   errors,
 }) => {
+  const [uploadImage, { data: questionPhoto, loading: questionPhotoLoading }] =
+    useUploadPhoto();
+
+  const { register, control, setValue } = useFormContext<QuizInput>();
   const {
     fields: choiceFields,
     append: choiceAppend,
@@ -65,6 +67,12 @@ const QuestionCard: React.FC<Props> = ({
     }
   }, []);
 
+  useEffect(() => {
+    if (questionPhoto) {
+      setValue(`questions.${questionIdx}.questionPhoto`, questionPhoto);
+    }
+  }, [questionPhoto]);
+
   return (
     <Draggable key={question.id} draggableId={question.id} index={questionIdx}>
       {(provided, { isDragging }) => (
@@ -84,6 +92,16 @@ const QuestionCard: React.FC<Props> = ({
                 defaultValue={question.id}
                 {...register(`questions.${questionIdx}.id`)}
               />
+              <input
+                type="hidden"
+                {...register(`questions.${questionIdx}.questionPhoto`)}
+              />
+              <div className="w-full mx-auto md:w-2/3">
+                <ImageHolder
+                  image={questionPhoto || question.questionPhoto}
+                  loading={questionPhotoLoading}
+                />
+              </div>
               <TextareaAutoResize<QuizInput>
                 name={`questions.${questionIdx}.question`}
                 placeholder="Type your question"
@@ -98,11 +116,11 @@ const QuestionCard: React.FC<Props> = ({
                 defaultValue={question.answer}
                 render={({ field: { value, onChange } }) => (
                   <RadioGroup value={value} onChange={onChange}>
-                    <ul className="grid grid-cols-1 gap-6 mt-2 lg:grid-cols-2">
+                    <ul className="grid grid-cols-1 gap-4 px-4 mt-4 md:px-0 lg:grid-cols-2">
                       {choiceFields.map((choice, choiceIdx) => (
                         <ChoiceCard
                           key={choice.id}
-                          {...{ choice, questionIdx, choiceIdx, register }}
+                          {...{ choice, questionIdx, choiceIdx }}
                           answer={value}
                           isDisabled={choiceFields.length < 2}
                           deleteChoice={() => {
@@ -131,15 +149,22 @@ const QuestionCard: React.FC<Props> = ({
           <div className="absolute flex flex-col space-y-1 left-full">
             <button
               type="button"
-              className="flex items-center justify-center w-8 h-8 bg-white rounded-md shadow focus:outline-none"
+              className="flex items-center justify-center w-8 h-8 bg-white rounded-md shadow focus:outline-none hover:bg-gray-50 active:bg-gray-200"
               {...provided.dragHandleProps}
             >
               <MenuIcon className="w-5 h-5" />
             </button>
             <button
               type="button"
+              onClick={uploadImage}
+              className="flex items-center justify-center w-8 h-8 bg-white rounded-md shadow focus:outline-none hover:bg-gray-50 active:bg-gray-200"
+            >
+              <PhotographIcon className="w-5 h-5" />
+            </button>
+            <button
+              type="button"
               onClick={() => addChoice({ shouldFocus: true })}
-              className="flex items-center justify-center w-8 h-8 bg-white rounded-md shadow focus:outline-none active:bg-gray-200"
+              className="flex items-center justify-center w-8 h-8 bg-white rounded-md shadow focus:outline-none hover:bg-gray-50 active:bg-gray-200"
             >
               <DocumentAddIcon className="w-5 h-5" />
             </button>
@@ -147,7 +172,7 @@ const QuestionCard: React.FC<Props> = ({
               disabled={isDisabled}
               type="button"
               onClick={() => questionRemove(questionIdx)}
-              className="flex items-center justify-center w-8 h-8 bg-white rounded-md shadow focus:outline-none active:bg-gray-200"
+              className="flex items-center justify-center w-8 h-8 bg-white rounded-md shadow focus:outline-none hover:bg-gray-50 active:bg-gray-200"
             >
               <TrashIcon
                 className={`${classNames(

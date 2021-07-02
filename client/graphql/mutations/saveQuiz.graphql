@@ -7,6 +7,7 @@ mutation SaveQuiz($quizInput: QuizInput!, $quizId: String) {
     questions {
       id
       question
+      questionPhoto
       choices
       answer
     }

@@ -38,7 +38,9 @@ const IndexPage = () => {
   }, [query]);
 
   return (
-    <CloudinaryContext cloudName={process.env.CLOUDINARY_CLOUD_NAME}>
+    <CloudinaryContext
+      cloudName={process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME}
+    >
       <MainContainer title="Home">
         <Container>
           <main className="relative flex-1 overflow-y-auto focus:outline-none">

@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 
 import { ChoiceInput, QuestionInput, QuizInput } from "@generated/graphql";
 import { RadioGroup } from "@headlessui/react";
@@ -6,23 +6,25 @@ import {
   CheckCircleIcon as CheckCircleIconOutline,
   TrashIcon,
 } from "@heroicons/react/outline";
+import { PhotographIcon } from "@heroicons/react/outline";
 import { CheckCircleIcon as CheckCircleIconSolid } from "@heroicons/react/solid";
 import { classNames } from "@utils/index";
 import {
   DeepMap,
   FieldArrayWithId,
   FieldError,
-  UseFormRegister,
+  useFormContext,
 } from "react-hook-form";
 
+import { useUploadPhoto } from "../../../utils/useUploadImage";
 import TextareaAutoResize from "../../inputs/TextareaAutoResize";
+import ImageHolder from "../ImageHolder";
 
 interface Props {
   answer: string;
   choice: FieldArrayWithId<QuestionInput, "choices", "id">;
   questionIdx: number;
   choiceIdx: number;
-  register: UseFormRegister<QuizInput>;
   isDisabled?: boolean;
   deleteChoice: () => void;
   errors?: DeepMap<ChoiceInput, FieldError>;
@@ -33,20 +35,43 @@ const ChoiceCard: React.FC<Props> = ({
   choice,
   questionIdx,
   choiceIdx,
-  register,
   isDisabled,
   deleteChoice,
   errors,
 }) => {
+  const [uploadImage, { data: choicePhoto, loading: choicePhotoLoading }] =
+    useUploadPhoto();
+
+  const { register, setValue } = useFormContext<QuizInput>();
+
+  useEffect(() => {
+    if (choicePhoto) {
+      setValue(
+        `questions.${questionIdx}.choices.${choiceIdx}.choicePhoto`,
+        choicePhoto
+      );
+    }
+  }, [choicePhoto]);
+
   return (
-    <li className="col-span-1 overflow-hidden bg-white divide-y divide-gray-200 rounded-md shadow">
-      <div className="bg-white">
+    <li className="col-span-1 ">
+      <div className="overflow-hidden bg-white divide-y divide-gray-100 rounded-md shadow">
         <input
           type="hidden"
           defaultValue={choice.id}
           {...register(`questions.${questionIdx}.choices.${choiceIdx}.id`)}
         />
         <div className="p-2">
+          <input
+            type="hidden"
+            {...register(
+              `questions.${questionIdx}.choices.${choiceIdx}.choicePhoto`
+            )}
+          />
+          <ImageHolder
+            image={choicePhoto || choice.choicePhoto}
+            loading={choicePhotoLoading}
+          />
           <TextareaAutoResize<QuizInput>
             name={`questions.${questionIdx}.choices.${choiceIdx}.text`}
             placeholder="Type your choice"
@@ -55,7 +80,7 @@ const ChoiceCard: React.FC<Props> = ({
             required
           />
         </div>
-        <div className="flex justify-between px-2 py-1 mt-2 text-right bg-gray-100">
+        <div className="flex justify-between px-2 py-1 mt-2 text-right bg-gray-50">
           <RadioGroup.Option
             key={choice.id}
             value={choice.id}
@@ -83,19 +108,27 @@ const ChoiceCard: React.FC<Props> = ({
               </>
             )}
           </RadioGroup.Option>
-
-          <button
-            type="button"
-            disabled={isDisabled}
-            onClick={deleteChoice}
-            className="p-1 rounded hover:bg-gray-200 focus:outline-none"
-          >
-            <TrashIcon
-              className={` h-5 w-5 ${classNames(
-                isDisabled ? "opacity-30" : ""
-              )}`}
-            />
-          </button>
+          <div className="flex space-x-2">
+            <button
+              type="button"
+              onClick={uploadImage}
+              className="p-1 rounded focus:outline-none hover:bg-gray-100 active:bg-gray-200"
+            >
+              <PhotographIcon className="w-5 h-5" />
+            </button>
+            <button
+              type="button"
+              disabled={isDisabled}
+              onClick={deleteChoice}
+              className="p-1 rounded focus:outline-none hover:bg-gray-100 active:bg-gray-200"
+            >
+              <TrashIcon
+                className={` h-5 w-5 ${classNames(
+                  isDisabled ? "opacity-30" : ""
+                )}`}
+              />
+            </button>
+          </div>
         </div>
       </div>
     </li>

@@ -152,8 +152,8 @@ export const QuizCard: React.FC<Props> = ({
         </div>
         {quizPhoto && (
           <Link href={`/quiz/${id}`}>
-            <div className="self-start flex-shrink-0 ml-8">
-              <div className="w-full overflow-hidden bg-gray-100 rounded-md md:w-60">
+            <div className="self-start flex-shrink-0 ml-6">
+              <div className="w-full overflow-hidden bg-gray-100 rounded-md md:w-64">
                 <div className="relative w-full pb-[56.25%]">
                   <Image
                     src={quizPhoto}

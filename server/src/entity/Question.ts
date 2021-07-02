@@ -37,7 +37,7 @@ export class Question extends BaseEntity {
 
   @Field(() => [GraphQLJSONObject])
   @Column("jsonb")
-  choices: { id: string; text: string; choicePhoto?: string }[];
+  choices: { id: string; text: string; choicePhoto: string | null }[];
 
   @Field()
   @Column()

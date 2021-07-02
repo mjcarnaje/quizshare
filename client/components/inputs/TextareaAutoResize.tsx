@@ -3,7 +3,9 @@ import React from "react";
 import { ExclamationCircleIcon } from "@heroicons/react/solid";
 import { classNames } from "@utils/index";
 import { FieldError, Path, UseFormRegister } from "react-hook-form";
-import TextareaAutosize from "react-textarea-autosize";
+import TextareaAutosize, {
+  TextareaAutosizeProps,
+} from "react-textarea-autosize";
 
 import { errorStringFormatter } from "../../utils/errorStringFormatter";
 
@@ -14,10 +16,11 @@ type InputProps<T> = {
   register: UseFormRegister<T>;
   required: boolean;
   error?: FieldError;
-};
+} & TextareaAutosizeProps;
 
 function TextareaAutoResize<T>(props: InputProps<T>) {
-  const { label, name, placeholder, register, required, error } = props;
+  const { label, name, placeholder, register, required, error, ...rest } =
+    props;
 
   return (
     <div>
@@ -35,6 +38,7 @@ function TextareaAutoResize<T>(props: InputProps<T>) {
           )}
             `}
           placeholder={placeholder}
+          {...rest}
           {...register(name, { required })}
         />
 

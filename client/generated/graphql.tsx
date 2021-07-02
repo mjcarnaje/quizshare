@@ -295,7 +295,7 @@ export type SaveQuizMutation = (
     & Pick<Quiz, 'id' | 'title' | 'description' | 'quizPhoto'>
     & { questions: Array<(
       { __typename?: 'Question' }
-      & Pick<Question, 'id' | 'question' | 'choices' | 'answer'>
+      & Pick<Question, 'id' | 'question' | 'questionPhoto' | 'choices' | 'answer'>
     )>, tags: Array<(
       { __typename?: 'Tag' }
       & Pick<Tag, 'id' | 'name'>
@@ -384,7 +384,7 @@ export type GetQuizQuery = (
       & Pick<User, 'firstName' | 'lastName' | 'avatar' | 'email'>
     )>, questions: Array<(
       { __typename?: 'Question' }
-      & Pick<Question, 'id' | 'question' | 'choices' | 'answer'>
+      & Pick<Question, 'id' | 'question' | 'questionPhoto' | 'choices' | 'answer'>
     )>, tags: Array<(
       { __typename?: 'Tag' }
       & Pick<Tag, 'id' | 'name'>
@@ -584,6 +584,7 @@ export const SaveQuizDocument = gql`
     questions {
       id
       question
+      questionPhoto
       choices
       answer
     }
@@ -791,6 +792,7 @@ export const GetQuizDocument = gql`
     questions {
       id
       question
+      questionPhoto
       choices
       answer
     }

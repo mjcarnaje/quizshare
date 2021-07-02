@@ -9,8 +9,10 @@ import {
   PaperAirplaneIcon,
   SaveAsIcon,
   PlusCircleIcon,
+  PhotographIcon,
 } from "@heroicons/react/outline";
 import { classNames, cleanTypeName } from "@utils/index";
+import { useUploadPhoto } from "@utils/useUploadImage";
 import withApollo from "@utils/withApollo";
 import { CloudinaryContext } from "cloudinary-react";
 import { isEqual } from "lodash";
@@ -24,6 +26,7 @@ import {
 } from "react-hook-form";
 import { v4 as uuid } from "uuid";
 
+import ImageHolder from "../../../components/cards/ImageHolder";
 import Input from "../../../components/inputs/Input";
 import TextareaAutoResize from "../../../components/inputs/TextareaAutoResize";
 import {
@@ -38,7 +41,7 @@ const DraftEditQuizPage: React.FC<Props> = () => {
   const router = useRouter();
   const quizId = router.query.quizId as string;
 
-  const [quizInput, setQuizInput] = useState<any>();
+  const [quizInput, setQuizInput] = useState<QuizInput>();
   const [isSaved, setIsSaved] = useState(true);
   const [isSaveButtonDirty, SetIsSaveButtonDirty] = useState(false);
 
@@ -51,6 +54,8 @@ const DraftEditQuizPage: React.FC<Props> = () => {
 
   const [saveQuiz] = useSaveQuizMutation();
   const [publishQuiz, { loading: publishingQuiz }] = usePublishQuizMutation();
+  const [uploadImage, { data: quizPhoto, loading: quizPhotoLoading }] =
+    useUploadPhoto();
 
   const methods = useForm<QuizInput>();
 
@@ -61,6 +66,7 @@ const DraftEditQuizPage: React.FC<Props> = () => {
     setError,
     reset,
     watch,
+    setValue,
     formState: { errors },
   } = methods;
 
@@ -115,6 +121,10 @@ const DraftEditQuizPage: React.FC<Props> = () => {
     checkIfSaved(cleanTypeName(quizInput), watch());
   }, [quizInput, watch()]);
 
+  useEffect(() => {
+    setValue("quizPhoto", quizPhoto);
+  }, [quizPhoto]);
+
   function checkIfSaved(
     oldObj?: Partial<QuizInput>,
     newObj?: Partial<QuizInput>
@@ -126,8 +136,12 @@ const DraftEditQuizPage: React.FC<Props> = () => {
     }
   }
 
+  const quizImage = quizPhoto || quizInput?.quizPhoto;
+
   return (
-    <CloudinaryContext cloudName={process.env.CLOUDINARY_CLOUD_NAME}>
+    <CloudinaryContext
+      cloudName={process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME}
+    >
       <MainContainer title={data?.getQuiz.title}>
         <Container
           showSearchBar={false}
@@ -154,8 +168,10 @@ const DraftEditQuizPage: React.FC<Props> = () => {
                     try {
                       const { errors } = await publishQuiz({
                         variables: { quizId },
+                        update: (cache) => {
+                          cache.evict({ fieldName: "quizzes" });
+                        },
                       });
-
                       if (!errors) {
                         router.push("/");
                       }
@@ -179,6 +195,18 @@ const DraftEditQuizPage: React.FC<Props> = () => {
               <div className="max-w-4xl px-4 mx-auto sm:px-6 md:px-8">
                 <FormProvider {...methods}>
                   <form>
+                    <div className="mb-2">
+                      <button
+                        type="button"
+                        className="flex px-2 py-1 bg-gray-200 rounded-md focus:outline-none"
+                        onClick={uploadImage}
+                      >
+                        <PhotographIcon className="w-6 h-6 mr-1" />
+                        {`${quizImage ? "Replace" : "Add"} Cover Photo`}
+                      </button>
+                    </div>
+                    <input type="hidden" {...register("quizPhoto")} />
+                    <ImageHolder image={quizImage} loading={quizPhotoLoading} />
                     <Input<QuizInput>
                       type="text"
                       name="title"
@@ -191,6 +219,7 @@ const DraftEditQuizPage: React.FC<Props> = () => {
                     <TextareaAutoResize<QuizInput>
                       name="description"
                       placeholder="Type your description"
+                      minRows={3}
                       error={errors.description}
                       register={register}
                       required
@@ -215,12 +244,7 @@ const DraftEditQuizPage: React.FC<Props> = () => {
                               return (
                                 <QuestionCard
                                   key={question.id}
-                                  {...{
-                                    question,
-                                    questionIdx,
-                                    control,
-                                    register,
-                                  }}
+                                  {...{ question, questionIdx }}
                                   isDisabled={fields.length < 2}
                                   questionRemove={remove}
                                   errors={errors.questions?.[questionIdx]}
@@ -240,7 +264,7 @@ const DraftEditQuizPage: React.FC<Props> = () => {
         <button
           type="button"
           onClick={() => addQuestion({ shouldFocus: true })}
-          className="fixed bottom-6 right-6 p-2 flex items-center justify-center rounded-xl bg-black hover:bg-[#1d1d1d] text-white focus:outline-none"
+          className="fixed bottom-6 right-6 p-2 flex items-center justify-center rounded-xl bg-black hover:bg-[#1d1d1d] active:opacity-80 text-white focus:outline-none"
         >
           <PlusCircleIcon className="w-8 h-8" />
         </button>
