@@ -10,13 +10,14 @@ type InputProps<T> = {
   type?: string;
   label?: string;
   name: Path<T>;
+  placeholder?: string;
   register: UseFormRegister<T>;
   required: boolean;
   error?: FieldError;
 };
 
 function Input<T>(props: InputProps<T>) {
-  const { type, label, register, required, error, name } = props;
+  const { type, label, name, placeholder, register, required, error } = props;
 
   return (
     <div>
@@ -36,6 +37,7 @@ function Input<T>(props: InputProps<T>) {
                   : "border-gray-300"
               )}
                 `}
+          placeholder={placeholder}
           {...register(name, { required })}
         />
 

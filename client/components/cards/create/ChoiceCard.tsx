@@ -49,6 +49,7 @@ const ChoiceCard: React.FC<Props> = ({
         <div className="p-2">
           <TextareaAutoResize<QuizInput>
             name={`questions.${questionIdx}.choices.${choiceIdx}.text`}
+            placeholder="Type your choice"
             error={errors?.text}
             register={register}
             required

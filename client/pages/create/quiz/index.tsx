@@ -128,6 +128,7 @@ const CreateQuiz = () => {
                     <Input<QuizInput>
                       type="text"
                       name="title"
+                      placeholder="Type you title"
                       register={register}
                       required
                       error={errors.title}
@@ -135,6 +136,7 @@ const CreateQuiz = () => {
 
                     <TextareaAutoResize<QuizInput>
                       name="description"
+                      placeholder="Type you description"
                       error={errors.description}
                       register={register}
                       required

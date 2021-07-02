@@ -6,6 +6,7 @@ import { FieldError, Path, UseFormRegister } from "react-hook-form";
 type InputProps<T> = {
   label?: string;
   name: Path<T>;
+  placeholder?: string;
   register: UseFormRegister<T>;
   required: boolean;
   error?: FieldError;
@@ -13,7 +14,8 @@ type InputProps<T> = {
 };
 
 function Select<T>(props: InputProps<T>) {
-  const { label, register, required, error, name, options } = props;
+  const { label, name, placeholder, register, required, error, options } =
+    props;
 
   return (
     <div>
@@ -24,6 +26,7 @@ function Select<T>(props: InputProps<T>) {
       )}
       <select
         id={label}
+        placeholder={placeholder}
         className={`relative block w-full px-3 py-2 mt-1 rounded-md focus:ring-0 focus:border-black ${
           error ? "border-red-500 focus:border-red-500" : "focus:border-black"
         }`}

@@ -86,6 +86,7 @@ const QuestionCard: React.FC<Props> = ({
               />
               <TextareaAutoResize<QuizInput>
                 name={`questions.${questionIdx}.question`}
+                placeholder="Type your question"
                 error={errors?.question}
                 register={register}
                 required

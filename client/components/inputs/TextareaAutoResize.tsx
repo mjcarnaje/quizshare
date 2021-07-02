@@ -10,14 +10,14 @@ import { errorStringFormatter } from "../../utils/errorStringFormatter";
 type InputProps<T> = {
   label?: string;
   name: Path<T>;
+  placeholder?: string;
   register: UseFormRegister<T>;
   required: boolean;
-  showLabel?: boolean;
   error?: FieldError;
 };
 
 function TextareaAutoResize<T>(props: InputProps<T>) {
-  const { label, register, required, error, name } = props;
+  const { label, name, placeholder, register, required, error } = props;
 
   return (
     <div>
@@ -34,6 +34,7 @@ function TextareaAutoResize<T>(props: InputProps<T>) {
             error ? "border-red-500 focus:border-red-500" : "border-gray-300"
           )}
             `}
+          placeholder={placeholder}
           {...register(name, { required })}
         />
 

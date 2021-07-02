@@ -182,6 +182,7 @@ const DraftEditQuizPage: React.FC<Props> = () => {
                     <Input<QuizInput>
                       type="text"
                       name="title"
+                      placeholder="Type your title"
                       register={register}
                       required
                       error={errors.title}
@@ -189,6 +190,7 @@ const DraftEditQuizPage: React.FC<Props> = () => {
 
                     <TextareaAutoResize<QuizInput>
                       name="description"
+                      placeholder="Type your description"
                       error={errors.description}
                       register={register}
                       required
