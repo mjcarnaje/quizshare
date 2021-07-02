@@ -46,6 +46,7 @@ export const QuizCard: React.FC<Props> = ({
   createdAt,
   author,
   type,
+  isMine,
 }) => {
   const router = useRouter();
   const [open, setOpen] = useState(false);
@@ -168,7 +169,7 @@ export const QuizCard: React.FC<Props> = ({
         )}
       </div>
       <div className="flex justify-end w-full mt-2">
-        {type !== "timeline" && (
+        {(type !== "timeline" || isMine) && (
           <div className="flex space-x-3">
             <button
               onClick={() => setOpen(true)}

@@ -6,9 +6,11 @@ import {
 import {
   Arg,
   Ctx,
+  FieldResolver,
   Mutation,
   Query,
   Resolver,
+  Root,
   UseMiddleware,
 } from "type-graphql";
 import { getConnection } from "typeorm";
@@ -19,6 +21,11 @@ import { PaginatedQuizzes, QuizzesInput, QuizInput } from "./quizInput";
 
 @Resolver(Quiz)
 export class QuizResolver {
+  @FieldResolver(() => Boolean)
+  isMine(@Root() quiz: Quiz, @Ctx() ctx: MyContext) {
+    return quiz.authorId === ctx.req.session.userId;
+  }
+
   @Query(() => PaginatedQuizzes)
   async getPublishedQuizzes(
     @Arg("quizzesInput") quizzesInput: QuizzesInput

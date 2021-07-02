@@ -128,6 +128,7 @@ export type Quiz = {
   results: Array<Result>;
   tags: Array<Tag>;
   isPublished: Scalars['Boolean'];
+  isMine: Scalars['Boolean'];
   createdAt: Scalars['String'];
   updatedAt: Scalars['String'];
 };
@@ -221,7 +222,7 @@ export type User = {
 
 export type QuizCardResponseFragment = (
   { __typename?: 'Quiz' }
-  & Pick<Quiz, 'id' | 'title' | 'description' | 'quizPhoto' | 'createdAt' | 'questionsLength' | 'isPublished'>
+  & Pick<Quiz, 'id' | 'title' | 'description' | 'quizPhoto' | 'createdAt' | 'questionsLength' | 'isPublished' | 'isMine'>
   & { author: (
     { __typename?: 'User' }
     & Pick<User, 'firstName' | 'lastName' | 'avatar'>
@@ -415,6 +416,7 @@ export const QuizCardResponseFragmentDoc = gql`
   createdAt
   questionsLength
   isPublished
+  isMine
   author {
     firstName
     lastName

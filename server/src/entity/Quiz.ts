@@ -72,6 +72,9 @@ export class Quiz extends BaseEntity {
   @Column({ default: false })
   isPublished: boolean;
 
+  @Field(() => Boolean)
+  isMine: boolean;
+
   @Field(() => String)
   @CreateDateColumn()
   createdAt: Date;
