@@ -231,20 +231,19 @@ const DraftEditQuizPage: React.FC<Props> = () => {
                         )}
                       </Droppable>
                     </DragDropContext>
-                    <button
-                      type="button"
-                      onClick={() => addQuestion({ shouldFocus: true })}
-                      className="flex w-full py-2 bg-black rounded hover:bg-[#1d1d1d] text-white justify-center focus:outline-none"
-                    >
-                      <PlusCircleIcon className="w-6 h-6 mr-1" />
-                      Add Question
-                    </button>
                   </form>
                 </FormProvider>
               </div>
             </div>
           </main>
         </Container>
+        <button
+          type="button"
+          onClick={() => addQuestion({ shouldFocus: true })}
+          className="fixed bottom-6 right-6 p-2 flex items-center justify-center rounded-xl bg-black hover:bg-[#1d1d1d] text-white focus:outline-none"
+        >
+          <PlusCircleIcon className="w-8 h-8" />
+        </button>
       </MainContainer>
     </CloudinaryContext>
   );

@@ -75,7 +75,7 @@ const QuestionCard: React.FC<Props> = ({
         >
           <div
             className={`${classNames(
-              isDragging ? "shadow-lg" : "shadow-md"
+              isDragging ? "shadow-2xl opacity-80" : "shadow"
             )} w-full bg-white rounded-md`}
           >
             <div className="p-4">
