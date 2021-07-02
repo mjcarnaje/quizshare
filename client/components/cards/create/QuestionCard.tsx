@@ -2,8 +2,9 @@ import React, { useEffect } from "react";
 
 import { QuestionInput, QuizInput } from "@generated/graphql";
 import { RadioGroup } from "@headlessui/react";
-import { DocumentAddIcon, TrashIcon } from "@heroicons/react/outline";
+import { DocumentAddIcon, MenuIcon, TrashIcon } from "@heroicons/react/outline";
 import { classNames } from "@utils/index";
+import { Draggable } from "react-beautiful-dnd";
 import {
   Control,
   Controller,
@@ -65,79 +66,98 @@ const QuestionCard: React.FC<Props> = ({
   }, []);
 
   return (
-    <div
-      key={question.id}
-      className="overflow-hidden bg-white rounded-md shadow-md"
-    >
-      <div className="p-4">
-        <input
-          type="hidden"
-          defaultValue={question.id}
-          {...register(`questions.${questionIdx}.id`)}
-        />
-        <TextareaAutoResize<QuizInput>
-          name={`questions.${questionIdx}.question`}
-          error={errors?.question}
-          register={register}
-          required
-        />
-        <Controller
-          control={control}
-          name={`questions.${questionIdx}.answer`}
-          rules={{ required: true }}
-          defaultValue={question.answer}
-          render={({ field: { value, onChange } }) => (
-            <RadioGroup value={value} onChange={onChange}>
-              <ul className="grid grid-cols-1 gap-6 mt-2 lg:grid-cols-2">
-                {choiceFields.map((choice, choiceIdx) => (
-                  <ChoiceCard
-                    key={choice.id}
-                    {...{ choice, questionIdx, choiceIdx, register }}
-                    answer={value}
-                    isDisabled={choiceFields.length < 2}
-                    deleteChoice={() => {
-                      if (value === choiceFields[choiceIdx].id) {
-                        onChange(null);
-                      }
-                      choiceRemove(choiceIdx);
-                    }}
-                    errors={errors?.choices?.[choiceIdx]}
-                  />
-                ))}
-              </ul>
-            </RadioGroup>
-          )}
-        />
+    <Draggable key={question.id} draggableId={question.id} index={questionIdx}>
+      {(provided, { isDragging }) => (
+        <div
+          ref={provided.innerRef}
+          {...provided.draggableProps}
+          className="relative flex space-x-1"
+        >
+          <div
+            className={`${classNames(
+              isDragging ? "shadow-lg" : "shadow-md"
+            )} w-full bg-white rounded-md`}
+          >
+            <div className="p-4">
+              <input
+                type="hidden"
+                defaultValue={question.id}
+                {...register(`questions.${questionIdx}.id`)}
+              />
+              <TextareaAutoResize<QuizInput>
+                name={`questions.${questionIdx}.question`}
+                error={errors?.question}
+                register={register}
+                required
+              />
+              <Controller
+                control={control}
+                name={`questions.${questionIdx}.answer`}
+                rules={{ required: true }}
+                defaultValue={question.answer}
+                render={({ field: { value, onChange } }) => (
+                  <RadioGroup value={value} onChange={onChange}>
+                    <ul className="grid grid-cols-1 gap-6 mt-2 lg:grid-cols-2">
+                      {choiceFields.map((choice, choiceIdx) => (
+                        <ChoiceCard
+                          key={choice.id}
+                          {...{ choice, questionIdx, choiceIdx, register }}
+                          answer={value}
+                          isDisabled={choiceFields.length < 2}
+                          deleteChoice={() => {
+                            if (value === choiceFields[choiceIdx].id) {
+                              onChange(null);
+                            }
+                            choiceRemove(choiceIdx);
+                          }}
+                          errors={errors?.choices?.[choiceIdx]}
+                        />
+                      ))}
+                    </ul>
+                  </RadioGroup>
+                )}
+              />
 
-        {errors?.answer?.type === "required" && (
-          <div className="flex items-center justify-center py-2 mt-4 border border-red-500 rounded-md bg-red-50">
-            <p className="block">Choosing the correct answer is required.</p>
+              {errors?.answer?.type === "required" && (
+                <div className="flex items-center justify-center py-2 mt-4 border border-red-500 rounded-md bg-red-50">
+                  <p className="block">
+                    Choosing the correct answer is required.
+                  </p>
+                </div>
+              )}
+            </div>
           </div>
-        )}
-      </div>
-
-      <div className="flex items-center justify-end px-3 py-1 bg-gray-100 sm:px-6">
-        <button
-          type="button"
-          onClick={() => addChoice({ shouldFocus: true })}
-          className="flex items-center px-2 py-1 mr-2 rounded hover:bg-gray-200 focus:outline-none"
-        >
-          <DocumentAddIcon className="w-5 h-5 mr-1" />
-          <p>Add Choice</p>
-        </button>
-
-        <button
-          disabled={isDisabled}
-          type="button"
-          onClick={() => questionRemove(questionIdx)}
-          className="p-2 rounded hover:bg-gray-200 focus:outline-none"
-        >
-          <TrashIcon
-            className={` h-6 w-6 ${classNames(isDisabled ? "opacity-30" : "")}`}
-          />
-        </button>
-      </div>
-    </div>
+          <div className="absolute flex flex-col space-y-1 left-full">
+            <button
+              type="button"
+              className="flex items-center justify-center w-8 h-8 bg-white rounded-md shadow focus:outline-none"
+              {...provided.dragHandleProps}
+            >
+              <MenuIcon className="w-5 h-5" />
+            </button>
+            <button
+              type="button"
+              onClick={() => addChoice({ shouldFocus: true })}
+              className="flex items-center justify-center w-8 h-8 bg-white rounded-md shadow focus:outline-none active:bg-gray-200"
+            >
+              <DocumentAddIcon className="w-5 h-5" />
+            </button>
+            <button
+              disabled={isDisabled}
+              type="button"
+              onClick={() => questionRemove(questionIdx)}
+              className="flex items-center justify-center w-8 h-8 bg-white rounded-md shadow focus:outline-none active:bg-gray-200"
+            >
+              <TrashIcon
+                className={`${classNames(
+                  isDisabled ? "opacity-30" : ""
+                )} w-5 h-5`}
+              />
+            </button>
+          </div>
+        </div>
+      )}
+    </Draggable>
   );
 };
 

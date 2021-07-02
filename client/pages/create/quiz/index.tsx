@@ -4,10 +4,15 @@ import QuestionCard from "@components/cards/create/QuestionCard";
 import Container from "@components/ui/Container";
 import MainContainer from "@components/ui/MainContainer";
 import { QuizInput, useSaveQuizMutation } from "@generated/graphql";
-import { PaperAirplaneIcon, SaveAsIcon } from "@heroicons/react/outline";
+import {
+  PaperAirplaneIcon,
+  SaveAsIcon,
+  PlusCircleIcon,
+} from "@heroicons/react/outline";
 import withApollo from "@utils/withApollo";
 import { CloudinaryContext } from "cloudinary-react";
 import { useRouter } from "next/router";
+import { Droppable, DragDropContext } from "react-beautiful-dnd";
 import {
   FieldArrayMethodProps,
   FormProvider,
@@ -24,7 +29,6 @@ const CreateQuiz = () => {
   const router = useRouter();
 
   const [saveQuiz, { loading: savingQuiz }] = useSaveQuizMutation();
-  // const [publishQuiz, { loading: publishingQuiz }] = usePublishQuizMutation();
 
   const methods = useForm<QuizInput>({
     defaultValues: {
@@ -40,11 +44,11 @@ const CreateQuiz = () => {
     register,
     handleSubmit,
     setError,
-    getValues,
+
     formState: { errors },
   } = methods;
 
-  const { fields, append, remove } = useFieldArray({
+  const { fields, append, remove, move } = useFieldArray({
     control,
     name: "questions",
   });
@@ -95,28 +99,18 @@ const CreateQuiz = () => {
             <div className="flex flex-row items-center justify-between flex-grow px-4">
               <div />
               <div className="inline-flex space-x-2">
-                <button
-                  type="button"
-                  onClick={() =>
-                    console.log(
-                      "VALUES " + JSON.stringify(getValues(), null, 2)
-                    )
-                  }
-                  className="inline-flex items-center px-4 py-2 text-sm font-medium text-[#222831] bg-white border border-transparent rounded-md  hover:bg-gray-100 focus:outline-none "
-                >
-                  <SaveAsIcon className="w-5 h-5 mr-2 -ml-1" />
-                  Log Values
-                </button>
+                <div />
                 <button
                   type="button"
                   onClick={handleSubmit(onSubmit)}
                   className="inline-flex items-center px-4 py-2 text-sm font-medium text-[#222831] bg-white border border-transparent rounded-md  hover:bg-gray-100 focus:outline-none "
                 >
                   <SaveAsIcon className="w-5 h-5 mr-2 -ml-1" />
-                  {savingQuiz ? "Saving" : "Save as draft"}
+                  {savingQuiz ? "Saving" : "Save"}
                 </button>
                 <button
                   type="button"
+                  disabled
                   className="inline-flex  opacity-50 items-center px-4 py-2 text-sm font-medium border-[#222831] text-[#222831] bg-white border border-transparent rounded-md shadow-sm hover:bg-gray-200 focus:outline-none "
                 >
                   <PaperAirplaneIcon className="w-5 h-5 mr-2 -ml-1" />
@@ -146,42 +140,49 @@ const CreateQuiz = () => {
                       required
                     />
 
-                    <div className="my-4 space-y-4">
-                      {fields.map((question, questionIdx) => {
-                        return (
-                          <QuestionCard
-                            key={question.id}
-                            {...{ question, questionIdx, control, register }}
-                            isDisabled={fields.length < 2}
-                            questionRemove={remove}
-                            errors={errors.questions?.[questionIdx]}
-                          />
-                        );
-                      })}
-                    </div>
-                    <div className="flex items-center justify-end">
-                      <button
-                        type="button"
-                        onClick={() => addQuestion({ shouldFocus: true })}
-                        className="flex px-2 py-1 rounded hover:bg-gray-200 focus:outline-none"
-                      >
-                        <svg
-                          xmlns="http://www.w3.org/2000/svg"
-                          className="w-6 h-6 mr-1"
-                          fill="none"
-                          viewBox="0 0 24 24"
-                          stroke="currentColor"
-                        >
-                          <path
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                            strokeWidth="2"
-                            d="M9 13h6m-3-3v6m-9 1V7a2 2 0 012-2h6l2 2h6a2 2 0 012 2v8a2 2 0 01-2 2H5a2 2 0 01-2-2z"
-                          />
-                        </svg>
-                        Add Question
-                      </button>
-                    </div>
+                    <DragDropContext
+                      onDragEnd={({ source, destination }) => {
+                        if (destination) {
+                          move(source.index, destination.index);
+                        }
+                      }}
+                    >
+                      <Droppable droppableId="drag-list" type="field">
+                        {(providedDroppable) => (
+                          <div
+                            role="list"
+                            ref={providedDroppable.innerRef}
+                            {...providedDroppable.droppableProps}
+                            className="my-4 space-y-4"
+                          >
+                            {fields.map((question, questionIdx) => {
+                              return (
+                                <QuestionCard
+                                  key={question.id}
+                                  {...{
+                                    question,
+                                    questionIdx,
+                                    control,
+                                    register,
+                                  }}
+                                  isDisabled={fields.length < 2}
+                                  questionRemove={remove}
+                                  errors={errors.questions?.[questionIdx]}
+                                />
+                              );
+                            })}
+                          </div>
+                        )}
+                      </Droppable>
+                    </DragDropContext>
+                    <button
+                      type="button"
+                      onClick={() => addQuestion({ shouldFocus: true })}
+                      className="flex w-full py-2 bg-black rounded hover:bg-[#1d1d1d] text-white justify-center focus:outline-none"
+                    >
+                      <PlusCircleIcon className="w-6 h-6 mr-1" />
+                      Add Question
+                    </button>
                   </form>
                 </FormProvider>
               </div>
