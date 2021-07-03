@@ -11,6 +11,8 @@ import {
 } from "typeorm";
 import { Gender } from "../types/types";
 import { Quiz } from "./Quiz";
+import { Like } from "./Like";
+import { Bookmark } from "./Bookmark";
 
 @ObjectType()
 @Entity()
@@ -79,9 +81,14 @@ export class User extends BaseEntity {
     youtube?: string;
   };
 
-  @Field(() => [Quiz])
   @OneToMany(() => Quiz, (quiz) => quiz.author)
   quizzes: Quiz[];
+
+  @OneToMany(() => Like, (like) => like.user)
+  likes: Like[];
+
+  @OneToMany(() => Bookmark, (bookmark) => bookmark.user)
+  bookmarks: Bookmark[];
 
   @Field(() => String)
   @CreateDateColumn()

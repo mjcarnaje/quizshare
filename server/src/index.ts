@@ -10,7 +10,9 @@ import { buildSchema } from "type-graphql";
 import { createConnection } from "typeorm";
 import { facebookPassport } from "./resolvers/auth/facebook";
 import { googlePassport } from "./resolvers/auth/google";
-// import { Question, Quiz, User } from "./entity";
+import { createBookmarkLoader } from "./utils/createBookmarkLoader";
+import { createLikeLoader } from "./utils/createLikeLoader";
+// import { Question, Quiz, User, Like, Bookmark, Tag, Result } from "./entity";
 
 require("dotenv").config();
 
@@ -32,12 +34,23 @@ const main = async () => {
     // await Question.delete({});
     // await Quiz.delete({});
     // await User.delete({});
+    // await Like.delete({});
+    // await Bookmark.delete({});
+    // await Tag.delete({});
+    // await Result.delete({});
 
     const apolloServer = await new ApolloServer({
       schema: await buildSchema({
         resolvers: [__dirname + "/resolvers/**/*.ts"],
       }),
-      context: ({ req, res }) => ({ req, res }),
+      context: ({ req, res }) => {
+        return {
+          likeLoader: createLikeLoader(),
+          bookmarkLoader: createBookmarkLoader(),
+          req,
+          res,
+        };
+      },
     });
 
     const app = express();

@@ -12,6 +12,8 @@ import {
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from "typeorm";
+import { Bookmark } from "./Bookmark";
+import { Like } from "./Like";
 import { Question } from "./Question";
 import { Result } from "./Result";
 import { Tag } from "./Tag";
@@ -53,7 +55,7 @@ export class Quiz extends BaseEntity {
 
   @Field(() => Int)
   @Column({ default: 0 })
-  questionsLength: number;
+  questionCount: number;
 
   @Field(() => [Result])
   @OneToMany(() => Result, (result) => result.quiz, {
@@ -72,8 +74,28 @@ export class Quiz extends BaseEntity {
   @Column({ default: false })
   isPublished: boolean;
 
+  @OneToMany(() => Like, (like) => like.user)
+  likes: Like[];
+
+  @OneToMany(() => Bookmark, (bookmark) => bookmark.user)
+  bookmarks: Bookmark[];
+
+  @Field(() => Int)
+  @Column({ default: 0 })
+  likeCount: number;
+
+  @Field(() => Int)
+  @Column({ default: 0 })
+  bookmarkCount: number;
+
   @Field(() => Boolean)
   isMine: boolean;
+
+  @Field(() => Boolean)
+  isLiked: boolean;
+
+  @Field(() => Boolean)
+  isBookmarked: boolean;
 
   @Field(() => String)
   @CreateDateColumn()

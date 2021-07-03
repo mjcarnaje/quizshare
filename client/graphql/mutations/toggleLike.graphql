@@ -1,0 +1,5 @@
+mutation ToggleLike($quizId: String!) {
+  toggleLike(quizId: $quizId) {
+    ...quizCardResponse
+  }
+}

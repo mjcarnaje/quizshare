@@ -4,9 +4,13 @@ fragment quizCardResponse on Quiz {
   description
   quizPhoto
   createdAt
-  questionsLength
+  questionCount
   isPublished
   isMine
+  likeCount
+  bookmarkCount
+  isLiked
+  isBookmarked
   author {
     firstName
     lastName

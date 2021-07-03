@@ -32,6 +32,8 @@ export type Mutation = {
   editQuiz: Quiz;
   deleteQuiz: Scalars['Boolean'];
   publishQuiz: Quiz;
+  toggleLike: Quiz;
+  toggleBookmark: Quiz;
 };
 
 
@@ -62,6 +64,16 @@ export type MutationDeleteQuizArgs = {
 
 
 export type MutationPublishQuizArgs = {
+  quizId: Scalars['String'];
+};
+
+
+export type MutationToggleLikeArgs = {
+  quizId: Scalars['String'];
+};
+
+
+export type MutationToggleBookmarkArgs = {
   quizId: Scalars['String'];
 };
 
@@ -124,11 +136,15 @@ export type Quiz = {
   description: Scalars['String'];
   quizPhoto?: Maybe<Scalars['String']>;
   questions: Array<Question>;
-  questionsLength: Scalars['Int'];
+  questionCount: Scalars['Int'];
   results: Array<Result>;
   tags: Array<Tag>;
   isPublished: Scalars['Boolean'];
+  likeCount: Scalars['Int'];
+  bookmarkCount: Scalars['Int'];
   isMine: Scalars['Boolean'];
+  isLiked: Scalars['Boolean'];
+  isBookmarked: Scalars['Boolean'];
   createdAt: Scalars['String'];
   updatedAt: Scalars['String'];
 };
@@ -215,14 +231,13 @@ export type User = {
   country?: Maybe<Scalars['String']>;
   bio?: Maybe<Scalars['String']>;
   social?: Maybe<Scalars['JSONObject']>;
-  quizzes: Array<Quiz>;
   createdAt: Scalars['String'];
   updatedAt: Scalars['String'];
 };
 
 export type QuizCardResponseFragment = (
   { __typename?: 'Quiz' }
-  & Pick<Quiz, 'id' | 'title' | 'description' | 'quizPhoto' | 'createdAt' | 'questionsLength' | 'isPublished' | 'isMine'>
+  & Pick<Quiz, 'id' | 'title' | 'description' | 'quizPhoto' | 'createdAt' | 'questionCount' | 'isPublished' | 'isMine' | 'likeCount' | 'bookmarkCount' | 'isLiked' | 'isBookmarked'>
   & { author: (
     { __typename?: 'User' }
     & Pick<User, 'firstName' | 'lastName' | 'avatar'>
@@ -335,6 +350,32 @@ export type SignUpMutation = (
   ) }
 );
 
+export type ToggleBookmarkMutationVariables = Exact<{
+  quizId: Scalars['String'];
+}>;
+
+
+export type ToggleBookmarkMutation = (
+  { __typename?: 'Mutation' }
+  & { toggleBookmark: (
+    { __typename?: 'Quiz' }
+    & QuizCardResponseFragment
+  ) }
+);
+
+export type ToggleLikeMutationVariables = Exact<{
+  quizId: Scalars['String'];
+}>;
+
+
+export type ToggleLikeMutation = (
+  { __typename?: 'Mutation' }
+  & { toggleLike: (
+    { __typename?: 'Quiz' }
+    & QuizCardResponseFragment
+  ) }
+);
+
 export type GetMyQuizzesQueryVariables = Exact<{
   quizzesInput: QuizzesInput;
 }>;
@@ -414,9 +455,13 @@ export const QuizCardResponseFragmentDoc = gql`
   description
   quizPhoto
   createdAt
-  questionsLength
+  questionCount
   isPublished
   isMine
+  likeCount
+  bookmarkCount
+  isLiked
+  isBookmarked
   author {
     firstName
     lastName
@@ -701,6 +746,72 @@ export function useSignUpMutation(baseOptions?: Apollo.MutationHookOptions<SignU
 export type SignUpMutationHookResult = ReturnType<typeof useSignUpMutation>;
 export type SignUpMutationResult = Apollo.MutationResult<SignUpMutation>;
 export type SignUpMutationOptions = Apollo.BaseMutationOptions<SignUpMutation, SignUpMutationVariables>;
+export const ToggleBookmarkDocument = gql`
+    mutation ToggleBookmark($quizId: String!) {
+  toggleBookmark(quizId: $quizId) {
+    ...quizCardResponse
+  }
+}
+    ${QuizCardResponseFragmentDoc}`;
+export type ToggleBookmarkMutationFn = Apollo.MutationFunction<ToggleBookmarkMutation, ToggleBookmarkMutationVariables>;
+
+/**
+ * __useToggleBookmarkMutation__
+ *
+ * To run a mutation, you first call `useToggleBookmarkMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useToggleBookmarkMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [toggleBookmarkMutation, { data, loading, error }] = useToggleBookmarkMutation({
+ *   variables: {
+ *      quizId: // value for 'quizId'
+ *   },
+ * });
+ */
+export function useToggleBookmarkMutation(baseOptions?: Apollo.MutationHookOptions<ToggleBookmarkMutation, ToggleBookmarkMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<ToggleBookmarkMutation, ToggleBookmarkMutationVariables>(ToggleBookmarkDocument, options);
+      }
+export type ToggleBookmarkMutationHookResult = ReturnType<typeof useToggleBookmarkMutation>;
+export type ToggleBookmarkMutationResult = Apollo.MutationResult<ToggleBookmarkMutation>;
+export type ToggleBookmarkMutationOptions = Apollo.BaseMutationOptions<ToggleBookmarkMutation, ToggleBookmarkMutationVariables>;
+export const ToggleLikeDocument = gql`
+    mutation ToggleLike($quizId: String!) {
+  toggleLike(quizId: $quizId) {
+    ...quizCardResponse
+  }
+}
+    ${QuizCardResponseFragmentDoc}`;
+export type ToggleLikeMutationFn = Apollo.MutationFunction<ToggleLikeMutation, ToggleLikeMutationVariables>;
+
+/**
+ * __useToggleLikeMutation__
+ *
+ * To run a mutation, you first call `useToggleLikeMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useToggleLikeMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [toggleLikeMutation, { data, loading, error }] = useToggleLikeMutation({
+ *   variables: {
+ *      quizId: // value for 'quizId'
+ *   },
+ * });
+ */
+export function useToggleLikeMutation(baseOptions?: Apollo.MutationHookOptions<ToggleLikeMutation, ToggleLikeMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<ToggleLikeMutation, ToggleLikeMutationVariables>(ToggleLikeDocument, options);
+      }
+export type ToggleLikeMutationHookResult = ReturnType<typeof useToggleLikeMutation>;
+export type ToggleLikeMutationResult = Apollo.MutationResult<ToggleLikeMutation>;
+export type ToggleLikeMutationOptions = Apollo.BaseMutationOptions<ToggleLikeMutation, ToggleLikeMutationVariables>;
 export const GetMyQuizzesDocument = gql`
     query GetMyQuizzes($quizzesInput: QuizzesInput!) {
   getMyQuizzes(quizzesInput: $quizzesInput) {

@@ -1,0 +1,5 @@
+mutation ToggleBookmark($quizId: String!) {
+  toggleBookmark(quizId: $quizId) {
+    ...quizCardResponse
+  }
+}

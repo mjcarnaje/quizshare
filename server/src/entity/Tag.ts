@@ -1,10 +1,10 @@
 import { Field, ObjectType } from "type-graphql";
-import { Column, Entity, ManyToMany, PrimaryColumn } from "typeorm";
+import { BaseEntity, Column, Entity, ManyToMany, PrimaryColumn } from "typeorm";
 import { Quiz } from "./Quiz";
 
 @ObjectType()
 @Entity()
-export class Tag {
+export class Tag extends BaseEntity {
   @Field(() => String)
   @PrimaryColumn()
   id: string;
