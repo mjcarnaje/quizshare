@@ -12,12 +12,7 @@ import {
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from "typeorm";
-import { Bookmark } from "./Bookmark";
-import { Like } from "./Like";
-import { Question } from "./Question";
-import { Result } from "./Result";
-import { Tag } from "./Tag";
-import { User } from "./User";
+import { Bookmark, Comment, Like, Question, Result, Tag, User } from ".";
 
 @ObjectType()
 @Entity()
@@ -74,15 +69,22 @@ export class Quiz extends BaseEntity {
   @Column({ default: false })
   isPublished: boolean;
 
-  @OneToMany(() => Like, (like) => like.user)
+  @OneToMany(() => Like, (like) => like.quiz)
   likes: Like[];
 
-  @OneToMany(() => Bookmark, (bookmark) => bookmark.user)
+  @OneToMany(() => Bookmark, (bookmark) => bookmark.quiz)
   bookmarks: Bookmark[];
+
+  @OneToMany(() => Comment, (comment) => comment.quiz)
+  comments: Comment[];
 
   @Field(() => Int)
   @Column({ default: 0 })
   likeCount: number;
+
+  @Field(() => Int)
+  @Column({ default: 0 })
+  commentCount: number;
 
   @Field(() => Int)
   @Column({ default: 0 })

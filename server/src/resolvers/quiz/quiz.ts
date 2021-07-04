@@ -4,7 +4,6 @@ import {
   UserInputError,
 } from "apollo-server-express";
 import { Bookmark, Like } from "../../entity";
-// import { User } from "../../entity/User";
 import {
   Arg,
   Ctx,
@@ -19,7 +18,7 @@ import { getConnection } from "typeorm";
 import { Quiz } from "../../entity/Quiz";
 import { isAuthenticated } from "../../middleware/isAuthenticated";
 import { MyContext } from "../../types/types";
-import { PaginatedQuizzes, QuizzesInput, QuizInput } from "./quizInput";
+import { PaginatedQuizzes, QuizzesInput, QuizInput } from "./quiz.types";
 
 @Resolver(Quiz)
 export class QuizResolver {

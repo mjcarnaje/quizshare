@@ -1,5 +1,5 @@
 import { Field, InputType, Int, ObjectType } from "type-graphql";
-import { Quiz } from "../../entity/Quiz";
+import { Quiz, Comment } from "../../entity";
 
 @InputType()
 export class ChoiceInput {
@@ -109,10 +109,31 @@ export class QuizzesInput {
   isPublished?: boolean;
 }
 
+@InputType()
+export class CommentsInput {
+  @Field(() => String)
+  quizId: number;
+
+  @Field(() => Int)
+  limit: number;
+
+  @Field(() => String, { nullable: true })
+  cursor?: string;
+}
+
 @ObjectType()
 export class PaginatedQuizzes {
   @Field(() => [Quiz])
   quizzes: Quiz[];
+
+  @Field(() => Boolean)
+  hasMore: boolean;
+}
+
+@ObjectType()
+export class PaginatedComment {
+  @Field(() => [Comment])
+  comments: Comment[];
 
   @Field(() => Boolean)
   hasMore: boolean;

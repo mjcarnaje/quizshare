@@ -12,7 +12,7 @@ import { facebookPassport } from "./resolvers/auth/facebook";
 import { googlePassport } from "./resolvers/auth/google";
 import { createBookmarkLoader } from "./utils/createBookmarkLoader";
 import { createLikeLoader } from "./utils/createLikeLoader";
-// import { Question, Quiz, User, Like, Bookmark, Tag, Result } from "./entity";
+// import { Question, Quiz, User, Like, Bookmark, Tag, Result, Comment } from "./entity";
 
 require("dotenv").config();
 
@@ -38,6 +38,7 @@ const main = async () => {
     // await Bookmark.delete({});
     // await Tag.delete({});
     // await Result.delete({});
+    // await Comment.delete({});
 
     const apolloServer = await new ApolloServer({
       schema: await buildSchema({

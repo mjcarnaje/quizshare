@@ -5,3 +5,4 @@ export { Like } from "./Like";
 export { Bookmark } from "./Bookmark";
 export { Tag } from "./Tag";
 export { Result } from "./Result";
+export { Comment } from "./Comment";

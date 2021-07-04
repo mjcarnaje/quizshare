@@ -1,4 +1,5 @@
 import { GraphQLJSONObject } from "graphql-type-json";
+import { Gender } from "../types/types";
 import { Field, ObjectType } from "type-graphql";
 import {
   BaseEntity,
@@ -9,10 +10,7 @@ import {
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from "typeorm";
-import { Gender } from "../types/types";
-import { Quiz } from "./Quiz";
-import { Like } from "./Like";
-import { Bookmark } from "./Bookmark";
+import { Quiz, Like, Bookmark, Comment } from ".";
 
 @ObjectType()
 @Entity()
@@ -89,6 +87,9 @@ export class User extends BaseEntity {
 
   @OneToMany(() => Bookmark, (bookmark) => bookmark.user)
   bookmarks: Bookmark[];
+
+  @OneToMany(() => Comment, (comment) => comment.quiz)
+  comments: Comment[];
 
   @Field(() => String)
   @CreateDateColumn()
