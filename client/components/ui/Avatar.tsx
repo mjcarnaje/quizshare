@@ -2,7 +2,7 @@ import React from "react";
 
 interface Props {
   name: string;
-  img: string;
+  img?: string;
 }
 
 const Avatar: React.FC<Props> = ({ name, img }) => {
@@ -14,7 +14,7 @@ const Avatar: React.FC<Props> = ({ name, img }) => {
             className="inline-block rounded-full h-9 w-9"
             src={
               img ??
-              "https://images.pexels.com/photos/7223805/pexels-photo-7223805.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940"
+              "https://images.pexels.com/photos/3722806/pexels-photo-3722806.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940"
             }
             alt=""
           />

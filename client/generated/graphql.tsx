@@ -22,12 +22,29 @@ export type ChoiceInput = {
   choicePhoto?: Maybe<Scalars['String']>;
 };
 
+export type Comment = {
+  __typename?: 'Comment';
+  id: Scalars['String'];
+  quizId: Scalars['String'];
+  author: User;
+  text: Scalars['String'];
+  createdAt: Scalars['String'];
+};
+
+export type CommentsInput = {
+  quizId: Scalars['String'];
+  limit: Scalars['Int'];
+  cursor?: Maybe<Scalars['String']>;
+};
+
 
 export type Mutation = {
   __typename?: 'Mutation';
   signUp: User;
   signIn?: Maybe<User>;
   logout: Scalars['Boolean'];
+  addComment: Comment;
+  deleteComment: Scalars['Boolean'];
   saveQuiz: Quiz;
   editQuiz: Quiz;
   deleteQuiz: Scalars['Boolean'];
@@ -44,6 +61,18 @@ export type MutationSignUpArgs = {
 
 export type MutationSignInArgs = {
   SignInInput: SignInInput;
+};
+
+
+export type MutationAddCommentArgs = {
+  text: Scalars['String'];
+  quizId: Scalars['String'];
+};
+
+
+export type MutationDeleteCommentArgs = {
+  commentId: Scalars['String'];
+  quizId: Scalars['String'];
 };
 
 
@@ -77,6 +106,12 @@ export type MutationToggleBookmarkArgs = {
   quizId: Scalars['String'];
 };
 
+export type PaginatedComment = {
+  __typename?: 'PaginatedComment';
+  comments: Array<Comment>;
+  hasMore: Scalars['Boolean'];
+};
+
 export type PaginatedQuizzes = {
   __typename?: 'PaginatedQuizzes';
   quizzes: Array<Quiz>;
@@ -86,9 +121,15 @@ export type PaginatedQuizzes = {
 export type Query = {
   __typename?: 'Query';
   me?: Maybe<User>;
+  getComments: PaginatedComment;
   getPublishedQuizzes: PaginatedQuizzes;
   getMyQuizzes: PaginatedQuizzes;
   getQuiz: Quiz;
+};
+
+
+export type QueryGetCommentsArgs = {
+  commentsInput: CommentsInput;
 };
 
 
@@ -142,6 +183,7 @@ export type Quiz = {
   tags: Array<Tag>;
   isPublished: Scalars['Boolean'];
   likeCount: Scalars['Int'];
+  commentCount: Scalars['Int'];
   bookmarkCount: Scalars['Int'];
   isMine: Scalars['Boolean'];
   isLiked: Scalars['Boolean'];
@@ -238,7 +280,7 @@ export type User = {
 
 export type QuizCardResponseFragment = (
   { __typename?: 'Quiz' }
-  & Pick<Quiz, 'id' | 'title' | 'description' | 'quizPhoto' | 'createdAt' | 'questionCount' | 'isPublished' | 'isMine' | 'likeCount' | 'bookmarkCount' | 'isLiked' | 'isBookmarked'>
+  & Pick<Quiz, 'id' | 'title' | 'description' | 'quizPhoto' | 'createdAt' | 'questionCount' | 'isPublished' | 'isMine' | 'likeCount' | 'bookmarkCount' | 'commentCount' | 'isLiked' | 'isBookmarked'>
   & { author: (
     { __typename?: 'User' }
     & Pick<User, 'firstName' | 'lastName' | 'avatar'>
@@ -266,6 +308,35 @@ export type QuizResponseFragment = (
 export type UserResponseFragment = (
   { __typename?: 'User' }
   & Pick<User, 'id' | 'googleId' | 'facebookId' | 'username' | 'email' | 'avatar' | 'coverPhoto' | 'firstName' | 'lastName' | 'birthday' | 'gender' | 'country' | 'bio' | 'social' | 'createdAt' | 'updatedAt'>
+);
+
+export type AddCommentMutationVariables = Exact<{
+  quizId: Scalars['String'];
+  text: Scalars['String'];
+}>;
+
+
+export type AddCommentMutation = (
+  { __typename?: 'Mutation' }
+  & { addComment: (
+    { __typename?: 'Comment' }
+    & Pick<Comment, 'id' | 'text' | 'createdAt'>
+    & { author: (
+      { __typename?: 'User' }
+      & Pick<User, 'id' | 'avatar' | 'firstName' | 'lastName' | 'email' | 'username'>
+    ) }
+  ) }
+);
+
+export type DeleteCommentMutationVariables = Exact<{
+  quizId: Scalars['String'];
+  commentId: Scalars['String'];
+}>;
+
+
+export type DeleteCommentMutation = (
+  { __typename?: 'Mutation' }
+  & Pick<Mutation, 'deleteComment'>
 );
 
 export type DeleteQuizMutationVariables = Exact<{
@@ -377,6 +448,27 @@ export type ToggleLikeMutation = (
   ) }
 );
 
+export type GetCommentsQueryVariables = Exact<{
+  commentsInput: CommentsInput;
+}>;
+
+
+export type GetCommentsQuery = (
+  { __typename?: 'Query' }
+  & { getComments: (
+    { __typename?: 'PaginatedComment' }
+    & Pick<PaginatedComment, 'hasMore'>
+    & { comments: Array<(
+      { __typename?: 'Comment' }
+      & Pick<Comment, 'id' | 'text' | 'createdAt'>
+      & { author: (
+        { __typename?: 'User' }
+        & Pick<User, 'id' | 'avatar' | 'firstName' | 'lastName' | 'email' | 'username'>
+      ) }
+    )> }
+  ) }
+);
+
 export type GetMyQuizzesQueryVariables = Exact<{
   quizzesInput: QuizzesInput;
 }>;
@@ -421,7 +513,7 @@ export type GetQuizQuery = (
   { __typename?: 'Query' }
   & { getQuiz: (
     { __typename?: 'Quiz' }
-    & MakeOptional<Pick<Quiz, 'id' | 'authorId' | 'title' | 'description' | 'quizPhoto' | 'isPublished' | 'createdAt' | 'updatedAt'>, 'id' | 'authorId' | 'isPublished' | 'createdAt' | 'updatedAt'>
+    & MakeOptional<Pick<Quiz, 'id' | 'authorId' | 'title' | 'description' | 'quizPhoto' | 'likeCount' | 'commentCount' | 'isPublished' | 'createdAt' | 'updatedAt'>, 'id' | 'authorId' | 'isPublished' | 'createdAt' | 'updatedAt'>
     & { author?: Maybe<(
       { __typename?: 'User' }
       & Pick<User, 'firstName' | 'lastName' | 'avatar' | 'email'>
@@ -461,6 +553,7 @@ export const QuizCardResponseFragmentDoc = gql`
   isMine
   likeCount
   bookmarkCount
+  commentCount
   isLiked
   isBookmarked
   author {
@@ -528,6 +621,82 @@ export const UserResponseFragmentDoc = gql`
   updatedAt
 }
     `;
+export const AddCommentDocument = gql`
+    mutation AddComment($quizId: String!, $text: String!) {
+  addComment(quizId: $quizId, text: $text) {
+    id
+    text
+    author {
+      id
+      avatar
+      firstName
+      lastName
+      email
+      username
+    }
+    createdAt
+  }
+}
+    `;
+export type AddCommentMutationFn = Apollo.MutationFunction<AddCommentMutation, AddCommentMutationVariables>;
+
+/**
+ * __useAddCommentMutation__
+ *
+ * To run a mutation, you first call `useAddCommentMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useAddCommentMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [addCommentMutation, { data, loading, error }] = useAddCommentMutation({
+ *   variables: {
+ *      quizId: // value for 'quizId'
+ *      text: // value for 'text'
+ *   },
+ * });
+ */
+export function useAddCommentMutation(baseOptions?: Apollo.MutationHookOptions<AddCommentMutation, AddCommentMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<AddCommentMutation, AddCommentMutationVariables>(AddCommentDocument, options);
+      }
+export type AddCommentMutationHookResult = ReturnType<typeof useAddCommentMutation>;
+export type AddCommentMutationResult = Apollo.MutationResult<AddCommentMutation>;
+export type AddCommentMutationOptions = Apollo.BaseMutationOptions<AddCommentMutation, AddCommentMutationVariables>;
+export const DeleteCommentDocument = gql`
+    mutation DeleteComment($quizId: String!, $commentId: String!) {
+  deleteComment(quizId: $quizId, commentId: $commentId)
+}
+    `;
+export type DeleteCommentMutationFn = Apollo.MutationFunction<DeleteCommentMutation, DeleteCommentMutationVariables>;
+
+/**
+ * __useDeleteCommentMutation__
+ *
+ * To run a mutation, you first call `useDeleteCommentMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useDeleteCommentMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [deleteCommentMutation, { data, loading, error }] = useDeleteCommentMutation({
+ *   variables: {
+ *      quizId: // value for 'quizId'
+ *      commentId: // value for 'commentId'
+ *   },
+ * });
+ */
+export function useDeleteCommentMutation(baseOptions?: Apollo.MutationHookOptions<DeleteCommentMutation, DeleteCommentMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<DeleteCommentMutation, DeleteCommentMutationVariables>(DeleteCommentDocument, options);
+      }
+export type DeleteCommentMutationHookResult = ReturnType<typeof useDeleteCommentMutation>;
+export type DeleteCommentMutationResult = Apollo.MutationResult<DeleteCommentMutation>;
+export type DeleteCommentMutationOptions = Apollo.BaseMutationOptions<DeleteCommentMutation, DeleteCommentMutationVariables>;
 export const DeleteQuizDocument = gql`
     mutation DeleteQuiz($quizId: String!) {
   deleteQuiz(quizId: $quizId)
@@ -813,6 +982,54 @@ export function useToggleLikeMutation(baseOptions?: Apollo.MutationHookOptions<T
 export type ToggleLikeMutationHookResult = ReturnType<typeof useToggleLikeMutation>;
 export type ToggleLikeMutationResult = Apollo.MutationResult<ToggleLikeMutation>;
 export type ToggleLikeMutationOptions = Apollo.BaseMutationOptions<ToggleLikeMutation, ToggleLikeMutationVariables>;
+export const GetCommentsDocument = gql`
+    query GetComments($commentsInput: CommentsInput!) {
+  getComments(commentsInput: $commentsInput) {
+    comments {
+      id
+      text
+      author {
+        id
+        avatar
+        firstName
+        lastName
+        email
+        username
+      }
+      createdAt
+    }
+    hasMore
+  }
+}
+    `;
+
+/**
+ * __useGetCommentsQuery__
+ *
+ * To run a query within a React component, call `useGetCommentsQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetCommentsQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetCommentsQuery({
+ *   variables: {
+ *      commentsInput: // value for 'commentsInput'
+ *   },
+ * });
+ */
+export function useGetCommentsQuery(baseOptions: Apollo.QueryHookOptions<GetCommentsQuery, GetCommentsQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<GetCommentsQuery, GetCommentsQueryVariables>(GetCommentsDocument, options);
+      }
+export function useGetCommentsLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetCommentsQuery, GetCommentsQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<GetCommentsQuery, GetCommentsQueryVariables>(GetCommentsDocument, options);
+        }
+export type GetCommentsQueryHookResult = ReturnType<typeof useGetCommentsQuery>;
+export type GetCommentsLazyQueryHookResult = ReturnType<typeof useGetCommentsLazyQuery>;
+export type GetCommentsQueryResult = Apollo.QueryResult<GetCommentsQuery, GetCommentsQueryVariables>;
 export const GetMyQuizzesDocument = gql`
     query GetMyQuizzes($quizzesInput: QuizzesInput!) {
   getMyQuizzes(quizzesInput: $quizzesInput) {
@@ -921,6 +1138,8 @@ export const GetQuizDocument = gql`
       resultPhoto
       minimumPassingPercentage
     }
+    likeCount
+    commentCount
     isPublished @skip(if: $isInput)
     createdAt @skip(if: $isInput)
     updatedAt @skip(if: $isInput)

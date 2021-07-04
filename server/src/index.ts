@@ -10,6 +10,7 @@ import { buildSchema } from "type-graphql";
 import { createConnection } from "typeorm";
 import { facebookPassport } from "./resolvers/auth/facebook";
 import { googlePassport } from "./resolvers/auth/google";
+import { createAuthorLoader } from "./utils/createAuthorLoader";
 import { createBookmarkLoader } from "./utils/createBookmarkLoader";
 import { createLikeLoader } from "./utils/createLikeLoader";
 // import { Question, Quiz, User, Like, Bookmark, Tag, Result, Comment } from "./entity";
@@ -48,6 +49,7 @@ const main = async () => {
         return {
           likeLoader: createLikeLoader(),
           bookmarkLoader: createBookmarkLoader(),
+          authorLoader: createAuthorLoader(),
           req,
           res,
         };

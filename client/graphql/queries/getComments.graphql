@@ -1,0 +1,18 @@
+query GetComments($commentsInput: CommentsInput!) {
+  getComments(commentsInput: $commentsInput) {
+    comments {
+      id
+      text
+      author {
+        id
+        avatar
+        firstName
+        lastName
+        email
+        username
+      }
+      createdAt
+    }
+    hasMore
+  }
+}

@@ -1,16 +1,14 @@
-import React, { useState } from "react";
-import { useRef } from "react";
+import React, { useRef, useState } from "react";
 
 import {
+  CalendarIcon,
+  CollectionIcon,
+  EyeIcon,
   PencilIcon,
   TrashIcon,
-  CalendarIcon,
-  EyeIcon,
-  CollectionIcon,
 } from "@heroicons/react/outline";
-import { HeartIcon } from "@heroicons/react/solid";
-import { classNames } from "@utils/index";
-import moment from "moment";
+import { ChatIcon, HeartIcon } from "@heroicons/react/solid";
+import { classNames, formatDate } from "@utils/index";
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/router";
@@ -31,18 +29,6 @@ function truncateText(text: string, len: number = 320): string {
   return text;
 }
 
-function formatDate(date: string): string {
-  const moreThanOneDay = moment(parseInt(date))
-    .fromNow(true)
-    .includes("day" || "week" || "month" || "year");
-
-  if (moreThanOneDay) {
-    return moment(parseInt(date)).format("ll");
-  }
-
-  return `${moment(parseInt(date)).fromNow(true)} ago`;
-}
-
 interface Props extends QuizCardResponseFragment {
   type: "timeline" | "draft" | "published";
 }
@@ -57,6 +43,7 @@ export const QuizCard: React.FC<Props> = ({
   author,
   type,
   likeCount,
+  commentCount,
   isMine,
   isLiked,
   isBookmarked,
@@ -152,6 +139,14 @@ export const QuizCard: React.FC<Props> = ({
           >
             <HeartIcon className="-ml-0.5 mr-2 h-6 w-6" aria-hidden="true" />
             {likeCount}
+          </button>
+          <button
+            type="button"
+            onClick={() => router.push(`/quiz/${id}`)}
+            className={`inline-flex items-center px-3 py-2 text-base font-medium leading-4  border border-transparent text-gray-500 hover:text-green-500 rounded-2xl hover:bg-gray-100 focus:outline-none`}
+          >
+            <ChatIcon className="-ml-0.5 mr-2 h-6 w-6" aria-hidden="true" />
+            {commentCount}
           </button>
         </div>
         <button

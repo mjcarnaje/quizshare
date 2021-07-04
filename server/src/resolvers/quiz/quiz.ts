@@ -15,7 +15,7 @@ import {
   UseMiddleware,
 } from "type-graphql";
 import { getConnection } from "typeorm";
-import { Quiz } from "../../entity/Quiz";
+import { Quiz, User } from "../../entity";
 import { isAuthenticated } from "../../middleware/isAuthenticated";
 import { MyContext } from "../../types/types";
 import { PaginatedQuizzes, QuizzesInput, QuizInput } from "./quiz.types";
@@ -39,6 +39,11 @@ export class QuizResolver {
     return quiz.id === bookmarkStatus?.quizId;
   }
 
+  @FieldResolver(() => User)
+  async author(@Root() quiz: Quiz, @Ctx() ctx: MyContext) {
+    return ctx.authorLoader.load(quiz.authorId);
+  }
+
   @Query(() => PaginatedQuizzes)
   async getPublishedQuizzes(
     @Arg("quizzesInput") quizzesInput: QuizzesInput
@@ -49,7 +54,6 @@ export class QuizResolver {
     let quizzes = await getConnection()
       .getRepository(Quiz)
       .createQueryBuilder("quiz")
-      .leftJoinAndSelect("quiz.author", "author")
       .leftJoinAndSelect("quiz.questions", "questions")
       .leftJoinAndSelect("quiz.results", "results")
       .leftJoinAndSelect("quiz.tags", "tags")
@@ -93,7 +97,6 @@ export class QuizResolver {
     let quizzes = await getConnection()
       .getRepository(Quiz)
       .createQueryBuilder("quiz")
-      .leftJoinAndSelect("quiz.author", "author")
       .leftJoinAndSelect("quiz.questions", "questions")
       .leftJoinAndSelect("quiz.results", "results")
       .leftJoinAndSelect("quiz.tags", "tags")
@@ -170,7 +173,6 @@ export class QuizResolver {
     const quiz = await getConnection()
       .getRepository(Quiz)
       .createQueryBuilder("quiz")
-      .leftJoinAndSelect("quiz.author", "author")
       .leftJoinAndSelect("quiz.questions", "questions")
       .leftJoinAndSelect("quiz.results", "results")
       .leftJoinAndSelect("quiz.tags", "tags")
@@ -265,10 +267,12 @@ export class QuizResolver {
   ): Promise<Quiz> {
     const userId = ctx.req.session.userId;
 
-    let quiz = await Quiz.findOneOrFail(
-      { id: quizId },
-      { relations: ["author"] }
-    );
+    let quiz = await Quiz.findOne({ id: quizId });
+
+    if (!quiz) {
+      throw new Error("Quiz not found");
+    }
+
     const liked = await Like.findOne({ userId, quizId });
 
     if (liked) {
@@ -292,10 +296,7 @@ export class QuizResolver {
   ): Promise<Quiz> {
     const userId = ctx.req.session.userId;
 
-    let quiz = await Quiz.findOneOrFail(
-      { id: quizId },
-      { relations: ["author"] }
-    );
+    let quiz = await Quiz.findOneOrFail({ id: quizId });
     const liked = await Bookmark.findOne({ userId, quizId });
 
     if (liked) {

@@ -1,0 +1,3 @@
+mutation DeleteComment($quizId: String!, $commentId: String!) {
+  deleteComment(quizId: $quizId, commentId: $commentId)
+}

@@ -1,3 +1,24 @@
+import moment from "moment";
+
+moment.updateLocale("en", {
+  relativeTime: {
+    future: "in %s",
+    past: "%s ago",
+    s: "seconds",
+    ss: "%ss",
+    m: "a minute",
+    mm: "%dm",
+    h: "an hour",
+    hh: "%dh",
+    d: "a day",
+    dd: "%dd",
+    M: "a month",
+    MM: "%dM",
+    y: "a year",
+    yy: "%dY",
+  },
+});
+
 export const classNames = (...classes: string[]) => {
   return classes.filter(Boolean).join(" ");
 };
@@ -21,4 +42,16 @@ export const cleanTypeName: FuncGenericReturn = (value) => {
     return newObj;
   }
   return value;
+};
+
+export const formatDate = (date: string): string => {
+  const moreThanWeek = moment(parseInt(date))
+    .fromNow(true)
+    .includes("week" || "month" || "year");
+
+  if (moreThanWeek) {
+    return moment(parseInt(date)).format("ll");
+  }
+
+  return `${moment(parseInt(date)).fromNow(true)} ago`;
 };

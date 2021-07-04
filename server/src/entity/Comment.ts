@@ -21,7 +21,7 @@ export class Comment extends BaseEntity {
   @Column()
   quizId: string;
 
-  @ManyToOne(() => Quiz, (quiz) => quiz.likes, {
+  @ManyToOne(() => Quiz, (quiz) => quiz.comments, {
     onDelete: "CASCADE",
   })
   quiz: Quiz;
@@ -30,7 +30,7 @@ export class Comment extends BaseEntity {
   authorId: string;
 
   @Field(() => User)
-  @ManyToOne(() => User, (user) => user.likes)
+  @ManyToOne(() => User, (user) => user.comments)
   author: User;
 
   @Field(() => String)

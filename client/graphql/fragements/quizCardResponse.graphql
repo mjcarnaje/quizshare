@@ -9,6 +9,7 @@ fragment quizCardResponse on Quiz {
   isMine
   likeCount
   bookmarkCount
+  commentCount
   isLiked
   isBookmarked
   author {
