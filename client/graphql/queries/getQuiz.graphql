@@ -1,5 +1,5 @@
 query GetQuiz($quizId: String!, $isInput: Boolean!) {
-  getQuiz(quizId: $quizId) {
+  getQuiz(quizId: $quizId, isInput: $isInput) {
     id @skip(if: $isInput)
     authorId @skip(if: $isInput)
     author @skip(if: $isInput) {

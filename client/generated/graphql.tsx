@@ -103,6 +103,7 @@ export type QueryGetMyQuizzesArgs = {
 
 
 export type QueryGetQuizArgs = {
+  isInput: Scalars['Boolean'];
   quizId: Scalars['String'];
 };
 
@@ -890,7 +891,7 @@ export type GetPublishedQuizzesLazyQueryHookResult = ReturnType<typeof useGetPub
 export type GetPublishedQuizzesQueryResult = Apollo.QueryResult<GetPublishedQuizzesQuery, GetPublishedQuizzesQueryVariables>;
 export const GetQuizDocument = gql`
     query GetQuiz($quizId: String!, $isInput: Boolean!) {
-  getQuiz(quizId: $quizId) {
+  getQuiz(quizId: $quizId, isInput: $isInput) {
     id @skip(if: $isInput)
     authorId @skip(if: $isInput)
     author @skip(if: $isInput) {

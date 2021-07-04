@@ -163,6 +163,7 @@ export class QuizResolver {
   @Query(() => Quiz)
   async getQuiz(
     @Arg("quizId") quizId: string,
+    @Arg("isInput") isInput: boolean,
     @Ctx() ctx: MyContext
   ): Promise<Quiz> {
     const authorId = ctx.req.session.userId;
@@ -181,7 +182,7 @@ export class QuizResolver {
       throw new UserInputError("Quiz does not exist");
     }
 
-    if (authorId !== quiz.authorId) {
+    if (isInput && authorId !== quiz.authorId) {
       throw new ForbiddenError("You are not the owner of the quiz");
     }
 

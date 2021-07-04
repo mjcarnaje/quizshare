@@ -8,6 +8,7 @@ import {
   EyeIcon,
   CollectionIcon,
 } from "@heroicons/react/outline";
+import { HeartIcon } from "@heroicons/react/solid";
 import { classNames } from "@utils/index";
 import moment from "moment";
 import Image from "next/image";
@@ -56,7 +57,6 @@ export const QuizCard: React.FC<Props> = ({
   author,
   type,
   likeCount,
-  bookmarkCount,
   isMine,
   isLiked,
   isBookmarked,
@@ -64,7 +64,6 @@ export const QuizCard: React.FC<Props> = ({
   const router = useRouter();
 
   const [open, setOpen] = useState(false);
-  // const [isStarred, setIsStarred] = useState(false);
   const cancelButtonRef = useRef(null);
 
   const [deleteQuizMutation, { loading: deletingQuiz }] =
@@ -139,21 +138,22 @@ export const QuizCard: React.FC<Props> = ({
         )}
       </div>
       <div className="flex justify-between w-full mt-2">
-        <button
-          type="button"
-          onClick={async () => {
-            await toggleLike({
-              variables: { quizId: id },
-            });
-          }}
-          className={`${classNames(
-            isLiked ? "text-red-500" : ""
-          )} flex items-center h-10 group`}
-        >
-          <p className="leading-normal text-md text-bold group-hover:text-red-500">
-            {likeCount} Like
-          </p>
-        </button>
+        <div className="flex space-x-2">
+          <button
+            type="button"
+            onClick={async () => {
+              await toggleLike({
+                variables: { quizId: id },
+              });
+            }}
+            className={`${classNames(
+              isLiked ? "text-red-500" : "text-gray-500"
+            )} inline-flex items-center px-3 py-2 text-base font-medium leading-4  border border-transparent hover:text-red-500 rounded-2xl hover:bg-gray-100 focus:outline-none`}
+          >
+            <HeartIcon className="-ml-0.5 mr-2 h-6 w-6" aria-hidden="true" />
+            {likeCount}
+          </button>
+        </div>
         <button
           type="button"
           onClick={async () => {
@@ -162,14 +162,43 @@ export const QuizCard: React.FC<Props> = ({
             });
           }}
           className={`${classNames(
-            isBookmarked ? "text-red-500" : ""
-          )} flex items-center h-10 group`}
+            isBookmarked ? "text-blue-500" : "text-gray-500"
+          )} inline-flex items-center p-2 text-base font-medium leading-4 border border-transparent hover:text-blue-500 rounded-2xl hover:bg-gray-100 focus:outline-none`}
         >
-          <p className="leading-normal text-md text-bold group-hover:text-red-500">
-            {bookmarkCount} Bookmark
-          </p>
+          {isBookmarked ? (
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              className="w-6 h-6"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+              fill="currentColor"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth="2"
+                d="M5 5a2 2 0 012-2h10a2 2 0 012 2v16l-7-3.5L5 21V5z"
+              />
+            </svg>
+          ) : (
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              className="w-6 h-6"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+              fill="none"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth="2"
+                d="M5 5a2 2 0 012-2h10a2 2 0 012 2v16l-7-3.5L5 21V5z"
+              />
+            </svg>
+          )}
         </button>
-        {(type !== "timeline" || isMine) && (
+
+        {isMine && type !== "timeline" && (
           <div className="flex space-x-3">
             <button
               onClick={() => setOpen(true)}
