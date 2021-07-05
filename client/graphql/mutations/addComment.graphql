@@ -1,15 +1,5 @@
 mutation AddComment($quizId: String!, $text: String!) {
   addComment(quizId: $quizId, text: $text) {
-    id
-    text
-    author {
-      id
-      avatar
-      firstName
-      lastName
-      email
-      username
-    }
-    createdAt
+    ...commentResponse
   }
 }

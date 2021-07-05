@@ -4,7 +4,7 @@ moment.updateLocale("en", {
   relativeTime: {
     future: "in %s",
     past: "%s ago",
-    s: "seconds",
+    s: "a few seconds",
     ss: "%ss",
     m: "a minute",
     mm: "%dm",
@@ -56,4 +56,13 @@ export const getLastItemDate: IGetLastItemDate = (array) => {
   if (!array) return null;
 
   return array[array.length - 1].createdAt;
+};
+
+export const getCacheArg = (str: string) => {
+  const firstIdx = str.indexOf("{");
+  const lastIdx = str.lastIndexOf("}");
+
+  const objString = `{${str.substring(firstIdx + 1, lastIdx)}}`;
+
+  return JSON.parse(objString);
 };

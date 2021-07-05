@@ -1,8 +1,9 @@
 import React, { useState } from "react";
 
-import { MeQuery } from "@generated/graphql";
+import { CommentResponseFragmentDoc, MeQuery } from "@generated/graphql";
 import { PencilIcon } from "@heroicons/react/outline";
 import errorMapper from "@utils/errorMapper";
+import { getCacheArg } from "@utils/index";
 import { useForm } from "react-hook-form";
 
 import { useAddCommentMutation } from "../generated/graphql";
@@ -43,12 +44,35 @@ const CommentInput: React.FC<Props> = ({ quizId, me, commentCount }) => {
           quizId: quizId,
           text: input.text,
         },
-        update: (cache) => {
+        update: (cache, { data }) => {
           cache.modify({
             id: `Quiz:${quizId}`,
             fields: {
-              commentCount() {
-                return commentCount++;
+              commentCount(old) {
+                return old + 1;
+              },
+            },
+          });
+
+          cache.modify({
+            id: `ROOT_QUERY`,
+            fields: {
+              getComments(old, { storeFieldName }) {
+                const newComment = cache.writeFragment({
+                  data: data?.addComment,
+                  fragment: CommentResponseFragmentDoc,
+                });
+
+                const args = getCacheArg(storeFieldName);
+
+                if (args.quizId !== quizId) {
+                  return old;
+                }
+
+                return {
+                  hasMore: commentCount > old.comments.length,
+                  comments: [...old.comments, newComment],
+                };
               },
             },
           });

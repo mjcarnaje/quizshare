@@ -326,11 +326,7 @@ export type AddCommentMutation = (
   { __typename?: 'Mutation' }
   & { addComment: (
     { __typename?: 'Comment' }
-    & Pick<Comment, 'id' | 'text' | 'createdAt'>
-    & { author: (
-      { __typename?: 'User' }
-      & Pick<User, 'id' | 'avatar' | 'firstName' | 'lastName' | 'email' | 'username'>
-    ) }
+    & CommentResponseFragment
   ) }
 );
 
@@ -644,20 +640,10 @@ export const UserResponseFragmentDoc = gql`
 export const AddCommentDocument = gql`
     mutation AddComment($quizId: String!, $text: String!) {
   addComment(quizId: $quizId, text: $text) {
-    id
-    text
-    author {
-      id
-      avatar
-      firstName
-      lastName
-      email
-      username
-    }
-    createdAt
+    ...commentResponse
   }
 }
-    `;
+    ${CommentResponseFragmentDoc}`;
 export type AddCommentMutationFn = Apollo.MutationFunction<AddCommentMutation, AddCommentMutationVariables>;
 
 /**
