@@ -109,18 +109,6 @@ export class QuizzesInput {
   isPublished?: boolean;
 }
 
-@InputType()
-export class CommentsInput {
-  @Field(() => String)
-  quizId: number;
-
-  @Field(() => Int)
-  limit: number;
-
-  @Field(() => String, { nullable: true })
-  cursor?: string;
-}
-
 @ObjectType()
 export class PaginatedQuizzes {
   @Field(() => [Quiz])

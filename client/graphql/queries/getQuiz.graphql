@@ -29,8 +29,11 @@ query GetQuiz($quizId: String!, $isInput: Boolean!) {
       resultPhoto
       minimumPassingPercentage
     }
-    likeCount
-    commentCount
+    isLiked @skip(if: $isInput)
+    isBookmarked @skip(if: $isInput)
+    questionCount @skip(if: $isInput)
+    likeCount @skip(if: $isInput)
+    commentCount @skip(if: $isInput)
     isPublished @skip(if: $isInput)
     createdAt @skip(if: $isInput)
     updatedAt @skip(if: $isInput)

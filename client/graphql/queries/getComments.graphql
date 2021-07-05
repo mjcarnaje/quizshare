@@ -1,17 +1,7 @@
-query GetComments($commentsInput: CommentsInput!) {
-  getComments(commentsInput: $commentsInput) {
+query GetComments($quizId: String!, $limit: Float!, $cursor: String) {
+  getComments(quizId: $quizId, limit: $limit, cursor: $cursor) {
     comments {
-      id
-      text
-      author {
-        id
-        avatar
-        firstName
-        lastName
-        email
-        username
-      }
-      createdAt
+      ...commentResponse
     }
     hasMore
   }

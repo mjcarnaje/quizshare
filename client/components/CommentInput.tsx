@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 
 import { MeQuery } from "@generated/graphql";
+import { PencilIcon } from "@heroicons/react/outline";
 import errorMapper from "@utils/errorMapper";
 import { useForm } from "react-hook-form";
 
@@ -68,9 +69,15 @@ const CommentInput: React.FC<Props> = ({ quizId, me, commentCount }) => {
 
   return (
     <>
-      <div className="flex justify-between px-3 py-4 bg-white rounded-md shadow">
+      <div className="flex items-center justify-between px-3 py-4 bg-white rounded-md shadow">
         <p>{`Comments (${commentCount})`}</p>
-        <button onClick={toggleInput}>Add Comment</button>
+        <button
+          className="flex px-3 py-1 text-green-500 border border-green-500 rounded-md focus:outline-none hover:bg-gray-50 "
+          onClick={toggleInput}
+        >
+          <PencilIcon className="-ml-0.5 mr-2 h-6 w-6" aria-hidden="true" />
+          Add Comment
+        </button>
       </div>
 
       {showInput && (
@@ -88,10 +95,19 @@ const CommentInput: React.FC<Props> = ({ quizId, me, commentCount }) => {
               required
             />
             <div className="pt-4 space-x-2 text-right">
-              <button onClick={toggleInput} type="button">
+              <button
+                className="px-3 py-1 rounded-md hover:bg-gray-50 focus:outline-none"
+                onClick={toggleInput}
+                type="button"
+              >
                 Cancel
               </button>
-              <button type="submit">Submit</button>
+              <button
+                className="px-3 py-1 text-green-500 border border-green-500 rounded-md focus:outline-none hover:bg-gray-50 "
+                type="submit"
+              >
+                Submit
+              </button>
             </div>
           </form>
         </div>

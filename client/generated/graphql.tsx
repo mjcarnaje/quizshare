@@ -26,15 +26,10 @@ export type Comment = {
   __typename?: 'Comment';
   id: Scalars['String'];
   quizId: Scalars['String'];
+  authorId: Scalars['String'];
   author: User;
   text: Scalars['String'];
   createdAt: Scalars['String'];
-};
-
-export type CommentsInput = {
-  quizId: Scalars['String'];
-  limit: Scalars['Int'];
-  cursor?: Maybe<Scalars['String']>;
 };
 
 
@@ -129,7 +124,9 @@ export type Query = {
 
 
 export type QueryGetCommentsArgs = {
-  commentsInput: CommentsInput;
+  cursor?: Maybe<Scalars['String']>;
+  limit: Scalars['Float'];
+  quizId: Scalars['String'];
 };
 
 
@@ -277,6 +274,15 @@ export type User = {
   createdAt: Scalars['String'];
   updatedAt: Scalars['String'];
 };
+
+export type CommentResponseFragment = (
+  { __typename?: 'Comment' }
+  & Pick<Comment, 'id' | 'text' | 'authorId' | 'createdAt'>
+  & { author: (
+    { __typename?: 'User' }
+    & Pick<User, 'id' | 'avatar' | 'firstName' | 'lastName' | 'email' | 'username'>
+  ) }
+);
 
 export type QuizCardResponseFragment = (
   { __typename?: 'Quiz' }
@@ -449,7 +455,9 @@ export type ToggleLikeMutation = (
 );
 
 export type GetCommentsQueryVariables = Exact<{
-  commentsInput: CommentsInput;
+  quizId: Scalars['String'];
+  limit: Scalars['Float'];
+  cursor?: Maybe<Scalars['String']>;
 }>;
 
 
@@ -460,11 +468,7 @@ export type GetCommentsQuery = (
     & Pick<PaginatedComment, 'hasMore'>
     & { comments: Array<(
       { __typename?: 'Comment' }
-      & Pick<Comment, 'id' | 'text' | 'createdAt'>
-      & { author: (
-        { __typename?: 'User' }
-        & Pick<User, 'id' | 'avatar' | 'firstName' | 'lastName' | 'email' | 'username'>
-      ) }
+      & CommentResponseFragment
     )> }
   ) }
 );
@@ -513,7 +517,7 @@ export type GetQuizQuery = (
   { __typename?: 'Query' }
   & { getQuiz: (
     { __typename?: 'Quiz' }
-    & MakeOptional<Pick<Quiz, 'id' | 'authorId' | 'title' | 'description' | 'quizPhoto' | 'likeCount' | 'commentCount' | 'isPublished' | 'createdAt' | 'updatedAt'>, 'id' | 'authorId' | 'isPublished' | 'createdAt' | 'updatedAt'>
+    & MakeOptional<Pick<Quiz, 'id' | 'authorId' | 'title' | 'description' | 'quizPhoto' | 'isLiked' | 'isBookmarked' | 'questionCount' | 'likeCount' | 'commentCount' | 'isPublished' | 'createdAt' | 'updatedAt'>, 'id' | 'authorId' | 'isLiked' | 'isBookmarked' | 'questionCount' | 'likeCount' | 'commentCount' | 'isPublished' | 'createdAt' | 'updatedAt'>
     & { author?: Maybe<(
       { __typename?: 'User' }
       & Pick<User, 'firstName' | 'lastName' | 'avatar' | 'email'>
@@ -541,6 +545,22 @@ export type MeQuery = (
   )> }
 );
 
+export const CommentResponseFragmentDoc = gql`
+    fragment commentResponse on Comment {
+  id
+  text
+  authorId
+  author {
+    id
+    avatar
+    firstName
+    lastName
+    email
+    username
+  }
+  createdAt
+}
+    `;
 export const QuizCardResponseFragmentDoc = gql`
     fragment quizCardResponse on Quiz {
   id
@@ -983,25 +1003,15 @@ export type ToggleLikeMutationHookResult = ReturnType<typeof useToggleLikeMutati
 export type ToggleLikeMutationResult = Apollo.MutationResult<ToggleLikeMutation>;
 export type ToggleLikeMutationOptions = Apollo.BaseMutationOptions<ToggleLikeMutation, ToggleLikeMutationVariables>;
 export const GetCommentsDocument = gql`
-    query GetComments($commentsInput: CommentsInput!) {
-  getComments(commentsInput: $commentsInput) {
+    query GetComments($quizId: String!, $limit: Float!, $cursor: String) {
+  getComments(quizId: $quizId, limit: $limit, cursor: $cursor) {
     comments {
-      id
-      text
-      author {
-        id
-        avatar
-        firstName
-        lastName
-        email
-        username
-      }
-      createdAt
+      ...commentResponse
     }
     hasMore
   }
 }
-    `;
+    ${CommentResponseFragmentDoc}`;
 
 /**
  * __useGetCommentsQuery__
@@ -1015,7 +1025,9 @@ export const GetCommentsDocument = gql`
  * @example
  * const { data, loading, error } = useGetCommentsQuery({
  *   variables: {
- *      commentsInput: // value for 'commentsInput'
+ *      quizId: // value for 'quizId'
+ *      limit: // value for 'limit'
+ *      cursor: // value for 'cursor'
  *   },
  * });
  */
@@ -1138,8 +1150,11 @@ export const GetQuizDocument = gql`
       resultPhoto
       minimumPassingPercentage
     }
-    likeCount
-    commentCount
+    isLiked @skip(if: $isInput)
+    isBookmarked @skip(if: $isInput)
+    questionCount @skip(if: $isInput)
+    likeCount @skip(if: $isInput)
+    commentCount @skip(if: $isInput)
     isPublished @skip(if: $isInput)
     createdAt @skip(if: $isInput)
     updatedAt @skip(if: $isInput)

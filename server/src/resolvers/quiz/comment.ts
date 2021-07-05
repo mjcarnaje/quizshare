@@ -11,7 +11,7 @@ import {
 } from "type-graphql";
 import { MyContext } from "../../types/types";
 import { Comment, Quiz, User } from "../../entity";
-import { PaginatedComment, CommentsInput } from "./quiz.types";
+import { PaginatedComment } from "./quiz.types";
 import { getConnection } from "typeorm";
 
 @Resolver(Comment)
@@ -23,9 +23,10 @@ export class CommentResolver {
 
   @Query(() => PaginatedComment)
   async getComments(
-    @Arg("commentsInput") commentsInput: CommentsInput
+    @Arg("quizId") quizId: string,
+    @Arg("limit") limit: number,
+    @Arg("cursor", { nullable: true }) cursor: string
   ): Promise<PaginatedComment> {
-    const { quizId, limit, cursor } = commentsInput;
     const limitPlusOne = limit + 1;
 
     let comments = await getConnection()
@@ -35,12 +36,12 @@ export class CommentResolver {
 
     if (cursor) {
       comments = comments.andWhere("comment.createdAt > :cursor", {
-        cursor: new Date(parseInt(cursor)),
+        cursor: new Date(Number(cursor) + 1),
       });
     }
 
     const results = await comments
-      .orderBy("comment.createdAt", "DESC")
+      .orderBy("comment.createdAt", "ASC")
       .take(limitPlusOne)
       .getMany();
 

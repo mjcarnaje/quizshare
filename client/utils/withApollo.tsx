@@ -1,4 +1,5 @@
 import { ApolloClient, InMemoryCache } from "@apollo/client";
+import { PaginatedComment } from "@generated/graphql";
 import { NextPageContext } from "next";
 import { withApollo } from "next-apollo";
 
@@ -12,7 +13,29 @@ const apolloClient = (ctx?: NextPageContext) => {
           ? ctx?.req?.headers.cookie
           : undefined) ?? "",
     },
-    cache: new InMemoryCache(),
+    cache: new InMemoryCache({
+      typePolicies: {
+        Query: {
+          fields: {
+            getComments: {
+              keyArgs: ["quizId"],
+              merge(
+                existing: PaginatedComment,
+                incoming: PaginatedComment
+              ): PaginatedComment {
+                return {
+                  hasMore: incoming.hasMore,
+                  comments: [
+                    ...(existing?.comments ?? []),
+                    ...incoming.comments,
+                  ],
+                };
+              },
+            },
+          },
+        },
+      },
+    }),
     connectToDevTools: true,
   });
 

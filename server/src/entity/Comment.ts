@@ -26,6 +26,7 @@ export class Comment extends BaseEntity {
   })
   quiz: Quiz;
 
+  @Field(() => String)
   @Column()
   authorId: string;
 

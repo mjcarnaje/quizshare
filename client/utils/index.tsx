@@ -45,13 +45,15 @@ export const cleanTypeName: FuncGenericReturn = (value) => {
 };
 
 export const formatDate = (date: string): string => {
-  const moreThanWeek = moment(parseInt(date))
-    .fromNow(true)
-    .includes("week" || "month" || "year");
+  return `${moment(parseInt(date)).fromNow(true)}`;
+};
 
-  if (moreThanWeek) {
-    return moment(parseInt(date)).format("ll");
-  }
+type IGetLastItemDate = <T extends { createdAt: string }>(
+  value?: T[]
+) => string | null;
 
-  return `${moment(parseInt(date)).fromNow(true)} ago`;
+export const getLastItemDate: IGetLastItemDate = (array) => {
+  if (!array) return null;
+
+  return array[array.length - 1].createdAt;
 };
