@@ -3,7 +3,7 @@ import React, { useState } from "react";
 import { CommentResponseFragmentDoc, MeQuery } from "@generated/graphql";
 import { PencilIcon } from "@heroicons/react/outline";
 import errorMapper from "@utils/errorMapper";
-import { getCacheArg } from "@utils/index";
+import { getKeyArgs } from "@utils/index";
 import { useForm } from "react-hook-form";
 
 import { useAddCommentMutation } from "../generated/graphql";
@@ -63,7 +63,7 @@ const CommentInput: React.FC<Props> = ({ quizId, me, commentCount }) => {
                   fragment: CommentResponseFragmentDoc,
                 });
 
-                const args = getCacheArg(storeFieldName);
+                const args = getKeyArgs(storeFieldName, "getComments");
 
                 if (args.quizId !== quizId) {
                   return old;

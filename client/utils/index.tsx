@@ -1,24 +1,5 @@
 import moment from "moment";
 
-moment.updateLocale("en", {
-  relativeTime: {
-    future: "in %s",
-    past: "%s ago",
-    s: "a few seconds",
-    ss: "%ss",
-    m: "a minute",
-    mm: "%dm",
-    h: "an hour",
-    hh: "%dh",
-    d: "a day",
-    dd: "%dd",
-    M: "a month",
-    MM: "%dM",
-    y: "a year",
-    yy: "%dY",
-  },
-});
-
 export const classNames = (...classes: string[]) => {
   return classes.filter(Boolean).join(" ");
 };
@@ -45,7 +26,7 @@ export const cleanTypeName: FuncGenericReturn = (value) => {
 };
 
 export const formatDate = (date: string): string => {
-  return `${moment(parseInt(date)).fromNow(true)}`;
+  return moment(parseInt(date)).fromNow(true);
 };
 
 type IGetLastItemDate = <T extends { createdAt: string }>(
@@ -58,11 +39,8 @@ export const getLastItemDate: IGetLastItemDate = (array) => {
   return array[array.length - 1].createdAt;
 };
 
-export const getCacheArg = (str: string) => {
-  const firstIdx = str.indexOf("{");
-  const lastIdx = str.lastIndexOf("}");
+export const getKeyArgs = (str: string, key: string) => {
+  const stringObj = str.replace(`${key}:`, "");
 
-  const objString = `{${str.substring(firstIdx + 1, lastIdx)}}`;
-
-  return JSON.parse(objString);
+  return JSON.parse(stringObj);
 };
