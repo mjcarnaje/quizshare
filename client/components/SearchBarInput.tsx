@@ -2,7 +2,7 @@ import React, { useState } from "react";
 
 import { SearchIcon } from "@heroicons/react/solid";
 import { useAppDispatch } from "store";
-import { setQuery } from "store/globalState";
+import { setQuery } from "store/query";
 
 const SearchBarInput: React.FC = () => {
   const dispath = useAppDispatch();

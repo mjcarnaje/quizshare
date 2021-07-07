@@ -4,7 +4,7 @@ import MainContainer from "@components/ui/MainContainer";
 import withApollo from "@utils/withApollo";
 import { useRouter } from "next/router";
 import { useAppSelector } from "store";
-import { selectQuery } from "store/globalState";
+import { selectQuery } from "store/query";
 
 import { QuizCard } from "../../../components/cards/QuizCard";
 import Container from "../../../components/ui/Container";

@@ -1,5 +1,6 @@
 import React, { ReactNode } from "react";
 
+import Alert from "@components/alert/Alert";
 import Head from "next/head";
 
 interface Props {
@@ -20,6 +21,7 @@ const MainContainer: React.FC<Props> = ({
         <meta name="viewport" content="initial-scale=1.0, width=device-width" />
       </Head>
       <div className="relative flex min-h-screen mx-auto overflow-hidden bg-gray-100">
+        <Alert />
         {children}
       </div>
     </div>

@@ -4,7 +4,7 @@ import MainContainer from "@components/ui/MainContainer";
 import { useIsAuth } from "@utils/useIsAuth";
 import { CloudinaryContext } from "cloudinary-react";
 import { useRouter } from "next/router";
-import { selectQuery } from "store/globalState";
+import { selectQuery } from "store/query";
 
 import { QuizCard } from "../components/cards/QuizCard";
 import Container from "../components/ui/Container";
