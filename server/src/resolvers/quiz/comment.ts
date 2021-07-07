@@ -16,6 +16,11 @@ import { getConnection } from "typeorm";
 
 @Resolver(Comment)
 export class CommentResolver {
+  @FieldResolver(() => Boolean)
+  isMine(@Root() comment: Comment, @Ctx() ctx: MyContext) {
+    return comment.authorId === ctx.req.session.userId;
+  }
+
   @FieldResolver(() => User)
   async author(@Root() comments: Comment, @Ctx() ctx: MyContext) {
     return ctx.authorLoader.load(comments.authorId);

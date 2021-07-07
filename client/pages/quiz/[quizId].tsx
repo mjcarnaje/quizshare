@@ -129,15 +129,14 @@ const SingleQuizPage: React.FC<Props> = () => {
                       <p>Loading...</p>
                     </div>
                   )}
-                  {commentData &&
-                    !commentLoading &&
-                    commentData.getComments.comments.map((comment) => (
-                      <CommentCard
-                        key={comment.id}
-                        isAuthor={comment.authorId === authorId}
-                        {...comment}
-                      />
-                    ))}
+                  {commentData?.getComments.comments.map((comment) => (
+                    <CommentCard
+                      key={comment.id}
+                      quizId={quizId}
+                      comment={comment}
+                      isAuthor={comment.authorId === authorId}
+                    />
+                  ))}
                 </ul>
                 {commentData?.getComments.hasMore && (
                   <button

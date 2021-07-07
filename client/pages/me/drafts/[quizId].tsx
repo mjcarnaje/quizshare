@@ -24,6 +24,8 @@ import {
   useFieldArray,
   useForm,
 } from "react-hook-form";
+import { useAppDispatch } from "store";
+import { showAlert } from "store/alert";
 import { v4 as uuid } from "uuid";
 
 import ImageHolder from "../../../components/cards/ImageHolder";
@@ -38,12 +40,13 @@ import errorMapper from "../../../utils/errorMapper";
 interface Props {}
 
 const DraftEditQuizPage: React.FC<Props> = () => {
+  const dispatch = useAppDispatch();
   const router = useRouter();
   const quizId = router.query.quizId as string;
 
   const [quizInput, setQuizInput] = useState<QuizInput>();
   const [isSaved, setIsSaved] = useState(true);
-  const [isSaveButtonDirty, SetIsSaveButtonDirty] = useState(false);
+  const [isDirty, setIsDirty] = useState(false);
 
   const { data } = useGetQuizQuery({
     variables: {
@@ -88,8 +91,18 @@ const DraftEditQuizPage: React.FC<Props> = () => {
         const { id, ...rest } = quizData.saveQuiz;
         setQuizInput(rest);
         reset(cleanTypeName(rest));
-        checkIfSaved(cleanTypeName(rest), watch());
-        SetIsSaveButtonDirty(true);
+        checkIfDirty(cleanTypeName(rest), watch());
+        setIsDirty(true);
+        dispatch(
+          showAlert({
+            title: "Sucessfuly saved quiz",
+            description: "Your quiz is successfuly updated",
+            duration: 3000,
+            isClosable: true,
+            status: "success",
+            withUndo: false,
+          })
+        );
       }
     } catch (err) {
       errorMapper(err, setError);
@@ -111,29 +124,26 @@ const DraftEditQuizPage: React.FC<Props> = () => {
   };
 
   useEffect(() => {
-    if (data?.getQuiz && !isSaveButtonDirty) {
+    if (data?.getQuiz && !isDirty) {
       setQuizInput(data.getQuiz);
       reset(cleanTypeName(data.getQuiz));
     }
   }, [data?.getQuiz]);
 
   useEffect(() => {
-    checkIfSaved(cleanTypeName(quizInput), watch());
+    checkIfDirty(cleanTypeName(quizInput), watch());
   }, [quizInput, watch()]);
 
   useEffect(() => {
     setValue("quizPhoto", quizPhoto);
   }, [quizPhoto]);
 
-  function checkIfSaved(
-    oldObj?: Partial<QuizInput>,
-    newObj?: Partial<QuizInput>
-  ) {
+  function checkIfDirty(oldObj?: QuizInput, newObj?: QuizInput): void {
     if (!isEqual(oldObj, newObj)) {
       setIsSaved(false);
-    } else {
-      setIsSaved(true);
+      return;
     }
+    setIsSaved(true);
   }
 
   const quizImage = quizPhoto || quizInput?.quizPhoto;
@@ -190,7 +200,7 @@ const DraftEditQuizPage: React.FC<Props> = () => {
             </div>
           }
         >
-          <main className="relative flex-1 overflow-y-auto focus:outline-none">
+          <main className="relative flex-1 min-h-screen overflow-y-auto focus:outline-none">
             <div className="py-6">
               <div className="max-w-4xl px-4 mx-auto sm:px-6 md:px-8">
                 <FormProvider {...methods}>

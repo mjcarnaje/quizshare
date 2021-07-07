@@ -38,6 +38,9 @@ export class Comment extends BaseEntity {
   @Column()
   text: string;
 
+  @Field(() => Boolean)
+  isMine: boolean;
+
   @Field(() => String)
   @CreateDateColumn()
   createdAt: Date;

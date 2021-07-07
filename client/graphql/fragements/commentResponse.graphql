@@ -10,5 +10,6 @@ fragment commentResponse on Comment {
     email
     username
   }
+  isMine
   createdAt
 }

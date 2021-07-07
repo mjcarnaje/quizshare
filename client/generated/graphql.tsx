@@ -29,6 +29,7 @@ export type Comment = {
   authorId: Scalars['String'];
   author: User;
   text: Scalars['String'];
+  isMine: Scalars['Boolean'];
   createdAt: Scalars['String'];
 };
 
@@ -277,7 +278,7 @@ export type User = {
 
 export type CommentResponseFragment = (
   { __typename?: 'Comment' }
-  & Pick<Comment, 'id' | 'text' | 'authorId' | 'createdAt'>
+  & Pick<Comment, 'id' | 'text' | 'authorId' | 'isMine' | 'createdAt'>
   & { author: (
     { __typename?: 'User' }
     & Pick<User, 'id' | 'avatar' | 'firstName' | 'lastName' | 'email' | 'username'>
@@ -554,6 +555,7 @@ export const CommentResponseFragmentDoc = gql`
     email
     username
   }
+  isMine
   createdAt
 }
     `;

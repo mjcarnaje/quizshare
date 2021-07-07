@@ -80,9 +80,9 @@ export const QuizCard: React.FC<Props> = ({
         </div>
       )}
       <div className="w-full p-2 rounded-md cursor-pointer group md:flex ">
-        <div className="w-full ">
+        <div className="w-full">
           <Link href={`/quiz/${id}`}>
-            <h2 className="text-3xl font-bold leading-tight tracking-tight">
+            <h2 className="text-3xl font-bold leading-tight tracking-tight break-all">
               {title}
             </h2>
           </Link>

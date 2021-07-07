@@ -8,11 +8,12 @@ import {
 import { XIcon } from "@heroicons/react/solid";
 
 import { removeAlert, selectAlerts } from "../../store/alert";
-import { useAppSelector } from "../../store/index";
+import { useAppSelector, useAppDispatch } from "../../store/index";
 
 interface Props {}
 
 const Alert: React.FC<Props> = () => {
+  const dispatch = useAppDispatch();
   const alerts = useAppSelector(selectAlerts);
 
   return (
@@ -73,7 +74,7 @@ const Alert: React.FC<Props> = () => {
                       {isClosable && (
                         <button
                           className="inline-flex text-gray-400 bg-white rounded-md hover:text-gray-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
-                          onClick={() => removeAlert(id)}
+                          onClick={() => dispatch(removeAlert(id))}
                         >
                           <XIcon className="w-5 h-5" aria-hidden="true" />
                         </button>
