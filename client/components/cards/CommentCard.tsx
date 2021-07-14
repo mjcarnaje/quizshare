@@ -1,10 +1,11 @@
-import React, { Fragment } from "react";
+import React from "react";
 
+import MenuDropdown from "@components/buttons/MenuDropdown";
 import { CommentResponseFragment } from "@generated/graphql";
-import { Menu, Transition } from "@headlessui/react";
 import { TrashIcon } from "@heroicons/react/outline";
-import { DotsVerticalIcon, PencilAltIcon } from "@heroicons/react/solid";
-import { classNames, formatDate } from "@utils/index";
+import { PencilAltIcon } from "@heroicons/react/solid";
+import { formatDate } from "@utils/index";
+import { useRouter } from "next/router";
 
 import { useDeleteCommentMutation } from "../../generated/graphql";
 
@@ -25,6 +26,7 @@ const CommentCard: React.FC<Props> = ({
   },
   isAuthor,
 }) => {
+  const router = useRouter();
   const [deleteComment] = useDeleteCommentMutation();
 
   return (
@@ -59,96 +61,38 @@ const CommentCard: React.FC<Props> = ({
             </span>
           )}
           {isMine && (
-            <Menu as="div" className="relative z-30 inline-block text-left">
-              {({ open }) => (
-                <>
-                  <div>
-                    <Menu.Button className="flex items-center p-2 -m-2 text-gray-400 rounded-full hover:text-gray-600 focus:outline-none active:bg-gray-200">
-                      <span className="sr-only">Open options</span>
-                      <DotsVerticalIcon
-                        className="w-5 h-5"
-                        aria-hidden="true"
-                      />
-                    </Menu.Button>
-                  </div>
-
-                  <Transition
-                    show={open}
-                    as={Fragment}
-                    enter="transition ease-out duration-100"
-                    enterFrom="transform opacity-0 scale-95"
-                    enterTo="transform opacity-100 scale-100"
-                    leave="transition ease-in duration-75"
-                    leaveFrom="transform opacity-100 scale-100"
-                    leaveTo="transform opacity-0 scale-95"
-                  >
-                    <Menu.Items
-                      static
-                      className="absolute right-0 w-56 mt-2 origin-top-right bg-white rounded-md shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none"
-                    >
-                      <div className="py-1">
-                        <Menu.Item>
-                          {({ active }) => (
-                            <a
-                              href="#"
-                              className={classNames(
-                                active
-                                  ? "bg-gray-100 text-gray-900"
-                                  : "text-gray-700",
-                                "group flex items-center px-4 py-2 text-sm"
-                              )}
-                            >
-                              <PencilAltIcon
-                                className="w-5 h-5 mr-3 text-gray-400 group-hover:text-gray-500"
-                                aria-hidden="true"
-                              />
-                              Edit
-                            </a>
-                          )}
-                        </Menu.Item>
-                        <Menu.Item>
-                          {({ active }) => (
-                            <button
-                              type="button"
-                              onClick={async () => {
-                                await deleteComment({
-                                  variables: { quizId, commentId: id },
-                                  update: (cache) => {
-                                    cache.evict({
-                                      id: `Comment:${id}`,
-                                    });
-                                    cache.modify({
-                                      id: `Quiz:${quizId}`,
-                                      fields: {
-                                        commentCount(old) {
-                                          return old - 1;
-                                        },
-                                      },
-                                    });
-                                  },
-                                });
-                              }}
-                              className={classNames(
-                                active
-                                  ? "bg-gray-100 text-gray-900"
-                                  : "text-gray-700",
-                                "group flex items-center px-4 py-2 text-sm w-full focus:outline-none"
-                              )}
-                            >
-                              <TrashIcon
-                                className="w-5 h-5 mr-3 text-gray-400 group-hover:text-gray-500"
-                                aria-hidden="true"
-                              />
-                              Delete
-                            </button>
-                          )}
-                        </Menu.Item>
-                      </div>
-                    </Menu.Items>
-                  </Transition>
-                </>
-              )}
-            </Menu>
+            <MenuDropdown
+              type="array"
+              options={[
+                {
+                  icon: PencilAltIcon,
+                  text: "Edit",
+                  onClick: () => router.push(`/edit/${quizId}`),
+                },
+                {
+                  icon: TrashIcon,
+                  text: "Delete",
+                  onClick: async () => {
+                    await deleteComment({
+                      variables: { quizId, commentId: id },
+                      update: (cache) => {
+                        cache.evict({
+                          id: `Comment:${id}`,
+                        });
+                        cache.modify({
+                          id: `Quiz:${quizId}`,
+                          fields: {
+                            commentCount(old) {
+                              return old - 1;
+                            },
+                          },
+                        });
+                      },
+                    });
+                  },
+                },
+              ]}
+            />
           )}
         </div>
       </div>

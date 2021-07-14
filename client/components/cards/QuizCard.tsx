@@ -123,13 +123,19 @@ export const QuizCard: React.FC<Props> = ({
         )}
       </div>
       <div className="flex justify-between w-full mt-2">
-        <div className="flex space-x-2">
-          <LikeButton quizId={id} isLiked={isLiked} likeCount={likeCount} />
-          <CommentButton quizId={id} commentCount={commentCount} />
-        </div>
-        <BookmarkButton quizId={id} isBookmarked={isBookmarked} />
+        {type !== "draft" ? (
+          <div className="flex space-x-2">
+            <LikeButton quizId={id} isLiked={isLiked} likeCount={likeCount} />
+            <CommentButton quizId={id} commentCount={commentCount} />
+          </div>
+        ) : (
+          <div />
+        )}
+        {type !== "draft" && (
+          <BookmarkButton quizId={id} isBookmarked={isBookmarked} />
+        )}
 
-        {isMine && type !== "timeline" && (
+        {isMine && type === "draft" && (
           <div className="flex space-x-3">
             <button
               onClick={() => setOpen(true)}
