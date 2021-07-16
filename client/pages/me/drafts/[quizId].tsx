@@ -28,7 +28,7 @@ import { useAppDispatch } from "store";
 import { showAlert } from "store/alert";
 import { v4 as uuid } from "uuid";
 
-import ImageHolder from "../../../components/cards/ImageHolder";
+import ImageHolder from "../../../components/ImageHolder";
 import Input from "../../../components/inputs/Input";
 import TextareaAutoResize from "../../../components/inputs/TextareaAutoResize";
 import {

@@ -59,19 +59,15 @@ export class QuizResolver {
       .leftJoinAndSelect("quiz.tags", "tags")
       .andWhere("quiz.isPublished = :isPublished", { isPublished: true });
 
-    if (query) {
-      quizzes = quizzes
-        .andWhere("quiz.title ilike :title", {
-          title: `%${query}%`,
-        })
-        .andWhere("quiz.description ilike :description", {
-          description: `%${query}%`,
-        });
-    }
-
     if (cursor) {
       quizzes = quizzes.andWhere("quiz.createdAt > :cursor", {
         cursor: new Date(parseInt(cursor)),
+      });
+    }
+
+    if (query) {
+      quizzes = quizzes.andWhere("quiz.title ilike :title", {
+        title: `%${query}%`,
       });
     }
 
@@ -107,19 +103,15 @@ export class QuizResolver {
         isPublished,
       });
 
-    if (query) {
-      quizzes = quizzes
-        .andWhere("quiz.title ilike :title", {
-          title: `%${query}%`,
-        })
-        .andWhere("quiz.description ilike :description", {
-          description: `%${query}%`,
-        });
-    }
-
     if (cursor) {
       quizzes = quizzes.andWhere("quiz.createdAt > :cursor", {
         cursor: new Date(parseInt(cursor)),
+      });
+    }
+
+    if (query) {
+      quizzes = quizzes.andWhere("quiz.title ilike :title", {
+        title: `%${query}%`,
       });
     }
 

@@ -2,14 +2,13 @@ import React from "react";
 
 import LikeButton from "@components/buttons/LikeButton";
 import TakeButton from "@components/buttons/TakeButton";
-import CommentCard from "@components/cards/CommentCard";
-import ImageHolder from "@components/cards/ImageHolder";
-import CommentInput from "@components/CommentInput";
+import CommentInput from "@components/comments/CommentInput";
+import Comments from "@components/comments/Comments";
+import ImageHolder from "@components/ImageHolder";
 import Container from "@components/ui/Container";
 import MainContainer from "@components/ui/MainContainer";
-import { useGetCommentsQuery, useGetQuizQuery } from "@generated/graphql";
-import { EyeIcon, CollectionIcon } from "@heroicons/react/outline";
-import { getLastItemDate } from "@utils/index";
+import { useGetQuizQuery } from "@generated/graphql";
+import { CollectionIcon, EyeIcon } from "@heroicons/react/outline";
 import { useIsAuth } from "@utils/useIsAuth";
 import withApollo from "@utils/withApollo";
 import { useRouter } from "next/router";
@@ -28,19 +27,6 @@ const SingleQuizPage: React.FC<Props> = () => {
     variables: {
       quizId,
       isInput: false,
-    },
-  });
-
-  const {
-    data: commentData,
-    loading: commentLoading,
-    fetchMore,
-    variables,
-  } = useGetCommentsQuery({
-    variables: {
-      quizId,
-      limit: 20,
-      cursor: null,
     },
   });
 
@@ -123,40 +109,7 @@ const SingleQuizPage: React.FC<Props> = () => {
                   me={me}
                   commentCount={commentCount!}
                 />
-                <ul className="space-y-3 ">
-                  {!commentData && commentLoading && (
-                    <div className="my-10">
-                      <p>Loading...</p>
-                    </div>
-                  )}
-                  {commentData?.getComments.comments.map((comment) => (
-                    <CommentCard
-                      key={comment.id}
-                      quizId={quizId}
-                      comment={comment}
-                      isAuthor={comment.authorId === authorId}
-                    />
-                  ))}
-                </ul>
-                {commentData?.getComments.hasMore && (
-                  <button
-                    type="button"
-                    className="flex px-4 py-2 mx-auto my-2 text-base font-medium leading-4 rounded-md active:bg-gray-50 focus:outline-none"
-                    onClick={() => {
-                      fetchMore({
-                        variables: {
-                          quizId: variables?.quizId,
-                          limit: variables?.limit,
-                          cursor: getLastItemDate(
-                            commentData?.getComments.comments
-                          ),
-                        },
-                      });
-                    }}
-                  >
-                    {commentLoading ? "Loading.." : "Load more"}
-                  </button>
-                )}
+                <Comments quizId={quizId} authorId={authorId!} />
               </div>
             </div>
           </div>

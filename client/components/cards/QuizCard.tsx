@@ -131,11 +131,11 @@ export const QuizCard: React.FC<Props> = ({
         ) : (
           <div />
         )}
-        {type !== "draft" && (
+        {type === "timeline" && (
           <BookmarkButton quizId={id} isBookmarked={isBookmarked} />
         )}
 
-        {isMine && type === "draft" && (
+        {isMine && type !== "timeline" && (
           <div className="flex space-x-3">
             <button
               onClick={() => setOpen(true)}

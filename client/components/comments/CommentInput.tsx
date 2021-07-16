@@ -6,9 +6,9 @@ import errorMapper from "@utils/errorMapper";
 import { getKeyArgs } from "@utils/index";
 import { useForm } from "react-hook-form";
 
-import { useAddCommentMutation } from "../generated/graphql";
-import TextareaAutoResize from "./inputs/TextareaAutoResize";
-import Avatar from "./ui/Avatar";
+import { useAddCommentMutation } from "../../generated/graphql";
+import TextareaAutoResize from "../inputs/TextareaAutoResize";
+import Avatar from "../ui/Avatar";
 
 interface Props {
   quizId: string;

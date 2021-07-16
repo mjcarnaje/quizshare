@@ -4,10 +4,10 @@ import Image from "next/image";
 
 interface Props {
   image?: string | null;
-  loading: boolean;
+  loading?: boolean;
 }
 
-const ImageHolder: React.FC<Props> = ({ image, loading }) => {
+const ImageHolder: React.FC<Props> = ({ image, loading = false }) => {
   return (
     <>
       {image && !loading && (
