@@ -31,6 +31,7 @@ export type Comment = {
   text: Scalars['String'];
   isMine: Scalars['Boolean'];
   createdAt: Scalars['String'];
+  updatedAt: Scalars['String'];
 };
 
 
@@ -40,9 +41,9 @@ export type Mutation = {
   signIn?: Maybe<User>;
   logout: Scalars['Boolean'];
   addComment: Comment;
+  editComment: Comment;
   deleteComment: Scalars['Boolean'];
   saveQuiz: Quiz;
-  editQuiz: Quiz;
   deleteQuiz: Scalars['Boolean'];
   publishQuiz: Quiz;
   toggleLike: Quiz;
@@ -66,6 +67,13 @@ export type MutationAddCommentArgs = {
 };
 
 
+export type MutationEditCommentArgs = {
+  text: Scalars['String'];
+  commentId: Scalars['String'];
+  quizId: Scalars['String'];
+};
+
+
 export type MutationDeleteCommentArgs = {
   commentId: Scalars['String'];
   quizId: Scalars['String'];
@@ -74,11 +82,6 @@ export type MutationDeleteCommentArgs = {
 
 export type MutationSaveQuizArgs = {
   quizId?: Maybe<Scalars['String']>;
-  quizInput: QuizInput;
-};
-
-
-export type MutationEditQuizArgs = {
   quizInput: QuizInput;
 };
 
@@ -278,7 +281,7 @@ export type User = {
 
 export type CommentResponseFragment = (
   { __typename?: 'Comment' }
-  & Pick<Comment, 'id' | 'text' | 'authorId' | 'isMine' | 'createdAt'>
+  & Pick<Comment, 'id' | 'text' | 'authorId' | 'isMine' | 'createdAt' | 'updatedAt'>
   & { author: (
     { __typename?: 'User' }
     & Pick<User, 'id' | 'avatar' | 'firstName' | 'lastName' | 'email' | 'username'>
@@ -350,6 +353,21 @@ export type DeleteQuizMutationVariables = Exact<{
 export type DeleteQuizMutation = (
   { __typename?: 'Mutation' }
   & Pick<Mutation, 'deleteQuiz'>
+);
+
+export type EditCommentMutationVariables = Exact<{
+  quizId: Scalars['String'];
+  commentId: Scalars['String'];
+  text: Scalars['String'];
+}>;
+
+
+export type EditCommentMutation = (
+  { __typename?: 'Mutation' }
+  & { editComment: (
+    { __typename?: 'Comment' }
+    & CommentResponseFragment
+  ) }
 );
 
 export type SignOutMutationVariables = Exact<{ [key: string]: never; }>;
@@ -557,6 +575,7 @@ export const CommentResponseFragmentDoc = gql`
   }
   isMine
   createdAt
+  updatedAt
 }
     `;
 export const QuizCardResponseFragmentDoc = gql`
@@ -736,6 +755,41 @@ export function useDeleteQuizMutation(baseOptions?: Apollo.MutationHookOptions<D
 export type DeleteQuizMutationHookResult = ReturnType<typeof useDeleteQuizMutation>;
 export type DeleteQuizMutationResult = Apollo.MutationResult<DeleteQuizMutation>;
 export type DeleteQuizMutationOptions = Apollo.BaseMutationOptions<DeleteQuizMutation, DeleteQuizMutationVariables>;
+export const EditCommentDocument = gql`
+    mutation EditComment($quizId: String!, $commentId: String!, $text: String!) {
+  editComment(quizId: $quizId, commentId: $commentId, text: $text) {
+    ...commentResponse
+  }
+}
+    ${CommentResponseFragmentDoc}`;
+export type EditCommentMutationFn = Apollo.MutationFunction<EditCommentMutation, EditCommentMutationVariables>;
+
+/**
+ * __useEditCommentMutation__
+ *
+ * To run a mutation, you first call `useEditCommentMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useEditCommentMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [editCommentMutation, { data, loading, error }] = useEditCommentMutation({
+ *   variables: {
+ *      quizId: // value for 'quizId'
+ *      commentId: // value for 'commentId'
+ *      text: // value for 'text'
+ *   },
+ * });
+ */
+export function useEditCommentMutation(baseOptions?: Apollo.MutationHookOptions<EditCommentMutation, EditCommentMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<EditCommentMutation, EditCommentMutationVariables>(EditCommentDocument, options);
+      }
+export type EditCommentMutationHookResult = ReturnType<typeof useEditCommentMutation>;
+export type EditCommentMutationResult = Apollo.MutationResult<EditCommentMutation>;
+export type EditCommentMutationOptions = Apollo.BaseMutationOptions<EditCommentMutation, EditCommentMutationVariables>;
 export const SignOutDocument = gql`
     mutation SignOut {
   logout

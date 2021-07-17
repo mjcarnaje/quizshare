@@ -85,6 +85,29 @@ export class CommentResolver {
   }
 
   @UseMiddleware(isAuthenticated)
+  @Mutation(() => Comment)
+  async editComment(
+    @Arg("quizId") quizId: string,
+    @Arg("commentId") commentId: string,
+    @Arg("text") text: string,
+    @Ctx() ctx: MyContext
+  ): Promise<Comment> {
+    const authorId = ctx.req.session.userId;
+
+    const comment = await getConnection()
+      .createQueryBuilder()
+      .update(Comment)
+      .set({ text })
+      .where("quizId = :quizId", { quizId })
+      .andWhere("id = :commentId", { commentId })
+      .andWhere("authorId = :authorId", { authorId })
+      .returning("*")
+      .execute();
+
+    return comment.raw[0];
+  }
+
+  @UseMiddleware(isAuthenticated)
   @Mutation(() => Boolean)
   async deleteComment(
     @Arg("quizId") quizId: string,

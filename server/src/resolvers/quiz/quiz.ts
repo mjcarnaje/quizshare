@@ -183,22 +183,6 @@ export class QuizResolver {
   }
 
   @UseMiddleware(isAuthenticated)
-  @Mutation(() => Quiz)
-  async editQuiz(
-    // @Arg("quizId") quizId: string,
-    @Arg("quizInput") quizInput: QuizInput,
-    @Ctx() ctx: MyContext
-  ): Promise<Quiz> {
-    const newQuiz = await Quiz.create({
-      ...quizInput,
-      questionCount: quizInput.questions.length,
-      authorId: ctx.req.session.userId,
-    }).save();
-
-    return newQuiz;
-  }
-
-  @UseMiddleware(isAuthenticated)
   @Mutation(() => Boolean)
   async deleteQuiz(
     @Arg("quizId") quizId: string,

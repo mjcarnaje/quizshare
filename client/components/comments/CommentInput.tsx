@@ -1,12 +1,18 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 
 import { CommentResponseFragmentDoc, MeQuery } from "@generated/graphql";
 import { PencilIcon } from "@heroicons/react/outline";
 import errorMapper from "@utils/errorMapper";
 import { getKeyArgs } from "@utils/index";
 import { useForm } from "react-hook-form";
+import { useAppSelector } from "store";
 
-import { useAddCommentMutation } from "../../generated/graphql";
+import {
+  useAddCommentMutation,
+  useEditCommentMutation,
+} from "../../generated/graphql";
+import { selectCommentInput, setCommentToEdit } from "../../store/commentInput";
+import { useAppDispatch } from "../../store/index";
 import TextareaAutoResize from "../inputs/TextareaAutoResize";
 import Avatar from "../ui/Avatar";
 
@@ -21,69 +27,92 @@ type IText = {
 };
 
 const CommentInput: React.FC<Props> = ({ quizId, me, commentCount }) => {
+  const dispatch = useAppDispatch();
+  const { commentId, text: commentText } = useAppSelector(selectCommentInput);
   const [showInput, setShowInput] = useState(false);
 
   const [addComment] = useAddCommentMutation();
+  const [editComment] = useEditCommentMutation();
 
   const {
     handleSubmit,
     register,
     setError,
     setValue,
+    reset,
     formState: { errors },
   } = useForm<IText>();
 
-  if (!me?.me) {
-    return null;
-  }
-
   const onSubmit = async (input: IText) => {
     try {
-      await addComment({
-        variables: {
-          quizId: quizId,
-          text: input.text,
-        },
-        update: (cache, { data }) => {
-          cache.modify({
-            id: `Quiz:${quizId}`,
-            fields: {
-              commentCount(old) {
-                return old + 1;
+      setValue("text", "");
+
+      if (commentText && commentId) {
+        await editComment({
+          variables: {
+            quizId,
+            commentId,
+            text: input.text,
+          },
+          update: () => {
+            dispatch(setCommentToEdit({ commentId: null, text: null }));
+          },
+        });
+      } else {
+        await addComment({
+          variables: {
+            quizId: quizId,
+            text: input.text,
+          },
+          update: (cache, { data }) => {
+            cache.modify({
+              id: `Quiz:${quizId}`,
+              fields: {
+                commentCount: (old) => old + 1,
               },
-            },
-          });
+            });
 
-          cache.modify({
-            id: `ROOT_QUERY`,
-            fields: {
-              getComments(old, { storeFieldName }) {
-                const newComment = cache.writeFragment({
-                  data: data?.addComment,
-                  fragment: CommentResponseFragmentDoc,
-                });
+            cache.modify({
+              id: `ROOT_QUERY`,
+              fields: {
+                getComments: (old, { storeFieldName }) => {
+                  const newComment = cache.writeFragment({
+                    data: data?.addComment,
+                    fragment: CommentResponseFragmentDoc,
+                  });
 
-                const args = getKeyArgs(storeFieldName, "getComments");
+                  const args = getKeyArgs(storeFieldName, "getComments");
 
-                if (args.quizId !== quizId) {
-                  return old;
-                }
+                  if (args.quizId !== quizId) {
+                    return old;
+                  }
 
-                return {
-                  hasMore: commentCount > old.comments.length,
-                  comments: [...old.comments, newComment],
-                };
+                  return {
+                    hasMore: commentCount > old.comments.length,
+                    comments: [...old.comments, newComment],
+                  };
+                },
               },
-            },
-          });
-
-          setValue("text", "");
-        },
-      });
+            });
+          },
+        });
+        setValue("text", "");
+      }
     } catch (err) {
       errorMapper(err, setError);
     }
   };
+
+  useEffect(() => {
+    if (commentText) {
+      setShowInput(true);
+      reset({ text: commentText });
+    }
+  }, [commentText]);
+
+  if (!me?.me) {
+    return null;
+  }
 
   const toggleInput = () => {
     setShowInput(!showInput);

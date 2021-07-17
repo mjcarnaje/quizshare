@@ -5,7 +5,8 @@ import { CommentResponseFragment } from "@generated/graphql";
 import { TrashIcon } from "@heroicons/react/outline";
 import { PencilAltIcon } from "@heroicons/react/solid";
 import { formatDate } from "@utils/index";
-import { useRouter } from "next/router";
+import { useDispatch } from "react-redux";
+import { setCommentToEdit } from "store/commentInput";
 
 import { useDeleteCommentMutation } from "../../generated/graphql";
 
@@ -21,12 +22,13 @@ const CommentCard: React.FC<Props> = ({
     id,
     text,
     author: { firstName, lastName, username, avatar },
-    createdAt,
     isMine,
+    createdAt,
+    updatedAt,
   },
   isAuthor,
 }) => {
-  const router = useRouter();
+  const dispatch = useDispatch();
   const [deleteComment] = useDeleteCommentMutation();
 
   return (
@@ -60,6 +62,11 @@ const CommentCard: React.FC<Props> = ({
               Author
             </span>
           )}
+          {createdAt !== updatedAt && (
+            <span className="mr-2 inline-flex items-center px-2.5 py-0.5 rounded-md text-sm font-medium bg-blue-100 text-blue-800">
+              Edited
+            </span>
+          )}
           {isMine && (
             <MenuDropdown
               type="array"
@@ -67,7 +74,8 @@ const CommentCard: React.FC<Props> = ({
                 {
                   icon: PencilAltIcon,
                   text: "Edit",
-                  onClick: () => router.push(`/edit/${quizId}`),
+                  onClick: () =>
+                    dispatch(setCommentToEdit({ commentId: id, text })),
                 },
                 {
                   icon: TrashIcon,

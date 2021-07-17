@@ -12,4 +12,5 @@ fragment commentResponse on Comment {
   }
   isMine
   createdAt
+  updatedAt
 }

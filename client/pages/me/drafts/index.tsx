@@ -53,19 +53,18 @@ const DraftsPage: React.FC<Props> = () => {
                 All your pending drafts are here
               </p>
             </div>
+            {data?.getMyQuizzes.quizzes.length === 0 && (
+              <div className="flex flex-col items-center justify-center max-w-3xl text-center h-96">
+                <Image
+                  src="/empty.svg"
+                  layout="fixed"
+                  width={500}
+                  height={200}
+                />
+                <p className="mt-12">No data found.</p>
+              </div>
+            )}
             <div className="relative max-w-3xl overflow-hidden bg-white shadow sm:rounded-md">
-              {data?.getMyQuizzes.quizzes.length === 0 && (
-                <div className="flex flex-col items-center justify-center h-96">
-                  <Image
-                    src="/empty.svg"
-                    layout="fixed"
-                    width={500}
-                    height={200}
-                    className="bg-red-100"
-                  />
-                  <p className="mt-8">No data found.</p>
-                </div>
-              )}
               <ul className="mx-auto divide-y divide-gray-200 ">
                 {data?.getMyQuizzes.quizzes.map((quiz) => (
                   <QuizCard key={quiz.id} type="draft" {...quiz} />
