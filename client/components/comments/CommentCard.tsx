@@ -9,11 +9,13 @@ import { useDispatch } from "react-redux";
 import { setCommentToEdit } from "store/commentInput";
 
 import { useDeleteCommentMutation } from "../../generated/graphql";
+import { classNames } from "../../utils/index";
 
 interface Props {
   quizId: string;
   comment: CommentResponseFragment;
   isAuthor: boolean;
+  hideToEdit: boolean;
 }
 
 const CommentCard: React.FC<Props> = ({
@@ -27,12 +29,18 @@ const CommentCard: React.FC<Props> = ({
     updatedAt,
   },
   isAuthor,
+  hideToEdit,
 }) => {
   const dispatch = useDispatch();
   const [deleteComment] = useDeleteCommentMutation();
 
   return (
-    <li className="p-4 space-y-4 bg-white rounded-md shadow sm:px-6">
+    <li
+      className={classNames(
+        hideToEdit ? "hidden" : "",
+        "p-4 space-y-4 bg-white rounded-md shadow sm:px-6"
+      )}
+    >
       <div className="flex space-x-3">
         <div className="flex-shrink-0">
           <img

@@ -3,6 +3,7 @@ import React from "react";
 import CommentCard from "@components/comments/CommentCard";
 
 import { useGetCommentsQuery } from "../../generated/graphql";
+import { useAppSelector } from "../../store/index";
 import { getCursor } from "../../utils/index";
 
 interface Props {
@@ -11,6 +12,7 @@ interface Props {
 }
 
 const Comments: React.FC<Props> = ({ quizId, authorId }) => {
+  const commentId = useAppSelector((state) => state.commentInput.commentId);
   const { data, loading, fetchMore, variables } = useGetCommentsQuery({
     variables: {
       quizId,
@@ -33,6 +35,7 @@ const Comments: React.FC<Props> = ({ quizId, authorId }) => {
             quizId={quizId}
             comment={comment}
             isAuthor={comment.authorId === authorId}
+            hideToEdit={comment.id === commentId}
           />
         ))}
       </ul>

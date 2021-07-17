@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 
 import { CommentResponseFragmentDoc, MeQuery } from "@generated/graphql";
 import { PencilIcon } from "@heroicons/react/outline";
@@ -13,7 +13,7 @@ import {
 } from "../../generated/graphql";
 import { selectCommentInput, setCommentToEdit } from "../../store/commentInput";
 import { useAppDispatch } from "../../store/index";
-import TextareaAutoResize from "../inputs/TextareaAutoResize";
+import TextareaAutoResizeWithRef from "../inputs/TextareaAutoResizeWithRef";
 import Avatar from "../ui/Avatar";
 
 interface Props {
@@ -30,6 +30,7 @@ const CommentInput: React.FC<Props> = ({ quizId, me, commentCount }) => {
   const dispatch = useAppDispatch();
   const { commentId, text: commentText } = useAppSelector(selectCommentInput);
   const [showInput, setShowInput] = useState(false);
+  const commentInputRef = useRef<HTMLTextAreaElement>(null);
 
   const [addComment] = useAddCommentMutation();
   const [editComment] = useEditCommentMutation();
@@ -110,6 +111,10 @@ const CommentInput: React.FC<Props> = ({ quizId, me, commentCount }) => {
     }
   }, [commentText]);
 
+  useEffect(() => {
+    if (showInput) commentInputRef?.current?.focus();
+  }, [showInput, commentInputRef]);
+
   if (!me?.me) {
     return null;
   }
@@ -139,13 +144,14 @@ const CommentInput: React.FC<Props> = ({ quizId, me, commentCount }) => {
             <Avatar name={`${firstName} ${lastName}`} img={avatar as string} />
           </div>
           <form onSubmit={handleSubmit(onSubmit)}>
-            <TextareaAutoResize<IText>
+            <TextareaAutoResizeWithRef<IText>
               name="text"
               placeholder="Type your comment"
               minRows={3}
               error={errors.text}
               register={register}
               required
+              ref={commentInputRef}
             />
             <div className="pt-4 space-x-2 text-right">
               <button
