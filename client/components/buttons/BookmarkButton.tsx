@@ -20,9 +20,10 @@ const BookmarkButton: React.FC<Props> = ({ quizId, isBookmarked }) => {
           variables: { quizId },
         });
       }}
-      className={`${classNames(
-        isBookmarked ? "text-blue-500" : "text-gray-500"
-      )} inline-flex items-center justify-center p-2 text-base font-medium leading-4 border border-transparent hover:text-blue-500 rounded-2xl hover:bg-gray-100 focus:outline-none`}
+      className={classNames(
+        isBookmarked ? "text-blue-500" : "text-gray-500",
+        "inline-flex items-center transition ease-linear duration-75 justify-center p-2 text-base font-medium leading-4 border border-transparent hover:text-blue-500 rounded-2xl hover:bg-gray-100 focus:outline-none"
+      )}
     >
       {isBookmarked ? (
         <svg

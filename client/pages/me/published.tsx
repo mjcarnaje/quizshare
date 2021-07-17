@@ -47,14 +47,11 @@ const PublishedPage: React.FC<Props> = () => {
           <div className="py-6">
             <div className="px-4 mx-auto mt-3 max-w-7xl sm:px-6 md:px-8">
               {data?.getMyQuizzes.quizzes.length === 0 && (
-                <div className="flex flex-col items-center justify-center max-w-3xl text-center h-96">
-                  <Image
-                    src="/empty.svg"
-                    layout="fixed"
-                    width={500}
-                    height={200}
-                  />
-                  <p className="mt-12">No data found.</p>
+                <div className="flex flex-col items-center justify-center h-64 max-w-3xl p-10 text-center md:h-80 lg:h-96">
+                  <div className="relative w-full h-full">
+                    <Image src="/empty.svg" layout="fill" />
+                  </div>
+                  <p className="mt-4 lg:mt-12">No data found.</p>
                 </div>
               )}
               <div className="max-w-3xl overflow-hidden bg-white shadow sm:rounded-md">

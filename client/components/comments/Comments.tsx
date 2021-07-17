@@ -5,6 +5,7 @@ import CommentCard from "@components/comments/CommentCard";
 import { useGetCommentsQuery } from "../../generated/graphql";
 import { useAppSelector } from "../../store/index";
 import { getCursor } from "../../utils/index";
+import Image from "next/image";
 
 interface Props {
   quizId: string;
@@ -23,6 +24,14 @@ const Comments: React.FC<Props> = ({ quizId, authorId }) => {
 
   return (
     <>
+      {data?.getComments.comments.length === 0 && (
+        <div className="flex flex-col items-center justify-center h-64 max-w-3xl p-10 mt-10 text-center md:h-80 lg:h-96">
+          <div className="relative w-full h-full">
+            <Image src="/empty.svg" layout="fill" />
+          </div>
+          <p className="mt-4 lg:mt-12">No comment found.</p>
+        </div>
+      )}
       <ul className="space-y-3 ">
         {!data && loading && (
           <div className="my-10">

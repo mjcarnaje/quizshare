@@ -133,8 +133,10 @@ const TakeQuiz: React.FC<Props> = () => {
                             selectAnswer(ids, isSelected, questionIdx)
                           }
                           className={classNames(
-                            isSelected ? "bg-gray-200  shadow" : "",
-                            "p-2 border text-center rounded cursor-pointer hover:bg-gray-200"
+                            isSelected
+                              ? "bg-gray-200 shadow ring-2 ring-gray-400"
+                              : "",
+                            "p-2 border text-center rounded cursor-pointer hover:bg-gray-100 transition duration-100 ease-out"
                           )}
                         >
                           {choice.choicePhoto && (
