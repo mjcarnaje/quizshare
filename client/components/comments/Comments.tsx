@@ -1,11 +1,11 @@
 import React from "react";
 
 import CommentCard from "@components/comments/CommentCard";
+import Image from "next/image";
 
 import { useGetCommentsQuery } from "../../generated/graphql";
 import { useAppSelector } from "../../store/index";
 import { getCursor } from "../../utils/index";
-import Image from "next/image";
 
 interface Props {
   quizId: string;

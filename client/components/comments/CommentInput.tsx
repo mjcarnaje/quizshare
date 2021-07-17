@@ -121,6 +121,9 @@ const CommentInput: React.FC<Props> = ({ quizId, me, commentCount }) => {
 
   const toggleInput = () => {
     setShowInput(!showInput);
+    if (showInput) {
+      dispatch(setCommentToEdit({ commentId: null, text: null }));
+    }
   };
 
   const { firstName, lastName, avatar } = me.me;
