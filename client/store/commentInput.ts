@@ -16,14 +16,15 @@ export const commentInputSlice = createSlice({
   name: "commentInput",
   initialState,
   reducers: {
-    setCommentToEdit: (state, { payload }: PayloadAction<ICommentInput>) => {
+    setCommentInput: (state, { payload }: PayloadAction<ICommentInput>) => {
       state.commentId = payload.commentId;
       state.text = payload.text;
     },
+    resetCommentInput: () => initialState,
   },
 });
 
-export const { setCommentToEdit } = commentInputSlice.actions;
+export const { setCommentInput, resetCommentInput } = commentInputSlice.actions;
 
 export const selectCommentInput = (state: RootState) => state.commentInput;
 

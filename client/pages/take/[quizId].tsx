@@ -7,6 +7,7 @@ import withApollo from "@utils/withApollo";
 import { isEqual } from "lodash";
 import { useRouter } from "next/router";
 
+import { AVATAR_FALLBACK_IMG } from "../../constant/index";
 import { useGetQuizQuery } from "../../generated/graphql";
 import { classNames } from "../../utils/index";
 
@@ -95,9 +96,13 @@ const TakeQuiz: React.FC<Props> = () => {
     <Wrapper title={title}>
       <div className="px-4 pt-4">
         <h1 className="text-2xl font-semibold text-gray-800">{title}</h1>
-        <div className="flex">
-          <img src={avatar || ""} alt="author's avatar" />
-          <p>{`${firstName} ${lastName}`}</p>
+        <div className="flex items-center">
+          <img
+            className="w-6 h-6 rounded-full"
+            src={avatar || AVATAR_FALLBACK_IMG}
+            alt="author's avatar"
+          />
+          <p className="ml-2">{`${firstName} ${lastName}`}</p>
         </div>
       </div>
       <div className="px-4 pb-4">

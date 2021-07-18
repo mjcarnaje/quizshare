@@ -11,7 +11,10 @@ import {
   useAddCommentMutation,
   useEditCommentMutation,
 } from "../../generated/graphql";
-import { selectCommentInput, setCommentToEdit } from "../../store/commentInput";
+import {
+  selectCommentInput,
+  resetCommentInput,
+} from "../../store/commentInput";
 import { useAppDispatch } from "../../store/index";
 import TextareaAutoResizeWithRef from "../inputs/TextareaAutoResizeWithRef";
 import Avatar from "../ui/Avatar";
@@ -56,7 +59,7 @@ const CommentInput: React.FC<Props> = ({ quizId, me, commentCount }) => {
             text: input.text,
           },
           update: () => {
-            dispatch(setCommentToEdit({ commentId: null, text: null }));
+            dispatch(resetCommentInput());
           },
         });
       } else {
@@ -121,12 +124,12 @@ const CommentInput: React.FC<Props> = ({ quizId, me, commentCount }) => {
 
   const toggleInput = () => {
     setShowInput(!showInput);
-    if (showInput) {
-      dispatch(setCommentToEdit({ commentId: null, text: null }));
+    if (showInput && commentId) {
+      dispatch(resetCommentInput());
     }
   };
 
-  const { firstName, lastName, avatar } = me.me;
+  const { avatar } = me.me;
 
   return (
     <>
@@ -142,36 +145,36 @@ const CommentInput: React.FC<Props> = ({ quizId, me, commentCount }) => {
       </div>
 
       {showInput && (
-        <div className="px-3 py-4 bg-white rounded-md shadow-md">
-          <div className="mb-4">
-            <Avatar name={`${firstName} ${lastName}`} img={avatar as string} />
+        <div className="flex p-5 bg-white rounded-md shadow-md">
+          <Avatar avatarUrl={avatar} />
+          <div className="flex-1 ml-2">
+            <form onSubmit={handleSubmit(onSubmit)}>
+              <TextareaAutoResizeWithRef<IText>
+                name="text"
+                placeholder="Type your comment"
+                minRows={3}
+                error={errors.text}
+                register={register}
+                required
+                ref={commentInputRef}
+              />
+              <div className="pt-4 space-x-2 text-right">
+                <button
+                  className="px-3 py-1 rounded-md hover:bg-gray-50 focus:outline-none"
+                  onClick={toggleInput}
+                  type="button"
+                >
+                  Cancel
+                </button>
+                <button
+                  className="px-3 py-1 text-green-500 border border-green-500 rounded-md focus:outline-none hover:bg-gray-50 "
+                  type="submit"
+                >
+                  Submit
+                </button>
+              </div>
+            </form>
           </div>
-          <form onSubmit={handleSubmit(onSubmit)}>
-            <TextareaAutoResizeWithRef<IText>
-              name="text"
-              placeholder="Type your comment"
-              minRows={3}
-              error={errors.text}
-              register={register}
-              required
-              ref={commentInputRef}
-            />
-            <div className="pt-4 space-x-2 text-right">
-              <button
-                className="px-3 py-1 rounded-md hover:bg-gray-50 focus:outline-none"
-                onClick={toggleInput}
-                type="button"
-              >
-                Cancel
-              </button>
-              <button
-                className="px-3 py-1 text-green-500 border border-green-500 rounded-md focus:outline-none hover:bg-gray-50 "
-                type="submit"
-              >
-                Submit
-              </button>
-            </div>
-          </form>
         </div>
       )}
     </>

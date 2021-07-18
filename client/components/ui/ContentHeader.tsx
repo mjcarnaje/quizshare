@@ -19,8 +19,14 @@ const ContentHeader: React.FC<Props> = ({
   return (
     <div className="relative z-10 flex flex-shrink-0 h-16 bg-white shadow">
       <MenuButton setSidebarOpen={setSidebarOpen} />
-      <div className="flex justify-between flex-1 px-4">
-        {showSearchBar ? <SearchBarInput /> : header}
+      <div className="flex items-center justify-between flex-1 px-4">
+        {showSearchBar ? (
+          <div className="w-72">
+            <SearchBarInput />
+          </div>
+        ) : (
+          header
+        )}
         <div className="flex items-center ml-4 md:ml-6">
           <ProfileDropdown />
         </div>

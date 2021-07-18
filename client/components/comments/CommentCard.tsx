@@ -1,12 +1,13 @@
 import React from "react";
 
 import MenuDropdown from "@components/buttons/MenuDropdown";
+import Avatar from "@components/ui/Avatar";
 import { CommentResponseFragment } from "@generated/graphql";
 import { TrashIcon } from "@heroicons/react/outline";
 import { PencilAltIcon } from "@heroicons/react/solid";
 import { formatDate } from "@utils/index";
 import { useDispatch } from "react-redux";
-import { setCommentToEdit } from "store/commentInput";
+import { setCommentInput } from "store/commentInput";
 
 import { useDeleteCommentMutation } from "../../generated/graphql";
 import { classNames } from "../../utils/index";
@@ -23,7 +24,7 @@ const CommentCard: React.FC<Props> = ({
   comment: {
     id,
     text,
-    author: { firstName, lastName, username, avatar },
+    author: { firstName, lastName, avatar },
     isMine,
     createdAt,
     updatedAt,
@@ -43,14 +44,7 @@ const CommentCard: React.FC<Props> = ({
     >
       <div className="flex space-x-3">
         <div className="flex-shrink-0">
-          <img
-            className="w-10 h-10 rounded-full"
-            src={
-              avatar ??
-              "https://images.unsplash.com/photo-1550525811-e5869dd03032?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80"
-            }
-            alt={username}
-          />
+          <Avatar avatarUrl={avatar} alt="Your avatar" />
         </div>
         <div className="flex-1 min-w-0">
           <p className="text-sm font-medium text-gray-900">
@@ -82,8 +76,9 @@ const CommentCard: React.FC<Props> = ({
                 {
                   icon: PencilAltIcon,
                   text: "Edit",
-                  onClick: () =>
-                    dispatch(setCommentToEdit({ commentId: id, text })),
+                  onClick: () => {
+                    dispatch(setCommentInput({ commentId: id, text }));
+                  },
                 },
                 {
                   icon: TrashIcon,

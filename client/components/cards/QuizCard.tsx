@@ -69,14 +69,15 @@ export const QuizCard: React.FC<Props> = ({
     }
   };
 
-  const { firstName, lastName, avatar = "" } = author;
+  const { firstName, lastName, avatar } = author;
 
   return (
     <li className="p-4 overflow-hidden bg-white ">
       <DeleteQuizModal {...{ open, setOpen, deleteQuiz, cancelButtonRef }} />
       {type === "timeline" && (
-        <div className="mb-2">
-          <Avatar name={`${firstName} ${lastName}`} img={avatar as string} />
+        <div className="flex items-center mb-2">
+          <Avatar avatarUrl={avatar} />
+          <p className="ml-2">{firstName + lastName}</p>
         </div>
       )}
       <div className="w-full p-2 rounded-md cursor-pointer group md:flex ">
@@ -86,7 +87,7 @@ export const QuizCard: React.FC<Props> = ({
               {title}
             </h2>
           </Link>
-          <div className="flex gap-4 mb-4">
+          <div className="flex gap-4 mt-1 mb-4">
             <span className="flex items-center text-sm font-medium text-gray-700">
               <CalendarIcon className="w-4 h-4 mr-1" />
               {formatDate(createdAt)}
