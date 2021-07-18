@@ -16,6 +16,7 @@ import {
   resetCommentInput,
 } from "../../store/commentInput";
 import { useAppDispatch } from "../../store/index";
+import { classNames } from "../../utils/index";
 import TextareaAutoResizeWithRef from "../inputs/TextareaAutoResizeWithRef";
 import Avatar from "../ui/Avatar";
 
@@ -44,6 +45,7 @@ const CommentInput: React.FC<Props> = ({ quizId, me, commentCount }) => {
     setError,
     setValue,
     reset,
+    watch,
     formState: { errors },
   } = useForm<IText>();
 
@@ -167,8 +169,14 @@ const CommentInput: React.FC<Props> = ({ quizId, me, commentCount }) => {
                   Cancel
                 </button>
                 <button
-                  className="px-3 py-1 text-green-500 border border-green-500 rounded-md focus:outline-none hover:bg-gray-50 "
+                  className={classNames(
+                    commentText === watch().text
+                      ? "text-green-300 border border-green-300"
+                      : "text-green-500 border border-green-500",
+                    "px-3 py-1 rounded-md focus:outline-none hover:bg-gray-50 "
+                  )}
                   type="submit"
+                  disabled={commentText === watch().text}
                 >
                   Submit
                 </button>

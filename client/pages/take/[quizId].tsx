@@ -11,7 +11,7 @@ import { AVATAR_FALLBACK_IMG } from "../../constant/index";
 import { useGetQuizQuery } from "../../generated/graphql";
 import { classNames } from "../../utils/index";
 
-const Wrapper: React.FC<{ title?: string }> = ({ title, children }) => {
+const TakeQuizWrapper: React.FC<{ title?: string }> = ({ title, children }) => {
   return (
     <MainContainer title={title ? `Take | ${title}` : "Loading.."}>
       <Container showSearchBar={false}>
@@ -81,10 +81,10 @@ const TakeQuiz: React.FC<Props> = () => {
 
   if (!data?.getQuiz) {
     return (
-      <Wrapper>
+      <TakeQuizWrapper>
         {loading && !error && <p>Loading...</p>}
         {!loading && error && <p>Error</p>}
-      </Wrapper>
+      </TakeQuizWrapper>
     );
   }
 
@@ -93,7 +93,7 @@ const TakeQuiz: React.FC<Props> = () => {
   const { avatar, firstName, lastName } = author!;
 
   return (
-    <Wrapper title={title}>
+    <TakeQuizWrapper title={title}>
       <div className="px-4 pt-4">
         <h1 className="text-2xl font-semibold text-gray-800">{title}</h1>
         <div className="flex items-center">
@@ -162,7 +162,7 @@ const TakeQuiz: React.FC<Props> = () => {
           ))}
         </ul>
       </div>
-    </Wrapper>
+    </TakeQuizWrapper>
   );
 };
 

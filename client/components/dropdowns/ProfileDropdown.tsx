@@ -1,6 +1,7 @@
 import React, { Fragment } from "react";
 
 import { useApolloClient } from "@apollo/client";
+import Avatar from "@components/ui/Avatar";
 import { Menu, Transition } from "@headlessui/react";
 import { classNames } from "@utils/index";
 import { useRouter } from "next/dist/client/router";
@@ -41,14 +42,7 @@ const ProfileDropdown: React.FC = () => {
           <div>
             <Menu.Button className="flex items-center max-w-xs text-sm bg-white rounded-full focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
               <span className="sr-only">Open user menu</span>
-              <img
-                className="w-8 h-8 rounded-full"
-                src={
-                  avatar ??
-                  "https://images.pexels.com/photos/3722806/pexels-photo-3722806.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940"
-                }
-                alt={username}
-              />
+              <Avatar avatarUrl={avatar} size="sm" alt={username} />
             </Menu.Button>
           </div>
           <Transition

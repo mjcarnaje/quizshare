@@ -25,7 +25,7 @@ type ForwardRefFn = <T extends Record<string, string>>(
 const TextareaAutoResizeWithRef = React.forwardRef((props, textInput) => {
   const { label, name, placeholder, register, required, error, ...propRest } =
     props;
-  const { ref: registerRef, ...registerRest } = register(name);
+  const { ref: registerRef, ...registerRest } = register(name, { required });
 
   return (
     <div>

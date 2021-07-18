@@ -69,15 +69,15 @@ export const QuizCard: React.FC<Props> = ({
     }
   };
 
-  const { firstName, lastName, avatar } = author;
+  const { firstName, lastName, avatar, username } = author;
 
   return (
     <li className="p-4 overflow-hidden bg-white ">
       <DeleteQuizModal {...{ open, setOpen, deleteQuiz, cancelButtonRef }} />
       {type === "timeline" && (
         <div className="flex items-center mb-2">
-          <Avatar avatarUrl={avatar} />
-          <p className="ml-2">{firstName + lastName}</p>
+          <Avatar avatarUrl={avatar} alt={username} />
+          <p className="ml-2">{`${firstName} ${lastName}`}</p>
         </div>
       )}
       <div className="w-full p-2 rounded-md cursor-pointer group md:flex ">

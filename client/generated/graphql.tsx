@@ -293,7 +293,7 @@ export type QuizCardResponseFragment = (
   & Pick<Quiz, 'id' | 'title' | 'description' | 'quizPhoto' | 'createdAt' | 'questionCount' | 'isPublished' | 'isMine' | 'likeCount' | 'bookmarkCount' | 'commentCount' | 'isLiked' | 'isBookmarked'>
   & { author: (
     { __typename?: 'User' }
-    & Pick<User, 'firstName' | 'lastName' | 'avatar'>
+    & Pick<User, 'firstName' | 'lastName' | 'username' | 'avatar'>
   ) }
 );
 
@@ -596,6 +596,7 @@ export const QuizCardResponseFragmentDoc = gql`
   author {
     firstName
     lastName
+    username
     avatar
   }
 }

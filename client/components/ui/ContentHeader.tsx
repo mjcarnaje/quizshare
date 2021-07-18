@@ -21,7 +21,7 @@ const ContentHeader: React.FC<Props> = ({
       <MenuButton setSidebarOpen={setSidebarOpen} />
       <div className="flex items-center justify-between flex-1 px-4">
         {showSearchBar ? (
-          <div className="w-72">
+          <div className="w-80">
             <SearchBarInput />
           </div>
         ) : (

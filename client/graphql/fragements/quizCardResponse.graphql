@@ -15,6 +15,7 @@ fragment quizCardResponse on Quiz {
   author {
     firstName
     lastName
+    username
     avatar
   }
 }
