@@ -5,6 +5,7 @@ import { PencilIcon } from "@heroicons/react/outline";
 import errorMapper from "@utils/errorMapper";
 import { getKeyArgs } from "@utils/index";
 import { useForm } from "react-hook-form";
+import Skeleton from "react-loading-skeleton";
 import { useAppSelector } from "store";
 
 import {
@@ -22,7 +23,7 @@ import Avatar from "../ui/Avatar";
 
 interface Props {
   quizId: string;
-  commentCount: number;
+  commentCount?: number | null;
   me: MeQuery;
 }
 
@@ -94,7 +95,7 @@ const CommentInput: React.FC<Props> = ({ quizId, me, commentCount }) => {
                   }
 
                   return {
-                    hasMore: commentCount > old.comments.length,
+                    hasMore: commentCount! > old.comments.length,
                     comments: [...old.comments, newComment],
                   };
                 },
@@ -136,14 +137,20 @@ const CommentInput: React.FC<Props> = ({ quizId, me, commentCount }) => {
   return (
     <>
       <div className="flex items-center justify-between px-3 py-4 bg-white rounded-md shadow">
-        <p>{`Comments (${commentCount})`}</p>
-        <button
-          className="flex px-3 py-1 text-green-500 border border-green-500 rounded-md focus:outline-none hover:bg-gray-50 "
-          onClick={toggleInput}
-        >
-          <PencilIcon className="-ml-0.5 mr-2 h-6 w-6" aria-hidden="true" />
-          Add Comment
-        </button>
+        <p className="inline-block text-base">
+          Comments{" "}
+          {commentCount ? `(${commentCount})` : <Skeleton width={24} />}
+        </p>
+
+        {commentCount && (
+          <button
+            className="flex px-3 py-1 text-green-500 border border-green-500 rounded-md focus:outline-none hover:bg-gray-50 "
+            onClick={toggleInput}
+          >
+            <PencilIcon className="-ml-0.5 mr-2 h-6 w-6" aria-hidden="true" />
+            Add Comment
+          </button>
+        )}
       </div>
 
       {showInput && (

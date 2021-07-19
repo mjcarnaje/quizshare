@@ -6,6 +6,7 @@ import Image from "next/image";
 import { useGetCommentsQuery } from "../../generated/graphql";
 import { useAppSelector } from "../../store/index";
 import { getCursor } from "../../utils/index";
+import CommentCardSkeleton from "./CommentCardSkeleton";
 
 interface Props {
   quizId: string;
@@ -20,6 +21,7 @@ const Comments: React.FC<Props> = ({ quizId, authorId }) => {
       limit: 20,
       cursor: null,
     },
+    notifyOnNetworkStatusChange: true,
   });
 
   return (
@@ -32,11 +34,13 @@ const Comments: React.FC<Props> = ({ quizId, authorId }) => {
           <p className="mt-4 lg:mt-12">No comment found.</p>
         </div>
       )}
-      <ul className="space-y-3 ">
+      <ul className="space-y-3 !list-none">
         {!data && loading && (
-          <div className="my-10">
-            <p>Loading...</p>
-          </div>
+          <>
+            {[...Array(3).keys()].map(() => (
+              <CommentCardSkeleton />
+            ))}
+          </>
         )}
         {data?.getComments.comments.map((comment) => (
           <CommentCard
@@ -48,6 +52,13 @@ const Comments: React.FC<Props> = ({ quizId, authorId }) => {
           />
         ))}
       </ul>
+      {data?.getComments.comments && loading && (
+        <>
+          {[...Array(1).keys()].map(() => (
+            <CommentCardSkeleton />
+          ))}
+        </>
+      )}
       {data?.getComments.hasMore && (
         <button
           type="button"

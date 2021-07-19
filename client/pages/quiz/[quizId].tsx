@@ -12,6 +12,7 @@ import { CollectionIcon, EyeIcon } from "@heroicons/react/outline";
 import { useIsAuth } from "@utils/useIsAuth";
 import withApollo from "@utils/withApollo";
 import { useRouter } from "next/router";
+import Skeleton from "react-loading-skeleton";
 
 import BookmarkButton from "../../components/buttons/BookmarkButton";
 
@@ -25,7 +26,7 @@ const SingleQuizWrapper: React.FC<{ title?: string }> = ({
         <main className="relative flex-1 overflow-y-auto focus:outline-none">
           <div className="py-6">
             <div className="flex max-w-4xl px-4 mx-auto space-x-6 sm:px-6 md:px-8">
-              <div className="flex-1 space-y-3">{children}</div>
+              <div className="flex-1 w-full space-y-3">{children}</div>
             </div>
           </div>
         </main>
@@ -42,7 +43,7 @@ const SingleQuiz: React.FC<Props> = () => {
 
   const quizId = router.query.quizId as string;
 
-  const { data, loading } = useGetQuizQuery({
+  const { data, loading, error } = useGetQuizQuery({
     variables: {
       quizId,
       isInput: false,
@@ -52,9 +53,43 @@ const SingleQuiz: React.FC<Props> = () => {
   if (!data?.getQuiz) {
     return (
       <SingleQuizWrapper>
-        <div className="flex items-center justify-center">
-          {loading ? <p>Loading..</p> : <p>Error..</p>}
-        </div>
+        {loading ? (
+          <>
+            <div className="p-2 bg-white rounded-md shadow">
+              <ImageHolder loading />
+              <div className="px-4 pt-4 pb-6">
+                <h3 className="mb-4 text-4xl font-bold tracking-tight text-gray-900">
+                  <Skeleton />
+                </h3>
+                <p className="break-words whitespace-pre-line">
+                  <Skeleton count={5} />
+                </p>
+              </div>
+            </div>
+            <div className="flex items-center justify-between w-full px-4 py-3 bg-white rounded-md shadow xl:flex-col xl:justify-around xl:px-1 xl:py-4 xl:w-20 xl:flex xl:fixed xl:bottom-24 xl:top-24 xl:right-8">
+              <div className="hidden xl:block">
+                <Skeleton circle height={28} width={28} />
+              </div>
+              <div className="space-x-2 text-center xl:space-y-4 xl:space-x-0">
+                <Skeleton circle height={28} width={28} />
+                <div className="inline-flex items-center px-3 py-2 text-base font-medium leading-4 text-gray-500 hover:text-yellow-500 rounded-2xl hover:bg-gray-100">
+                  <Skeleton circle height={28} width={28} />
+                </div>
+                <div className="inline-flex items-center px-3 py-2 text-base font-medium leading-4 text-gray-500 hover:text-purple-500 rounded-2xl hover:bg-gray-100">
+                  <Skeleton circle height={28} width={28} />
+                </div>
+              </div>
+              <div className="flex justify-end space-x-2 xl:space-x-0">
+                <div className="block xl:hidden">
+                  <Skeleton circle height={28} width={28} />
+                </div>
+                <Skeleton circle height={28} width={28} />
+              </div>
+            </div>
+          </>
+        ) : (
+          <p>{`Error: ${error?.message}`}</p>
+        )}
       </SingleQuizWrapper>
     );
   }
@@ -72,7 +107,7 @@ const SingleQuiz: React.FC<Props> = () => {
   } = data.getQuiz;
 
   return (
-    <SingleQuizWrapper>
+    <SingleQuizWrapper title={title}>
       <div className="p-2 bg-white rounded-md shadow">
         {quizPhoto && <ImageHolder loading={loading} image={quizPhoto} />}
         <div className="px-4 pt-4 pb-6">
@@ -110,7 +145,7 @@ const SingleQuiz: React.FC<Props> = () => {
           <TakeButton quizId={quizId} />
         </div>
       </div>
-      <CommentInput quizId={quizId} me={me} commentCount={commentCount!} />
+      <CommentInput quizId={quizId} me={me} commentCount={commentCount} />
       <Comments quizId={quizId} authorId={authorId!} />
     </SingleQuizWrapper>
   );

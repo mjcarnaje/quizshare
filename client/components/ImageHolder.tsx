@@ -1,6 +1,7 @@
 import React from "react";
 
 import Image from "next/image";
+import Skeleton from "react-loading-skeleton";
 
 interface Props {
   image?: string | null;
@@ -23,8 +24,8 @@ const ImageHolder: React.FC<Props> = ({ image, loading = false }) => {
         </div>
       )}
       {loading && (
-        <div className="flex items-center justify-center w-full h-8 my-4 bg-gray-300 rounded-md">
-          <p className="text-lg font-semibold">Loading</p>
+        <div className="relative w-full pb-[56.25%]">
+          <Skeleton style={{ position: "absolute", inset: 0 }} />
         </div>
       )}
     </>

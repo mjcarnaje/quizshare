@@ -106,10 +106,10 @@ const TakeQuiz: React.FC<Props> = () => {
         </div>
       </div>
       <div className="px-4 pb-4">
-        <ul className="py-8 space-y-6">
+        <ul className="py-8 space-y-10">
           {questions.map((question, questionIdx) => (
             <li
-              className="p-4 border rounded"
+              className="p-4 rounded"
               key={question.id}
               ref={(refEl) => (questionRefs.current[questionIdx] = refEl)}
             >
@@ -119,7 +119,17 @@ const TakeQuiz: React.FC<Props> = () => {
                 </div>
               )}
               <div>
-                <p className="mb-4 text-xl font-medium">{question.question}</p>
+                <div className="flex items-center px-4 py-2 mb-4 border rounded">
+                  <div className="flex flex-col mr-4">
+                    <span className="text-sm font-semibold leading-tight text-gray-900">
+                      {questionIdx + 1}
+                    </span>
+                    <span className="text-sm leading-tight text-gray-800">
+                      {questions.length}
+                    </span>
+                  </div>
+                  <p className="text-xl font-medium ">{question.question}</p>
+                </div>
                 <div className="grid grid-cols-2 gap-2">
                   {question.choices.map((choice) => {
                     const ids = {

@@ -1,6 +1,6 @@
 import React from "react";
 
-import MenuDropdown from "@components/buttons/MenuDropdown";
+import MenuDropdown from "@components/dropdowns/MenuDropdown";
 import Avatar from "@components/ui/Avatar";
 import { CommentResponseFragment } from "@generated/graphql";
 import { TrashIcon } from "@heroicons/react/outline";
