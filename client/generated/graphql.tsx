@@ -16,6 +16,17 @@ export type Scalars = {
   JSONObject: any;
 };
 
+export type CheckAnswerInput = {
+  quizId: Scalars['String'];
+  answers: Scalars['JSONObject'];
+};
+
+export type CheckAnswerResult = {
+  __typename?: 'CheckAnswerResult';
+  score: Scalars['Int'];
+  percentage: Scalars['Float'];
+};
+
 export type ChoiceInput = {
   id: Scalars['String'];
   text: Scalars['String'];
@@ -48,6 +59,7 @@ export type Mutation = {
   publishQuiz: Quiz;
   toggleLike: Quiz;
   toggleBookmark: Quiz;
+  checkAnswer: CheckAnswerResult;
 };
 
 
@@ -103,6 +115,11 @@ export type MutationToggleLikeArgs = {
 
 export type MutationToggleBookmarkArgs = {
   quizId: Scalars['String'];
+};
+
+
+export type MutationCheckAnswerArgs = {
+  checkAnswerInput: CheckAnswerInput;
 };
 
 export type PaginatedComment = {
@@ -331,6 +348,19 @@ export type AddCommentMutation = (
   & { addComment: (
     { __typename?: 'Comment' }
     & CommentResponseFragment
+  ) }
+);
+
+export type CheckAnswerMutationVariables = Exact<{
+  checkAnswerInput: CheckAnswerInput;
+}>;
+
+
+export type CheckAnswerMutation = (
+  { __typename?: 'Mutation' }
+  & { checkAnswer: (
+    { __typename?: 'CheckAnswerResult' }
+    & Pick<CheckAnswerResult, 'score' | 'percentage'>
   ) }
 );
 
@@ -693,6 +723,40 @@ export function useAddCommentMutation(baseOptions?: Apollo.MutationHookOptions<A
 export type AddCommentMutationHookResult = ReturnType<typeof useAddCommentMutation>;
 export type AddCommentMutationResult = Apollo.MutationResult<AddCommentMutation>;
 export type AddCommentMutationOptions = Apollo.BaseMutationOptions<AddCommentMutation, AddCommentMutationVariables>;
+export const CheckAnswerDocument = gql`
+    mutation CheckAnswer($checkAnswerInput: CheckAnswerInput!) {
+  checkAnswer(checkAnswerInput: $checkAnswerInput) {
+    score
+    percentage
+  }
+}
+    `;
+export type CheckAnswerMutationFn = Apollo.MutationFunction<CheckAnswerMutation, CheckAnswerMutationVariables>;
+
+/**
+ * __useCheckAnswerMutation__
+ *
+ * To run a mutation, you first call `useCheckAnswerMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useCheckAnswerMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [checkAnswerMutation, { data, loading, error }] = useCheckAnswerMutation({
+ *   variables: {
+ *      checkAnswerInput: // value for 'checkAnswerInput'
+ *   },
+ * });
+ */
+export function useCheckAnswerMutation(baseOptions?: Apollo.MutationHookOptions<CheckAnswerMutation, CheckAnswerMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<CheckAnswerMutation, CheckAnswerMutationVariables>(CheckAnswerDocument, options);
+      }
+export type CheckAnswerMutationHookResult = ReturnType<typeof useCheckAnswerMutation>;
+export type CheckAnswerMutationResult = Apollo.MutationResult<CheckAnswerMutation>;
+export type CheckAnswerMutationOptions = Apollo.BaseMutationOptions<CheckAnswerMutation, CheckAnswerMutationVariables>;
 export const DeleteCommentDocument = gql`
     mutation DeleteComment($quizId: String!, $commentId: String!) {
   deleteComment(quizId: $quizId, commentId: $commentId)

@@ -5,15 +5,14 @@ import Container from "@components/ui/Container";
 import MainContainer from "@components/ui/MainContainer";
 import { QuizInput, useSaveQuizMutation } from "@generated/graphql";
 import {
-  PaperAirplaneIcon,
-  SaveAsIcon,
+  PhotographIcon,
   PlusCircleIcon,
+  SaveAsIcon,
 } from "@heroicons/react/outline";
-import { PhotographIcon } from "@heroicons/react/outline";
 import withApollo from "@utils/withApollo";
 import { CloudinaryContext } from "cloudinary-react";
 import { useRouter } from "next/router";
-import { Droppable, DragDropContext } from "react-beautiful-dnd";
+import { DragDropContext, Droppable } from "react-beautiful-dnd";
 import {
   FieldArrayMethodProps,
   FormProvider,
@@ -22,11 +21,11 @@ import {
 } from "react-hook-form";
 import { v4 as uuid } from "uuid";
 
-import ImageHolder from "../../../components/ImageHolder";
-import Input from "../../../components/inputs/Input";
-import TextareaAutoResize from "../../../components/inputs/TextareaAutoResize";
-import errorMapper from "../../../utils/errorMapper";
-import { useUploadPhoto } from "../../../utils/useUploadImage";
+import ImageHolder from "../../components/ImageHolder";
+import Input from "../../components/inputs/Input";
+import TextareaAutoResize from "../../components/inputs/TextareaAutoResize";
+import errorMapper from "../../utils/errorMapper";
+import { useUploadPhoto } from "../../utils/useUploadImage";
 
 const CreateQuiz = () => {
   const router = useRouter();
@@ -118,14 +117,6 @@ const CreateQuiz = () => {
                 >
                   <SaveAsIcon className="w-5 h-5 mr-2 -ml-1" />
                   {savingQuiz ? "Saving" : "Save"}
-                </button>
-                <button
-                  type="button"
-                  disabled
-                  className="inline-flex  opacity-50 items-center px-4 py-2 text-sm font-medium border-[#222831] text-[#222831] bg-white border border-transparent rounded-md shadow-sm hover:bg-gray-200 focus:outline-none "
-                >
-                  <PaperAirplaneIcon className="w-5 h-5 mr-2 -ml-1" />
-                  Publish
                 </button>
               </div>
             </div>

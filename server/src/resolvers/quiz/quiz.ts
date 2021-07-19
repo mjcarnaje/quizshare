@@ -3,7 +3,6 @@ import {
   ForbiddenError,
   UserInputError,
 } from "apollo-server-express";
-import { Bookmark, Like } from "../../entity";
 import {
   Arg,
   Ctx,
@@ -15,10 +14,16 @@ import {
   UseMiddleware,
 } from "type-graphql";
 import { getConnection } from "typeorm";
-import { Quiz, User } from "../../entity";
+import { Bookmark, Like, Quiz, User } from "../../entity";
 import { isAuthenticated } from "../../middleware/isAuthenticated";
 import { MyContext } from "../../types/types";
-import { PaginatedQuizzes, QuizzesInput, QuizInput } from "./quiz.types";
+import {
+  CheckAnswerInput,
+  CheckAnswerResult,
+  PaginatedQuizzes,
+  QuizInput,
+  QuizzesInput,
+} from "./quiz.types";
 
 @Resolver(Quiz)
 export class QuizResolver {
@@ -286,5 +291,29 @@ export class QuizResolver {
     quiz = await Quiz.save(quiz);
 
     return quiz;
+  }
+
+  @UseMiddleware(isAuthenticated)
+  @Mutation(() => CheckAnswerResult)
+  async checkAnswer(
+    @Arg("checkAnswerInput") checkAnswerInput: CheckAnswerInput
+  ): Promise<CheckAnswerResult> {
+    const { quizId, answers } = checkAnswerInput;
+
+    const quiz = await Quiz.findOneOrFail(
+      { id: quizId },
+      { relations: ["questions"] }
+    );
+
+    const score = quiz.questions.reduce((total, question) => {
+      if (question.answer === answers[question.id]) {
+        return (total += 1);
+      }
+      return total;
+    }, 0);
+
+    const percentage = (score / quiz.questionCount) * 100;
+
+    return { score, percentage };
   }
 }

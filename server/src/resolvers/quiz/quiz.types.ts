@@ -1,5 +1,6 @@
-import { Field, InputType, Int, ObjectType } from "type-graphql";
-import { Quiz, Comment } from "../../entity";
+import { GraphQLJSONObject } from "graphql-type-json";
+import { Field, Float, InputType, Int, ObjectType } from "type-graphql";
+import { Comment, Quiz } from "../../entity";
 
 @InputType()
 export class ChoiceInput {
@@ -125,4 +126,22 @@ export class PaginatedComment {
 
   @Field(() => Boolean)
   hasMore: boolean;
+}
+
+@InputType()
+export class CheckAnswerInput {
+  @Field(() => String)
+  quizId: string;
+
+  @Field(() => GraphQLJSONObject)
+  answers: Record<string, string>;
+}
+
+@ObjectType()
+export class CheckAnswerResult {
+  @Field(() => Int)
+  score: number;
+
+  @Field(() => Float)
+  percentage: number;
 }

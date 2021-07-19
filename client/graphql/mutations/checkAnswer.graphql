@@ -1,0 +1,6 @@
+mutation CheckAnswer($checkAnswerInput: CheckAnswerInput!) {
+  checkAnswer(checkAnswerInput: $checkAnswerInput) {
+    score
+    percentage
+  }
+}
