@@ -68,13 +68,13 @@ const TakeQuiz: React.FC<Props> = () => {
     const questions = data?.getQuiz.questions;
 
     if (questions) {
-      setAnswers(
-        questions.reduce((answers: IUserAnswer, question) => {
-          const questionId = question.id;
-          answers[questionId] = null;
-          return answers;
-        }, {})
-      );
+      const initialize = questions.reduce((answers: IUserAnswer, question) => {
+        const questionId = question.id;
+        answers[questionId] = null;
+        return answers;
+      }, {});
+
+      setAnswers(initialize);
     }
   }, [data]);
 
