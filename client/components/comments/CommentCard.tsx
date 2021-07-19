@@ -3,8 +3,9 @@ import React from "react";
 import MenuDropdown from "@components/dropdowns/MenuDropdown";
 import Avatar from "@components/ui/Avatar";
 import { CommentResponseFragment } from "@generated/graphql";
+import { Menu } from "@headlessui/react";
 import { TrashIcon } from "@heroicons/react/outline";
-import { PencilAltIcon } from "@heroicons/react/solid";
+import { DotsVerticalIcon, PencilAltIcon } from "@heroicons/react/solid";
 import { formatDate } from "@utils/index";
 import { useDispatch } from "react-redux";
 import { setCommentInput } from "store/commentInput";
@@ -71,6 +72,11 @@ const CommentCard: React.FC<Props> = ({
           )}
           {isMine && (
             <MenuDropdown
+              anchor={
+                <Menu.Button className="flex items-center p-2 -m-2 text-gray-400 transition transform rounded-full active:scale-90 focus:outline-none active:bg-gray-200 hover:text-gray-600">
+                  <DotsVerticalIcon className="w-5 h-5" aria-hidden="true" />
+                </Menu.Button>
+              }
               type="array"
               options={[
                 {

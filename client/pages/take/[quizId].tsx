@@ -171,7 +171,7 @@ const TakeQuiz: React.FC<Props> = () => {
                             isSelected
                               ? "bg-gray-200 shadow ring-2 ring-gray-400"
                               : "",
-                            "p-2 border text-center rounded cursor-pointer hover:bg-gray-100 transition duration-100 ease-out"
+                            "p-2 transform active:scale-[.98] border text-center rounded cursor-pointer hover:bg-gray-100 transition"
                           )}
                         >
                           {choice.choicePhoto && (
@@ -195,7 +195,7 @@ const TakeQuiz: React.FC<Props> = () => {
           <button
             type="button"
             onClick={submitAnswers}
-            className="inline-flex justify-center w-1/3 px-4 py-2 text-base font-medium text-white bg-indigo-600 border border-transparent rounded-md shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 sm:col-start-2 sm:text-sm"
+            className="inline-flex justify-center w-1/3 px-4 py-2 text-base font-medium text-white transition transform bg-indigo-600 border border-transparent rounded-md shadow-sm active:scale-95 hover:bg-indigo-700 focus:outline-none sm:col-start-2 sm:text-sm"
           >
             Submit
           </button>

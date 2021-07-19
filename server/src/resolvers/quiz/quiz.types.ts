@@ -98,7 +98,7 @@ export class SaveAsDraftInput {
 @InputType()
 export class QuizzesInput {
   @Field(() => String, { nullable: true })
-  query?: string;
+  search?: string;
 
   @Field(() => Int)
   limit: number;

@@ -1,30 +1,32 @@
-import React from "react";
-import { Fragment } from "react";
+import React, { Fragment } from "react";
 
 import { Menu, Transition } from "@headlessui/react";
-import { DotsVerticalIcon } from "@heroicons/react/solid";
 
 import { classNames } from "../../utils/index";
 
 type IOption = {
-  icon: (props: React.ComponentProps<"svg">) => JSX.Element;
+  icon?: (props: React.ComponentProps<"svg">) => JSX.Element;
   text: string;
   onClick: () => void;
 };
 
 type ArrayProps = {
   type: "array";
+  anchor: JSX.Element;
   options: IOption[];
 };
 
 type ArrayOfArrayProps = {
   type: "arrayOfArray";
+  anchor: JSX.Element;
   options: IOption[][];
 };
 
 type Props = ArrayProps | ArrayOfArrayProps;
 
 const MenuDropdown: React.FC<Props> = (props) => {
+  const { anchor } = props;
+
   const renderItem = (props: IOption) => {
     const { icon: Icon, text, onClick } = props;
 
@@ -38,7 +40,9 @@ const MenuDropdown: React.FC<Props> = (props) => {
               "flex px-4 py-2 text-sm focus:outline-none w-full"
             )}
           >
-            <Icon className="w-5 h-5 mr-3 text-gray-400" aria-hidden="true" />
+            {Icon && (
+              <Icon className="w-5 h-5 mr-3 text-gray-400" aria-hidden="true" />
+            )}
             <span>{text}</span>
           </button>
         )}
@@ -50,13 +54,7 @@ const MenuDropdown: React.FC<Props> = (props) => {
     <Menu as="div" className="relative z-30 inline-block text-left">
       {({ open }) => (
         <>
-          <div>
-            <Menu.Button className="flex items-center p-2 -m-2 text-gray-400 rounded-full focus:outline-none active:bg-gray-200 hover:text-gray-600">
-              <span className="sr-only">Open options</span>
-              <DotsVerticalIcon className="w-5 h-5" aria-hidden="true" />
-            </Menu.Button>
-          </div>
-
+          <>{anchor}</>
           <Transition
             show={open}
             as={Fragment}

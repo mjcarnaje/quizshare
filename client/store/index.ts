@@ -3,13 +3,11 @@ import { TypedUseSelectorHook, useDispatch, useSelector } from "react-redux";
 
 import alertReducer from "./alert";
 import commentInputReducer from "./commentInput";
-import queryReducer from "./query";
 
 export const useAppDispatch = () => useDispatch<AppDispatch>();
 export const useAppSelector: TypedUseSelectorHook<RootState> = useSelector;
 
 const reducer = {
-  query: queryReducer,
   alert: alertReducer,
   commentInput: commentInputReducer,
 };

@@ -1,21 +1,17 @@
-import React, { useEffect } from "react";
+import React from "react";
 
 import MainContainer from "@components/ui/MainContainer";
 import { useIsAuth } from "@utils/useIsAuth";
 import { CloudinaryContext } from "cloudinary-react";
 import { useRouter } from "next/router";
-import { selectQuery } from "store/query";
 
 import { QuizCard } from "../components/cards/QuizCard";
 import Container from "../components/ui/Container";
 import { useGetPublishedQuizzesQuery } from "../generated/graphql";
-import { useAppSelector } from "../store/index";
 import withApollo from "../utils/withApollo";
 
 const IndexPage = () => {
   useIsAuth();
-
-  const query = useAppSelector(selectQuery);
 
   const router = useRouter();
 
@@ -24,18 +20,10 @@ const IndexPage = () => {
       quizzesInput: {
         limit: 10,
         cursor: null,
-        query: router.query.search as string,
+        ...router.query,
       },
     },
   });
-
-  useEffect(() => {
-    if (query === "") {
-      router.push("/");
-    } else {
-      router.push({ pathname: "/", query: { search: query } });
-    }
-  }, [query]);
 
   return (
     <CloudinaryContext

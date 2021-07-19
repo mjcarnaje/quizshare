@@ -1,13 +1,13 @@
-import React, { useEffect } from "react";
+import React from "react";
 
 import MainContainer from "@components/ui/MainContainer";
+import { Menu } from "@headlessui/react";
 import withApollo from "@utils/withApollo";
 import Image from "next/image";
 import { useRouter } from "next/router";
-import { useAppSelector } from "store";
-import { selectQuery } from "store/query";
 
 import { QuizCard } from "../../components/cards/QuizCard";
+import MenuDropdown from "../../components/dropdowns/MenuDropdown";
 import Container from "../../components/ui/Container";
 import { useGetMyQuizzesQuery } from "../../generated/graphql";
 import { useIsAuth } from "../../utils/useIsAuth";
@@ -19,26 +19,16 @@ const PublishedPage: React.FC<Props> = () => {
 
   const router = useRouter();
 
-  const query = useAppSelector(selectQuery);
-
   const { data } = useGetMyQuizzesQuery({
     variables: {
       quizzesInput: {
         limit: 10,
         cursor: null,
-        query: query,
         isPublished: true,
+        ...router.query,
       },
     },
   });
-
-  useEffect(() => {
-    if (query === "") {
-      router.push("/me/published");
-    } else {
-      router.push({ pathname: "/me/published", query: { search: query } });
-    }
-  }, [query]);
 
   return (
     <MainContainer title="Home">
@@ -46,6 +36,35 @@ const PublishedPage: React.FC<Props> = () => {
         <main className="relative flex-1 overflow-y-auto focus:outline-none">
           <div className="py-6">
             <div className="px-4 mx-auto mt-3 max-w-7xl sm:px-6 md:px-8">
+              <div className="flex justify-end max-w-3xl mb-8 sm:rounded-md">
+                <MenuDropdown
+                  anchor={
+                    <Menu.Button className="flex items-center px-4 py-1 text-white transition transform bg-gray-400 rounded active:scale-90 focus:outline-none hover:text-gray-200">
+                      <p>Sort</p>
+                    </Menu.Button>
+                  }
+                  type="array"
+                  options={[
+                    {
+                      text: "Alphabetically",
+                      onClick: () => {},
+                    },
+                    {
+                      text: "Date",
+                      onClick: () => {},
+                    },
+                    {
+                      text: "Views",
+                      onClick: () => {},
+                    },
+                    {
+                      text: "Likes",
+                      onClick: () => {},
+                    },
+                  ]}
+                />
+              </div>
+
               {data?.getMyQuizzes.quizzes.length === 0 && (
                 <div className="flex flex-col items-center justify-center h-64 max-w-3xl p-10 text-center md:h-80 lg:h-96">
                   <div className="relative w-full h-full">

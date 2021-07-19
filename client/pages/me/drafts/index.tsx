@@ -1,11 +1,9 @@
-import React, { useEffect } from "react";
+import React from "react";
 
 import MainContainer from "@components/ui/MainContainer";
 import withApollo from "@utils/withApollo";
 import Image from "next/image";
 import { useRouter } from "next/router";
-import { useAppSelector } from "store";
-import { selectQuery } from "store/query";
 
 import { QuizCard } from "../../../components/cards/QuizCard";
 import Container from "../../../components/ui/Container";
@@ -19,26 +17,16 @@ const DraftsPage: React.FC<Props> = () => {
 
   const router = useRouter();
 
-  const query = useAppSelector(selectQuery);
-
   const { data } = useGetMyQuizzesQuery({
     variables: {
       quizzesInput: {
         limit: 10,
         cursor: null,
-        query: router.query.search as string,
         isPublished: false,
+        ...router.query,
       },
     },
   });
-
-  useEffect(() => {
-    if (query === "") {
-      router.push("/me/drafts");
-    } else {
-      router.push({ pathname: "/me/drafts", query: { search: query } });
-    }
-  }, [query]);
 
   return (
     <MainContainer title="Home">

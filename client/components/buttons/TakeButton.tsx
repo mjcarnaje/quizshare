@@ -13,7 +13,7 @@ const TakeButton: React.FC<Props> = ({ quizId }) => {
     <button
       onClick={() => router.push(`/take/${quizId}`)}
       type="button"
-      className="inline-flex items-center justify-center p-2 text-base font-medium leading-4 text-gray-500 border border-transparent hover:text-blue-500 rounded-2xl hover:bg-gray-100 focus:outline-none"
+      className="inline-flex items-center justify-center p-2 text-base font-medium leading-4 text-gray-500 transform border border-transparent  active:scale-95 hover:text-blue-500 rounded-2xl hover:bg-gray-100 focus:outline-none"
     >
       <svg
         xmlns="http://www.w3.org/2000/svg"

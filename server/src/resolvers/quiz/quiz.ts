@@ -53,7 +53,7 @@ export class QuizResolver {
   async getPublishedQuizzes(
     @Arg("quizzesInput") quizzesInput: QuizzesInput
   ): Promise<PaginatedQuizzes> {
-    const { limit, query, cursor } = quizzesInput;
+    const { limit, search, cursor } = quizzesInput;
     const limitPlusOne = limit + 1;
 
     let quizzes = await getConnection()
@@ -70,9 +70,9 @@ export class QuizResolver {
       });
     }
 
-    if (query) {
+    if (search) {
       quizzes = quizzes.andWhere("quiz.title ilike :title", {
-        title: `%${query}%`,
+        title: `%${search}%`,
       });
     }
 
@@ -92,7 +92,7 @@ export class QuizResolver {
     @Arg("quizzesInput") quizzesInput: QuizzesInput,
     @Ctx() ctx: MyContext
   ): Promise<PaginatedQuizzes> {
-    const { limit, query, cursor, isPublished } = quizzesInput;
+    const { limit, search, cursor, isPublished } = quizzesInput;
     const limitPlusOne = limit + 1;
 
     let quizzes = await getConnection()
@@ -114,9 +114,9 @@ export class QuizResolver {
       });
     }
 
-    if (query) {
+    if (search) {
       quizzes = quizzes.andWhere("quiz.title ilike :title", {
-        title: `%${query}%`,
+        title: `%${search}%`,
       });
     }
 

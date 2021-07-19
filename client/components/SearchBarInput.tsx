@@ -1,17 +1,27 @@
 import React, { useEffect, useRef, useState } from "react";
 
 import { SearchIcon } from "@heroicons/react/solid";
-import { useAppDispatch } from "store";
-import { setQuery } from "store/query";
+import { useRouter } from "next/dist/client/router";
 
 const SearchBarInput: React.FC = () => {
-  const dispath = useAppDispatch();
+  const router = useRouter();
   const [text, setText] = useState("");
   const inputRef = useRef<HTMLInputElement>(null);
 
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    dispath(setQuery(text));
+    if (text !== "") {
+      router.replace({
+        pathname: router.pathname,
+        query: { ...router.query, search: text },
+      });
+    } else {
+      const { search, ...rest } = router.query;
+      router.replace({
+        pathname: router.pathname,
+        query: { ...rest },
+      });
+    }
   };
 
   const handleKeyPress = (event: KeyboardEvent) => {

@@ -144,7 +144,7 @@ const CommentInput: React.FC<Props> = ({ quizId, me, commentCount }) => {
 
         {commentCount && (
           <button
-            className="flex px-3 py-1 text-green-500 border border-green-500 rounded-md focus:outline-none hover:bg-gray-50 "
+            className="flex px-3 py-1 text-green-500 transition transform border border-green-500 rounded-md active:scale-95 focus:outline-none hover:bg-gray-50 "
             onClick={toggleInput}
           >
             <PencilIcon className="-ml-0.5 mr-2 h-6 w-6" aria-hidden="true" />
@@ -169,7 +169,7 @@ const CommentInput: React.FC<Props> = ({ quizId, me, commentCount }) => {
               />
               <div className="pt-4 space-x-2 text-right">
                 <button
-                  className="px-3 py-1 rounded-md hover:bg-gray-50 focus:outline-none"
+                  className="px-3 py-1 transition transform rounded-md active:scale-95 hover:bg-gray-50 focus:outline-none"
                   onClick={toggleInput}
                   type="button"
                 >
@@ -180,7 +180,7 @@ const CommentInput: React.FC<Props> = ({ quizId, me, commentCount }) => {
                     commentText === watch().text
                       ? "text-green-300 border border-green-300"
                       : "text-green-500 border border-green-500",
-                    "px-3 py-1 rounded-md focus:outline-none hover:bg-gray-50 "
+                    "transform active:scale-95 transition px-3 py-1 rounded-md focus:outline-none hover:bg-gray-50 "
                   )}
                   type="submit"
                   disabled={commentText === watch().text}

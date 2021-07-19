@@ -220,7 +220,7 @@ export type QuizInput = {
 };
 
 export type QuizzesInput = {
-  query?: Maybe<Scalars['String']>;
+  search?: Maybe<Scalars['String']>;
   limit: Scalars['Int'];
   cursor?: Maybe<Scalars['String']>;
   isPublished?: Maybe<Scalars['Boolean']>;
