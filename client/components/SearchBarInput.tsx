@@ -46,7 +46,7 @@ const SearchBarInput: React.FC = () => {
       />
       <div className="absolute inset-y-0 right-0 flex py-1.5 px-1.5">
         <kbd className="inline-flex items-center px-2 font-sans text-sm font-medium text-gray-400 border border-gray-200 rounded">
-          Ctrl /
+          Ctrl + /
         </kbd>
       </div>
     </form>

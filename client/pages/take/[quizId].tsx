@@ -1,10 +1,9 @@
-import React, { useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 
 import ImageHolder from "@components/ImageHolder";
 import Container from "@components/ui/Container";
 import MainContainer from "@components/ui/MainContainer";
 import withApollo from "@utils/withApollo";
-import { isEqual } from "lodash";
 import { useRouter } from "next/router";
 
 import { AVATAR_FALLBACK_IMG } from "../../constant/index";
@@ -29,10 +28,7 @@ const TakeQuizWrapper: React.FC<{ title?: string }> = ({ title, children }) => {
   );
 };
 
-type IUserAnswer = {
-  questionId: string;
-  choiceId: string;
-};
+type IUserAnswer = Record<string, string | null>;
 
 interface Props {}
 
@@ -40,7 +36,7 @@ const TakeQuiz: React.FC<Props> = () => {
   const router = useRouter();
   const quizId = router.query.quizId as string;
 
-  const [userAnswers, setUserAnswers] = useState<IUserAnswer[]>([]);
+  const [answers, setAnswers] = useState<IUserAnswer>({});
   const questionRefs = useRef<Array<HTMLLIElement | null>>([]);
 
   const { data, loading, error } = useGetQuizQuery({
@@ -50,34 +46,37 @@ const TakeQuiz: React.FC<Props> = () => {
     },
   });
 
-  const selectAnswer = (
-    ids: IUserAnswer,
-    isSelected: boolean,
-    questionIdx: number
-  ): void => {
-    const existedIdx = userAnswers.findIndex(
-      (answer) => answer.questionId === ids.questionId
-    );
-
-    if (existedIdx !== -1) {
-      let copied = [...userAnswers];
-      if (isSelected) {
-        copied = copied.filter((copy) => !isEqual(copy, ids));
-      } else {
-        copied[existedIdx] = ids;
-      }
-      setUserAnswers(copied);
+  const selectAnswer = (questionId: string, choiceId: string): void => {
+    const copied = { ...answers };
+    if (copied[questionId] === choiceId) {
+      copied[questionId] = null;
     } else {
-      setUserAnswers((answer) => [...answer, ids]);
+      copied[questionId] = choiceId;
     }
+    setAnswers(copied);
+  };
 
-    // SMOOTH SCROLL TO NEXT QUESTION
+  const scrollToNextQuestion = (questionIdx: number) => {
     if (questionRefs && questionRefs.current.length > questionIdx + 1) {
       questionRefs.current?.[questionIdx + 1]?.scrollIntoView({
         behavior: "smooth",
       });
     }
   };
+
+  useEffect(() => {
+    const questions = data?.getQuiz.questions;
+
+    if (questions) {
+      setAnswers(
+        questions.reduce((answers: IUserAnswer, question) => {
+          const questionId = question.id;
+          answers[questionId] = null;
+          return answers;
+        }, {})
+      );
+    }
+  }, [data]);
 
   if (!data?.getQuiz) {
     return (
@@ -132,21 +131,15 @@ const TakeQuiz: React.FC<Props> = () => {
                 </div>
                 <div className="grid grid-cols-2 gap-2">
                   {question.choices.map((choice) => {
-                    const ids = {
-                      questionId: question.id,
-                      choiceId: choice.id,
-                    };
-
-                    const isSelected = userAnswers.some((answer) =>
-                      isEqual(answer, ids)
-                    );
+                    const isSelected = answers[question.id] === choice.id;
 
                     return (
                       <div key={choice.id}>
                         <div
-                          onClick={() =>
-                            selectAnswer(ids, isSelected, questionIdx)
-                          }
+                          onClick={() => {
+                            selectAnswer(question.id, choice.id);
+                            scrollToNextQuestion(questionIdx);
+                          }}
                           className={classNames(
                             isSelected
                               ? "bg-gray-200 shadow ring-2 ring-gray-400"
