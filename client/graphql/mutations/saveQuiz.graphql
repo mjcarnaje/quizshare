@@ -12,11 +12,7 @@ mutation SaveQuiz($quizInput: QuizInput!, $quizId: String) {
       name
     }
     results {
-      id
-      title
-      description
-      resultPhoto
-      minimumPassingPercentage
+      ...Result
     }
   }
 }

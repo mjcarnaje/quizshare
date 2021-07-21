@@ -1,15 +1,5 @@
-mutation SignIn(
-  $usernameOrEmail: String!
-  $password: String!
-  $rememberMe: Boolean!
-) {
-  signIn(
-    SignInInput: {
-      usernameOrEmail: $usernameOrEmail
-      password: $password
-      rememberMe: $rememberMe
-    }
-  ) {
+mutation SignIn($signInInput: SignInInput!) {
+  signIn(SignInInput: $signInInput) {
     ...Me
   }
 }

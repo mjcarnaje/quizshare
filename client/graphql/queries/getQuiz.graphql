@@ -1,10 +1,6 @@
 query GetQuiz($quizId: String!, $isInput: Boolean!) {
   getQuiz(quizId: $quizId, isInput: $isInput) {
     id @skip(if: $isInput)
-    authorId @skip(if: $isInput)
-    author @skip(if: $isInput) {
-      ...Author
-    }
     title
     description
     quizPhoto
@@ -16,11 +12,7 @@ query GetQuiz($quizId: String!, $isInput: Boolean!) {
       name
     }
     results {
-      id
-      title
-      description
-      resultPhoto
-      minimumPassingPercentage
+      ...Result
     }
     isLiked @skip(if: $isInput)
     isBookmarked @skip(if: $isInput)
@@ -28,6 +20,10 @@ query GetQuiz($quizId: String!, $isInput: Boolean!) {
     likeCount @skip(if: $isInput)
     commentCount @skip(if: $isInput)
     isPublished @skip(if: $isInput)
+    authorId @skip(if: $isInput)
+    author @skip(if: $isInput) {
+      ...Author
+    }
     createdAt @skip(if: $isInput)
     updatedAt @skip(if: $isInput)
   }

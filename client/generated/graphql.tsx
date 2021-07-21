@@ -303,7 +303,7 @@ export type AuthorFragment = (
 
 export type CommentFragment = (
   { __typename?: 'Comment' }
-  & Pick<Comment, 'id' | 'text' | 'authorId' | 'isMine' | 'createdAt' | 'updatedAt'>
+  & Pick<Comment, 'id' | 'text' | 'isMine' | 'authorId' | 'createdAt' | 'updatedAt'>
   & { author: (
     { __typename?: 'User' }
     & AuthorFragment
@@ -322,11 +322,8 @@ export type QuestionFragment = (
 
 export type QuizFragment = (
   { __typename?: 'Quiz' }
-  & Pick<Quiz, 'id' | 'authorId' | 'title' | 'description' | 'quizPhoto' | 'isPublished' | 'createdAt' | 'updatedAt'>
-  & { author: (
-    { __typename?: 'User' }
-    & AuthorFragment
-  ), questions: Array<(
+  & Pick<Quiz, 'id' | 'title' | 'description' | 'quizPhoto' | 'isPublished' | 'authorId' | 'createdAt' | 'updatedAt'>
+  & { questions: Array<(
     { __typename?: 'Question' }
     & QuestionFragment
   )>, tags: Array<(
@@ -334,17 +331,25 @@ export type QuizFragment = (
     & Pick<Tag, 'id' | 'name'>
   )>, results: Array<(
     { __typename?: 'Result' }
-    & Pick<Result, 'id' | 'title' | 'description' | 'resultPhoto' | 'minimumPassingPercentage'>
-  )> }
+    & ResultFragment
+  )>, author: (
+    { __typename?: 'User' }
+    & AuthorFragment
+  ) }
 );
 
 export type QuizCardFragment = (
   { __typename?: 'Quiz' }
-  & Pick<Quiz, 'id' | 'title' | 'description' | 'quizPhoto' | 'createdAt' | 'questionCount' | 'isPublished' | 'isMine' | 'likeCount' | 'bookmarkCount' | 'commentCount' | 'isLiked' | 'isBookmarked'>
+  & Pick<Quiz, 'id' | 'title' | 'description' | 'quizPhoto' | 'createdAt' | 'questionCount' | 'isPublished' | 'isMine' | 'likeCount' | 'bookmarkCount' | 'commentCount' | 'isLiked' | 'isBookmarked' | 'authorId'>
   & { author: (
     { __typename?: 'User' }
     & AuthorFragment
   ) }
+);
+
+export type ResultFragment = (
+  { __typename?: 'Result' }
+  & Pick<Result, 'id' | 'title' | 'description' | 'resultPhoto' | 'minimumPassingPercentage'>
 );
 
 export type AddCommentMutationVariables = Exact<{
@@ -450,15 +455,13 @@ export type SaveQuizMutation = (
       & Pick<Tag, 'id' | 'name'>
     )>, results: Array<(
       { __typename?: 'Result' }
-      & Pick<Result, 'id' | 'title' | 'description' | 'resultPhoto' | 'minimumPassingPercentage'>
+      & ResultFragment
     )> }
   ) }
 );
 
 export type SignInMutationVariables = Exact<{
-  usernameOrEmail: Scalars['String'];
-  password: Scalars['String'];
-  rememberMe: Scalars['Boolean'];
+  signInInput: SignInInput;
 }>;
 
 
@@ -572,11 +575,8 @@ export type GetQuizQuery = (
   { __typename?: 'Query' }
   & { getQuiz: (
     { __typename?: 'Quiz' }
-    & MakeOptional<Pick<Quiz, 'id' | 'authorId' | 'title' | 'description' | 'quizPhoto' | 'isLiked' | 'isBookmarked' | 'questionCount' | 'likeCount' | 'commentCount' | 'isPublished' | 'createdAt' | 'updatedAt'>, 'id' | 'authorId' | 'isLiked' | 'isBookmarked' | 'questionCount' | 'likeCount' | 'commentCount' | 'isPublished' | 'createdAt' | 'updatedAt'>
-    & { author?: Maybe<(
-      { __typename?: 'User' }
-      & AuthorFragment
-    )>, questions: Array<(
+    & MakeOptional<Pick<Quiz, 'id' | 'title' | 'description' | 'quizPhoto' | 'isLiked' | 'isBookmarked' | 'questionCount' | 'likeCount' | 'commentCount' | 'isPublished' | 'authorId' | 'createdAt' | 'updatedAt'>, 'id' | 'isLiked' | 'isBookmarked' | 'questionCount' | 'likeCount' | 'commentCount' | 'isPublished' | 'authorId' | 'createdAt' | 'updatedAt'>
+    & { questions: Array<(
       { __typename?: 'Question' }
       & QuestionFragment
     )>, tags: Array<(
@@ -584,7 +584,10 @@ export type GetQuizQuery = (
       & Pick<Tag, 'id' | 'name'>
     )>, results: Array<(
       { __typename?: 'Result' }
-      & Pick<Result, 'id' | 'title' | 'description' | 'resultPhoto' | 'minimumPassingPercentage'>
+      & ResultFragment
+    )>, author?: Maybe<(
+      { __typename?: 'User' }
+      & AuthorFragment
     )> }
   ) }
 );
@@ -614,11 +617,11 @@ export const CommentFragmentDoc = gql`
     fragment Comment on Comment {
   id
   text
+  isMine
   authorId
   author {
     ...Author
   }
-  isMine
   createdAt
   updatedAt
 }
@@ -654,13 +657,18 @@ export const QuestionFragmentDoc = gql`
   hint
 }
     `;
+export const ResultFragmentDoc = gql`
+    fragment Result on Result {
+  id
+  title
+  description
+  resultPhoto
+  minimumPassingPercentage
+}
+    `;
 export const QuizFragmentDoc = gql`
     fragment Quiz on Quiz {
   id
-  authorId
-  author {
-    ...Author
-  }
   title
   description
   quizPhoto
@@ -672,18 +680,19 @@ export const QuizFragmentDoc = gql`
     name
   }
   results {
-    id
-    title
-    description
-    resultPhoto
-    minimumPassingPercentage
+    ...Result
   }
   isPublished
+  authorId
+  author {
+    ...Author
+  }
   createdAt
   updatedAt
 }
-    ${AuthorFragmentDoc}
-${QuestionFragmentDoc}`;
+    ${QuestionFragmentDoc}
+${ResultFragmentDoc}
+${AuthorFragmentDoc}`;
 export const QuizCardFragmentDoc = gql`
     fragment QuizCard on Quiz {
   id
@@ -699,6 +708,7 @@ export const QuizCardFragmentDoc = gql`
   commentCount
   isLiked
   isBookmarked
+  authorId
   author {
     ...Author
   }
@@ -948,15 +958,12 @@ export const SaveQuizDocument = gql`
       name
     }
     results {
-      id
-      title
-      description
-      resultPhoto
-      minimumPassingPercentage
+      ...Result
     }
   }
 }
-    ${QuestionFragmentDoc}`;
+    ${QuestionFragmentDoc}
+${ResultFragmentDoc}`;
 export type SaveQuizMutationFn = Apollo.MutationFunction<SaveQuizMutation, SaveQuizMutationVariables>;
 
 /**
@@ -985,10 +992,8 @@ export type SaveQuizMutationHookResult = ReturnType<typeof useSaveQuizMutation>;
 export type SaveQuizMutationResult = Apollo.MutationResult<SaveQuizMutation>;
 export type SaveQuizMutationOptions = Apollo.BaseMutationOptions<SaveQuizMutation, SaveQuizMutationVariables>;
 export const SignInDocument = gql`
-    mutation SignIn($usernameOrEmail: String!, $password: String!, $rememberMe: Boolean!) {
-  signIn(
-    SignInInput: {usernameOrEmail: $usernameOrEmail, password: $password, rememberMe: $rememberMe}
-  ) {
+    mutation SignIn($signInInput: SignInInput!) {
+  signIn(SignInInput: $signInInput) {
     ...Me
   }
 }
@@ -1008,9 +1013,7 @@ export type SignInMutationFn = Apollo.MutationFunction<SignInMutation, SignInMut
  * @example
  * const [signInMutation, { data, loading, error }] = useSignInMutation({
  *   variables: {
- *      usernameOrEmail: // value for 'usernameOrEmail'
- *      password: // value for 'password'
- *      rememberMe: // value for 'rememberMe'
+ *      signInInput: // value for 'signInInput'
  *   },
  * });
  */
@@ -1240,10 +1243,6 @@ export const GetQuizDocument = gql`
     query GetQuiz($quizId: String!, $isInput: Boolean!) {
   getQuiz(quizId: $quizId, isInput: $isInput) {
     id @skip(if: $isInput)
-    authorId @skip(if: $isInput)
-    author @skip(if: $isInput) {
-      ...Author
-    }
     title
     description
     quizPhoto
@@ -1255,11 +1254,7 @@ export const GetQuizDocument = gql`
       name
     }
     results {
-      id
-      title
-      description
-      resultPhoto
-      minimumPassingPercentage
+      ...Result
     }
     isLiked @skip(if: $isInput)
     isBookmarked @skip(if: $isInput)
@@ -1267,12 +1262,17 @@ export const GetQuizDocument = gql`
     likeCount @skip(if: $isInput)
     commentCount @skip(if: $isInput)
     isPublished @skip(if: $isInput)
+    authorId @skip(if: $isInput)
+    author @skip(if: $isInput) {
+      ...Author
+    }
     createdAt @skip(if: $isInput)
     updatedAt @skip(if: $isInput)
   }
 }
-    ${AuthorFragmentDoc}
-${QuestionFragmentDoc}`;
+    ${QuestionFragmentDoc}
+${ResultFragmentDoc}
+${AuthorFragmentDoc}`;
 
 /**
  * __useGetQuizQuery__

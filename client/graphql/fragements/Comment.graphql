@@ -1,11 +1,11 @@
 fragment Comment on Comment {
   id
   text
+  isMine
   authorId
   author {
     ...Author
   }
-  isMine
   createdAt
   updatedAt
 }

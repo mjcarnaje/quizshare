@@ -12,6 +12,7 @@ fragment QuizCard on Quiz {
   commentCount
   isLiked
   isBookmarked
+  authorId
   author {
     ...Author
   }

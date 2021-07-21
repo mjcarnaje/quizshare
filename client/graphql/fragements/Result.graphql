@@ -1,0 +1,7 @@
+fragment Result on Result {
+  id
+  title
+  description
+  resultPhoto
+  minimumPassingPercentage
+}

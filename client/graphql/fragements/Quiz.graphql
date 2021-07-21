@@ -1,9 +1,5 @@
 fragment Quiz on Quiz {
   id
-  authorId
-  author {
-    ...Author
-  }
   title
   description
   quizPhoto
@@ -15,13 +11,13 @@ fragment Quiz on Quiz {
     name
   }
   results {
-    id
-    title
-    description
-    resultPhoto
-    minimumPassingPercentage
+    ...Result
   }
   isPublished
+  authorId
+  author {
+    ...Author
+  }
   createdAt
   updatedAt
 }

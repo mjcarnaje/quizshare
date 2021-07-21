@@ -1,7 +1,5 @@
 fragment Me on User {
   id
-  googleId
-  facebookId
   username
   email
   avatar
