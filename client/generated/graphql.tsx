@@ -60,6 +60,7 @@ export type Mutation = {
   toggleLike: Quiz;
   toggleBookmark: Quiz;
   checkAnswer: CheckAnswerResult;
+  toggleSubscription: User;
 };
 
 
@@ -120,6 +121,11 @@ export type MutationToggleBookmarkArgs = {
 
 export type MutationCheckAnswerArgs = {
   checkAnswerInput: CheckAnswerInput;
+};
+
+
+export type MutationToggleSubscriptionArgs = {
+  userId: Scalars['String'];
 };
 
 export type PaginatedComment = {
@@ -265,6 +271,15 @@ export type SignUpInput = {
   gender: Scalars['String'];
 };
 
+export type Subscription = {
+  __typename?: 'Subscription';
+  followedId: Scalars['String'];
+  followerId: Scalars['String'];
+  follower: Scalars['String'];
+  followed: Scalars['String'];
+  createdAt: Scalars['String'];
+};
+
 export type Tag = {
   __typename?: 'Tag';
   id: Scalars['String'];
@@ -292,13 +307,16 @@ export type User = {
   country?: Maybe<Scalars['String']>;
   bio?: Maybe<Scalars['String']>;
   social?: Maybe<Scalars['JSONObject']>;
+  followedCount: Scalars['Int'];
+  followerCount: Scalars['Int'];
+  isFollowed: Scalars['Boolean'];
   createdAt: Scalars['String'];
   updatedAt: Scalars['String'];
 };
 
 export type AuthorFragment = (
   { __typename?: 'User' }
-  & Pick<User, 'id' | 'avatar' | 'firstName' | 'lastName' | 'email' | 'username'>
+  & Pick<User, 'id' | 'avatar' | 'firstName' | 'lastName' | 'email' | 'username' | 'isFollowed'>
 );
 
 export type CommentFragment = (
@@ -312,7 +330,7 @@ export type CommentFragment = (
 
 export type MeFragment = (
   { __typename?: 'User' }
-  & Pick<User, 'id' | 'googleId' | 'facebookId' | 'username' | 'email' | 'avatar' | 'coverPhoto' | 'firstName' | 'lastName' | 'birthday' | 'gender' | 'country' | 'bio' | 'social' | 'createdAt' | 'updatedAt'>
+  & Pick<User, 'id' | 'username' | 'email' | 'avatar' | 'coverPhoto' | 'firstName' | 'lastName' | 'birthday' | 'gender' | 'country' | 'bio' | 'social' | 'createdAt' | 'updatedAt'>
 );
 
 export type QuestionFragment = (
@@ -512,6 +530,19 @@ export type ToggleLikeMutation = (
   ) }
 );
 
+export type ToggleSubscriptionMutationVariables = Exact<{
+  userId: Scalars['String'];
+}>;
+
+
+export type ToggleSubscriptionMutation = (
+  { __typename?: 'Mutation' }
+  & { toggleSubscription: (
+    { __typename?: 'User' }
+    & AuthorFragment
+  ) }
+);
+
 export type GetCommentsQueryVariables = Exact<{
   quizId: Scalars['String'];
   limit: Scalars['Float'];
@@ -611,6 +642,7 @@ export const AuthorFragmentDoc = gql`
   lastName
   email
   username
+  isFollowed
 }
     `;
 export const CommentFragmentDoc = gql`
@@ -629,8 +661,6 @@ export const CommentFragmentDoc = gql`
 export const MeFragmentDoc = gql`
     fragment Me on User {
   id
-  googleId
-  facebookId
   username
   email
   avatar
@@ -1123,6 +1153,39 @@ export function useToggleLikeMutation(baseOptions?: Apollo.MutationHookOptions<T
 export type ToggleLikeMutationHookResult = ReturnType<typeof useToggleLikeMutation>;
 export type ToggleLikeMutationResult = Apollo.MutationResult<ToggleLikeMutation>;
 export type ToggleLikeMutationOptions = Apollo.BaseMutationOptions<ToggleLikeMutation, ToggleLikeMutationVariables>;
+export const ToggleSubscriptionDocument = gql`
+    mutation ToggleSubscription($userId: String!) {
+  toggleSubscription(userId: $userId) {
+    ...Author
+  }
+}
+    ${AuthorFragmentDoc}`;
+export type ToggleSubscriptionMutationFn = Apollo.MutationFunction<ToggleSubscriptionMutation, ToggleSubscriptionMutationVariables>;
+
+/**
+ * __useToggleSubscriptionMutation__
+ *
+ * To run a mutation, you first call `useToggleSubscriptionMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useToggleSubscriptionMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [toggleSubscriptionMutation, { data, loading, error }] = useToggleSubscriptionMutation({
+ *   variables: {
+ *      userId: // value for 'userId'
+ *   },
+ * });
+ */
+export function useToggleSubscriptionMutation(baseOptions?: Apollo.MutationHookOptions<ToggleSubscriptionMutation, ToggleSubscriptionMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<ToggleSubscriptionMutation, ToggleSubscriptionMutationVariables>(ToggleSubscriptionDocument, options);
+      }
+export type ToggleSubscriptionMutationHookResult = ReturnType<typeof useToggleSubscriptionMutation>;
+export type ToggleSubscriptionMutationResult = Apollo.MutationResult<ToggleSubscriptionMutation>;
+export type ToggleSubscriptionMutationOptions = Apollo.BaseMutationOptions<ToggleSubscriptionMutation, ToggleSubscriptionMutationVariables>;
 export const GetCommentsDocument = gql`
     query GetComments($quizId: String!, $limit: Float!, $cursor: String) {
   getComments(quizId: $quizId, limit: $limit, cursor: $cursor) {

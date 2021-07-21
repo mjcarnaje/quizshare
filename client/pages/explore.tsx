@@ -10,7 +10,7 @@ import Container from "../components/ui/Container";
 import { useGetPublishedQuizzesQuery } from "../generated/graphql";
 import withApollo from "../utils/withApollo";
 
-const IndexPage = () => {
+const Explore = () => {
   useIsAuth();
 
   const router = useRouter();
@@ -36,13 +36,9 @@ const IndexPage = () => {
               <div className="px-4 mx-auto mt-3 max-w-7xl sm:px-6 md:px-8">
                 <div className="max-w-3xl overflow-hidden bg-white shadow sm:rounded-md">
                   <ul className="mx-auto divide-y divide-gray-200 ">
-                    {data?.getPublishedQuizzes.quizzes.map((quiz) => {
-                      if (!quiz.author.isFollowed && !quiz.isMine) return;
-
-                      return (
-                        <QuizCard key={quiz.id} type="timeline" {...quiz} />
-                      );
-                    })}
+                    {data?.getPublishedQuizzes.quizzes.map((quiz) => (
+                      <QuizCard key={quiz.id} type="timeline" {...quiz} />
+                    ))}
                   </ul>
                 </div>
               </div>
@@ -54,4 +50,4 @@ const IndexPage = () => {
   );
 };
 
-export default withApollo({ ssr: true })(IndexPage);
+export default withApollo({ ssr: true })(Explore);

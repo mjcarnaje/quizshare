@@ -19,6 +19,7 @@ import {
 } from "../../generated/graphql";
 import BookmarkButton from "../buttons/BookmarkButton";
 import CommentButton from "../buttons/CommentButton";
+import FollowButton from "../buttons/FollowButton";
 import DeleteQuizModal from "../modals/DeleteQuizModal";
 import Avatar from "../ui/Avatar";
 
@@ -40,6 +41,7 @@ export const QuizCard: React.FC<Props> = ({
   quizPhoto,
   questionCount,
   createdAt,
+  authorId,
   author,
   type,
   likeCount,
@@ -69,7 +71,7 @@ export const QuizCard: React.FC<Props> = ({
     }
   };
 
-  const { firstName, lastName, avatar, username } = author;
+  const { firstName, lastName, avatar, username, isFollowed } = author;
 
   return (
     <li className="p-4 overflow-hidden bg-white ">
@@ -78,6 +80,12 @@ export const QuizCard: React.FC<Props> = ({
         <div className="flex items-center mb-2">
           <Avatar avatarUrl={avatar} alt={username} />
           <p className="ml-2">{`${firstName} ${lastName}`}</p>
+          <div className="mx-1"></div>
+          <FollowButton
+            userId={authorId}
+            isFollowed={isFollowed}
+            isMine={isMine}
+          />
         </div>
       )}
       <div className="w-full p-2 rounded-md cursor-pointer group md:flex ">

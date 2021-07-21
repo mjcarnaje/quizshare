@@ -99,7 +99,7 @@ const CommentCard: React.FC<Props> = ({
                         cache.modify({
                           id: `Quiz:${quizId}`,
                           fields: {
-                            commentCount(old) {
+                            commentCount: (old) => {
                               return old - 1;
                             },
                           },

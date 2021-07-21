@@ -28,6 +28,7 @@ export class UserResolver {
     const meUserId = ctx.req.session.userId;
 
     let user = await User.findOneOrFail(meUserId);
+    let toFollow = await User.findOneOrFail(userId);
 
     const followed = await Subscription.findOne({
       followerId: meUserId,
@@ -36,20 +37,23 @@ export class UserResolver {
 
     if (followed) {
       user.followedCount--;
+      toFollow.followerCount--;
       await Subscription.delete({
         followerId: meUserId,
         followedId: userId,
       });
     } else {
       user.followedCount++;
+      toFollow.followerCount++;
       await Subscription.create({
         followerId: meUserId,
         followedId: userId,
       }).save();
     }
 
-    user = await User.save(user);
+    await User.save(user);
+    toFollow = await User.save(toFollow);
 
-    return user;
+    return toFollow;
   }
 }

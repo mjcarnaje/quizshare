@@ -8,12 +8,14 @@ import {
   PlusCircleIcon,
   CollectionIcon,
   ArchiveIcon,
+  HashtagIcon,
 } from "@heroicons/react/outline";
 import {
   HomeIcon as HomeIconSolid,
   PlusCircleIcon as PlusCircleIconSolid,
   CollectionIcon as CollectionIconSolid,
   ArchiveIcon as ArchiveIconSolid,
+  HashtagIcon as HashtagIconSolid,
 } from "@heroicons/react/solid";
 
 const navigation = [
@@ -22,6 +24,12 @@ const navigation = [
     href: "/",
     icon: HomeIcon,
     activeIcon: HomeIconSolid,
+  },
+  {
+    name: "Explore",
+    href: "/explore",
+    icon: HashtagIcon,
+    activeIcon: HashtagIconSolid,
   },
   {
     name: "Drafts",

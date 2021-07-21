@@ -1,0 +1,5 @@
+mutation ToggleSubscription($userId: String!) {
+  toggleSubscription(userId: $userId) {
+    ...Author
+  }
+}
