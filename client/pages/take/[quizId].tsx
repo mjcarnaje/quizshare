@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState } from "react";
 
-import ImageHolder from "@components/ImageHolder";
+import QuestionCard from "@components/take/QuestionCard";
 import Container from "@components/ui/Container";
 import MainContainer from "@components/ui/MainContainer";
 import withApollo from "@utils/withApollo";
@@ -11,7 +11,6 @@ import {
   useCheckAnswerMutation,
   useGetQuizQuery,
 } from "../../generated/graphql";
-import { classNames } from "../../utils/index";
 
 const TakeQuizWrapper: React.FC<{ title?: string }> = ({ title, children }) => {
   return (
@@ -31,7 +30,7 @@ const TakeQuizWrapper: React.FC<{ title?: string }> = ({ title, children }) => {
   );
 };
 
-type IUserAnswer = Record<string, string | null>;
+export type IUserAnswer = Record<string, string | null>;
 
 interface Props {}
 
@@ -114,7 +113,7 @@ const TakeQuiz: React.FC<Props> = () => {
     );
   }
 
-  const { title, author, questions } = data.getQuiz;
+  const { title, author, questions, questionCount } = data.getQuiz;
 
   const { avatar, firstName, lastName } = author!;
 
@@ -134,61 +133,17 @@ const TakeQuiz: React.FC<Props> = () => {
       <div className="px-4 pb-4">
         <ul className="py-8 space-y-10">
           {questions.map((question, questionIdx) => (
-            <li
-              className="p-4 rounded"
-              key={question.id}
-              ref={(refEl) => (questionRefs.current[questionIdx] = refEl)}
-            >
-              {question.questionPhoto && (
-                <div className="w-2/3 mx-auto mb-6">
-                  <ImageHolder image={question.questionPhoto} />
-                </div>
-              )}
-              <div>
-                <div className="flex items-center px-4 py-2 mb-4 border rounded">
-                  <div className="flex flex-col mr-4">
-                    <span className="text-sm font-semibold leading-tight text-gray-900">
-                      {questionIdx + 1}
-                    </span>
-                    <span className="text-sm leading-tight text-gray-800">
-                      {questions.length}
-                    </span>
-                  </div>
-                  <p className="text-xl font-medium ">{question.question}</p>
-                </div>
-                <div className="grid grid-cols-2 gap-2">
-                  {question.choices.map((choice) => {
-                    const isSelected = answers[question.id] === choice.id;
-
-                    return (
-                      <div key={choice.id}>
-                        <div
-                          onClick={() => {
-                            selectAnswer(question.id, choice.id);
-                            scrollToNextQuestion(questionIdx);
-                          }}
-                          className={classNames(
-                            isSelected
-                              ? "bg-gray-200 shadow ring-2 ring-gray-400"
-                              : "",
-                            "p-2 transform active:scale-[.98] border text-center rounded cursor-pointer hover:bg-gray-100 transition"
-                          )}
-                        >
-                          {choice.choicePhoto && (
-                            <div className="mb-4">
-                              <ImageHolder image={choice.choicePhoto} />
-                            </div>
-                          )}
-                          <div>
-                            <p className="break-all">{choice.text}</p>
-                          </div>
-                        </div>
-                      </div>
-                    );
-                  })}
-                </div>
-              </div>
-            </li>
+            <QuestionCard
+              {...{
+                question,
+                questionIdx,
+                questionCount,
+                questionRefs,
+                answers,
+                selectAnswer,
+                scrollToNextQuestion,
+              }}
+            />
           ))}
         </ul>
         <div className="flex justify-center">

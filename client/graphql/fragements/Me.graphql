@@ -1,4 +1,4 @@
-fragment userResponse on User {
+fragment Me on User {
   id
   googleId
   facebookId

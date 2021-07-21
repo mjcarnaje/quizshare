@@ -1,4 +1,4 @@
-fragment quizCardResponse on Quiz {
+fragment QuizCard on Quiz {
   id
   title
   description
@@ -13,9 +13,6 @@ fragment quizCardResponse on Quiz {
   isLiked
   isBookmarked
   author {
-    firstName
-    lastName
-    username
-    avatar
+    ...Author
   }
 }

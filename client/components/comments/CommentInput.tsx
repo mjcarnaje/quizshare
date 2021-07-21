@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState } from "react";
 
-import { CommentResponseFragmentDoc, MeQuery } from "@generated/graphql";
+import { CommentFragmentDoc, MeQuery } from "@generated/graphql";
 import { PencilIcon } from "@heroicons/react/outline";
 import errorMapper from "@utils/errorMapper";
 import { getKeyArgs } from "@utils/index";
@@ -85,7 +85,7 @@ const CommentInput: React.FC<Props> = ({ quizId, me, commentCount }) => {
                 getComments: (old, { storeFieldName }) => {
                   const newComment = cache.writeFragment({
                     data: data?.addComment,
-                    fragment: CommentResponseFragmentDoc,
+                    fragment: CommentFragmentDoc,
                   });
 
                   const args = getKeyArgs(storeFieldName, "getComments");

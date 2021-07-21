@@ -1,5 +1,5 @@
 mutation AddComment($quizId: String!, $text: String!) {
   addComment(quizId: $quizId, text: $text) {
-    ...commentResponse
+    ...Comment
   }
 }

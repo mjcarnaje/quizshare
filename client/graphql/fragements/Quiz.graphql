@@ -1,23 +1,14 @@
-fragment quizResponse on Quiz {
+fragment Quiz on Quiz {
   id
   authorId
   author {
-    firstName
-    lastName
-    avatar
-    email
+    ...Author
   }
   title
   description
   quizPhoto
   questions {
-    id
-    question
-    questionPhoto
-    choices
-    answer
-    explanation
-    hint
+    ...Question
   }
   tags {
     id

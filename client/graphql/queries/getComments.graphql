@@ -1,7 +1,7 @@
 query GetComments($quizId: String!, $limit: Float!, $cursor: String) {
   getComments(quizId: $quizId, limit: $limit, cursor: $cursor) {
     comments {
-      ...commentResponse
+      ...Comment
     }
     hasMore
   }

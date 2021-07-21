@@ -1,0 +1,9 @@
+fragment Question on Question {
+  id
+  question
+  questionPhoto
+  choices
+  answer
+  explanation
+  hint
+}

@@ -296,33 +296,39 @@ export type User = {
   updatedAt: Scalars['String'];
 };
 
-export type CommentResponseFragment = (
+export type AuthorFragment = (
+  { __typename?: 'User' }
+  & Pick<User, 'id' | 'avatar' | 'firstName' | 'lastName' | 'email' | 'username'>
+);
+
+export type CommentFragment = (
   { __typename?: 'Comment' }
   & Pick<Comment, 'id' | 'text' | 'authorId' | 'isMine' | 'createdAt' | 'updatedAt'>
   & { author: (
     { __typename?: 'User' }
-    & Pick<User, 'id' | 'avatar' | 'firstName' | 'lastName' | 'email' | 'username'>
+    & AuthorFragment
   ) }
 );
 
-export type QuizCardResponseFragment = (
-  { __typename?: 'Quiz' }
-  & Pick<Quiz, 'id' | 'title' | 'description' | 'quizPhoto' | 'createdAt' | 'questionCount' | 'isPublished' | 'isMine' | 'likeCount' | 'bookmarkCount' | 'commentCount' | 'isLiked' | 'isBookmarked'>
-  & { author: (
-    { __typename?: 'User' }
-    & Pick<User, 'firstName' | 'lastName' | 'username' | 'avatar'>
-  ) }
+export type MeFragment = (
+  { __typename?: 'User' }
+  & Pick<User, 'id' | 'googleId' | 'facebookId' | 'username' | 'email' | 'avatar' | 'coverPhoto' | 'firstName' | 'lastName' | 'birthday' | 'gender' | 'country' | 'bio' | 'social' | 'createdAt' | 'updatedAt'>
 );
 
-export type QuizResponseFragment = (
+export type QuestionFragment = (
+  { __typename?: 'Question' }
+  & Pick<Question, 'id' | 'question' | 'questionPhoto' | 'choices' | 'answer' | 'explanation' | 'hint'>
+);
+
+export type QuizFragment = (
   { __typename?: 'Quiz' }
   & Pick<Quiz, 'id' | 'authorId' | 'title' | 'description' | 'quizPhoto' | 'isPublished' | 'createdAt' | 'updatedAt'>
   & { author: (
     { __typename?: 'User' }
-    & Pick<User, 'firstName' | 'lastName' | 'avatar' | 'email'>
+    & AuthorFragment
   ), questions: Array<(
     { __typename?: 'Question' }
-    & Pick<Question, 'id' | 'question' | 'questionPhoto' | 'choices' | 'answer' | 'explanation' | 'hint'>
+    & QuestionFragment
   )>, tags: Array<(
     { __typename?: 'Tag' }
     & Pick<Tag, 'id' | 'name'>
@@ -332,9 +338,13 @@ export type QuizResponseFragment = (
   )> }
 );
 
-export type UserResponseFragment = (
-  { __typename?: 'User' }
-  & Pick<User, 'id' | 'googleId' | 'facebookId' | 'username' | 'email' | 'avatar' | 'coverPhoto' | 'firstName' | 'lastName' | 'birthday' | 'gender' | 'country' | 'bio' | 'social' | 'createdAt' | 'updatedAt'>
+export type QuizCardFragment = (
+  { __typename?: 'Quiz' }
+  & Pick<Quiz, 'id' | 'title' | 'description' | 'quizPhoto' | 'createdAt' | 'questionCount' | 'isPublished' | 'isMine' | 'likeCount' | 'bookmarkCount' | 'commentCount' | 'isLiked' | 'isBookmarked'>
+  & { author: (
+    { __typename?: 'User' }
+    & AuthorFragment
+  ) }
 );
 
 export type AddCommentMutationVariables = Exact<{
@@ -347,7 +357,7 @@ export type AddCommentMutation = (
   { __typename?: 'Mutation' }
   & { addComment: (
     { __typename?: 'Comment' }
-    & CommentResponseFragment
+    & CommentFragment
   ) }
 );
 
@@ -396,7 +406,7 @@ export type EditCommentMutation = (
   { __typename?: 'Mutation' }
   & { editComment: (
     { __typename?: 'Comment' }
-    & CommentResponseFragment
+    & CommentFragment
   ) }
 );
 
@@ -434,7 +444,7 @@ export type SaveQuizMutation = (
     & Pick<Quiz, 'id' | 'title' | 'description' | 'quizPhoto'>
     & { questions: Array<(
       { __typename?: 'Question' }
-      & Pick<Question, 'id' | 'question' | 'questionPhoto' | 'choices' | 'answer'>
+      & QuestionFragment
     )>, tags: Array<(
       { __typename?: 'Tag' }
       & Pick<Tag, 'id' | 'name'>
@@ -456,7 +466,7 @@ export type SignInMutation = (
   { __typename?: 'Mutation' }
   & { signIn?: Maybe<(
     { __typename?: 'User' }
-    & UserResponseFragment
+    & MeFragment
   )> }
 );
 
@@ -469,7 +479,7 @@ export type SignUpMutation = (
   { __typename?: 'Mutation' }
   & { signUp: (
     { __typename?: 'User' }
-    & UserResponseFragment
+    & MeFragment
   ) }
 );
 
@@ -482,7 +492,7 @@ export type ToggleBookmarkMutation = (
   { __typename?: 'Mutation' }
   & { toggleBookmark: (
     { __typename?: 'Quiz' }
-    & QuizCardResponseFragment
+    & QuizCardFragment
   ) }
 );
 
@@ -495,7 +505,7 @@ export type ToggleLikeMutation = (
   { __typename?: 'Mutation' }
   & { toggleLike: (
     { __typename?: 'Quiz' }
-    & QuizCardResponseFragment
+    & QuizCardFragment
   ) }
 );
 
@@ -513,7 +523,7 @@ export type GetCommentsQuery = (
     & Pick<PaginatedComment, 'hasMore'>
     & { comments: Array<(
       { __typename?: 'Comment' }
-      & CommentResponseFragment
+      & CommentFragment
     )> }
   ) }
 );
@@ -530,7 +540,7 @@ export type GetMyQuizzesQuery = (
     & Pick<PaginatedQuizzes, 'hasMore'>
     & { quizzes: Array<(
       { __typename?: 'Quiz' }
-      & QuizCardResponseFragment
+      & QuizCardFragment
     )> }
   ) }
 );
@@ -547,7 +557,7 @@ export type GetPublishedQuizzesQuery = (
     & Pick<PaginatedQuizzes, 'hasMore'>
     & { quizzes: Array<(
       { __typename?: 'Quiz' }
-      & QuizCardResponseFragment
+      & QuizCardFragment
     )> }
   ) }
 );
@@ -565,10 +575,10 @@ export type GetQuizQuery = (
     & MakeOptional<Pick<Quiz, 'id' | 'authorId' | 'title' | 'description' | 'quizPhoto' | 'isLiked' | 'isBookmarked' | 'questionCount' | 'likeCount' | 'commentCount' | 'isPublished' | 'createdAt' | 'updatedAt'>, 'id' | 'authorId' | 'isLiked' | 'isBookmarked' | 'questionCount' | 'likeCount' | 'commentCount' | 'isPublished' | 'createdAt' | 'updatedAt'>
     & { author?: Maybe<(
       { __typename?: 'User' }
-      & Pick<User, 'firstName' | 'lastName' | 'avatar' | 'email'>
+      & AuthorFragment
     )>, questions: Array<(
       { __typename?: 'Question' }
-      & Pick<Question, 'id' | 'question' | 'questionPhoto' | 'choices' | 'answer'>
+      & QuestionFragment
     )>, tags: Array<(
       { __typename?: 'Tag' }
       & Pick<Tag, 'id' | 'name'>
@@ -586,91 +596,35 @@ export type MeQuery = (
   { __typename?: 'Query' }
   & { me?: Maybe<(
     { __typename?: 'User' }
-    & UserResponseFragment
+    & MeFragment
   )> }
 );
 
-export const CommentResponseFragmentDoc = gql`
-    fragment commentResponse on Comment {
+export const AuthorFragmentDoc = gql`
+    fragment Author on User {
+  id
+  avatar
+  firstName
+  lastName
+  email
+  username
+}
+    `;
+export const CommentFragmentDoc = gql`
+    fragment Comment on Comment {
   id
   text
   authorId
   author {
-    id
-    avatar
-    firstName
-    lastName
-    email
-    username
+    ...Author
   }
   isMine
   createdAt
   updatedAt
 }
-    `;
-export const QuizCardResponseFragmentDoc = gql`
-    fragment quizCardResponse on Quiz {
-  id
-  title
-  description
-  quizPhoto
-  createdAt
-  questionCount
-  isPublished
-  isMine
-  likeCount
-  bookmarkCount
-  commentCount
-  isLiked
-  isBookmarked
-  author {
-    firstName
-    lastName
-    username
-    avatar
-  }
-}
-    `;
-export const QuizResponseFragmentDoc = gql`
-    fragment quizResponse on Quiz {
-  id
-  authorId
-  author {
-    firstName
-    lastName
-    avatar
-    email
-  }
-  title
-  description
-  quizPhoto
-  questions {
-    id
-    question
-    questionPhoto
-    choices
-    answer
-    explanation
-    hint
-  }
-  tags {
-    id
-    name
-  }
-  results {
-    id
-    title
-    description
-    resultPhoto
-    minimumPassingPercentage
-  }
-  isPublished
-  createdAt
-  updatedAt
-}
-    `;
-export const UserResponseFragmentDoc = gql`
-    fragment userResponse on User {
+    ${AuthorFragmentDoc}`;
+export const MeFragmentDoc = gql`
+    fragment Me on User {
   id
   googleId
   facebookId
@@ -689,13 +643,74 @@ export const UserResponseFragmentDoc = gql`
   updatedAt
 }
     `;
+export const QuestionFragmentDoc = gql`
+    fragment Question on Question {
+  id
+  question
+  questionPhoto
+  choices
+  answer
+  explanation
+  hint
+}
+    `;
+export const QuizFragmentDoc = gql`
+    fragment Quiz on Quiz {
+  id
+  authorId
+  author {
+    ...Author
+  }
+  title
+  description
+  quizPhoto
+  questions {
+    ...Question
+  }
+  tags {
+    id
+    name
+  }
+  results {
+    id
+    title
+    description
+    resultPhoto
+    minimumPassingPercentage
+  }
+  isPublished
+  createdAt
+  updatedAt
+}
+    ${AuthorFragmentDoc}
+${QuestionFragmentDoc}`;
+export const QuizCardFragmentDoc = gql`
+    fragment QuizCard on Quiz {
+  id
+  title
+  description
+  quizPhoto
+  createdAt
+  questionCount
+  isPublished
+  isMine
+  likeCount
+  bookmarkCount
+  commentCount
+  isLiked
+  isBookmarked
+  author {
+    ...Author
+  }
+}
+    ${AuthorFragmentDoc}`;
 export const AddCommentDocument = gql`
     mutation AddComment($quizId: String!, $text: String!) {
   addComment(quizId: $quizId, text: $text) {
-    ...commentResponse
+    ...Comment
   }
 }
-    ${CommentResponseFragmentDoc}`;
+    ${CommentFragmentDoc}`;
 export type AddCommentMutationFn = Apollo.MutationFunction<AddCommentMutation, AddCommentMutationVariables>;
 
 /**
@@ -823,10 +838,10 @@ export type DeleteQuizMutationOptions = Apollo.BaseMutationOptions<DeleteQuizMut
 export const EditCommentDocument = gql`
     mutation EditComment($quizId: String!, $commentId: String!, $text: String!) {
   editComment(quizId: $quizId, commentId: $commentId, text: $text) {
-    ...commentResponse
+    ...Comment
   }
 }
-    ${CommentResponseFragmentDoc}`;
+    ${CommentFragmentDoc}`;
 export type EditCommentMutationFn = Apollo.MutationFunction<EditCommentMutation, EditCommentMutationVariables>;
 
 /**
@@ -926,11 +941,7 @@ export const SaveQuizDocument = gql`
     description
     quizPhoto
     questions {
-      id
-      question
-      questionPhoto
-      choices
-      answer
+      ...Question
     }
     tags {
       id
@@ -945,7 +956,7 @@ export const SaveQuizDocument = gql`
     }
   }
 }
-    `;
+    ${QuestionFragmentDoc}`;
 export type SaveQuizMutationFn = Apollo.MutationFunction<SaveQuizMutation, SaveQuizMutationVariables>;
 
 /**
@@ -978,10 +989,10 @@ export const SignInDocument = gql`
   signIn(
     SignInInput: {usernameOrEmail: $usernameOrEmail, password: $password, rememberMe: $rememberMe}
   ) {
-    ...userResponse
+    ...Me
   }
 }
-    ${UserResponseFragmentDoc}`;
+    ${MeFragmentDoc}`;
 export type SignInMutationFn = Apollo.MutationFunction<SignInMutation, SignInMutationVariables>;
 
 /**
@@ -1013,10 +1024,10 @@ export type SignInMutationOptions = Apollo.BaseMutationOptions<SignInMutation, S
 export const SignUpDocument = gql`
     mutation SignUp($signUpInput: SignUpInput!) {
   signUp(signUpInput: $signUpInput) {
-    ...userResponse
+    ...Me
   }
 }
-    ${UserResponseFragmentDoc}`;
+    ${MeFragmentDoc}`;
 export type SignUpMutationFn = Apollo.MutationFunction<SignUpMutation, SignUpMutationVariables>;
 
 /**
@@ -1046,10 +1057,10 @@ export type SignUpMutationOptions = Apollo.BaseMutationOptions<SignUpMutation, S
 export const ToggleBookmarkDocument = gql`
     mutation ToggleBookmark($quizId: String!) {
   toggleBookmark(quizId: $quizId) {
-    ...quizCardResponse
+    ...QuizCard
   }
 }
-    ${QuizCardResponseFragmentDoc}`;
+    ${QuizCardFragmentDoc}`;
 export type ToggleBookmarkMutationFn = Apollo.MutationFunction<ToggleBookmarkMutation, ToggleBookmarkMutationVariables>;
 
 /**
@@ -1079,10 +1090,10 @@ export type ToggleBookmarkMutationOptions = Apollo.BaseMutationOptions<ToggleBoo
 export const ToggleLikeDocument = gql`
     mutation ToggleLike($quizId: String!) {
   toggleLike(quizId: $quizId) {
-    ...quizCardResponse
+    ...QuizCard
   }
 }
-    ${QuizCardResponseFragmentDoc}`;
+    ${QuizCardFragmentDoc}`;
 export type ToggleLikeMutationFn = Apollo.MutationFunction<ToggleLikeMutation, ToggleLikeMutationVariables>;
 
 /**
@@ -1113,12 +1124,12 @@ export const GetCommentsDocument = gql`
     query GetComments($quizId: String!, $limit: Float!, $cursor: String) {
   getComments(quizId: $quizId, limit: $limit, cursor: $cursor) {
     comments {
-      ...commentResponse
+      ...Comment
     }
     hasMore
   }
 }
-    ${CommentResponseFragmentDoc}`;
+    ${CommentFragmentDoc}`;
 
 /**
  * __useGetCommentsQuery__
@@ -1153,12 +1164,12 @@ export const GetMyQuizzesDocument = gql`
     query GetMyQuizzes($quizzesInput: QuizzesInput!) {
   getMyQuizzes(quizzesInput: $quizzesInput) {
     quizzes {
-      ...quizCardResponse
+      ...QuizCard
     }
     hasMore
   }
 }
-    ${QuizCardResponseFragmentDoc}`;
+    ${QuizCardFragmentDoc}`;
 
 /**
  * __useGetMyQuizzesQuery__
@@ -1191,12 +1202,12 @@ export const GetPublishedQuizzesDocument = gql`
     query GetPublishedQuizzes($quizzesInput: QuizzesInput!) {
   getPublishedQuizzes(quizzesInput: $quizzesInput) {
     quizzes {
-      ...quizCardResponse
+      ...QuizCard
     }
     hasMore
   }
 }
-    ${QuizCardResponseFragmentDoc}`;
+    ${QuizCardFragmentDoc}`;
 
 /**
  * __useGetPublishedQuizzesQuery__
@@ -1231,20 +1242,13 @@ export const GetQuizDocument = gql`
     id @skip(if: $isInput)
     authorId @skip(if: $isInput)
     author @skip(if: $isInput) {
-      firstName
-      lastName
-      avatar
-      email
+      ...Author
     }
     title
     description
     quizPhoto
     questions {
-      id
-      question
-      questionPhoto
-      choices
-      answer
+      ...Question
     }
     tags {
       id
@@ -1267,7 +1271,8 @@ export const GetQuizDocument = gql`
     updatedAt @skip(if: $isInput)
   }
 }
-    `;
+    ${AuthorFragmentDoc}
+${QuestionFragmentDoc}`;
 
 /**
  * __useGetQuizQuery__
@@ -1300,10 +1305,10 @@ export type GetQuizQueryResult = Apollo.QueryResult<GetQuizQuery, GetQuizQueryVa
 export const MeDocument = gql`
     query Me {
   me {
-    ...userResponse
+    ...Me
   }
 }
-    ${UserResponseFragmentDoc}`;
+    ${MeFragmentDoc}`;
 
 /**
  * __useMeQuery__

@@ -3,20 +3,13 @@ query GetQuiz($quizId: String!, $isInput: Boolean!) {
     id @skip(if: $isInput)
     authorId @skip(if: $isInput)
     author @skip(if: $isInput) {
-      firstName
-      lastName
-      avatar
-      email
+      ...Author
     }
     title
     description
     quizPhoto
     questions {
-      id
-      question
-      questionPhoto
-      choices
-      answer
+      ...Question
     }
     tags {
       id

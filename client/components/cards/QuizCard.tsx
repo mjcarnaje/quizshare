@@ -14,7 +14,7 @@ import Link from "next/link";
 import { useRouter } from "next/router";
 
 import {
-  QuizCardResponseFragment,
+  QuizCardFragment,
   useDeleteQuizMutation,
 } from "../../generated/graphql";
 import BookmarkButton from "../buttons/BookmarkButton";
@@ -29,7 +29,7 @@ function truncateText(text: string, len: number = 320): string {
   return text;
 }
 
-interface Props extends QuizCardResponseFragment {
+interface Props extends QuizCardFragment {
   type: "timeline" | "draft" | "published";
 }
 

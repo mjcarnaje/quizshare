@@ -2,7 +2,7 @@ import React from "react";
 
 import MenuDropdown from "@components/dropdowns/MenuDropdown";
 import Avatar from "@components/ui/Avatar";
-import { CommentResponseFragment } from "@generated/graphql";
+import { CommentFragment } from "@generated/graphql";
 import { Menu } from "@headlessui/react";
 import { TrashIcon } from "@heroicons/react/outline";
 import { DotsVerticalIcon, PencilAltIcon } from "@heroicons/react/solid";
@@ -15,7 +15,7 @@ import { classNames } from "../../utils/index";
 
 interface Props {
   quizId: string;
-  comment: CommentResponseFragment;
+  comment: CommentFragment;
   isAuthor: boolean;
   hideToEdit: boolean;
 }

@@ -5,11 +5,7 @@ mutation SaveQuiz($quizInput: QuizInput!, $quizId: String) {
     description
     quizPhoto
     questions {
-      id
-      question
-      questionPhoto
-      choices
-      answer
+      ...Question
     }
     tags {
       id
