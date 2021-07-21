@@ -10,6 +10,7 @@ import {
   Mutation,
   Query,
   Resolver,
+  ResolverInterface,
   Root,
   UseMiddleware,
 } from "type-graphql";
@@ -26,7 +27,7 @@ import {
 } from "./quiz.types";
 
 @Resolver(Quiz)
-export class QuizResolver {
+export class QuizResolver implements ResolverInterface<Quiz> {
   @FieldResolver(() => Boolean)
   isMine(@Root() quiz: Quiz, @Ctx() ctx: MyContext) {
     return quiz.authorId === ctx.req.session.userId;

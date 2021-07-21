@@ -1,6 +1,6 @@
 import { GraphQLJSONObject } from "graphql-type-json";
 import { Gender } from "../types/types";
-import { Field, ObjectType } from "type-graphql";
+import { Field, Int, ObjectType } from "type-graphql";
 import {
   BaseEntity,
   Column,
@@ -11,6 +11,7 @@ import {
   UpdateDateColumn,
 } from "typeorm";
 import { Quiz, Like, Bookmark, Comment } from ".";
+import { Subscription } from "./Subscription";
 
 @ObjectType()
 @Entity()
@@ -90,6 +91,23 @@ export class User extends BaseEntity {
 
   @OneToMany(() => Comment, (comment) => comment.quiz)
   comments: Comment[];
+
+  @OneToMany(() => Subscription, (subscription) => subscription.followed)
+  followed: Subscription[];
+
+  @OneToMany(() => Subscription, (subscription) => subscription.follower)
+  followers: Subscription[];
+
+  @Field(() => Int)
+  @Column({ default: 0 })
+  followedCount: number;
+
+  @Field(() => Int)
+  @Column({ default: 0 })
+  followerCount: number;
+
+  @Field(() => Boolean)
+  isFollowed: boolean;
 
   @Field(() => String)
   @CreateDateColumn()

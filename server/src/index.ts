@@ -13,9 +13,34 @@ import { googlePassport } from "./resolvers/auth/google";
 import { createAuthorLoader } from "./utils/createAuthorLoader";
 import { createBookmarkLoader } from "./utils/createBookmarkLoader";
 import { createLikeLoader } from "./utils/createLikeLoader";
-// import { Question, Quiz, User, Like, Bookmark, Tag, Result, Comment } from "./entity";
+import { createSubscriptionLoader } from "./utils/createSubscriptionLoader";
+import {
+  Question,
+  Quiz,
+  User,
+  Like,
+  Bookmark,
+  Tag,
+  Result,
+  Comment,
+  Subscription,
+} from "./entity";
 
 require("dotenv").config();
+
+async function dropDatabase() {
+  return;
+
+  await Quiz.delete({});
+  await Question.delete({});
+  await User.delete({});
+  await Like.delete({});
+  await Bookmark.delete({});
+  await Tag.delete({});
+  await Result.delete({});
+  await Comment.delete({});
+  await Subscription.delete({});
+}
 
 const main = async () => {
   try {
@@ -32,14 +57,7 @@ const main = async () => {
       entities: ["src/entity/*.*"],
     });
 
-    // await Question.delete({});
-    // await Quiz.delete({});
-    // await User.delete({});
-    // await Like.delete({});
-    // await Bookmark.delete({});
-    // await Tag.delete({});
-    // await Result.delete({});
-    // await Comment.delete({});
+    dropDatabase();
 
     const apolloServer = await new ApolloServer({
       schema: await buildSchema({
@@ -50,6 +68,7 @@ const main = async () => {
           likeLoader: createLikeLoader(),
           bookmarkLoader: createBookmarkLoader(),
           authorLoader: createAuthorLoader(),
+          subscriptionLoader: createSubscriptionLoader(),
           req,
           res,
         };
