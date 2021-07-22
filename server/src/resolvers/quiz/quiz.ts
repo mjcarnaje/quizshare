@@ -74,15 +74,15 @@ export class QuizResolver implements ResolverInterface<Quiz> {
       });
     }
 
-    if (search) {
-      quizzes = quizzes.andWhere("quiz.title ilike :title", {
-        title: `%${search}%`,
-      });
-    }
-
     if (cursor) {
       quizzes = quizzes.andWhere("quiz.createdAt < :cursor", {
         cursor: new Date(Number(cursor) - 1),
+      });
+    }
+
+    if (search) {
+      quizzes = quizzes.andWhere("quiz.title ilike :title", {
+        title: `%${search}%`,
       });
     }
 
