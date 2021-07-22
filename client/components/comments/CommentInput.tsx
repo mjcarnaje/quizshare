@@ -1,9 +1,8 @@
 import React, { useEffect, useRef, useState } from "react";
 
-import { CommentFragmentDoc, MeQuery } from "@generated/graphql";
+import { MeQuery } from "@generated/graphql";
 import { PencilIcon } from "@heroicons/react/outline";
 import errorMapper from "@utils/errorMapper";
-import { getKeyArgs } from "@utils/index";
 import { useForm } from "react-hook-form";
 import Skeleton from "react-loading-skeleton";
 import { useAppSelector } from "store";
@@ -13,8 +12,8 @@ import {
   useEditCommentMutation,
 } from "../../generated/graphql";
 import {
-  selectCommentInput,
   resetCommentInput,
+  selectCommentInput,
 } from "../../store/commentInput";
 import { useAppDispatch } from "../../store/index";
 import { classNames } from "../../utils/index";
@@ -71,34 +70,19 @@ const CommentInput: React.FC<Props> = ({ quizId, me, commentCount }) => {
             quizId: quizId,
             text: input.text,
           },
-          update: (cache, { data }) => {
+          update: (cache) => {
             cache.modify({
               id: `Quiz:${quizId}`,
               fields: {
-                commentCount: (old) => old + 1,
+                commentCount: (existingCommentCount) => {
+                  return existingCommentCount + 1;
+                },
               },
             });
-
             cache.modify({
-              id: `ROOT_QUERY`,
+              id: "ROOT_QUERY",
               fields: {
-                getComments: (old, { storeFieldName }) => {
-                  const newComment = cache.writeFragment({
-                    data: data?.addComment,
-                    fragment: CommentFragmentDoc,
-                  });
-
-                  const args = getKeyArgs(storeFieldName, "getComments");
-
-                  if (args.quizId !== quizId) {
-                    return old;
-                  }
-
-                  return {
-                    hasMore: commentCount! > old.comments.length,
-                    comments: [...old.comments, newComment],
-                  };
-                },
+                getComments: () => {},
               },
             });
           },
@@ -138,19 +122,16 @@ const CommentInput: React.FC<Props> = ({ quizId, me, commentCount }) => {
     <>
       <div className="flex items-center justify-between px-3 py-4 bg-white rounded-md shadow">
         <p className="inline-block text-base">
-          Comments{" "}
-          {commentCount ? `(${commentCount})` : <Skeleton width={24} />}
+          Comments {`(${commentCount})` ?? <Skeleton width={24} />}
         </p>
 
-        {commentCount && (
-          <button
-            className="flex px-3 py-1 text-green-500 transition transform border border-green-500 rounded-md active:scale-95 focus:outline-none hover:bg-gray-50 "
-            onClick={toggleInput}
-          >
-            <PencilIcon className="-ml-0.5 mr-2 h-6 w-6" aria-hidden="true" />
-            Add Comment
-          </button>
-        )}
+        <button
+          className="flex px-3 py-1 text-green-500 transition transform border border-green-500 rounded-md active:scale-95 focus:outline-none hover:bg-gray-50 "
+          onClick={toggleInput}
+        >
+          <PencilIcon className="-ml-0.5 mr-2 h-6 w-6" aria-hidden="true" />
+          Add Comment
+        </button>
       </div>
 
       {showInput && (

@@ -24,7 +24,7 @@ const apolloClient = (ctx?: NextPageContext) => {
                 incoming: PaginatedComment
               ): PaginatedComment {
                 return {
-                  hasMore: incoming.hasMore,
+                  pageInfo: incoming.pageInfo,
                   comments: [
                     ...(existing?.comments ?? []),
                     ...incoming.comments,

@@ -120,12 +120,21 @@ export class PaginatedQuizzes {
 }
 
 @ObjectType()
+export class PageInfo {
+  @Field(() => String)
+  endCursor: Date;
+
+  @Field(() => Boolean)
+  hasNextPage: boolean;
+}
+
+@ObjectType()
 export class PaginatedComment {
   @Field(() => [Comment])
   comments: Comment[];
 
-  @Field(() => Boolean)
-  hasMore: boolean;
+  @Field(() => PageInfo)
+  pageInfo: PageInfo;
 }
 
 @InputType()

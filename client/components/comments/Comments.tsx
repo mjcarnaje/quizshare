@@ -5,7 +5,6 @@ import Image from "next/image";
 
 import { useGetCommentsQuery } from "../../generated/graphql";
 import { useAppSelector } from "../../store/index";
-import { getCursor } from "../../utils/index";
 import CommentCardSkeleton from "./CommentCardSkeleton";
 
 interface Props {
@@ -15,6 +14,7 @@ interface Props {
 
 const Comments: React.FC<Props> = ({ quizId, authorId }) => {
   const commentId = useAppSelector((state) => state.commentInput.commentId);
+
   const { data, loading, fetchMore, variables } = useGetCommentsQuery({
     variables: {
       quizId,
@@ -24,25 +24,20 @@ const Comments: React.FC<Props> = ({ quizId, authorId }) => {
     notifyOnNetworkStatusChange: true,
   });
 
+  const comments = data?.getComments.comments || [];
+  const pageInfo = data?.getComments.pageInfo;
+
   return (
     <>
-      {data?.getComments.comments.length === 0 && (
-        <div className="flex flex-col items-center justify-center h-64 max-w-3xl p-10 mt-10 text-center md:h-80 lg:h-96">
-          <div className="relative w-full h-full">
-            <Image src="/empty.svg" layout="fill" />
-          </div>
-          <p className="mt-4 lg:mt-12">No comment found.</p>
-        </div>
-      )}
       <ul className="space-y-3 !list-none">
-        {!data && loading && (
+        {!comments.length && loading && (
           <>
-            {[...Array(3).keys()].map(() => (
-              <CommentCardSkeleton />
+            {[...Array(3).keys()].map((idx) => (
+              <CommentCardSkeleton key={idx} />
             ))}
           </>
         )}
-        {data?.getComments.comments.map((comment) => (
+        {comments.map((comment) => (
           <CommentCard
             key={comment.id}
             quizId={quizId}
@@ -51,15 +46,15 @@ const Comments: React.FC<Props> = ({ quizId, authorId }) => {
             hideToEdit={comment.id === commentId}
           />
         ))}
+        {comments.length > 0 && loading && (
+          <>
+            {[...Array(2).keys()].map((idx) => (
+              <CommentCardSkeleton key={idx} />
+            ))}
+          </>
+        )}
       </ul>
-      {data?.getComments.comments && loading && (
-        <>
-          {[...Array(1).keys()].map(() => (
-            <CommentCardSkeleton />
-          ))}
-        </>
-      )}
-      {data?.getComments.hasMore && (
+      {pageInfo?.hasNextPage && (
         <button
           type="button"
           className="flex px-4 py-2 mx-auto my-2 text-base font-medium leading-4 rounded-md active:bg-gray-50 focus:outline-none"
@@ -68,13 +63,22 @@ const Comments: React.FC<Props> = ({ quizId, authorId }) => {
               variables: {
                 quizId: variables?.quizId,
                 limit: variables?.limit,
-                cursor: getCursor(data?.getComments.comments),
+                cursor: pageInfo.endCursor,
               },
             });
           }}
         >
           {loading ? "Loading.." : "Load more"}
         </button>
+      )}
+
+      {!comments.length && !loading && (
+        <div className="flex flex-col items-center justify-center h-64 max-w-3xl p-10 mt-10 text-center md:h-80 lg:h-96">
+          <div className="relative w-full h-full">
+            <Image src="/empty.svg" layout="fill" />
+          </div>
+          <p className="mt-4 lg:mt-12">No comment found.</p>
+        </div>
       )}
     </>
   );

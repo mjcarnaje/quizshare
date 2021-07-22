@@ -50,9 +50,14 @@ export class CommentResolver {
       .take(limitPlusOne)
       .getMany();
 
+    const commentRes = results.slice(0, limit);
+
     return {
-      comments: results.slice(0, limit),
-      hasMore: results.length === limitPlusOne,
+      comments: commentRes,
+      pageInfo: {
+        endCursor: commentRes[commentRes.length - 1].createdAt,
+        hasNextPage: results.length === limitPlusOne,
+      },
     };
   }
 

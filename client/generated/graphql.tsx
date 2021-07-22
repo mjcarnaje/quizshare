@@ -128,10 +128,16 @@ export type MutationToggleSubscriptionArgs = {
   userId: Scalars['String'];
 };
 
+export type PageInfo = {
+  __typename?: 'PageInfo';
+  endCursor: Scalars['String'];
+  hasNextPage: Scalars['Boolean'];
+};
+
 export type PaginatedComment = {
   __typename?: 'PaginatedComment';
   comments: Array<Comment>;
-  hasMore: Scalars['Boolean'];
+  pageInfo: PageInfo;
 };
 
 export type PaginatedQuizzes = {
@@ -335,7 +341,7 @@ export type MeFragment = (
 
 export type QuestionFragment = (
   { __typename?: 'Question' }
-  & Pick<Question, 'id' | 'question' | 'questionPhoto' | 'choices' | 'answer' | 'explanation' | 'hint'>
+  & Pick<Question, 'id' | 'question' | 'questionPhoto' | 'choices' | 'answer'>
 );
 
 export type QuizFragment = (
@@ -554,11 +560,13 @@ export type GetCommentsQuery = (
   { __typename?: 'Query' }
   & { getComments: (
     { __typename?: 'PaginatedComment' }
-    & Pick<PaginatedComment, 'hasMore'>
     & { comments: Array<(
       { __typename?: 'Comment' }
       & CommentFragment
-    )> }
+    )>, pageInfo: (
+      { __typename?: 'PageInfo' }
+      & Pick<PageInfo, 'endCursor' | 'hasNextPage'>
+    ) }
   ) }
 );
 
@@ -683,8 +691,6 @@ export const QuestionFragmentDoc = gql`
   questionPhoto
   choices
   answer
-  explanation
-  hint
 }
     `;
 export const ResultFragmentDoc = gql`
@@ -1192,7 +1198,10 @@ export const GetCommentsDocument = gql`
     comments {
       ...Comment
     }
-    hasMore
+    pageInfo {
+      endCursor
+      hasNextPage
+    }
   }
 }
     ${CommentFragmentDoc}`;

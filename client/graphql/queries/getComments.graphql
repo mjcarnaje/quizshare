@@ -3,6 +3,9 @@ query GetComments($quizId: String!, $limit: Float!, $cursor: String) {
     comments {
       ...Comment
     }
-    hasMore
+    pageInfo {
+      endCursor
+      hasNextPage
+    }
   }
 }

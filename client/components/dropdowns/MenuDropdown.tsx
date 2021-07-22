@@ -31,7 +31,7 @@ const MenuDropdown: React.FC<Props> = (props) => {
     const { icon: Icon, text, onClick } = props;
 
     return (
-      <Menu.Item>
+      <Menu.Item key={text}>
         {({ active }) => (
           <button
             onClick={onClick}

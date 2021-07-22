@@ -4,6 +4,6 @@ fragment Question on Question {
   questionPhoto
   choices
   answer
-  explanation
-  hint
+  # explanation
+  # hint
 }
