@@ -18,8 +18,8 @@ import {
 } from "react-hook-form";
 import { v4 as uuid } from "uuid";
 
-import ImageHolder from "../../ImageHolder";
-import TextareaAutoResize from "../../inputs/TextareaAutoResize";
+import ImageHolder from "../ImageHolder";
+import TextareaAutoResize from "../inputs/TextareaAutoResize";
 import ChoiceCard from "./ChoiceCard";
 
 interface Props {

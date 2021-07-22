@@ -1,0 +1,18 @@
+query GetQuizzes(
+  $quizzesInput: QuizzesInput!
+  $isPublished: Boolean!
+  $isMine: Boolean!
+) {
+  getQuizzes(
+    quizzesInput: $quizzesInput
+    isPublished: $isPublished
+    isMine: $isMine
+  ) {
+    quizzes {
+      ...QuizCard
+    }
+    pageInfo {
+      ...PageInfo
+    }
+  }
+}

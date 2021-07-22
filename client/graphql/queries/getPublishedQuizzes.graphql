@@ -1,8 +1,0 @@
-query GetPublishedQuizzes($quizzesInput: QuizzesInput!) {
-  getPublishedQuizzes(quizzesInput: $quizzesInput) {
-    quizzes {
-      ...QuizCard
-    }
-    hasMore
-  }
-}

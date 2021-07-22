@@ -1,13 +1,13 @@
 import React from "react";
 
+import Quizzes from "@components/quizzes/Quizzes";
 import MainContainer from "@components/ui/MainContainer";
 import { useIsAuth } from "@utils/useIsAuth";
-import { CloudinaryContext } from "cloudinary-react";
 import { useRouter } from "next/router";
 
-import { QuizCard } from "../components/cards/QuizCard";
 import Container from "../components/ui/Container";
-import { useGetPublishedQuizzesQuery } from "../generated/graphql";
+import { QUIZZES_LIMIT } from "../constant/index";
+import { useGetQuizzesQuery } from "../generated/graphql";
 import withApollo from "../utils/withApollo";
 
 const Explore = () => {
@@ -15,38 +15,51 @@ const Explore = () => {
 
   const router = useRouter();
 
-  const { data } = useGetPublishedQuizzesQuery({
+  const { data, loading, fetchMore, variables } = useGetQuizzesQuery({
     variables: {
+      isMine: false,
+      isPublished: true,
       quizzesInput: {
-        limit: 10,
+        limit: QUIZZES_LIMIT,
         cursor: null,
         ...router.query,
       },
     },
   });
 
+  const quizzes = data?.getQuizzes.quizzes;
+  const pageInfo = data?.getQuizzes.pageInfo;
+
   return (
-    <CloudinaryContext
-      cloudName={process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME}
-    >
-      <MainContainer title="Home">
-        <Container>
-          <main className="relative flex-1 overflow-y-auto">
-            <div className="py-6">
-              <div className="px-4 mx-auto mt-3 max-w-7xl sm:px-6 md:px-8">
-                <div className="max-w-3xl overflow-hidden bg-white shadow sm:rounded-md">
-                  <ul className="mx-auto divide-y divide-gray-200 ">
-                    {data?.getPublishedQuizzes.quizzes.map((quiz) => (
-                      <QuizCard key={quiz.id} type="timeline" {...quiz} />
-                    ))}
-                  </ul>
-                </div>
+    <MainContainer title="Home">
+      <Container>
+        <main className="relative flex-1 overflow-y-auto">
+          <div className="py-6">
+            <div className="px-4 mx-auto mt-3 max-w-7xl sm:px-6 md:px-8">
+              <div className="max-w-3xl overflow-hidden bg-white shadow sm:rounded-md">
+                <Quizzes
+                  type="timeline"
+                  quizzes={quizzes}
+                  pageInfo={pageInfo}
+                  loading={loading}
+                  onLoadMore={() =>
+                    fetchMore({
+                      variables: {
+                        ...variables,
+                        quizzesInput: {
+                          ...variables?.quizzesInput,
+                          cursor: pageInfo?.endCursor,
+                        },
+                      },
+                    })
+                  }
+                />
               </div>
             </div>
-          </main>
-        </Container>
-      </MainContainer>
-    </CloudinaryContext>
+          </div>
+        </main>
+      </Container>
+    </MainContainer>
   );
 };
 

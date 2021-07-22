@@ -87,15 +87,6 @@ export class QuizInput {
 }
 
 @InputType()
-export class SaveAsDraftInput {
-  @Field(() => [QuestionInput])
-  questions: QuestionInput[];
-
-  @Field(() => [ResultInput])
-  results: ResultInput[];
-}
-
-@InputType()
 export class QuizzesInput {
   @Field(() => String, { nullable: true })
   search?: string;
@@ -105,18 +96,6 @@ export class QuizzesInput {
 
   @Field(() => String, { nullable: true })
   cursor?: string;
-
-  @Field(() => Boolean, { nullable: true })
-  isPublished?: boolean;
-}
-
-@ObjectType()
-export class PaginatedQuizzes {
-  @Field(() => [Quiz])
-  quizzes: Quiz[];
-
-  @Field(() => Boolean)
-  hasMore: boolean;
 }
 
 @ObjectType()
@@ -132,6 +111,15 @@ export class PageInfo {
 export class PaginatedComment {
   @Field(() => [Comment])
   comments: Comment[];
+
+  @Field(() => PageInfo)
+  pageInfo: PageInfo;
+}
+
+@ObjectType()
+export class PaginatedQuizzes {
+  @Field(() => [Quiz])
+  quizzes: Quiz[];
 
   @Field(() => PageInfo)
   pageInfo: PageInfo;

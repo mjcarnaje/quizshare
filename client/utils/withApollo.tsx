@@ -1,5 +1,5 @@
 import { ApolloClient, InMemoryCache } from "@apollo/client";
-import { PaginatedComment } from "@generated/graphql";
+import { PaginatedComment, PaginatedQuizzes } from "@generated/graphql";
 import { NextPageContext } from "next";
 import { withApollo } from "next-apollo";
 
@@ -17,6 +17,18 @@ const apolloClient = (ctx?: NextPageContext) => {
       typePolicies: {
         Query: {
           fields: {
+            getQuizzes: {
+              keyArgs: ["isPublished", "isMine"],
+              merge(
+                existing: PaginatedQuizzes,
+                incoming: PaginatedQuizzes
+              ): PaginatedQuizzes {
+                return {
+                  pageInfo: incoming.pageInfo,
+                  quizzes: [...(existing?.quizzes ?? []), ...incoming.quizzes],
+                };
+              },
+            },
             getComments: {
               keyArgs: ["quizId"],
               merge(

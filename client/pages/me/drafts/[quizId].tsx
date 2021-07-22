@@ -1,7 +1,7 @@
 import React, { useEffect } from "react";
 import { useState } from "react";
 
-import QuestionCard from "@components/cards/create/QuestionCard";
+import QuestionCard from "@components/quizzes/QuestionCard";
 import Container from "@components/ui/Container";
 import MainContainer from "@components/ui/MainContainer";
 import { QuizInput, useSaveQuizMutation } from "@generated/graphql";

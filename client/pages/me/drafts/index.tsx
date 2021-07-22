@@ -1,13 +1,14 @@
 import React from "react";
 
+import Quizzes from "@components/quizzes/Quizzes";
 import MainContainer from "@components/ui/MainContainer";
 import withApollo from "@utils/withApollo";
 import Image from "next/image";
 import { useRouter } from "next/router";
 
-import { QuizCard } from "../../../components/cards/QuizCard";
 import Container from "../../../components/ui/Container";
-import { useGetMyQuizzesQuery } from "../../../generated/graphql";
+import { QUIZZES_LIMIT } from "../../../constant/index";
+import { useGetQuizzesQuery } from "../../../generated/graphql";
 import { useIsAuth } from "../../../utils/useIsAuth";
 
 interface Props {}
@@ -17,16 +18,19 @@ const DraftsPage: React.FC<Props> = () => {
 
   const router = useRouter();
 
-  const { data } = useGetMyQuizzesQuery({
+  const { data, loading, fetchMore, variables } = useGetQuizzesQuery({
     variables: {
+      isMine: true,
+      isPublished: false,
       quizzesInput: {
-        limit: 10,
-        cursor: null,
-        isPublished: false,
+        limit: QUIZZES_LIMIT,
         ...router.query,
       },
     },
   });
+
+  const quizzes = data?.getQuizzes.quizzes;
+  const pageInfo = data?.getQuizzes.pageInfo;
 
   return (
     <MainContainer title="Home">
@@ -41,7 +45,7 @@ const DraftsPage: React.FC<Props> = () => {
                 All your pending drafts are here
               </p>
             </div>
-            {data?.getMyQuizzes.quizzes.length === 0 && (
+            {data?.getQuizzes.quizzes.length === 0 && (
               <div className="flex flex-col items-center justify-center h-64 max-w-3xl p-10 text-center md:h-80 lg:h-96">
                 <div className="relative w-full h-full">
                   <Image src="/empty.svg" layout="fill" />
@@ -50,11 +54,23 @@ const DraftsPage: React.FC<Props> = () => {
               </div>
             )}
             <div className="relative max-w-3xl overflow-hidden bg-white shadow sm:rounded-md">
-              <ul className="mx-auto divide-y divide-gray-200 ">
-                {data?.getMyQuizzes.quizzes.map((quiz) => (
-                  <QuizCard key={quiz.id} type="draft" {...quiz} />
-                ))}
-              </ul>
+              <Quizzes
+                type="timeline"
+                quizzes={quizzes}
+                pageInfo={pageInfo}
+                loading={loading}
+                onLoadMore={() =>
+                  fetchMore({
+                    variables: {
+                      ...variables,
+                      quizzesInput: {
+                        ...variables?.quizzesInput,
+                        cursor: pageInfo?.endCursor,
+                      },
+                    },
+                  })
+                }
+              />
             </div>
           </div>
         </main>

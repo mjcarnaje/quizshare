@@ -1,6 +1,7 @@
 import React, { ReactNode } from "react";
 
 import Alert from "@components/alert/Alert";
+import { CloudinaryContext } from "cloudinary-react";
 import Head from "next/head";
 
 interface Props {
@@ -20,10 +21,14 @@ const MainContainer: React.FC<Props> = ({
         <meta charSet="utf-8" />
         <meta name="viewport" content="initial-scale=1.0, width=device-width" />
       </Head>
-      <div className="relative flex min-h-screen mx-auto overflow-hidden bg-gray-100">
-        <Alert />
-        {children}
-      </div>
+      <CloudinaryContext
+        cloudName={process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME}
+      >
+        <div className="relative flex min-h-screen mx-auto overflow-hidden bg-gray-100">
+          <Alert />
+          {children}
+        </div>
+      </CloudinaryContext>
     </div>
   );
 };

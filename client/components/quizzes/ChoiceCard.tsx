@@ -16,9 +16,9 @@ import {
   useFormContext,
 } from "react-hook-form";
 
-import { useUploadPhoto } from "../../../utils/useUploadImage";
-import ImageHolder from "../../ImageHolder";
-import TextareaAutoResize from "../../inputs/TextareaAutoResize";
+import { useUploadPhoto } from "../../utils/useUploadImage";
+import ImageHolder from "../ImageHolder";
+import TextareaAutoResize from "../inputs/TextareaAutoResize";
 
 interface Props {
   answer: string;

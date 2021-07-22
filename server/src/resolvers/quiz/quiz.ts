@@ -51,8 +51,11 @@ export class QuizResolver implements ResolverInterface<Quiz> {
   }
 
   @Query(() => PaginatedQuizzes)
-  async getPublishedQuizzes(
-    @Arg("quizzesInput") quizzesInput: QuizzesInput
+  async getQuizzes(
+    @Arg("quizzesInput") quizzesInput: QuizzesInput,
+    @Arg("isPublished") isPublished: Boolean,
+    @Arg("isMine") isMine: Boolean,
+    @Ctx() ctx: MyContext
   ): Promise<PaginatedQuizzes> {
     const { limit, search, cursor } = quizzesInput;
     const limitPlusOne = limit + 1;
@@ -63,55 +66,11 @@ export class QuizResolver implements ResolverInterface<Quiz> {
       .leftJoinAndSelect("quiz.questions", "questions")
       .leftJoinAndSelect("quiz.results", "results")
       .leftJoinAndSelect("quiz.tags", "tags")
-      .andWhere("quiz.isPublished = :isPublished", { isPublished: true });
+      .andWhere("quiz.isPublished = :isPublished", { isPublished });
 
-    if (cursor) {
-      quizzes = quizzes.andWhere("quiz.createdAt > :cursor", {
-        cursor: new Date(parseInt(cursor)),
-      });
-    }
-
-    if (search) {
-      quizzes = quizzes.andWhere("quiz.title ilike :title", {
-        title: `%${search}%`,
-      });
-    }
-
-    const results = await quizzes
-      .orderBy("quiz.createdAt", "DESC")
-      .take(limitPlusOne)
-      .getMany();
-
-    return {
-      quizzes: results.slice(0, limit),
-      hasMore: results.length === limitPlusOne,
-    };
-  }
-
-  @Query(() => PaginatedQuizzes)
-  async getMyQuizzes(
-    @Arg("quizzesInput") quizzesInput: QuizzesInput,
-    @Ctx() ctx: MyContext
-  ): Promise<PaginatedQuizzes> {
-    const { limit, search, cursor, isPublished } = quizzesInput;
-    const limitPlusOne = limit + 1;
-
-    let quizzes = await getConnection()
-      .getRepository(Quiz)
-      .createQueryBuilder("quiz")
-      .leftJoinAndSelect("quiz.questions", "questions")
-      .leftJoinAndSelect("quiz.results", "results")
-      .leftJoinAndSelect("quiz.tags", "tags")
-      .andWhere("quiz.authorId = :authorId", {
+    if (isMine) {
+      quizzes = quizzes.andWhere("quiz.authorId = :authorId", {
         authorId: ctx.req.session.userId,
-      })
-      .andWhere("quiz.isPublished = :isPublished", {
-        isPublished,
-      });
-
-    if (cursor) {
-      quizzes = quizzes.andWhere("quiz.createdAt > :cursor", {
-        cursor: new Date(parseInt(cursor)),
       });
     }
 
@@ -121,14 +80,25 @@ export class QuizResolver implements ResolverInterface<Quiz> {
       });
     }
 
+    if (cursor) {
+      quizzes = quizzes.andWhere("quiz.createdAt < :cursor", {
+        cursor: new Date(Number(cursor) - 1),
+      });
+    }
+
     const results = await quizzes
       .orderBy("quiz.createdAt", "DESC")
       .take(limitPlusOne)
       .getMany();
 
+    const quizzesRes = results.slice(0, limit);
+
     return {
-      quizzes: results.slice(0, limit),
-      hasMore: results.length === limitPlusOne,
+      quizzes: quizzesRes,
+      pageInfo: {
+        endCursor: quizzesRes[quizzesRes.length - 1].createdAt,
+        hasNextPage: results.length === limitPlusOne,
+      },
     };
   }
 
