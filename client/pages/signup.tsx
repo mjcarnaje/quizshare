@@ -29,9 +29,7 @@ const SignUpPage = () => {
   const onSubmit = async (values: SignUpInput) => {
     try {
       const { data } = await signUp({
-        variables: {
-          signUpInput: values,
-        },
+        variables: { signUpInput: values },
         update: (cache, { data }) => {
           cache.writeQuery<MeQuery>({
             query: MeDocument,

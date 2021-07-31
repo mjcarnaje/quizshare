@@ -3,5 +3,5 @@ fragment Result on Result {
   title
   description
   resultPhoto
-  minimumPassingPercentage
+  minimumPercent
 }

@@ -132,17 +132,16 @@ export const QuizCard: React.FC<Props> = ({
         )}
       </div>
       <div className="flex justify-between w-full mt-2">
-        {type !== "draft" ? (
-          <div className="flex space-x-2">
-            <LikeButton quizId={id} isLiked={isLiked} likeCount={likeCount} />
-            <CommentButton quizId={id} commentCount={commentCount} />
-          </div>
-        ) : (
-          <div />
-        )}
         {type === "timeline" && (
-          <BookmarkButton quizId={id} isBookmarked={isBookmarked} />
+          <>
+            <div className="flex space-x-2">
+              <LikeButton quizId={id} isLiked={isLiked} likeCount={likeCount} />
+              <CommentButton quizId={id} commentCount={commentCount} />
+            </div>
+            <BookmarkButton quizId={id} isBookmarked={isBookmarked} />
+          </>
         )}
+        {type !== "timeline" && <div />}
 
         {isMine && type !== "timeline" && (
           <div className="flex space-x-3">

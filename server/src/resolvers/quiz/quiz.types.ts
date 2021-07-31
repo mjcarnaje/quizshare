@@ -53,7 +53,7 @@ export class ResultInput {
   resultPhoto?: string;
 
   @Field(() => Int)
-  minimumPassingPercentage: number;
+  minimumPercent: number;
 }
 
 @InputType()

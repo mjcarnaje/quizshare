@@ -239,7 +239,7 @@ export type Result = {
   title: Scalars['String'];
   description: Scalars['String'];
   resultPhoto?: Maybe<Scalars['String']>;
-  minimumPassingPercentage: Scalars['Int'];
+  minimumPercent: Scalars['Int'];
 };
 
 export type ResultInput = {
@@ -247,7 +247,7 @@ export type ResultInput = {
   title: Scalars['String'];
   description: Scalars['String'];
   resultPhoto?: Maybe<Scalars['String']>;
-  minimumPassingPercentage: Scalars['Int'];
+  minimumPercent: Scalars['Int'];
 };
 
 export type SignInInput = {
@@ -271,8 +271,8 @@ export type Subscription = {
   __typename?: 'Subscription';
   followedId: Scalars['String'];
   followerId: Scalars['String'];
-  follower: Scalars['String'];
-  followed: Scalars['String'];
+  follower: User;
+  followed: User;
   createdAt: Scalars['String'];
 };
 
@@ -368,7 +368,7 @@ export type QuizCardFragment = (
 
 export type ResultFragment = (
   { __typename?: 'Result' }
-  & Pick<Result, 'id' | 'title' | 'description' | 'resultPhoto' | 'minimumPassingPercentage'>
+  & Pick<Result, 'id' | 'title' | 'description' | 'resultPhoto' | 'minimumPercent'>
 );
 
 export type AddCommentMutationVariables = Exact<{
@@ -687,7 +687,7 @@ export const ResultFragmentDoc = gql`
   title
   description
   resultPhoto
-  minimumPassingPercentage
+  minimumPercent
 }
     `;
 export const QuizFragmentDoc = gql`

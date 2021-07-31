@@ -30,7 +30,7 @@ const LoginPage = () => {
   const onSubmit = async (values: SignInInput) => {
     try {
       const { data } = await signIn({
-        variables: { ...values, rememberMe: true },
+        variables: { signInInput: { ...values, rememberMe: true } },
         update: (cache, { data }) => {
           cache.writeQuery<MeQuery>({
             query: MeDocument,

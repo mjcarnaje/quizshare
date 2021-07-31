@@ -55,7 +55,7 @@ const DraftsPage: React.FC<Props> = () => {
             )}
             <div className="relative max-w-3xl overflow-hidden bg-white shadow sm:rounded-md">
               <Quizzes
-                type="timeline"
+                type="draft"
                 quizzes={quizzes}
                 pageInfo={pageInfo}
                 loading={loading}

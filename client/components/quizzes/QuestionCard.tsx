@@ -25,17 +25,17 @@ import ChoiceCard from "./ChoiceCard";
 interface Props {
   question: FieldArrayWithId<QuizInput, "questions", "id">;
   questionIdx: number;
-  questionRemove: (index?: number | number[] | undefined) => void;
-  isDisabled?: boolean;
+  questionRemove: () => void;
   errors?: DeepMap<QuestionInput, FieldError>;
+  questions: FieldArrayWithId<QuizInput, "questions", "id">[];
 }
 
 const QuestionCard: React.FC<Props> = ({
   question,
   questionIdx,
   questionRemove,
-  isDisabled,
   errors,
+  questions,
 }) => {
   const [uploadImage, { data: questionPhoto, loading: questionPhotoLoading }] =
     useUploadPhoto();
@@ -82,9 +82,10 @@ const QuestionCard: React.FC<Props> = ({
           className="relative flex space-x-1"
         >
           <div
-            className={`${classNames(
-              isDragging ? "shadow-2xl opacity-80" : "shadow"
-            )} w-full bg-white rounded-md`}
+            className={classNames(
+              isDragging ? "shadow-2xl opacity-80" : "shadow",
+              "w-full bg-white rounded-md"
+            )}
           >
             <div className="p-4">
               <input
@@ -169,15 +170,16 @@ const QuestionCard: React.FC<Props> = ({
               <DocumentAddIcon className="w-5 h-5" />
             </button>
             <button
-              disabled={isDisabled}
+              disabled={questions.length < 2}
               type="button"
-              onClick={() => questionRemove(questionIdx)}
+              onClick={questionRemove}
               className="flex items-center justify-center w-8 h-8 bg-white rounded-md shadow focus:outline-none hover:bg-gray-50 active:bg-gray-200"
             >
               <TrashIcon
-                className={`${classNames(
-                  isDisabled ? "opacity-30" : ""
-                )} w-5 h-5`}
+                className={classNames(
+                  questions.length < 2 ? "opacity-30" : "",
+                  " w-5 h-5"
+                )}
               />
             </button>
           </div>

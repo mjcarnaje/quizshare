@@ -19,7 +19,10 @@ export class Result extends BaseEntity {
   @Column()
   quizId: string;
 
-  @ManyToOne(() => Quiz, (quiz) => quiz.questions)
+  @ManyToOne(() => Quiz, (quiz) => quiz.questions, {
+    onUpdate: "CASCADE",
+    onDelete: "CASCADE",
+  })
   @JoinColumn({ name: "quizId", referencedColumnName: "id" })
   quiz: Quiz;
 
@@ -37,5 +40,5 @@ export class Result extends BaseEntity {
 
   @Field(() => Int)
   @Column()
-  minimumPassingPercentage: number;
+  minimumPercent: number;
 }
