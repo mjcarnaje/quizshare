@@ -65,7 +65,7 @@ export type Mutation = {
   toggleLike: Quiz;
   toggleBookmark: Quiz;
   checkAnswer: CheckAnswerResult;
-  changeRole: Scalars['Boolean'];
+  changeRole: User;
   toggleSubscription: User;
 };
 
@@ -433,7 +433,10 @@ export type ChangeRoleMutationVariables = Exact<{
 
 export type ChangeRoleMutation = (
   { __typename?: 'Mutation' }
-  & Pick<Mutation, 'changeRole'>
+  & { changeRole: (
+    { __typename?: 'User' }
+    & UserFragment
+  ) }
 );
 
 export type CheckAnswerMutationVariables = Exact<{
@@ -858,9 +861,11 @@ export type AddCommentMutationResult = Apollo.MutationResult<AddCommentMutation>
 export type AddCommentMutationOptions = Apollo.BaseMutationOptions<AddCommentMutation, AddCommentMutationVariables>;
 export const ChangeRoleDocument = gql`
     mutation ChangeRole($changeRoleInput: ChangeRoleInput!) {
-  changeRole(changeRoleInput: $changeRoleInput)
+  changeRole(changeRoleInput: $changeRoleInput) {
+    ...User
+  }
 }
-    `;
+    ${UserFragmentDoc}`;
 export type ChangeRoleMutationFn = Apollo.MutationFunction<ChangeRoleMutation, ChangeRoleMutationVariables>;
 
 /**

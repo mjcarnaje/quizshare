@@ -14,7 +14,7 @@ import {
   UserFragment,
   UserRole,
 } from "../generated/graphql";
-import { capitalize } from "../utils/capitalize";
+import { capitalize, toConsantFormat } from "../utils/stringFormatter";
 
 type IRoles = { name: string; value: UserRole }[];
 
@@ -32,7 +32,7 @@ const PersonItem: React.FC<PersonItemProps> = ({ person }) => {
   const [editMode, setEditMode] = useState(false);
   const [selected, setSelected] = useState(capitalize(person.role, "_"));
 
-  const [changeRole, { loading }] = useChangeRoleMutation();
+  const [changeRole] = useChangeRoleMutation();
 
   const saveChanges = async () => {
     try {
@@ -40,15 +40,15 @@ const PersonItem: React.FC<PersonItemProps> = ({ person }) => {
         variables: {
           changeRoleInput: {
             userId: person.id,
-            newRole: selected
-              .split(" ")
-              .map((word) => word.toUpperCase())
-              .join("_") as UserRole,
+            newRole: toConsantFormat(selected) as UserRole,
           },
         },
+        update: (_, { data }) => {
+          if (data?.changeRole) {
+            setEditMode(false);
+          }
+        },
       });
-
-      setEditMode(false);
     } catch (err) {
       console.error(err.message);
     }
@@ -162,7 +162,7 @@ const PersonItem: React.FC<PersonItemProps> = ({ person }) => {
           }}
           className="text-indigo-600 hover:text-indigo-900"
         >
-          {editMode ? (loading ? "Loading..." : "Save") : "Edit"}
+          {editMode ? "Save" : "Edit"}
         </button>
       </td>
     </tr>
@@ -172,7 +172,7 @@ const PersonItem: React.FC<PersonItemProps> = ({ person }) => {
 interface ChangeRolesProps {}
 
 const ChangeRoles: React.FC<ChangeRolesProps> = () => {
-  const [search, setSearch] = useState("");
+  const [search] = useState("");
 
   const { data } = useGetUsersQuery({
     variables: {
@@ -215,7 +215,7 @@ const ChangeRoles: React.FC<ChangeRolesProps> = () => {
                     </thead>
                     <tbody className="bg-white divide-y divide-gray-200">
                       {data?.users.users.map((person) => (
-                        <PersonItem person={person} />
+                        <PersonItem key={person.id} person={person} />
                       ))}
                     </tbody>
                   </table>

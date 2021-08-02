@@ -70,8 +70,10 @@ export class UserResolver {
 
   @UseMiddleware(isAuthenticated)
   @UseMiddleware(isSuperAdmin)
-  @Mutation(() => Boolean)
-  async changeRole(@Arg("changeRoleInput") changeRoleInput: ChangeRoleInput) {
+  @Mutation(() => User)
+  async changeRole(
+    @Arg("changeRoleInput") changeRoleInput: ChangeRoleInput
+  ): Promise<User> {
     const { userId, newRole } = changeRoleInput;
 
     try {

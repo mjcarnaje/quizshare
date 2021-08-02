@@ -1,3 +1,5 @@
 mutation ChangeRole($changeRoleInput: ChangeRoleInput!) {
-  changeRole(changeRoleInput: $changeRoleInput)
+  changeRole(changeRoleInput: $changeRoleInput) {
+    ...User
+  }
 }
