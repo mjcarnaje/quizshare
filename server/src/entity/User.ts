@@ -12,6 +12,7 @@ import {
 } from "typeorm";
 import { Quiz, Like, Bookmark, Comment } from ".";
 import { Subscription } from "./Subscription";
+import { UserRole } from "../types/roles";
 
 @ObjectType()
 @Entity()
@@ -79,6 +80,14 @@ export class User extends BaseEntity {
     instagram?: string;
     youtube?: string;
   };
+
+  @Field(() => UserRole)
+  @Column({
+    type: "enum",
+    enum: UserRole,
+    default: UserRole.USER,
+  })
+  role: UserRole;
 
   @OneToMany(() => Quiz, (quiz) => quiz.author)
   quizzes: Quiz[];

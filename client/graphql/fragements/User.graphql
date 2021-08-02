@@ -1,17 +1,11 @@
-fragment Me on User {
+fragment User on User {
   id
   username
   email
   avatar
-  coverPhoto
   firstName
   lastName
-  birthday
   gender
-  country
-  bio
-  social
   role
   createdAt
-  updatedAt
 }

@@ -16,6 +16,11 @@ export type Scalars = {
   JSONObject: any;
 };
 
+export type ChangeRoleInput = {
+  userId: Scalars['String'];
+  newRole: UserRole;
+};
+
 export type CheckAnswerInput = {
   quizId: Scalars['String'];
   answers: Scalars['JSONObject'];
@@ -60,6 +65,7 @@ export type Mutation = {
   toggleLike: Quiz;
   toggleBookmark: Quiz;
   checkAnswer: CheckAnswerResult;
+  changeRole: Scalars['Boolean'];
   toggleSubscription: User;
 };
 
@@ -124,6 +130,11 @@ export type MutationCheckAnswerArgs = {
 };
 
 
+export type MutationChangeRoleArgs = {
+  changeRoleInput: ChangeRoleInput;
+};
+
+
 export type MutationToggleSubscriptionArgs = {
   userId: Scalars['String'];
 };
@@ -146,12 +157,19 @@ export type PaginatedQuizzes = {
   pageInfo: PageInfo;
 };
 
+export type PaginatedUsers = {
+  __typename?: 'PaginatedUsers';
+  users: Array<User>;
+  pageInfo: PageInfo;
+};
+
 export type Query = {
   __typename?: 'Query';
-  me?: Maybe<User>;
   getComments: PaginatedComment;
   getQuizzes: PaginatedQuizzes;
   getQuiz: Quiz;
+  users: PaginatedUsers;
+  me?: Maybe<User>;
 };
 
 
@@ -172,6 +190,11 @@ export type QueryGetQuizzesArgs = {
 export type QueryGetQuizArgs = {
   isInput: Scalars['Boolean'];
   quizId: Scalars['String'];
+};
+
+
+export type QueryUsersArgs = {
+  usersInput: UsersInput;
 };
 
 export type Question = {
@@ -303,11 +326,24 @@ export type User = {
   country?: Maybe<Scalars['String']>;
   bio?: Maybe<Scalars['String']>;
   social?: Maybe<Scalars['JSONObject']>;
+  role: UserRole;
   followedCount: Scalars['Int'];
   followerCount: Scalars['Int'];
   isFollowed: Scalars['Boolean'];
   createdAt: Scalars['String'];
   updatedAt: Scalars['String'];
+};
+
+export enum UserRole {
+  SuperAdmin = 'SUPER_ADMIN',
+  Admin = 'ADMIN',
+  User = 'USER'
+}
+
+export type UsersInput = {
+  search?: Maybe<Scalars['String']>;
+  limit: Scalars['Int'];
+  cursor?: Maybe<Scalars['String']>;
 };
 
 export type AuthorFragment = (
@@ -326,7 +362,7 @@ export type CommentFragment = (
 
 export type MeFragment = (
   { __typename?: 'User' }
-  & Pick<User, 'id' | 'username' | 'email' | 'avatar' | 'coverPhoto' | 'firstName' | 'lastName' | 'birthday' | 'gender' | 'country' | 'bio' | 'social' | 'createdAt' | 'updatedAt'>
+  & Pick<User, 'id' | 'username' | 'email' | 'avatar' | 'coverPhoto' | 'firstName' | 'lastName' | 'birthday' | 'gender' | 'country' | 'bio' | 'social' | 'role' | 'createdAt' | 'updatedAt'>
 );
 
 export type PageInfoFragment = (
@@ -371,6 +407,11 @@ export type ResultFragment = (
   & Pick<Result, 'id' | 'title' | 'description' | 'resultPhoto' | 'minimumPercent'>
 );
 
+export type UserFragment = (
+  { __typename?: 'User' }
+  & Pick<User, 'id' | 'username' | 'email' | 'avatar' | 'firstName' | 'lastName' | 'gender' | 'role' | 'createdAt'>
+);
+
 export type AddCommentMutationVariables = Exact<{
   quizId: Scalars['String'];
   text: Scalars['String'];
@@ -383,6 +424,16 @@ export type AddCommentMutation = (
     { __typename?: 'Comment' }
     & CommentFragment
   ) }
+);
+
+export type ChangeRoleMutationVariables = Exact<{
+  changeRoleInput: ChangeRoleInput;
+}>;
+
+
+export type ChangeRoleMutation = (
+  { __typename?: 'Mutation' }
+  & Pick<Mutation, 'changeRole'>
 );
 
 export type CheckAnswerMutationVariables = Exact<{
@@ -613,6 +664,25 @@ export type GetQuizzesQuery = (
   ) }
 );
 
+export type GetUsersQueryVariables = Exact<{
+  usersInput: UsersInput;
+}>;
+
+
+export type GetUsersQuery = (
+  { __typename?: 'Query' }
+  & { users: (
+    { __typename?: 'PaginatedUsers' }
+    & { users: Array<(
+      { __typename?: 'User' }
+      & UserFragment
+    )>, pageInfo: (
+      { __typename?: 'PageInfo' }
+      & PageInfoFragment
+    ) }
+  ) }
+);
+
 export type MeQueryVariables = Exact<{ [key: string]: never; }>;
 
 
@@ -662,6 +732,7 @@ export const MeFragmentDoc = gql`
   country
   bio
   social
+  role
   createdAt
   updatedAt
 }
@@ -738,6 +809,19 @@ export const QuizCardFragmentDoc = gql`
   }
 }
     ${AuthorFragmentDoc}`;
+export const UserFragmentDoc = gql`
+    fragment User on User {
+  id
+  username
+  email
+  avatar
+  firstName
+  lastName
+  gender
+  role
+  createdAt
+}
+    `;
 export const AddCommentDocument = gql`
     mutation AddComment($quizId: String!, $text: String!) {
   addComment(quizId: $quizId, text: $text) {
@@ -772,6 +856,37 @@ export function useAddCommentMutation(baseOptions?: Apollo.MutationHookOptions<A
 export type AddCommentMutationHookResult = ReturnType<typeof useAddCommentMutation>;
 export type AddCommentMutationResult = Apollo.MutationResult<AddCommentMutation>;
 export type AddCommentMutationOptions = Apollo.BaseMutationOptions<AddCommentMutation, AddCommentMutationVariables>;
+export const ChangeRoleDocument = gql`
+    mutation ChangeRole($changeRoleInput: ChangeRoleInput!) {
+  changeRole(changeRoleInput: $changeRoleInput)
+}
+    `;
+export type ChangeRoleMutationFn = Apollo.MutationFunction<ChangeRoleMutation, ChangeRoleMutationVariables>;
+
+/**
+ * __useChangeRoleMutation__
+ *
+ * To run a mutation, you first call `useChangeRoleMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useChangeRoleMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [changeRoleMutation, { data, loading, error }] = useChangeRoleMutation({
+ *   variables: {
+ *      changeRoleInput: // value for 'changeRoleInput'
+ *   },
+ * });
+ */
+export function useChangeRoleMutation(baseOptions?: Apollo.MutationHookOptions<ChangeRoleMutation, ChangeRoleMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<ChangeRoleMutation, ChangeRoleMutationVariables>(ChangeRoleDocument, options);
+      }
+export type ChangeRoleMutationHookResult = ReturnType<typeof useChangeRoleMutation>;
+export type ChangeRoleMutationResult = Apollo.MutationResult<ChangeRoleMutation>;
+export type ChangeRoleMutationOptions = Apollo.BaseMutationOptions<ChangeRoleMutation, ChangeRoleMutationVariables>;
 export const CheckAnswerDocument = gql`
     mutation CheckAnswer($checkAnswerInput: CheckAnswerInput!) {
   checkAnswer(checkAnswerInput: $checkAnswerInput) {
@@ -1333,6 +1448,47 @@ export function useGetQuizzesLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions
 export type GetQuizzesQueryHookResult = ReturnType<typeof useGetQuizzesQuery>;
 export type GetQuizzesLazyQueryHookResult = ReturnType<typeof useGetQuizzesLazyQuery>;
 export type GetQuizzesQueryResult = Apollo.QueryResult<GetQuizzesQuery, GetQuizzesQueryVariables>;
+export const GetUsersDocument = gql`
+    query getUsers($usersInput: UsersInput!) {
+  users(usersInput: $usersInput) {
+    users {
+      ...User
+    }
+    pageInfo {
+      ...PageInfo
+    }
+  }
+}
+    ${UserFragmentDoc}
+${PageInfoFragmentDoc}`;
+
+/**
+ * __useGetUsersQuery__
+ *
+ * To run a query within a React component, call `useGetUsersQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetUsersQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetUsersQuery({
+ *   variables: {
+ *      usersInput: // value for 'usersInput'
+ *   },
+ * });
+ */
+export function useGetUsersQuery(baseOptions: Apollo.QueryHookOptions<GetUsersQuery, GetUsersQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<GetUsersQuery, GetUsersQueryVariables>(GetUsersDocument, options);
+      }
+export function useGetUsersLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetUsersQuery, GetUsersQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<GetUsersQuery, GetUsersQueryVariables>(GetUsersDocument, options);
+        }
+export type GetUsersQueryHookResult = ReturnType<typeof useGetUsersQuery>;
+export type GetUsersLazyQueryHookResult = ReturnType<typeof useGetUsersLazyQuery>;
+export type GetUsersQueryResult = Apollo.QueryResult<GetUsersQuery, GetUsersQueryVariables>;
 export const MeDocument = gql`
     query Me {
   me {

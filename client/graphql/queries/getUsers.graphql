@@ -1,0 +1,10 @@
+query getUsers($usersInput: UsersInput!) {
+  users(usersInput: $usersInput) {
+    users {
+      ...User
+    }
+    pageInfo {
+      ...PageInfo
+    }
+  }
+}
