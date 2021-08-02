@@ -17,7 +17,7 @@ import {
 import { getConnection } from "typeorm";
 import { Bookmark, Like, Quiz, User } from "../../entity";
 import { isAuthenticated } from "../../middleware/isAuthenticated";
-import { MyContext } from "../../types/types";
+import { IContext } from "../../types";
 import {
   CheckAnswerInput,
   CheckAnswerResult,
@@ -29,24 +29,24 @@ import {
 @Resolver(Quiz)
 export class QuizResolver implements ResolverInterface<Quiz> {
   @FieldResolver(() => Boolean)
-  isMine(@Root() quiz: Quiz, @Ctx() ctx: MyContext) {
+  isMine(@Root() quiz: Quiz, @Ctx() ctx: IContext) {
     return quiz.authorId === ctx.req.session.userId;
   }
 
   @FieldResolver(() => Boolean)
-  async isLiked(@Root() quiz: Quiz, @Ctx() ctx: MyContext) {
+  async isLiked(@Root() quiz: Quiz, @Ctx() ctx: IContext) {
     const likeStatus = await ctx.likeLoader.load(quiz.id);
     return quiz.id === likeStatus?.quizId;
   }
 
   @FieldResolver(() => Boolean)
-  async isBookmarked(@Root() quiz: Quiz, @Ctx() ctx: MyContext) {
+  async isBookmarked(@Root() quiz: Quiz, @Ctx() ctx: IContext) {
     const bookmarkStatus = await ctx.bookmarkLoader.load(quiz.id);
     return quiz.id === bookmarkStatus?.quizId;
   }
 
   @FieldResolver(() => User)
-  async author(@Root() quiz: Quiz, @Ctx() ctx: MyContext) {
+  async author(@Root() quiz: Quiz, @Ctx() ctx: IContext) {
     return ctx.authorLoader.load(quiz.authorId);
   }
 
@@ -55,7 +55,7 @@ export class QuizResolver implements ResolverInterface<Quiz> {
     @Arg("quizzesInput") quizzesInput: QuizzesInput,
     @Arg("isPublished") isPublished: Boolean,
     @Arg("isMine") isMine: Boolean,
-    @Ctx() ctx: MyContext
+    @Ctx() ctx: IContext
   ): Promise<PaginatedQuizzes> {
     const { limit, search, cursor } = quizzesInput;
     const limitPlusOne = limit + 1;
@@ -106,7 +106,7 @@ export class QuizResolver implements ResolverInterface<Quiz> {
   @Mutation(() => Quiz)
   async saveQuiz(
     @Arg("quizInput") quizInput: QuizInput,
-    @Ctx() ctx: MyContext,
+    @Ctx() ctx: IContext,
     @Arg("quizId", { nullable: true }) quizId?: string
   ): Promise<Quiz> {
     let newQuiz: Quiz;
@@ -134,7 +134,7 @@ export class QuizResolver implements ResolverInterface<Quiz> {
   async getQuiz(
     @Arg("quizId") quizId: string,
     @Arg("isInput") isInput: boolean,
-    @Ctx() ctx: MyContext
+    @Ctx() ctx: IContext
   ): Promise<Quiz> {
     const authorId = ctx.req.session.userId;
 
@@ -162,7 +162,7 @@ export class QuizResolver implements ResolverInterface<Quiz> {
   @Mutation(() => Boolean)
   async deleteQuiz(
     @Arg("quizId") quizId: string,
-    @Ctx() ctx: MyContext
+    @Ctx() ctx: IContext
   ): Promise<boolean> {
     await getConnection()
       .createQueryBuilder()
@@ -179,7 +179,7 @@ export class QuizResolver implements ResolverInterface<Quiz> {
   @Mutation(() => Quiz)
   async publishQuiz(
     @Arg("quizId") quizId: string,
-    @Ctx() ctx: MyContext
+    @Ctx() ctx: IContext
   ): Promise<Quiz> {
     const quiz = await getConnection()
       .getRepository(Quiz)
@@ -215,7 +215,7 @@ export class QuizResolver implements ResolverInterface<Quiz> {
   @Mutation(() => Quiz)
   async toggleLike(
     @Arg("quizId") quizId: string,
-    @Ctx() ctx: MyContext
+    @Ctx() ctx: IContext
   ): Promise<Quiz> {
     const userId = ctx.req.session.userId;
 
@@ -244,7 +244,7 @@ export class QuizResolver implements ResolverInterface<Quiz> {
   @Mutation(() => Quiz)
   async toggleBookmark(
     @Arg("quizId") quizId: string,
-    @Ctx() ctx: MyContext
+    @Ctx() ctx: IContext
   ): Promise<Quiz> {
     const userId = ctx.req.session.userId;
 

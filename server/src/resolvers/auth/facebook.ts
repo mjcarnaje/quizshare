@@ -3,7 +3,7 @@ import { getConnection } from "typeorm";
 import { User } from "../../entity/User";
 const FacebookStrategy = require("passport-facebook").Strategy;
 import * as core from "express-serve-static-core";
-import { Request } from "../../types/types";
+import { Request } from "../../types";
 
 export const facebookPassport = (app: core.Express) => {
   passport.use(

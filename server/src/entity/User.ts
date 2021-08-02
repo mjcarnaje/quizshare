@@ -1,5 +1,5 @@
 import { GraphQLJSONObject } from "graphql-type-json";
-import { Gender } from "../types/types";
+import { Gender } from "../types/gender";
 import { Field, Int, ObjectType } from "type-graphql";
 import {
   BaseEntity,

@@ -3,7 +3,7 @@ import { getConnection } from "typeorm";
 import { User } from "../../entity/User";
 const GoogleStrategy = require("passport-google-oauth20").Strategy;
 import * as core from "express-serve-static-core";
-import { Request } from "../../types/types";
+import { Request } from "../../types";
 
 export const googlePassport = (app: core.Express) => {
   passport.use(

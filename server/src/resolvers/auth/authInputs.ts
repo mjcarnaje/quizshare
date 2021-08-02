@@ -13,7 +13,7 @@ import {
 } from "class-validator";
 import { Field, InputType } from "type-graphql";
 import { User } from "../../entity/User";
-import { Gender } from "../../types/types";
+import { Gender } from "../../types/gender";
 
 @ValidatorConstraint({ async: true })
 export class IsEmailAlreadyExistConstraint

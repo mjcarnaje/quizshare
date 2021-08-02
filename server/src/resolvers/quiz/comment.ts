@@ -9,7 +9,7 @@ import {
   FieldResolver,
   Root,
 } from "type-graphql";
-import { MyContext } from "../../types/types";
+import { IContext } from "../../types";
 import { Comment, Quiz, User } from "../../entity";
 import { PaginatedComment } from "./quiz.types";
 import { getConnection } from "typeorm";
@@ -17,12 +17,12 @@ import { getConnection } from "typeorm";
 @Resolver(Comment)
 export class CommentResolver {
   @FieldResolver(() => Boolean)
-  isMine(@Root() comment: Comment, @Ctx() ctx: MyContext) {
+  isMine(@Root() comment: Comment, @Ctx() ctx: IContext) {
     return comment.authorId === ctx.req.session.userId;
   }
 
   @FieldResolver(() => User)
-  async author(@Root() comments: Comment, @Ctx() ctx: MyContext) {
+  async author(@Root() comments: Comment, @Ctx() ctx: IContext) {
     return ctx.authorLoader.load(comments.authorId);
   }
 
@@ -66,7 +66,7 @@ export class CommentResolver {
   async addComment(
     @Arg("quizId") quizId: string,
     @Arg("text") text: string,
-    @Ctx() ctx: MyContext
+    @Ctx() ctx: IContext
   ): Promise<Comment> {
     const authorId = ctx.req.session.userId;
 
@@ -95,7 +95,7 @@ export class CommentResolver {
     @Arg("quizId") quizId: string,
     @Arg("commentId") commentId: string,
     @Arg("text") text: string,
-    @Ctx() ctx: MyContext
+    @Ctx() ctx: IContext
   ): Promise<Comment> {
     const authorId = ctx.req.session.userId;
 
@@ -117,7 +117,7 @@ export class CommentResolver {
   async deleteComment(
     @Arg("quizId") quizId: string,
     @Arg("commentId") commentId: string,
-    @Ctx() ctx: MyContext
+    @Ctx() ctx: IContext
   ): Promise<boolean> {
     const authorId = ctx.req.session.userId;
 

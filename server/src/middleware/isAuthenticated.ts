@@ -1,8 +1,8 @@
 import { AuthenticationError } from "apollo-server-express";
 import { MiddlewareFn } from "type-graphql";
-import { MyContext } from "../types/types";
+import { IContext } from "../types";
 
-export const isAuthenticated: MiddlewareFn<MyContext> = async (
+export const isAuthenticated: MiddlewareFn<IContext> = async (
   { context },
   next
 ) => {

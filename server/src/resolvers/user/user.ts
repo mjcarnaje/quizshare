@@ -9,12 +9,12 @@ import {
 } from "type-graphql";
 import { User, Subscription } from "../../entity";
 import { isAuthenticated } from "../../middleware/isAuthenticated";
-import { MyContext } from "../../types/types";
+import { IContext } from "../../types";
 
 @Resolver(User)
 export class UserResolver {
   @FieldResolver(() => Boolean)
-  async isFollowed(@Root() user: User, @Ctx() ctx: MyContext) {
+  async isFollowed(@Root() user: User, @Ctx() ctx: IContext) {
     const status = await ctx.subscriptionLoader.load(user.id);
     return user.id === status?.followedId;
   }
@@ -23,7 +23,7 @@ export class UserResolver {
   @Mutation(() => User)
   async toggleSubscription(
     @Arg("userId") userId: string,
-    @Ctx() ctx: MyContext
+    @Ctx() ctx: IContext
   ): Promise<User> {
     const meUserId = ctx.req.session.userId;
 
