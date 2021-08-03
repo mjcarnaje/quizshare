@@ -11,8 +11,8 @@ import {
 import { getConnection } from "typeorm";
 import { Subscription, User } from "../../entity";
 import { isAuthenticated, isSuperAdmin } from "../../middleware";
-import { IContext } from "../../types";
-import { ChangeRoleInput, UsersInput, PaginatedUsers } from "./userInputs";
+import { IContext } from "../../types/context";
+import { ChangeRoleInput, PaginatedUsers, UsersInput } from "./userInputs";
 
 @Resolver(User)
 export class UserResolver {

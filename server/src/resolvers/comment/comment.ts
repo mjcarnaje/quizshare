@@ -1,18 +1,18 @@
-import { isAuthenticated } from "../../middleware/isAuthenticated";
 import {
-  Mutation,
-  Resolver,
-  UseMiddleware,
   Arg,
   Ctx,
-  Query,
   FieldResolver,
+  Mutation,
+  Query,
+  Resolver,
   Root,
+  UseMiddleware,
 } from "type-graphql";
-import { IContext } from "../../types";
-import { Comment, Quiz, User } from "../../entity";
-import { PaginatedComment } from "./quiz.types";
 import { getConnection } from "typeorm";
+import { Comment, Quiz, User } from "../../entity";
+import { isAuthenticated } from "../../middleware/isAuthenticated";
+import { IContext } from "../../types/context";
+import { PaginatedComment } from "./comments.types";
 
 @Resolver(Comment)
 export class CommentResolver {

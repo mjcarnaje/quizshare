@@ -4,6 +4,7 @@ import {
   Column,
   CreateDateColumn,
   Entity,
+  Index,
   JoinColumn,
   JoinTable,
   ManyToMany,
@@ -31,16 +32,18 @@ export class Quiz extends BaseEntity {
   author: User;
 
   @Field()
+  @Index({ fulltext: true })
   @Column()
   title: string;
 
   @Field()
+  @Index({ fulltext: true })
   @Column()
   description: string;
 
-  @Field({ nullable: true })
+  @Field(() => String, { nullable: true })
   @Column("text", { nullable: true })
-  quizPhoto?: string;
+  quizPhoto: string | null;
 
   @Field(() => [Question])
   @OneToMany(() => Question, (question) => question.quiz, {

@@ -43,23 +43,23 @@ export class User extends BaseEntity {
   @Column({ nullable: true })
   password: string;
 
-  @Field({ nullable: true })
+  @Field(() => String, { nullable: true })
   @Column("text", { nullable: true })
-  avatar?: string;
+  avatar: string | null;
 
-  @Field({ nullable: true })
+  @Field(() => String, { nullable: true })
   @Column("text", { nullable: true })
-  coverPhoto?: string;
+  coverPhoto: string | null;
 
   @Field()
   @Index({ fulltext: true })
   @Column("text")
   firstName: string;
 
-  @Field({ nullable: true })
+  @Field(() => String, { nullable: true })
   @Index({ fulltext: true })
   @Column("text", { nullable: true })
-  lastName?: string;
+  lastName: string | null;
 
   @Field({ nullable: true })
   @Column("date", { nullable: true })
@@ -69,13 +69,13 @@ export class User extends BaseEntity {
   @Column("text", { nullable: true })
   gender: Gender;
 
-  @Field({ nullable: true })
+  @Field(() => String, { nullable: true })
   @Column("text", { nullable: true })
-  country?: string;
+  country: string | null;
 
-  @Field({ nullable: true })
+  @Field(() => String, { nullable: true })
   @Column("text", { nullable: true })
-  bio?: string;
+  bio: string | null;
 
   @Field(() => GraphQLJSONObject, { nullable: true })
   @Column("jsonb", { nullable: true })
@@ -90,7 +90,6 @@ export class User extends BaseEntity {
   @Column({
     type: "enum",
     enum: UserRole,
-    default: UserRole.USER,
   })
   role: UserRole;
 

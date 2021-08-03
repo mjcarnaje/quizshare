@@ -1,9 +1,10 @@
 import { AuthenticationError, UserInputError } from "apollo-server-express";
 import * as bcrypt from "bcryptjs";
+import { getRole } from "../../utils";
 import { Arg, Ctx, Mutation, Resolver } from "type-graphql";
 import { getConnection } from "typeorm";
-import { User } from "../../entity/User";
-import { IContext } from "../../types";
+import { User } from "../../entity";
+import { IContext } from "../../types/context";
 import { SignInInput, SignUpInput } from "./authInputs";
 
 @Resolver(User)
@@ -30,6 +31,7 @@ export class AuthResolver {
         lastName,
         birthday,
         gender,
+        role: getRole(email),
       })
       .returning("*")
       .execute();

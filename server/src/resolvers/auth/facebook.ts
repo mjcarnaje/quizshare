@@ -1,9 +1,10 @@
+import * as core from "express-serve-static-core";
 import passport from "passport";
 import { getConnection } from "typeorm";
-import { User } from "../../entity/User";
+import { User } from "../../entity";
+import { Request } from "../../types/context";
+import { getRole } from "../../utils";
 const FacebookStrategy = require("passport-facebook").Strategy;
-import * as core from "express-serve-static-core";
-import { Request } from "../../types";
 
 export const facebookPassport = (app: core.Express) => {
   passport.use(
@@ -42,6 +43,7 @@ export const facebookPassport = (app: core.Express) => {
             lastName: name.familyName,
             email: emails[0].value,
             avatar: photos[0].value,
+            role: getRole(emails[0].value),
           }).save();
         } else if (!user.facebookId) {
           user.facebookId = id;

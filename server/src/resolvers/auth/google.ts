@@ -1,9 +1,10 @@
+import * as core from "express-serve-static-core";
 import passport from "passport";
 import { getConnection } from "typeorm";
-import { User } from "../../entity/User";
+import { User } from "../../entity";
+import { Request } from "../../types/context";
+import { getRole } from "../../utils";
 const GoogleStrategy = require("passport-google-oauth20").Strategy;
-import * as core from "express-serve-static-core";
-import { Request } from "../../types";
 
 export const googlePassport = (app: core.Express) => {
   passport.use(
@@ -39,6 +40,7 @@ export const googlePassport = (app: core.Express) => {
             lastName: name.familyName,
             email: emails[0].value,
             avatar: photos[0].value,
+            role: getRole(emails[0].value),
           }).save();
         } else if (!user.googleId) {
           user.googleId = id;

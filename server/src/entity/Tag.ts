@@ -9,9 +9,17 @@ export class Tag extends BaseEntity {
   @PrimaryColumn()
   id: string;
 
-  @Field()
+  @Field(() => String)
   @Column()
   name: string;
+
+  @Field(() => String)
+  @Column()
+  description: string;
+
+  @Field(() => String, { nullable: true })
+  @Column("text", { nullable: true })
+  tagPhoto: string | null;
 
   @ManyToMany(() => Quiz, (quiz) => quiz.tags)
   quiz: Quiz[];

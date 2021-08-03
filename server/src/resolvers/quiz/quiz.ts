@@ -17,7 +17,7 @@ import {
 import { getConnection } from "typeorm";
 import { Bookmark, Like, Quiz, User } from "../../entity";
 import { isAuthenticated } from "../../middleware/isAuthenticated";
-import { IContext } from "../../types";
+import { IContext } from "../../types/context";
 import {
   CheckAnswerInput,
   CheckAnswerResult,
@@ -66,7 +66,17 @@ export class QuizResolver implements ResolverInterface<Quiz> {
       .leftJoinAndSelect("quiz.questions", "questions")
       .leftJoinAndSelect("quiz.results", "results")
       .leftJoinAndSelect("quiz.tags", "tags")
-      .andWhere("quiz.isPublished = :isPublished", { isPublished });
+      .where("quiz.isPublished = :isPublished", { isPublished });
+
+    if (search) {
+      quizzes = quizzes
+        .where("quiz.title ilike :searchQuery", {
+          searchQuery: `%${search}%`,
+        })
+        .orWhere("quiz.description ilike :searchQuery", {
+          searchQuery: `%${search}%`,
+        });
+    }
 
     if (isMine) {
       quizzes = quizzes.andWhere("quiz.authorId = :authorId", {
@@ -77,12 +87,6 @@ export class QuizResolver implements ResolverInterface<Quiz> {
     if (cursor) {
       quizzes = quizzes.andWhere("quiz.createdAt < :cursor", {
         cursor: new Date(Number(cursor) - 1),
-      });
-    }
-
-    if (search) {
-      quizzes = quizzes.andWhere("quiz.title ilike :title", {
-        title: `%${search}%`,
       });
     }
 

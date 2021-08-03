@@ -303,6 +303,8 @@ export type Tag = {
   __typename?: 'Tag';
   id: Scalars['String'];
   name: Scalars['String'];
+  description: Scalars['String'];
+  tagPhoto?: Maybe<Scalars['String']>;
 };
 
 export type TagInput = {

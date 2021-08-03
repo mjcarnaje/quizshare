@@ -1,7 +1,7 @@
-import { User } from "../../entity";
 import { Field, InputType, Int, ObjectType } from "type-graphql";
+import { User } from "../../entity";
+import { PageInfo } from "../../types";
 import { UserRole } from "../../types/roles";
-import { PageInfo } from "../quiz/quiz.types";
 
 @InputType()
 export class ChangeRoleInput {

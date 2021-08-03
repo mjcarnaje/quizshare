@@ -31,9 +31,9 @@ export class Question extends BaseEntity {
   @Column()
   question: string;
 
-  @Field({ nullable: true })
+  @Field(() => String, { nullable: true })
   @Column("text", { nullable: true })
-  questionPhoto?: string;
+  questionPhoto: string | null;
 
   @Field(() => [GraphQLJSONObject])
   @Column("jsonb")

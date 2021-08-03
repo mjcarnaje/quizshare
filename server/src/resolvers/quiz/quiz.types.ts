@@ -1,6 +1,7 @@
 import { GraphQLJSONObject } from "graphql-type-json";
 import { Field, Float, InputType, Int, ObjectType } from "type-graphql";
-import { Comment, Quiz } from "../../entity";
+import { Quiz } from "../../entity";
+import { PageInfo } from "../../types";
 
 @InputType()
 export class ChoiceInput {
@@ -96,24 +97,6 @@ export class QuizzesInput {
 
   @Field(() => String, { nullable: true })
   cursor?: string;
-}
-
-@ObjectType()
-export class PageInfo {
-  @Field(() => String)
-  endCursor: Date;
-
-  @Field(() => Boolean)
-  hasNextPage: boolean;
-}
-
-@ObjectType()
-export class PaginatedComment {
-  @Field(() => [Comment])
-  comments: Comment[];
-
-  @Field(() => PageInfo)
-  pageInfo: PageInfo;
 }
 
 @ObjectType()
