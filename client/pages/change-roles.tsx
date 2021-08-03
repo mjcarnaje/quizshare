@@ -6,6 +6,8 @@ import { classNames } from "@utils/index";
 import withApollo from "@utils/withApollo";
 import { AVATAR_FALLBACK_IMG } from "constant";
 import { debounce } from "lodash";
+import Image from "next/image";
+import Skeleton from "react-loading-skeleton";
 
 import Container from "../components/ui/Container";
 import MainContainer from "../components/ui/MainContainer";
@@ -16,6 +18,27 @@ import {
   UserRole,
 } from "../generated/graphql";
 import { capitalize, toConsantFormat } from "../utils/stringFormatter";
+
+const PersonItemSkeleton: React.FC = () => {
+  return (
+    <tr>
+      <td className="px-6 py-4 whitespace-nowrap">
+        <div className="flex items-center">
+          <div className="flex-shrink-0 w-10 h-10">
+            <Skeleton circle={true} height={40} width={40} />
+          </div>
+          <Skeleton />
+        </div>
+      </td>
+      <td className="px-6 py-4 text-sm text-gray-500 whitespace-nowrap">
+        <Skeleton />
+      </td>
+      <td className="px-6 py-4 text-sm font-medium text-right whitespace-nowrap">
+        <Skeleton />
+      </td>
+    </tr>
+  );
+};
 
 type IRoles = { name: string; value: UserRole }[];
 
@@ -56,7 +79,7 @@ const PersonItem: React.FC<PersonItemProps> = ({ person }) => {
   };
 
   return (
-    <tr key={person.email}>
+    <tr>
       <td className="px-6 py-4 whitespace-nowrap">
         <div className="flex items-center">
           <div className="flex-shrink-0 w-10 h-10">
@@ -182,7 +205,7 @@ const ChangeRoles: React.FC<ChangeRolesProps> = () => {
     []
   );
 
-  const { data } = useGetUsersQuery({
+  const { data, loading, variables, fetchMore } = useGetUsersQuery({
     variables: {
       usersInput: {
         limit: 20,
@@ -191,6 +214,9 @@ const ChangeRoles: React.FC<ChangeRolesProps> = () => {
       },
     },
   });
+
+  const users = data?.users.users || [];
+  const pageInfo = data?.users.pageInfo;
 
   return (
     <MainContainer title="Home">
@@ -228,11 +254,51 @@ const ChangeRoles: React.FC<ChangeRolesProps> = () => {
                       </tr>
                     </thead>
                     <tbody className="bg-white divide-y divide-gray-200">
-                      {data?.users.users.map((person) => (
+                      {!users.length && loading && (
+                        <>
+                          {[...Array(3).keys()].map((idx) => (
+                            <PersonItemSkeleton key={idx} />
+                          ))}
+                        </>
+                      )}
+                      {users.map((person) => (
                         <PersonItem key={person.id} person={person} />
                       ))}
+                      {users.length > 0 && loading && (
+                        <>
+                          {[...Array(3).keys()].map((idx) => (
+                            <PersonItemSkeleton key={idx} />
+                          ))}
+                        </>
+                      )}
+                      {pageInfo?.hasNextPage && (
+                        <button
+                          type="button"
+                          className="flex px-4 py-2 mx-auto my-2 text-base font-medium leading-4 rounded-md active:bg-gray-50 focus:outline-none"
+                          onClick={() => {
+                            fetchMore({
+                              variables: {
+                                usersInput: {
+                                  ...variables?.usersInput,
+                                  cursor: pageInfo.endCursor,
+                                },
+                              },
+                            });
+                          }}
+                        >
+                          {loading ? "Loading.." : "Load more"}
+                        </button>
+                      )}
                     </tbody>
                   </table>
+                  {!users.length && !loading && (
+                    <div className="flex flex-col items-center justify-center h-64 max-w-3xl p-10 mt-10 text-center md:h-80 lg:h-96">
+                      <div className="relative w-full h-full">
+                        <Image src="/empty.svg" layout="fill" />
+                      </div>
+                      <p className="mt-4 lg:mt-12">No members found.</p>
+                    </div>
+                  )}
                 </div>
               </div>
             </div>
