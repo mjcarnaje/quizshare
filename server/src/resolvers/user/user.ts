@@ -28,15 +28,25 @@ export class UserResolver {
       .getRepository(User)
       .createQueryBuilder("user");
 
+    if (search) {
+      users = users
+        .where("user.username ilike :searchQuery", {
+          searchQuery: `%${search}%`,
+        })
+        .orWhere("user.email ilike :searchQuery", {
+          searchQuery: `%${search}%`,
+        })
+        .orWhere("user.firstName ilike :searchQuery", {
+          searchQuery: `%${search}%`,
+        })
+        .orWhere("user.lastName ilike :searchQuery", {
+          searchQuery: `%${search}%`,
+        });
+    }
+
     if (cursor) {
       users = users.andWhere("user.createdAt < :cursor", {
         cursor: new Date(Number(cursor) - 1),
-      });
-    }
-
-    if (search) {
-      users = users.andWhere("user.title ilike :title", {
-        title: `%${search}%`,
       });
     }
 

@@ -6,6 +6,7 @@ import {
   Column,
   CreateDateColumn,
   Entity,
+  Index,
   OneToMany,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
@@ -30,10 +31,12 @@ export class User extends BaseEntity {
   facebookId: string;
 
   @Field()
+  @Index({ fulltext: true })
   @Column("text", { unique: true })
   username: string;
 
   @Field()
+  @Index({ fulltext: true })
   @Column("text", { unique: true })
   email: string;
 
@@ -49,10 +52,12 @@ export class User extends BaseEntity {
   coverPhoto?: string;
 
   @Field()
+  @Index({ fulltext: true })
   @Column("text")
   firstName: string;
 
   @Field({ nullable: true })
+  @Index({ fulltext: true })
   @Column("text", { nullable: true })
   lastName?: string;
 

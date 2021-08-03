@@ -1,10 +1,11 @@
-import React, { Fragment, useState } from "react";
+import React, { Fragment, useCallback, useState } from "react";
 
 import { Listbox, Transition } from "@headlessui/react";
 import { CheckIcon, SelectorIcon } from "@heroicons/react/solid";
 import { classNames } from "@utils/index";
 import withApollo from "@utils/withApollo";
 import { AVATAR_FALLBACK_IMG } from "constant";
+import { debounce } from "lodash";
 
 import Container from "../components/ui/Container";
 import MainContainer from "../components/ui/MainContainer";
@@ -67,7 +68,7 @@ const PersonItem: React.FC<PersonItemProps> = ({ person }) => {
           </div>
           <div className="ml-4">
             <div className="text-sm font-medium text-gray-900">
-              {person.firstName + person.lastName}
+              {`${person.firstName} ${person.lastName}`}
             </div>
             <div className="text-sm text-gray-500">{person.email}</div>
           </div>
@@ -172,7 +173,14 @@ const PersonItem: React.FC<PersonItemProps> = ({ person }) => {
 interface ChangeRolesProps {}
 
 const ChangeRoles: React.FC<ChangeRolesProps> = () => {
-  const [search] = useState("");
+  const [search, setSearch] = useState("");
+
+  const handleSearch = useCallback(
+    debounce((text) => {
+      setSearch(text);
+    }, 500),
+    []
+  );
 
   const { data } = useGetUsersQuery({
     variables: {
@@ -186,10 +194,16 @@ const ChangeRoles: React.FC<ChangeRolesProps> = () => {
 
   return (
     <MainContainer title="Home">
-      <Container>
+      <Container showSearchBar={false}>
         <main className="relative flex-1 overflow-y-auto">
           <div className="py-6">
             <div className="px-4 mx-auto mt-3 max-w-7xl sm:px-6 md:px-8">
+              <input
+                className="block mb-4 border-gray-300 rounded-md shadow-sm w-80 focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                placeholder="Search user"
+                onChange={(e) => handleSearch(e.target.value)}
+                type="text"
+              />
               <div className="max-w-3xl overflow-hidden bg-white shadow sm:rounded-md">
                 <div className="overflow-hidden border-b border-gray-200 shadow sm:rounded-lg">
                   <table className="min-w-full divide-y divide-gray-200">
