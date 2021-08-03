@@ -14,7 +14,7 @@ import {
   Root,
   UseMiddleware,
 } from "type-graphql";
-import { getConnection } from "typeorm";
+import { Brackets, getConnection } from "typeorm";
 import { Bookmark, Like, Quiz, User } from "../../entity";
 import { isAuthenticated } from "../../middleware/isAuthenticated";
 import { IContext } from "../../types/context";
@@ -69,13 +69,15 @@ export class QuizResolver implements ResolverInterface<Quiz> {
       .where("quiz.isPublished = :isPublished", { isPublished });
 
     if (search) {
-      quizzes = quizzes
-        .where("quiz.title ilike :searchQuery", {
-          searchQuery: `%${search}%`,
+      quizzes = quizzes.andWhere(
+        new Brackets((qb) => {
+          qb.where("quiz.title ilike :search", {
+            search: `%${search}%`,
+          }).orWhere("quiz.description ilike :search", {
+            search: `%${search}%`,
+          });
         })
-        .orWhere("quiz.description ilike :searchQuery", {
-          searchQuery: `%${search}%`,
-        });
+      );
     }
 
     if (isMine) {

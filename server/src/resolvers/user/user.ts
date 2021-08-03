@@ -8,7 +8,7 @@ import {
   Root,
   UseMiddleware,
 } from "type-graphql";
-import { getConnection } from "typeorm";
+import { Brackets, getConnection } from "typeorm";
 import { Subscription, User } from "../../entity";
 import { isAuthenticated, isSuperAdmin } from "../../middleware";
 import { IContext } from "../../types/context";
@@ -29,19 +29,22 @@ export class UserResolver {
       .createQueryBuilder("user");
 
     if (search) {
-      users = users
-        .where("user.username ilike :searchQuery", {
-          searchQuery: `%${search}%`,
+      users = users.where(
+        new Brackets((qb) => {
+          qb.where("user.username ilike :search", {
+            search: `%${search}%`,
+          })
+            .orWhere("user.email ilike :search", {
+              search: `%${search}%`,
+            })
+            .orWhere("user.firstName ilike :search", {
+              search: `%${search}%`,
+            })
+            .orWhere("user.lastName ilike :search", {
+              search: `%${search}%`,
+            });
         })
-        .orWhere("user.email ilike :searchQuery", {
-          searchQuery: `%${search}%`,
-        })
-        .orWhere("user.firstName ilike :searchQuery", {
-          searchQuery: `%${search}%`,
-        })
-        .orWhere("user.lastName ilike :searchQuery", {
-          searchQuery: `%${search}%`,
-        });
+      );
     }
 
     if (cursor) {
@@ -102,7 +105,7 @@ export class UserResolver {
   @FieldResolver(() => Boolean)
   async isFollowed(@Root() user: User, @Ctx() ctx: IContext) {
     const status = await ctx.subscriptionLoader.load(user.id);
-    return user.id === status.followedId;
+    return user.id === status?.followedId;
   }
 
   @UseMiddleware(isAuthenticated)
