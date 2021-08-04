@@ -7,7 +7,7 @@ import {
   ManyToOne,
   PrimaryColumn,
 } from "typeorm";
-import { Quiz } from "./Quiz";
+import { Quiz } from ".";
 
 @ObjectType()
 @Entity()

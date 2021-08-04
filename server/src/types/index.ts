@@ -1,12 +1,4 @@
-import { Field, ObjectType } from "type-graphql";
-
-export type IError = { [name: string]: string };
-
-@ObjectType()
-export class PageInfo {
-  @Field(() => String)
-  endCursor: Date;
-
-  @Field(() => Boolean)
-  hasNextPage: boolean;
-}
+export { Response, Request, IContext } from "./context";
+export { Gender } from "./gender";
+export { PageInfo } from "./pageInfo";
+export { UserRole } from "./user-roles";

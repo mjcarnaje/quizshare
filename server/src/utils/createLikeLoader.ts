@@ -1,6 +1,6 @@
-import { Like } from "../entity";
 import DataLoader from "dataloader";
 import { getConnection } from "typeorm";
+import { Like } from "../entity";
 
 export const createLikeLoader = () =>
   new DataLoader(async (quizIds) => {

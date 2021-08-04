@@ -1,6 +1,6 @@
-import { User } from "../entity";
 import DataLoader from "dataloader";
 import { getConnection } from "typeorm";
+import { User } from "../entity";
 
 export const createAuthorLoader = () =>
   new DataLoader(async (userIds) => {

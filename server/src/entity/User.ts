@@ -1,5 +1,4 @@
 import { GraphQLJSONObject } from "graphql-type-json";
-import { Gender } from "../types/gender";
 import { Field, Int, ObjectType } from "type-graphql";
 import {
   BaseEntity,
@@ -13,7 +12,7 @@ import {
 } from "typeorm";
 import { Quiz, Like, Bookmark, Comment } from ".";
 import { Subscription } from "./Subscription";
-import { UserRole } from "../types/roles";
+import { UserRole, Gender } from "../types";
 
 @ObjectType()
 @Entity()

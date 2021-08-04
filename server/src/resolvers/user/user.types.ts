@@ -1,11 +1,11 @@
 import { Field, ObjectType } from "type-graphql";
-import { Comment } from "../../entity";
+import { User } from "../../entity";
 import { PageInfo } from "../../types";
 
 @ObjectType()
-export class PaginatedComment {
-  @Field(() => [Comment])
-  comments: Comment[];
+export class PaginatedUsers {
+  @Field(() => [User])
+  users: User[];
 
   @Field(() => PageInfo)
   pageInfo: PageInfo;

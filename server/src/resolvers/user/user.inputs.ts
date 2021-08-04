@@ -1,7 +1,5 @@
-import { Field, InputType, Int, ObjectType } from "type-graphql";
-import { User } from "../../entity";
-import { PageInfo } from "../../types";
-import { UserRole } from "../../types/roles";
+import { Field, InputType, Int } from "type-graphql";
+import { UserRole } from "../../types";
 
 @InputType()
 export class ChangeRoleInput {
@@ -22,13 +20,4 @@ export class UsersInput {
 
   @Field(() => String, { nullable: true })
   cursor?: string;
-}
-
-@ObjectType()
-export class PaginatedUsers {
-  @Field(() => [User])
-  users: User[];
-
-  @Field(() => PageInfo)
-  pageInfo: PageInfo;
 }

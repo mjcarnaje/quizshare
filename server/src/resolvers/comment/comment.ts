@@ -10,8 +10,8 @@ import {
 } from "type-graphql";
 import { getConnection } from "typeorm";
 import { Comment, Quiz, User } from "../../entity";
-import { isAuthenticated } from "../../middleware/isAuthenticated";
-import { IContext } from "../../types/context";
+import { isAuthenticated } from "../../middleware";
+import { IContext } from "../../types";
 import { PaginatedComment } from "./comments.types";
 
 @Resolver(Comment)

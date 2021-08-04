@@ -1,6 +1,5 @@
-import { Entity, BaseEntity, ManyToOne, PrimaryColumn, Column } from "typeorm";
-import { User } from "./User";
-import { Quiz } from "./Quiz";
+import { BaseEntity, Column, Entity, ManyToOne, PrimaryColumn } from "typeorm";
+import { Quiz, User } from ".";
 
 @Entity()
 export class Like extends BaseEntity {

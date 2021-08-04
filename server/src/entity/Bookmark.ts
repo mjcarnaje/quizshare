@@ -1,6 +1,5 @@
 import { Entity, BaseEntity, ManyToOne, PrimaryColumn, Column } from "typeorm";
-import { User } from "./User";
-import { Quiz } from "./Quiz";
+import { User, Quiz } from ".";
 
 @Entity()
 export class Bookmark extends BaseEntity {

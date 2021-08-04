@@ -1,6 +1,6 @@
-import { Bookmark } from "../entity";
 import DataLoader from "dataloader";
 import { getConnection } from "typeorm";
+import { Bookmark } from "../entity";
 
 export const createBookmarkLoader = () =>
   new DataLoader(async (quizIds) => {

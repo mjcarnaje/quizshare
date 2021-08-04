@@ -1,6 +1,6 @@
-import { Subscription } from "../entity";
 import DataLoader from "dataloader";
 import { getConnection } from "typeorm";
+import { Subscription } from "../entity";
 
 export const createSubscriptionLoader = () =>
   new DataLoader(async (authorIds) => {

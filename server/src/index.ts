@@ -8,23 +8,25 @@ import passport from "passport";
 import "reflect-metadata";
 import { buildSchema } from "type-graphql";
 import { createConnection } from "typeorm";
-import { facebookPassport } from "./resolvers/auth/facebook";
-import { googlePassport } from "./resolvers/auth/google";
-import { createAuthorLoader } from "./utils/createAuthorLoader";
-import { createBookmarkLoader } from "./utils/createBookmarkLoader";
-import { createLikeLoader } from "./utils/createLikeLoader";
-import { createSubscriptionLoader } from "./utils/createSubscriptionLoader";
 import {
+  Bookmark,
+  Comment,
+  Like,
   Question,
   Quiz,
-  User,
-  Like,
-  Bookmark,
-  Tag,
   Result,
-  Comment,
   Subscription,
+  Tag,
+  User,
 } from "./entity";
+import { facebookPassport } from "./resolvers/auth/facebook";
+import { googlePassport } from "./resolvers/auth/google";
+import {
+  createAuthorLoader,
+  createBookmarkLoader,
+  createLikeLoader,
+  createSubscriptionLoader,
+} from "./utils";
 
 require("dotenv").config();
 

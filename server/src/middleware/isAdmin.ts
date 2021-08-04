@@ -1,8 +1,7 @@
 import { AuthenticationError } from "apollo-server-express";
 import { MiddlewareFn } from "type-graphql";
 import { User } from "../entity";
-import { IContext } from "../types/context";
-import { UserRole } from "../types/roles";
+import { IContext, UserRole } from "../types";
 
 export const isAdmin: MiddlewareFn<IContext> = async ({ context }, next) => {
   const userId = context.req.session.userId;

@@ -12,8 +12,8 @@ import {
   ValidatorConstraintInterface,
 } from "class-validator";
 import { Field, InputType } from "type-graphql";
-import { User } from "../../entity/User";
-import { Gender } from "../../types/gender";
+import { User } from "../../entity";
+import { Gender } from "../../types";
 
 @ValidatorConstraint({ async: true })
 export class IsEmailAlreadyExistConstraint

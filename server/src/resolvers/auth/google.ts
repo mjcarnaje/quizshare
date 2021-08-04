@@ -2,7 +2,7 @@ import * as core from "express-serve-static-core";
 import passport from "passport";
 import { getConnection } from "typeorm";
 import { User } from "../../entity";
-import { Request } from "../../types/context";
+import { Request } from "../../types";
 import { getRole } from "../../utils";
 const GoogleStrategy = require("passport-google-oauth20").Strategy;
 

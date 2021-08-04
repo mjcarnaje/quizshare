@@ -1,6 +1,6 @@
 import { Field, ObjectType } from "type-graphql";
 import { BaseEntity, Column, Entity, ManyToMany, PrimaryColumn } from "typeorm";
-import { Quiz } from "./Quiz";
+import { Quiz } from ".";
 
 @ObjectType()
 @Entity()

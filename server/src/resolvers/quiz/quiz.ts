@@ -16,15 +16,10 @@ import {
 } from "type-graphql";
 import { Brackets, getConnection } from "typeorm";
 import { Bookmark, Like, Quiz, User } from "../../entity";
-import { isAuthenticated } from "../../middleware/isAuthenticated";
-import { IContext } from "../../types/context";
-import {
-  CheckAnswerInput,
-  CheckAnswerResult,
-  PaginatedQuizzes,
-  QuizInput,
-  QuizzesInput,
-} from "./quiz.types";
+import { isAuthenticated } from "../../middleware";
+import { IContext } from "../../types";
+import { CheckAnswerInput, QuizInput, QuizzesInput } from "./quiz.inputs";
+import { CheckAnswerResult, PaginatedQuizzes } from "./quiz.types";
 
 @Resolver(Quiz)
 export class QuizResolver implements ResolverInterface<Quiz> {
