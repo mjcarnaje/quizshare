@@ -12,9 +12,9 @@ import {
   useGetQuizQuery,
 } from "../../generated/graphql";
 
-const TakeQuizWrapper: React.FC<{ title?: string }> = ({ title, children }) => {
+const Wrapper: React.FC<{ title: string }> = ({ title, children }) => {
   return (
-    <MainContainer title={title ? `Take | ${title}` : "Loading.."}>
+    <MainContainer title={`Take | ${title}`}>
       <Container showSearchBar={false}>
         <main className="relative flex-1 overflow-y-auto focus:outline-none">
           <div className="py-6">
@@ -104,12 +104,12 @@ const TakeQuiz: React.FC<Props> = () => {
     }
   }, [data]);
 
-  if (!data?.getQuiz) {
+  if (!data) {
     return (
-      <TakeQuizWrapper>
+      <Wrapper title={loading ? "Loading.." : "Error"}>
         {loading && !error && <p>Loading...</p>}
         {!loading && error && <p>Error</p>}
-      </TakeQuizWrapper>
+      </Wrapper>
     );
   }
 
@@ -118,7 +118,7 @@ const TakeQuiz: React.FC<Props> = () => {
   const { avatar, firstName, lastName } = author!;
 
   return (
-    <TakeQuizWrapper title={title}>
+    <Wrapper title={title}>
       <div className="px-4 pt-4">
         <h1 className="text-2xl font-semibold text-gray-800">{title}</h1>
         <div className="flex items-center">
@@ -134,15 +134,14 @@ const TakeQuiz: React.FC<Props> = () => {
         <ul className="py-8 space-y-10">
           {questions.map((question, questionIdx) => (
             <QuestionCard
-              {...{
-                question,
-                questionIdx,
-                questionCount,
-                questionRefs,
-                answers,
-                selectAnswer,
-                scrollToNextQuestion,
-              }}
+              key={question.id}
+              question={question}
+              questionIdx={questionIdx}
+              questionCount={questionCount!}
+              questionRefs={questionRefs}
+              answers={answers}
+              selectAnswer={selectAnswer}
+              scrollToNextQuestion={scrollToNextQuestion}
             />
           ))}
         </ul>
@@ -156,7 +155,7 @@ const TakeQuiz: React.FC<Props> = () => {
           </button>
         </div>
       </div>
-    </TakeQuizWrapper>
+    </Wrapper>
   );
 };
 

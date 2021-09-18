@@ -21,17 +21,11 @@ export class Subscription extends BaseEntity {
   followerId: string;
 
   @Field(() => User)
-  @ManyToOne(() => User, (user) => user.followers, {
-    onUpdate: "CASCADE",
-    onDelete: "CASCADE",
-  })
+  @ManyToOne(() => User, (user) => user.followers, { cascade: true })
   follower: User;
 
   @Field(() => User)
-  @ManyToOne(() => User, (user) => user.followed, {
-    onUpdate: "CASCADE",
-    onDelete: "CASCADE",
-  })
+  @ManyToOne(() => User, (user) => user.followed, { cascade: true })
   followed: User;
 
   @Field(() => String)

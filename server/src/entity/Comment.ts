@@ -17,7 +17,7 @@ export class Comment extends BaseEntity {
   @PrimaryGeneratedColumn("uuid")
   id: string;
 
-  @Field(() => String)
+  @Field()
   @Column()
   quizId: string;
 
@@ -26,7 +26,7 @@ export class Comment extends BaseEntity {
   })
   quiz: Quiz;
 
-  @Field(() => String)
+  @Field()
   @Column()
   authorId: string;
 

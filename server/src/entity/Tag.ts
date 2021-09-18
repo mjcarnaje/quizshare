@@ -1,16 +1,23 @@
 import { Field, ObjectType } from "type-graphql";
-import { BaseEntity, Column, Entity, ManyToMany, PrimaryColumn } from "typeorm";
+import {
+  BaseEntity,
+  Column,
+  Entity,
+  ManyToMany,
+  PrimaryGeneratedColumn,
+} from "typeorm";
 import { Quiz } from ".";
+import { Maybe } from "../types/index";
 
 @ObjectType()
 @Entity()
 export class Tag extends BaseEntity {
   @Field(() => String)
-  @PrimaryColumn()
+  @PrimaryGeneratedColumn("uuid")
   id: string;
 
   @Field(() => String)
-  @Column()
+  @Column("text", { unique: true })
   name: string;
 
   @Field(() => String)
@@ -19,7 +26,7 @@ export class Tag extends BaseEntity {
 
   @Field(() => String, { nullable: true })
   @Column("text", { nullable: true })
-  tagPhoto: string | null;
+  tagPhoto: Maybe<string>;
 
   @ManyToMany(() => Quiz, (quiz) => quiz.tags)
   quiz: Quiz[];

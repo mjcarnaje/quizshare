@@ -15,12 +15,9 @@ import withApollo from "@utils/withApollo";
 import { useRouter } from "next/router";
 import Skeleton from "react-loading-skeleton";
 
-const SingleQuizWrapper: React.FC<{ title?: string }> = ({
-  title,
-  children,
-}) => {
+const Wrapper: React.FC<{ title: string }> = ({ title, children }) => {
   return (
-    <MainContainer title={title ? `Quiz | ${title}` : "Loading.."}>
+    <MainContainer title={`Quiz | ${title}`}>
       <Container showSearchBar={false}>
         <main className="relative flex-1 overflow-y-auto focus:outline-none">
           <div className="py-6">
@@ -36,7 +33,7 @@ const SingleQuizWrapper: React.FC<{ title?: string }> = ({
 
 interface Props {}
 
-const SingleQuiz: React.FC<Props> = () => {
+const QuizLanding: React.FC<Props> = () => {
   const me = useIsAuth();
   const router = useRouter();
 
@@ -49,10 +46,10 @@ const SingleQuiz: React.FC<Props> = () => {
     },
   });
 
-  if (!data?.getQuiz) {
+  if (!data) {
     return (
-      <SingleQuizWrapper>
-        {loading ? (
+      <Wrapper title={loading ? "Loading.." : "Error"}>
+        {loading && (
           <>
             <div className="p-2 bg-white rounded-md shadow">
               <ImageHolder loading />
@@ -86,10 +83,9 @@ const SingleQuiz: React.FC<Props> = () => {
               </div>
             </div>
           </>
-        ) : (
-          <p>{`Error: ${error?.message}`}</p>
         )}
-      </SingleQuizWrapper>
+        {error && <p>{`Error: ${error?.message}`}</p>}
+      </Wrapper>
     );
   }
 
@@ -106,7 +102,7 @@ const SingleQuiz: React.FC<Props> = () => {
   } = data.getQuiz;
 
   return (
-    <SingleQuizWrapper title={title}>
+    <Wrapper title={title}>
       <div className="p-2 bg-white rounded-md shadow">
         {quizPhoto && <ImageHolder loading={loading} image={quizPhoto} />}
         <div className="px-4 pt-4 pb-6">
@@ -116,11 +112,11 @@ const SingleQuiz: React.FC<Props> = () => {
           <p className="break-words whitespace-pre-line">{description}</p>
         </div>
       </div>
-      <div className="flex items-center justify-between w-full px-4 py-3 bg-white rounded-md shadow xl:flex-col xl:justify-around xl:px-1 xl:py-4 xl:w-20 xl:flex xl:fixed xl:bottom-24 xl:top-24 xl:right-8">
-        <div className="hidden xl:block">
+      <div className="flex items-center justify-between w-full px-4 py-3 bg-white rounded-md shadow 2xl:flex-col 2xl:justify-around 2xl:px-1 2xl:py-4 2xl:w-20 2xl:flex 2xl:fixed 2xl:bottom-24 2xl:top-24 2xl:right-8">
+        <div className="hidden 2xl:block">
           <BookmarkButton quizId={quizId} isBookmarked={isBookmarked!} />
         </div>
-        <div className="space-x-2 text-center xl:space-y-4 xl:space-x-0">
+        <div className="space-x-2 text-center 2xl:space-y-4 2xl:space-x-0">
           <LikeButton
             quizId={quizId}
             isLiked={isLiked!}
@@ -137,8 +133,8 @@ const SingleQuiz: React.FC<Props> = () => {
             <EyeIcon className="-ml-0.5 mr-2 h-6 w-6" aria-hidden="true" />0
           </div>
         </div>
-        <div className="flex justify-end space-x-2 xl:space-x-0">
-          <div className="block xl:hidden">
+        <div className="flex justify-end space-x-2 2xl:space-x-0">
+          <div className="block 2xl:hidden">
             <BookmarkButton quizId={quizId} isBookmarked={isBookmarked!} />
           </div>
           <TakeButton quizId={quizId} />
@@ -146,8 +142,8 @@ const SingleQuiz: React.FC<Props> = () => {
       </div>
       <CommentInput quizId={quizId} me={me} commentCount={commentCount} />
       <Comments quizId={quizId} authorId={authorId!} />
-    </SingleQuizWrapper>
+    </Wrapper>
   );
 };
 
-export default withApollo({ ssr: true })(SingleQuiz);
+export default withApollo({ ssr: true })(QuizLanding);

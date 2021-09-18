@@ -22,7 +22,8 @@
       "@components/*": ["components/*"],
       "@lib/*": ["lib/*"],
       "@utils/*": ["utils/*"],
-      "@generated/*": ["generated/*"]
+      "@generated/*": ["generated/*"],
+      "@store/*": ["store/*"]
     }
   },
   "exclude": ["node_modules"],

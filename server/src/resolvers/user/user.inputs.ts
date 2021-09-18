@@ -1,5 +1,6 @@
 import { Field, InputType, Int } from "type-graphql";
 import { UserRole } from "../../types";
+import { Maybe } from "../../types";
 
 @InputType()
 export class ChangeRoleInput {
@@ -13,11 +14,11 @@ export class ChangeRoleInput {
 @InputType()
 export class UsersInput {
   @Field(() => String, { nullable: true })
-  search?: string;
+  search: Maybe<string>;
 
   @Field(() => Int)
   limit: number;
 
   @Field(() => String, { nullable: true })
-  cursor?: string;
+  cursor: Maybe<string>;
 }

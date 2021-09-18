@@ -91,7 +91,11 @@ export class UserResolver {
     const { userId, newRole } = changeRoleInput;
 
     try {
-      let user = await User.findOneOrFail(userId);
+      let user = await User.findOne(userId);
+
+      if (!user) {
+        throw new Error("There is an error");
+      }
 
       user.role = newRole;
 

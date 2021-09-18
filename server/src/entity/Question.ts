@@ -1,14 +1,8 @@
 import { GraphQLJSONObject } from "graphql-type-json";
 import { Field, ObjectType } from "type-graphql";
-import {
-  BaseEntity,
-  Column,
-  Entity,
-  JoinColumn,
-  ManyToOne,
-  PrimaryColumn,
-} from "typeorm";
+import { BaseEntity, Column, Entity, ManyToOne, PrimaryColumn } from "typeorm";
 import { Quiz } from ".";
+import { Maybe } from "../types";
 
 @ObjectType()
 @Entity()
@@ -17,14 +11,10 @@ export class Question extends BaseEntity {
   @PrimaryColumn()
   id: string;
 
-  @Column()
-  quizId: string;
-
   @ManyToOne(() => Quiz, (quiz) => quiz.questions, {
     onUpdate: "CASCADE",
     onDelete: "CASCADE",
   })
-  @JoinColumn({ name: "quizId", referencedColumnName: "id" })
   quiz: Quiz;
 
   @Field()
@@ -33,21 +23,21 @@ export class Question extends BaseEntity {
 
   @Field(() => String, { nullable: true })
   @Column("text", { nullable: true })
-  questionPhoto: string | null;
+  questionPhoto: Maybe<string>;
 
   @Field(() => [GraphQLJSONObject])
   @Column("jsonb")
-  choices: { id: string; text: string; choicePhoto: string | null }[];
+  choices: { id: string; text: string; choicePhoto: Maybe<string> }[];
 
   @Field()
   @Column()
   answer: string;
 
-  @Field({ nullable: true })
+  @Field(() => String, { nullable: true })
   @Column("text", { nullable: true })
-  explanation?: string;
+  explanation: Maybe<string>;
 
-  @Field({ nullable: true })
+  @Field(() => String, { nullable: true })
   @Column("text", { nullable: true })
-  hint?: string;
+  hint: Maybe<string>;
 }

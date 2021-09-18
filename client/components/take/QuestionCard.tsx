@@ -9,8 +9,8 @@ import { classNames } from "../../utils/index";
 interface Props {
   question: QuestionFragment;
   questionIdx: number;
+  questionCount: number;
   questionRefs: React.MutableRefObject<(HTMLLIElement | null)[]>;
-  questionCount?: number | null;
   selectAnswer: (questionId: string, choiceId: string) => void;
   scrollToNextQuestion: (questionIdx: number) => void;
   answers: IUserAnswer;

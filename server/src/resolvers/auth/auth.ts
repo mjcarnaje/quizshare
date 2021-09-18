@@ -58,6 +58,10 @@ export class AuthResolver {
       throw new AuthenticationError("User not found");
     }
 
+    if (!user.password) {
+      throw new AuthenticationError("User uses oauth login only");
+    }
+
     const valid = await bcrypt.compare(password, user.password);
 
     if (!valid) {

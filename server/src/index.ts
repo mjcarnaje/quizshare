@@ -25,6 +25,7 @@ const main = async () => {
       type: "postgres",
       host: "localhost",
       port: 5432,
+      // dropSchema: true,
       username: process.env.DATABASE_USERNAME,
       password: process.env.DATABASE_PASSWORD,
       database: process.env.DATABASE,

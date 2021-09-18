@@ -4,18 +4,17 @@ import { getConnection } from "typeorm";
 import { User } from "../../entity";
 import { Request } from "../../types";
 import { getRole } from "../../utils";
-const GoogleStrategy = require("passport-google-oauth20").Strategy;
+import { Strategy } from "passport-google-oauth20";
 
 export const googlePassport = (app: core.Express) => {
   passport.use(
-    new GoogleStrategy(
+    new Strategy(
       {
-        clientID: process.env.GOOGLE_CLIENT_ID,
-        clientSecret: process.env.GOOGLE_CLIENT_SERCRET,
+        clientID: process.env.GOOGLE_CLIENT_ID as string,
+        clientSecret: process.env.GOOGLE_CLIENT_SERCRET as string,
         callbackURL: "http://localhost:4000/auth/google/callback",
       },
-      // @ts-ignore
-      async (_, __, profile, done) => {
+      async (_accessToken, _refreshToken, profile, done) => {
         const { id, displayName, name, emails, photos } = profile;
 
         const existedUser = await getConnection()
@@ -33,13 +32,16 @@ export const googlePassport = (app: core.Express) => {
         let user = await existedUser.getOne();
 
         if (!user) {
+          if (!name || !emails) {
+            throw new Error("There is an error");
+          }
           user = await User.create({
             googleId: id,
             username: displayName,
             firstName: name.givenName,
             lastName: name.familyName,
             email: emails[0].value,
-            avatar: photos[0].value,
+            avatar: photos?.[0].value,
             role: getRole(emails[0].value),
           }).save();
         } else if (!user.googleId) {
@@ -50,26 +52,23 @@ export const googlePassport = (app: core.Express) => {
           // login
         }
 
-        return done(null, { id: user.id });
+        return done(null, user);
       }
     )
   );
 
   app.get(
     "/auth/google",
-    passport.authenticate("google", {
-      scope: ["profile", "email"],
-    })
+    passport.authenticate("google", { scope: ["profile", "email"] })
   );
 
   app.get(
     "/auth/google/callback",
-    passport.authenticate("google", {
-      session: false,
-      scope: ["profile", "email"],
-    }),
+    passport.authenticate("google", { session: false }),
     (req: Request, res: any) => {
-      req.session.userId = (req.user as any).id;
+      const user = req.user as User;
+
+      req.session.userId = user.id;
 
       res.redirect("http://localhost:3000/");
     }

@@ -1,3 +1,4 @@
+import { Maybe } from "../types";
 import { Field, Int, ObjectType } from "type-graphql";
 import {
   BaseEntity,
@@ -5,7 +6,6 @@ import {
   CreateDateColumn,
   Entity,
   Index,
-  JoinColumn,
   JoinTable,
   ManyToMany,
   ManyToOne,
@@ -28,7 +28,6 @@ export class Quiz extends BaseEntity {
 
   @Field(() => User)
   @ManyToOne(() => User, (user) => user.quizzes)
-  @JoinColumn({ name: "authorId", referencedColumnName: "id" })
   author: User;
 
   @Field()
@@ -43,12 +42,10 @@ export class Quiz extends BaseEntity {
 
   @Field(() => String, { nullable: true })
   @Column("text", { nullable: true })
-  quizPhoto: string | null;
+  quizPhoto: Maybe<string>;
 
   @Field(() => [Question])
-  @OneToMany(() => Question, (question) => question.quiz, {
-    cascade: true,
-  })
+  @OneToMany(() => Question, (question) => question.quiz, { cascade: true })
   questions: Question[];
 
   @Field(() => Int)
@@ -56,15 +53,11 @@ export class Quiz extends BaseEntity {
   questionCount: number;
 
   @Field(() => [Result])
-  @OneToMany(() => Result, (result) => result.quiz, {
-    cascade: true,
-  })
+  @OneToMany(() => Result, (result) => result.quiz, { cascade: true })
   results: Result[];
 
   @Field(() => [Tag])
-  @ManyToMany(() => Tag, (tag) => tag.quiz, {
-    cascade: true,
-  })
+  @ManyToMany(() => Tag, (tag) => tag.quiz, { cascade: true })
   @JoinTable()
   tags: Tag[];
 

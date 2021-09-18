@@ -3,8 +3,8 @@ import React from "react";
 import CommentCard from "@components/comments/CommentCard";
 import Image from "next/image";
 
-import { useGetCommentsQuery } from "../../generated/graphql";
-import { useAppSelector } from "../../store/index";
+import { useGetCommentsQuery } from "@generated/graphql";
+import { useAppSelector } from "../../store";
 import CommentCardSkeleton from "./CommentCardSkeleton";
 
 interface Props {

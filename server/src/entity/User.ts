@@ -12,7 +12,8 @@ import {
 } from "typeorm";
 import { Quiz, Like, Bookmark, Comment } from ".";
 import { Subscription } from "./Subscription";
-import { UserRole, Gender } from "../types";
+import { UserRole, Gender, Maybe } from "../types";
+import { Score } from "./Score";
 
 @ObjectType()
 @Entity()
@@ -21,13 +22,13 @@ export class User extends BaseEntity {
   @PrimaryGeneratedColumn("uuid")
   id: string;
 
-  @Field({ nullable: true })
+  @Field(() => String, { nullable: true })
   @Column("text", { nullable: true })
-  googleId: string;
+  googleId: Maybe<string>;
 
-  @Field({ nullable: true })
+  @Field(() => String, { nullable: true })
   @Column("text", { nullable: true })
-  facebookId: string;
+  facebookId: Maybe<string>;
 
   @Field()
   @Index({ fulltext: true })
@@ -39,18 +40,18 @@ export class User extends BaseEntity {
   @Column("text", { unique: true })
   email: string;
 
-  @Column({ nullable: true })
-  password: string;
+  @Column("text", { nullable: true })
+  password: Maybe<string>;
 
   @Field(() => String, { nullable: true })
   @Column("text", { nullable: true })
-  avatar: string | null;
+  avatar: Maybe<string>;
 
   @Field(() => String, { nullable: true })
   @Column("text", { nullable: true })
-  coverPhoto: string | null;
+  coverPhoto: Maybe<string>;
 
-  @Field()
+  @Field(() => String)
   @Index({ fulltext: true })
   @Column("text")
   firstName: string;
@@ -58,42 +59,42 @@ export class User extends BaseEntity {
   @Field(() => String, { nullable: true })
   @Index({ fulltext: true })
   @Column("text", { nullable: true })
-  lastName: string | null;
+  lastName: Maybe<string>;
 
-  @Field({ nullable: true })
+  @Field(() => Date, { nullable: true })
   @Column("date", { nullable: true })
-  birthday: string;
-
-  @Field({ nullable: true })
-  @Column("text", { nullable: true })
-  gender: Gender;
+  birthday: Date;
 
   @Field(() => String, { nullable: true })
   @Column("text", { nullable: true })
-  country: string | null;
+  gender: Maybe<Gender>;
 
   @Field(() => String, { nullable: true })
   @Column("text", { nullable: true })
-  bio: string | null;
+  country: Maybe<string>;
+
+  @Field(() => String, { nullable: true })
+  @Column("text", { nullable: true })
+  bio: Maybe<string>;
 
   @Field(() => GraphQLJSONObject, { nullable: true })
   @Column("jsonb", { nullable: true })
-  social: {
-    facebook?: string;
-    twitter?: string;
-    instagram?: string;
-    youtube?: string;
-  };
+  social: Maybe<{
+    facebook: Maybe<string>;
+    twitter: Maybe<string>;
+    instagram: Maybe<string>;
+    youtube: Maybe<string>;
+  }>;
 
   @Field(() => UserRole)
-  @Column({
-    type: "enum",
-    enum: UserRole,
-  })
+  @Column({ type: "enum", enum: UserRole })
   role: UserRole;
 
   @OneToMany(() => Quiz, (quiz) => quiz.author)
   quizzes: Quiz[];
+
+  @OneToMany(() => Score, (score) => score.user)
+  scores: Score[];
 
   @OneToMany(() => Like, (like) => like.user)
   likes: Like[];

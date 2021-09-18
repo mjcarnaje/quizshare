@@ -272,10 +272,11 @@ export class QuizResolver implements ResolverInterface<Quiz> {
   ): Promise<CheckAnswerResult> {
     const { quizId, answers } = checkAnswerInput;
 
-    const quiz = await Quiz.findOneOrFail(
-      { id: quizId },
-      { relations: ["questions"] }
-    );
+    const quiz = await Quiz.findOne(quizId, { relations: ["questions"] });
+
+    if (!quiz) {
+      throw new Error("There is an error.");
+    }
 
     const score = quiz.questions.reduce((total, question) => {
       if (question.answer === answers[question.id]) {
@@ -285,6 +286,8 @@ export class QuizResolver implements ResolverInterface<Quiz> {
     }, 0);
 
     const percentage = (score / quiz.questionCount) * 100;
+
+    console.log({ score, percentage });
 
     return { score, percentage };
   }

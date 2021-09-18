@@ -3,27 +3,23 @@ import {
   BaseEntity,
   Column,
   Entity,
-  JoinColumn,
   ManyToOne,
-  PrimaryColumn,
+  PrimaryGeneratedColumn,
 } from "typeorm";
 import { Quiz } from ".";
+import { Maybe } from "../types";
 
 @ObjectType()
 @Entity()
 export class Result extends BaseEntity {
   @Field(() => String)
-  @PrimaryColumn()
+  @PrimaryGeneratedColumn("uuid")
   id: string;
 
-  @Column()
-  quizId: string;
-
   @ManyToOne(() => Quiz, (quiz) => quiz.questions, {
-    onUpdate: "CASCADE",
     onDelete: "CASCADE",
+    onUpdate: "CASCADE",
   })
-  @JoinColumn({ name: "quizId", referencedColumnName: "id" })
   quiz: Quiz;
 
   @Field()
@@ -32,11 +28,11 @@ export class Result extends BaseEntity {
 
   @Field()
   @Column()
-  description?: string;
+  description: string;
 
-  @Field({ nullable: true })
+  @Field(() => String, { nullable: true })
   @Column("text", { nullable: true })
-  resultPhoto?: string;
+  resultPhoto: Maybe<string>;
 
   @Field(() => Int)
   @Column()
