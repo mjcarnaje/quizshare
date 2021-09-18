@@ -2,6 +2,7 @@ import React from "react";
 
 import LikeButton from "@components/buttons/LikeButton";
 import TakeButton from "@components/buttons/TakeButton";
+import BookmarkButton from "@components/buttons/BookmarkButton";
 import CommentInput from "@components/comments/CommentInput";
 import Comments from "@components/comments/Comments";
 import ImageHolder from "@components/ImageHolder";
@@ -13,8 +14,6 @@ import { useIsAuth } from "@utils/useIsAuth";
 import withApollo from "@utils/withApollo";
 import { useRouter } from "next/router";
 import Skeleton from "react-loading-skeleton";
-
-import BookmarkButton from "../../components/buttons/BookmarkButton";
 
 const SingleQuizWrapper: React.FC<{ title?: string }> = ({
   title,

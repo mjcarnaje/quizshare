@@ -1,6 +1,7 @@
+import "dotenv/config";
+import cors from "cors";
 import { ApolloServer } from "apollo-server-express";
 import connectRedis from "connect-redis";
-import cors from "cors";
 import express from "express";
 import session from "express-session";
 import Redis from "ioredis";
@@ -8,17 +9,6 @@ import passport from "passport";
 import "reflect-metadata";
 import { buildSchema } from "type-graphql";
 import { createConnection } from "typeorm";
-import {
-  Bookmark,
-  Comment,
-  Like,
-  Question,
-  Quiz,
-  Result,
-  Subscription,
-  Tag,
-  User,
-} from "./entity";
 import { facebookPassport } from "./resolvers/auth/facebook";
 import { googlePassport } from "./resolvers/auth/google";
 import {
@@ -27,22 +17,6 @@ import {
   createLikeLoader,
   createSubscriptionLoader,
 } from "./utils";
-
-require("dotenv").config();
-
-async function dropDatabase() {
-  return;
-
-  await Quiz.delete({});
-  await Question.delete({});
-  await User.delete({});
-  await Like.delete({});
-  await Bookmark.delete({});
-  await Tag.delete({});
-  await Result.delete({});
-  await Comment.delete({});
-  await Subscription.delete({});
-}
 
 const main = async () => {
   try {
@@ -58,8 +32,6 @@ const main = async () => {
       logging: true,
       entities: ["src/entity/*.*"],
     });
-
-    dropDatabase();
 
     const apolloServer = await new ApolloServer({
       schema: await buildSchema({
