@@ -22,7 +22,7 @@ const DraftsPage: React.FC<Props> = () => {
     variables: {
       isMine: true,
       isPublished: false,
-      quizzesInput: {
+      input: {
         limit: QUIZZES_LIMIT,
         ...router.query,
       },
@@ -63,8 +63,8 @@ const DraftsPage: React.FC<Props> = () => {
                   fetchMore({
                     variables: {
                       ...variables,
-                      quizzesInput: {
-                        ...variables?.quizzesInput,
+                      input: {
+                        ...variables?.input,
                         cursor: pageInfo?.endCursor,
                       },
                     },

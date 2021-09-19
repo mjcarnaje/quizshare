@@ -19,7 +19,7 @@ const IndexPage = () => {
     variables: {
       isMine: false,
       isPublished: true,
-      quizzesInput: {
+      input: {
         limit: QUIZZES_LIMIT,
         cursor: null,
         ...router.query,
@@ -41,8 +41,8 @@ const IndexPage = () => {
       fetchMore({
         variables: {
           ...variables,
-          quizzesInput: {
-            ...variables?.quizzesInput,
+          input: {
+            ...variables?.input,
             cursor: pageInfo?.endCursor,
           },
         },
@@ -66,8 +66,8 @@ const IndexPage = () => {
                     fetchMore({
                       variables: {
                         ...variables,
-                        quizzesInput: {
-                          ...variables?.quizzesInput,
+                        input: {
+                          ...variables?.input,
                           cursor: pageInfo?.endCursor,
                         },
                       },

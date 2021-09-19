@@ -6,7 +6,7 @@ import { useIsAuth } from "@utils/useIsAuth";
 import { useRouter } from "next/router";
 
 import Container from "../components/ui/Container";
-import { QUIZZES_LIMIT } from "../constant/index";
+import { QUIZZES_LIMIT } from "../constant";
 import { useGetQuizzesQuery } from "../generated/graphql";
 import withApollo from "../utils/withApollo";
 
@@ -19,7 +19,7 @@ const Explore = () => {
     variables: {
       isMine: false,
       isPublished: true,
-      quizzesInput: {
+      input: {
         limit: QUIZZES_LIMIT,
         cursor: null,
         ...router.query,
@@ -46,8 +46,8 @@ const Explore = () => {
                     fetchMore({
                       variables: {
                         ...variables,
-                        quizzesInput: {
-                          ...variables?.quizzesInput,
+                        input: {
+                          ...variables?.input,
                           cursor: pageInfo?.endCursor,
                         },
                       },

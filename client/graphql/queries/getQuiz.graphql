@@ -1,17 +1,22 @@
-query GetQuiz($quizId: String!, $isInput: Boolean!) {
-  getQuiz(quizId: $quizId, isInput: $isInput) {
+query GetQuiz(
+  $quizId: String!
+  $isInput: Boolean!
+  $isTake: Boolean!
+  $isLanding: Boolean!
+) {
+  getQuiz(quizId: $quizId, isInput: $isInput, isTake: $isTake) {
     id @skip(if: $isInput)
     title
     description
     quizPhoto
-    questions {
+    questions @skip(if: $isLanding) {
       ...Question
     }
     tags {
       id
       name
     }
-    results {
+    results @skip(if: $isLanding) {
       ...Result
     }
     isLiked @skip(if: $isInput)

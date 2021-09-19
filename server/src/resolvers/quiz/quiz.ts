@@ -1,8 +1,4 @@
-import {
-  AuthenticationError,
-  ForbiddenError,
-  UserInputError,
-} from "apollo-server-express";
+import { AuthenticationError, UserInputError } from "apollo-server-express";
 import {
   Arg,
   Ctx,
@@ -22,7 +18,7 @@ import {
   SubmitAnswersInput,
   GetTakersInput,
   QuizInput,
-  QuizzesInput,
+  GetQuizzesInput,
 } from "./quiz.inputs";
 import { PaginatedQuizzes, PaginatedTakers } from "./quiz.types";
 
@@ -52,19 +48,17 @@ export class QuizResolver implements ResolverInterface<Quiz> {
 
   @Query(() => PaginatedQuizzes)
   async getQuizzes(
-    @Arg("quizzesInput") quizzesInput: QuizzesInput,
+    @Arg("input") input: GetQuizzesInput,
     @Arg("isPublished") isPublished: Boolean,
     @Arg("isMine") isMine: Boolean,
     @Ctx() ctx: IContext
   ): Promise<PaginatedQuizzes> {
-    const { limit, search, cursor } = quizzesInput;
+    const { limit, search, cursor } = input;
     const limitPlusOne = limit + 1;
 
     let quizzes = await getConnection()
       .getRepository(Quiz)
       .createQueryBuilder("quiz")
-      .leftJoinAndSelect("quiz.questions", "questions")
-      .leftJoinAndSelect("quiz.results", "results")
       .leftJoinAndSelect("quiz.tags", "tags")
       .where("quiz.isPublished = :isPublished", { isPublished });
 
@@ -136,28 +130,32 @@ export class QuizResolver implements ResolverInterface<Quiz> {
   async getQuiz(
     @Arg("quizId") quizId: string,
     @Arg("isInput") isInput: boolean,
+    @Arg("isTake") isTake: boolean,
     @Ctx() ctx: IContext
   ): Promise<Quiz> {
     const authorId = ctx.req.session.userId;
 
-    const quiz = await getConnection()
+    let quiz = await getConnection()
       .getRepository(Quiz)
       .createQueryBuilder("quiz")
-      .leftJoinAndSelect("quiz.questions", "questions")
-      .leftJoinAndSelect("quiz.results", "results")
-      .leftJoinAndSelect("quiz.tags", "tags")
+      .leftJoinAndSelect("quiz.tags", "tags");
+
+    if (isInput || isTake) {
+      quiz = quiz
+        .leftJoinAndSelect("quiz.questions", "questions")
+        .leftJoinAndSelect("quiz.results", "results")
+        .andWhere("quiz.authorId = :authorId", { authorId });
+    }
+
+    const result = await quiz
       .andWhere("quiz.id = :quizId", { quizId })
       .getOne();
 
-    if (!quiz) {
-      throw new UserInputError("Quiz does not exist");
+    if (!result) {
+      throw new UserInputError("There is an error.");
     }
 
-    if (isInput && authorId !== quiz.authorId) {
-      throw new ForbiddenError("You are not the owner of the quiz");
-    }
-
-    return quiz;
+    return result;
   }
 
   @UseMiddleware(isAuthenticated)

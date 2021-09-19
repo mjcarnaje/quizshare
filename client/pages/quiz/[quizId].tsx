@@ -43,6 +43,8 @@ const QuizLanding: React.FC<Props> = () => {
     variables: {
       quizId,
       isInput: false,
+      isTake: false,
+      isLanding: true,
     },
   });
 

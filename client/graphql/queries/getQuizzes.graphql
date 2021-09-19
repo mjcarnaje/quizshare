@@ -1,13 +1,9 @@
 query GetQuizzes(
-  $quizzesInput: QuizzesInput!
+  $input: GetQuizzesInput!
   $isPublished: Boolean!
   $isMine: Boolean!
 ) {
-  getQuizzes(
-    quizzesInput: $quizzesInput
-    isPublished: $isPublished
-    isMine: $isMine
-  ) {
+  getQuizzes(input: $input, isPublished: $isPublished, isMine: $isMine) {
     quizzes {
       ...QuizCard
     }

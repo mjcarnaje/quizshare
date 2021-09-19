@@ -21,7 +21,7 @@ const PublishedPage: React.FC<Props> = () => {
     variables: {
       isMine: true,
       isPublished: true,
-      quizzesInput: {
+      input: {
         limit: QUIZZES_LIMIT,
         ...router.query,
       },
@@ -47,8 +47,8 @@ const PublishedPage: React.FC<Props> = () => {
                     fetchMore({
                       variables: {
                         ...variables,
-                        quizzesInput: {
-                          ...variables?.quizzesInput,
+                        input: {
+                          ...variables?.input,
                           cursor: pageInfo?.endCursor,
                         },
                       },

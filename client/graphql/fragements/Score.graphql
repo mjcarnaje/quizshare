@@ -1,0 +1,7 @@
+fragment Score on Score {
+  id
+  score
+  totalItems
+  answered
+  answered
+}

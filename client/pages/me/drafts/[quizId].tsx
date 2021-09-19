@@ -39,6 +39,8 @@ const DraftEditQuizPage: React.FC = () => {
     variables: {
       quizId,
       isInput: true,
+      isTake: false,
+      isLanding: false,
     },
   });
 
@@ -94,8 +96,8 @@ const DraftEditQuizPage: React.FC = () => {
 
   useEffect(() => {
     if (data?.getQuiz && !isDirty) {
-      setQuizInput(data.getQuiz);
-      reset(cleanTypeName(data.getQuiz));
+      setQuizInput(data.getQuiz as QuizInput);
+      reset(cleanTypeName(data.getQuiz as QuizInput));
     }
   }, [data?.getQuiz]);
 

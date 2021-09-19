@@ -42,6 +42,12 @@ export type Comment = {
 };
 
 
+export type GetQuizzesInput = {
+  search?: Maybe<Scalars['String']>;
+  limit: Scalars['Int'];
+  cursor?: Maybe<Scalars['String']>;
+};
+
 export type GetTakersInput = {
   search?: Maybe<Scalars['String']>;
   limit: Scalars['Int'];
@@ -188,11 +194,12 @@ export type QueryGetCommentsArgs = {
 export type QueryGetQuizzesArgs = {
   isMine: Scalars['Boolean'];
   isPublished: Scalars['Boolean'];
-  quizzesInput: QuizzesInput;
+  input: GetQuizzesInput;
 };
 
 
 export type QueryGetQuizArgs = {
+  isTake: Scalars['Boolean'];
   isInput: Scalars['Boolean'];
   quizId: Scalars['String'];
 };
@@ -260,12 +267,6 @@ export type QuizInput = {
   questions: Array<QuestionInput>;
   results: Array<ResultInput>;
   tags: Array<TagInput>;
-};
-
-export type QuizzesInput = {
-  search?: Maybe<Scalars['String']>;
-  limit: Scalars['Int'];
-  cursor?: Maybe<Scalars['String']>;
 };
 
 export type Result = {
@@ -439,6 +440,11 @@ export type ResultFragment = (
   & Pick<Result, 'id' | 'title' | 'description' | 'resultPhoto' | 'minimumPercent'>
 );
 
+export type ScoreFragment = (
+  { __typename?: 'Score' }
+  & Pick<Score, 'id' | 'score' | 'totalItems' | 'answered'>
+);
+
 export type UserFragment = (
   { __typename?: 'User' }
   & Pick<User, 'id' | 'username' | 'email' | 'avatar' | 'firstName' | 'lastName' | 'gender' | 'role' | 'createdAt'>
@@ -587,7 +593,7 @@ export type SubmitAnswersMutation = (
   { __typename?: 'Mutation' }
   & { submitAnswers: (
     { __typename?: 'Score' }
-    & Pick<Score, 'score' | 'totalItems' | 'answered'>
+    & ScoreFragment
   ) }
 );
 
@@ -654,6 +660,8 @@ export type GetCommentsQuery = (
 export type GetQuizQueryVariables = Exact<{
   quizId: Scalars['String'];
   isInput: Scalars['Boolean'];
+  isTake: Scalars['Boolean'];
+  isLanding: Scalars['Boolean'];
 }>;
 
 
@@ -662,16 +670,16 @@ export type GetQuizQuery = (
   & { getQuiz: (
     { __typename?: 'Quiz' }
     & MakeOptional<Pick<Quiz, 'id' | 'title' | 'description' | 'quizPhoto' | 'isLiked' | 'isBookmarked' | 'questionCount' | 'likeCount' | 'commentCount' | 'takerCount' | 'isPublished' | 'authorId' | 'createdAt' | 'updatedAt'>, 'id' | 'isLiked' | 'isBookmarked' | 'questionCount' | 'likeCount' | 'commentCount' | 'takerCount' | 'isPublished' | 'authorId' | 'createdAt' | 'updatedAt'>
-    & { questions: Array<(
+    & { questions?: Maybe<Array<(
       { __typename?: 'Question' }
       & QuestionFragment
-    )>, tags: Array<(
+    )>>, tags: Array<(
       { __typename?: 'Tag' }
       & Pick<Tag, 'id' | 'name'>
-    )>, results: Array<(
+    )>, results?: Maybe<Array<(
       { __typename?: 'Result' }
       & ResultFragment
-    )>, author?: Maybe<(
+    )>>, author?: Maybe<(
       { __typename?: 'User' }
       & AuthorFragment
     )> }
@@ -679,7 +687,7 @@ export type GetQuizQuery = (
 );
 
 export type GetQuizzesQueryVariables = Exact<{
-  quizzesInput: QuizzesInput;
+  input: GetQuizzesInput;
   isPublished: Scalars['Boolean'];
   isMine: Scalars['Boolean'];
 }>;
@@ -845,6 +853,15 @@ export const QuizCardFragmentDoc = gql`
   }
 }
     ${AuthorFragmentDoc}`;
+export const ScoreFragmentDoc = gql`
+    fragment Score on Score {
+  id
+  score
+  totalItems
+  answered
+  answered
+}
+    `;
 export const UserFragmentDoc = gql`
     fragment User on User {
   id
@@ -1203,12 +1220,10 @@ export type SignUpMutationOptions = Apollo.BaseMutationOptions<SignUpMutation, S
 export const SubmitAnswersDocument = gql`
     mutation SubmitAnswers($input: SubmitAnswersInput!) {
   submitAnswers(input: $input) {
-    score
-    totalItems
-    answered
+    ...Score
   }
 }
-    `;
+    ${ScoreFragmentDoc}`;
 export type SubmitAnswersMutationFn = Apollo.MutationFunction<SubmitAnswersMutation, SubmitAnswersMutationVariables>;
 
 /**
@@ -1378,20 +1393,20 @@ export type GetCommentsQueryHookResult = ReturnType<typeof useGetCommentsQuery>;
 export type GetCommentsLazyQueryHookResult = ReturnType<typeof useGetCommentsLazyQuery>;
 export type GetCommentsQueryResult = Apollo.QueryResult<GetCommentsQuery, GetCommentsQueryVariables>;
 export const GetQuizDocument = gql`
-    query GetQuiz($quizId: String!, $isInput: Boolean!) {
-  getQuiz(quizId: $quizId, isInput: $isInput) {
+    query GetQuiz($quizId: String!, $isInput: Boolean!, $isTake: Boolean!, $isLanding: Boolean!) {
+  getQuiz(quizId: $quizId, isInput: $isInput, isTake: $isTake) {
     id @skip(if: $isInput)
     title
     description
     quizPhoto
-    questions {
+    questions @skip(if: $isLanding) {
       ...Question
     }
     tags {
       id
       name
     }
-    results {
+    results @skip(if: $isLanding) {
       ...Result
     }
     isLiked @skip(if: $isInput)
@@ -1427,6 +1442,8 @@ ${AuthorFragmentDoc}`;
  *   variables: {
  *      quizId: // value for 'quizId'
  *      isInput: // value for 'isInput'
+ *      isTake: // value for 'isTake'
+ *      isLanding: // value for 'isLanding'
  *   },
  * });
  */
@@ -1442,12 +1459,8 @@ export type GetQuizQueryHookResult = ReturnType<typeof useGetQuizQuery>;
 export type GetQuizLazyQueryHookResult = ReturnType<typeof useGetQuizLazyQuery>;
 export type GetQuizQueryResult = Apollo.QueryResult<GetQuizQuery, GetQuizQueryVariables>;
 export const GetQuizzesDocument = gql`
-    query GetQuizzes($quizzesInput: QuizzesInput!, $isPublished: Boolean!, $isMine: Boolean!) {
-  getQuizzes(
-    quizzesInput: $quizzesInput
-    isPublished: $isPublished
-    isMine: $isMine
-  ) {
+    query GetQuizzes($input: GetQuizzesInput!, $isPublished: Boolean!, $isMine: Boolean!) {
+  getQuizzes(input: $input, isPublished: $isPublished, isMine: $isMine) {
     quizzes {
       ...QuizCard
     }
@@ -1471,7 +1484,7 @@ ${PageInfoFragmentDoc}`;
  * @example
  * const { data, loading, error } = useGetQuizzesQuery({
  *   variables: {
- *      quizzesInput: // value for 'quizzesInput'
+ *      input: // value for 'input'
  *      isPublished: // value for 'isPublished'
  *      isMine: // value for 'isMine'
  *   },

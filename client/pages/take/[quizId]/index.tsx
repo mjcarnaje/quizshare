@@ -6,7 +6,7 @@ import MainContainer from "@components/ui/MainContainer";
 import withApollo from "@utils/withApollo";
 import { useRouter } from "next/router";
 
-import { AVATAR_FALLBACK_IMG } from "../../constant/index";
+import { AVATAR_FALLBACK_IMG } from "../../../constant";
 import { useSubmitAnswersMutation, useGetQuizQuery } from "@generated/graphql";
 
 const Wrapper: React.FC<{ title: string }> = ({ title, children }) => {
@@ -41,6 +41,8 @@ const TakeQuiz: React.FC = () => {
     variables: {
       quizId,
       isInput: false,
+      isTake: true,
+      isLanding: false,
     },
   });
   const [submitAnswers] = useSubmitAnswersMutation();
@@ -83,6 +85,7 @@ const TakeQuiz: React.FC = () => {
             },
           },
         });
+        router.replace(`/take/${quizId}/result`);
       } catch (err) {
         console.error(err);
       }
@@ -107,7 +110,7 @@ const TakeQuiz: React.FC = () => {
     return (
       <Wrapper title={loading ? "Loading.." : "Error"}>
         {loading && !error && <p>Loading...</p>}
-        {!loading && error && <p>Error</p>}
+        {!loading && error && <p>{error.message}</p>}
       </Wrapper>
     );
   }
@@ -131,7 +134,7 @@ const TakeQuiz: React.FC = () => {
       </div>
       <div className="px-4 pb-4">
         <ul className="py-8 space-y-10">
-          {questions.map((question, questionIdx) => (
+          {questions!.map((question, questionIdx) => (
             <QuestionCard
               key={question.id}
               question={question}

@@ -86,7 +86,7 @@ export class QuizInput {
 }
 
 @InputType()
-export class QuizzesInput {
+export class GetQuizzesInput {
   @Field(() => String, { nullable: true })
   search?: string;
 
