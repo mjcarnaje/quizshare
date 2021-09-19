@@ -19,6 +19,7 @@ query GetQuiz($quizId: String!, $isInput: Boolean!) {
     questionCount @skip(if: $isInput)
     likeCount @skip(if: $isInput)
     commentCount @skip(if: $isInput)
+    takerCount @skip(if: $isInput)
     isPublished @skip(if: $isInput)
     authorId @skip(if: $isInput)
     author @skip(if: $isInput) {

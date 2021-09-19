@@ -1,11 +1,12 @@
-import { Field, ObjectType, Int } from "type-graphql";
+import { Field, ObjectType, Int, Float } from "type-graphql";
 import {
   BaseEntity,
+  BeforeInsert,
   Column,
   CreateDateColumn,
   Entity,
   ManyToOne,
-  PrimaryColumn,
+  PrimaryGeneratedColumn,
 } from "typeorm";
 import { Quiz, User } from ".";
 
@@ -13,26 +14,49 @@ import { Quiz, User } from ".";
 @Entity()
 export class Score extends BaseEntity {
   @Field(() => String)
-  @PrimaryColumn()
+  @PrimaryGeneratedColumn("uuid")
   id: string;
 
-  @ManyToOne(() => Quiz, (quiz) => quiz.questions, {
+  @Field()
+  @Column()
+  quizAuthorId: string;
+
+  @Field()
+  @Column()
+  quizId: string;
+
+  @ManyToOne(() => Quiz, (quiz) => quiz.takers, {
     onDelete: "CASCADE",
     onUpdate: "CASCADE",
   })
   quiz: Quiz;
 
-  @ManyToOne(() => User, (user) => user.scores)
-  user: User;
+  @Field()
+  @Column()
+  takerId: string;
+
+  @Field(() => User)
+  @ManyToOne(() => User, (user) => user.takers)
+  taker: User;
 
   @Field(() => Int)
+  @Column()
   totalItems: number;
 
   @Field(() => Int)
   @Column()
   score: number;
 
+  @Field(() => Float)
+  @Column({ default: 0 })
+  percentage: number;
+
   @Field(() => String)
   @CreateDateColumn()
   answered: Date;
+
+  @BeforeInsert()
+  setPercentage() {
+    this.percentage = (this.totalItems / this.score) * 100;
+  }
 }

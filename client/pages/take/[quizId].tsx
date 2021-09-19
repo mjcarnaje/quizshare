@@ -7,10 +7,7 @@ import withApollo from "@utils/withApollo";
 import { useRouter } from "next/router";
 
 import { AVATAR_FALLBACK_IMG } from "../../constant/index";
-import {
-  useCheckAnswerMutation,
-  useGetQuizQuery,
-} from "../../generated/graphql";
+import { useSubmitAnswersMutation, useGetQuizQuery } from "@generated/graphql";
 
 const Wrapper: React.FC<{ title: string }> = ({ title, children }) => {
   return (
@@ -32,9 +29,7 @@ const Wrapper: React.FC<{ title: string }> = ({ title, children }) => {
 
 export type IUserAnswer = Record<string, string | null>;
 
-interface Props {}
-
-const TakeQuiz: React.FC<Props> = () => {
+const TakeQuiz: React.FC = () => {
   const router = useRouter();
   const quizId = router.query.quizId as string;
 
@@ -48,23 +43,23 @@ const TakeQuiz: React.FC<Props> = () => {
       isInput: false,
     },
   });
-  const [checkAnswers] = useCheckAnswerMutation();
+  const [submitAnswers] = useSubmitAnswersMutation();
 
   const selectAnswer = (questionId: string, choiceId: string): void => {
-    const copied = { ...answers };
-    if (copied[questionId] === choiceId) {
-      copied[questionId] = null;
+    const _answers = { ...answers };
+    if (_answers[questionId] === choiceId) {
+      _answers[questionId] = null;
     } else {
-      copied[questionId] = choiceId;
+      _answers[questionId] = choiceId;
     }
 
-    if (Object.values(copied).every((ans) => ans)) {
+    if (Object.values(_answers).every((ans) => ans)) {
       setOK(true);
     } else {
       setOK(false);
     }
 
-    setAnswers(copied);
+    setAnswers(_answers);
   };
 
   const scrollToNextQuestion = (questionIdx: number) => {
@@ -75,18 +70,22 @@ const TakeQuiz: React.FC<Props> = () => {
     }
   };
 
-  const submitAnswers = async () => {
+  const _submitAnswers = async () => {
     if (!OK) {
       alert("Are you sure?");
     } else {
-      await checkAnswers({
-        variables: {
-          checkAnswerInput: {
-            quizId,
-            answers,
+      try {
+        await submitAnswers({
+          variables: {
+            input: {
+              quizId,
+              answers,
+            },
           },
-        },
-      });
+        });
+      } catch (err) {
+        console.error(err);
+      }
     }
   };
 
@@ -148,7 +147,7 @@ const TakeQuiz: React.FC<Props> = () => {
         <div className="flex justify-center">
           <button
             type="button"
-            onClick={submitAnswers}
+            onClick={_submitAnswers}
             className="inline-flex justify-center w-1/3 px-4 py-2 text-base font-medium text-white transition transform bg-indigo-600 border border-transparent rounded-md shadow-sm active:scale-95 hover:bg-indigo-700 focus:outline-none sm:col-start-2 sm:text-sm"
           >
             Submit

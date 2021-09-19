@@ -98,7 +98,19 @@ export class QuizzesInput {
 }
 
 @InputType()
-export class CheckAnswerInput {
+export class GetTakersInput {
+  @Field(() => String, { nullable: true })
+  search?: string;
+
+  @Field(() => Int)
+  limit: number;
+
+  @Field(() => String, { nullable: true })
+  cursor?: string;
+}
+
+@InputType()
+export class SubmitAnswersInput {
   @Field(() => String)
   quizId: string;
 

@@ -12,6 +12,8 @@ export type Scalars = {
   Boolean: boolean;
   Int: number;
   Float: number;
+  /** The javascript `Date` as string. Type represents date and time as the ISO Date string. */
+  DateTime: any;
   /** The `JSONObject` scalar type represents JSON objects as specified by [ECMA-404](http://www.ecma-international.org/publications/files/ECMA-ST/ECMA-404.pdf). */
   JSONObject: any;
 };
@@ -19,17 +21,6 @@ export type Scalars = {
 export type ChangeRoleInput = {
   userId: Scalars['String'];
   newRole: UserRole;
-};
-
-export type CheckAnswerInput = {
-  quizId: Scalars['String'];
-  answers: Scalars['JSONObject'];
-};
-
-export type CheckAnswerResult = {
-  __typename?: 'CheckAnswerResult';
-  score: Scalars['Int'];
-  percentage: Scalars['Float'];
 };
 
 export type ChoiceInput = {
@@ -51,6 +42,13 @@ export type Comment = {
 };
 
 
+export type GetTakersInput = {
+  search?: Maybe<Scalars['String']>;
+  limit: Scalars['Int'];
+  cursor?: Maybe<Scalars['String']>;
+};
+
+
 export type Mutation = {
   __typename?: 'Mutation';
   signUp: User;
@@ -64,7 +62,7 @@ export type Mutation = {
   publishQuiz: Quiz;
   toggleLike: Quiz;
   toggleBookmark: Quiz;
-  checkAnswer: CheckAnswerResult;
+  submitAnswers: Score;
   changeRole: User;
   toggleSubscription: User;
 };
@@ -101,7 +99,7 @@ export type MutationDeleteCommentArgs = {
 
 export type MutationSaveQuizArgs = {
   quizId?: Maybe<Scalars['String']>;
-  quizInput: QuizInput;
+  input: QuizInput;
 };
 
 
@@ -125,8 +123,8 @@ export type MutationToggleBookmarkArgs = {
 };
 
 
-export type MutationCheckAnswerArgs = {
-  checkAnswerInput: CheckAnswerInput;
+export type MutationSubmitAnswersArgs = {
+  input: SubmitAnswersInput;
 };
 
 
@@ -157,6 +155,12 @@ export type PaginatedQuizzes = {
   pageInfo: PageInfo;
 };
 
+export type PaginatedTakers = {
+  __typename?: 'PaginatedTakers';
+  takers: Array<Score>;
+  pageInfo: PageInfo;
+};
+
 export type PaginatedUsers = {
   __typename?: 'PaginatedUsers';
   users: Array<User>;
@@ -168,6 +172,7 @@ export type Query = {
   getComments: PaginatedComment;
   getQuizzes: PaginatedQuizzes;
   getQuiz: Quiz;
+  getTakers: PaginatedTakers;
   users: PaginatedUsers;
   me?: Maybe<User>;
 };
@@ -190,6 +195,12 @@ export type QueryGetQuizzesArgs = {
 export type QueryGetQuizArgs = {
   isInput: Scalars['Boolean'];
   quizId: Scalars['String'];
+};
+
+
+export type QueryGetTakersArgs = {
+  quizId: Scalars['String'];
+  input: GetTakersInput;
 };
 
 
@@ -234,6 +245,7 @@ export type Quiz = {
   likeCount: Scalars['Int'];
   commentCount: Scalars['Int'];
   bookmarkCount: Scalars['Int'];
+  takerCount: Scalars['Int'];
   isMine: Scalars['Boolean'];
   isLiked: Scalars['Boolean'];
   isBookmarked: Scalars['Boolean'];
@@ -273,6 +285,19 @@ export type ResultInput = {
   minimumPercent: Scalars['Int'];
 };
 
+export type Score = {
+  __typename?: 'Score';
+  id: Scalars['String'];
+  quizAuthorId: Scalars['String'];
+  quizId: Scalars['String'];
+  takerId: Scalars['String'];
+  taker: User;
+  totalItems: Scalars['Int'];
+  score: Scalars['Int'];
+  percentage: Scalars['Float'];
+  answered: Scalars['String'];
+};
+
 export type SignInInput = {
   usernameOrEmail: Scalars['String'];
   password: Scalars['String'];
@@ -288,6 +313,11 @@ export type SignUpInput = {
   lastName: Scalars['String'];
   birthday: Scalars['String'];
   gender: Scalars['String'];
+};
+
+export type SubmitAnswersInput = {
+  quizId: Scalars['String'];
+  answers: Scalars['JSONObject'];
 };
 
 export type Subscription = {
@@ -323,7 +353,7 @@ export type User = {
   coverPhoto?: Maybe<Scalars['String']>;
   firstName: Scalars['String'];
   lastName?: Maybe<Scalars['String']>;
-  birthday?: Maybe<Scalars['String']>;
+  birthday?: Maybe<Scalars['DateTime']>;
   gender?: Maybe<Scalars['String']>;
   country?: Maybe<Scalars['String']>;
   bio?: Maybe<Scalars['String']>;
@@ -397,7 +427,7 @@ export type QuizFragment = (
 
 export type QuizCardFragment = (
   { __typename?: 'Quiz' }
-  & Pick<Quiz, 'id' | 'title' | 'description' | 'quizPhoto' | 'createdAt' | 'questionCount' | 'isPublished' | 'isMine' | 'likeCount' | 'bookmarkCount' | 'commentCount' | 'isLiked' | 'isBookmarked' | 'authorId'>
+  & Pick<Quiz, 'id' | 'title' | 'description' | 'quizPhoto' | 'createdAt' | 'questionCount' | 'isPublished' | 'isMine' | 'likeCount' | 'bookmarkCount' | 'commentCount' | 'takerCount' | 'isLiked' | 'isBookmarked' | 'authorId'>
   & { author: (
     { __typename?: 'User' }
     & AuthorFragment
@@ -438,19 +468,6 @@ export type ChangeRoleMutation = (
   & { changeRole: (
     { __typename?: 'User' }
     & UserFragment
-  ) }
-);
-
-export type CheckAnswerMutationVariables = Exact<{
-  checkAnswerInput: CheckAnswerInput;
-}>;
-
-
-export type CheckAnswerMutation = (
-  { __typename?: 'Mutation' }
-  & { checkAnswer: (
-    { __typename?: 'CheckAnswerResult' }
-    & Pick<CheckAnswerResult, 'score' | 'percentage'>
   ) }
 );
 
@@ -512,7 +529,7 @@ export type PublishQuizMutation = (
 );
 
 export type SaveQuizMutationVariables = Exact<{
-  quizInput: QuizInput;
+  input: QuizInput;
   quizId?: Maybe<Scalars['String']>;
 }>;
 
@@ -558,6 +575,19 @@ export type SignUpMutation = (
   & { signUp: (
     { __typename?: 'User' }
     & MeFragment
+  ) }
+);
+
+export type SubmitAnswersMutationVariables = Exact<{
+  input: SubmitAnswersInput;
+}>;
+
+
+export type SubmitAnswersMutation = (
+  { __typename?: 'Mutation' }
+  & { submitAnswers: (
+    { __typename?: 'Score' }
+    & Pick<Score, 'score' | 'totalItems' | 'answered'>
   ) }
 );
 
@@ -631,7 +661,7 @@ export type GetQuizQuery = (
   { __typename?: 'Query' }
   & { getQuiz: (
     { __typename?: 'Quiz' }
-    & MakeOptional<Pick<Quiz, 'id' | 'title' | 'description' | 'quizPhoto' | 'isLiked' | 'isBookmarked' | 'questionCount' | 'likeCount' | 'commentCount' | 'isPublished' | 'authorId' | 'createdAt' | 'updatedAt'>, 'id' | 'isLiked' | 'isBookmarked' | 'questionCount' | 'likeCount' | 'commentCount' | 'isPublished' | 'authorId' | 'createdAt' | 'updatedAt'>
+    & MakeOptional<Pick<Quiz, 'id' | 'title' | 'description' | 'quizPhoto' | 'isLiked' | 'isBookmarked' | 'questionCount' | 'likeCount' | 'commentCount' | 'takerCount' | 'isPublished' | 'authorId' | 'createdAt' | 'updatedAt'>, 'id' | 'isLiked' | 'isBookmarked' | 'questionCount' | 'likeCount' | 'commentCount' | 'takerCount' | 'isPublished' | 'authorId' | 'createdAt' | 'updatedAt'>
     & { questions: Array<(
       { __typename?: 'Question' }
       & QuestionFragment
@@ -806,6 +836,7 @@ export const QuizCardFragmentDoc = gql`
   likeCount
   bookmarkCount
   commentCount
+  takerCount
   isLiked
   isBookmarked
   authorId
@@ -894,40 +925,6 @@ export function useChangeRoleMutation(baseOptions?: Apollo.MutationHookOptions<C
 export type ChangeRoleMutationHookResult = ReturnType<typeof useChangeRoleMutation>;
 export type ChangeRoleMutationResult = Apollo.MutationResult<ChangeRoleMutation>;
 export type ChangeRoleMutationOptions = Apollo.BaseMutationOptions<ChangeRoleMutation, ChangeRoleMutationVariables>;
-export const CheckAnswerDocument = gql`
-    mutation CheckAnswer($checkAnswerInput: CheckAnswerInput!) {
-  checkAnswer(checkAnswerInput: $checkAnswerInput) {
-    score
-    percentage
-  }
-}
-    `;
-export type CheckAnswerMutationFn = Apollo.MutationFunction<CheckAnswerMutation, CheckAnswerMutationVariables>;
-
-/**
- * __useCheckAnswerMutation__
- *
- * To run a mutation, you first call `useCheckAnswerMutation` within a React component and pass it any options that fit your needs.
- * When your component renders, `useCheckAnswerMutation` returns a tuple that includes:
- * - A mutate function that you can call at any time to execute the mutation
- * - An object with fields that represent the current status of the mutation's execution
- *
- * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
- *
- * @example
- * const [checkAnswerMutation, { data, loading, error }] = useCheckAnswerMutation({
- *   variables: {
- *      checkAnswerInput: // value for 'checkAnswerInput'
- *   },
- * });
- */
-export function useCheckAnswerMutation(baseOptions?: Apollo.MutationHookOptions<CheckAnswerMutation, CheckAnswerMutationVariables>) {
-        const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useMutation<CheckAnswerMutation, CheckAnswerMutationVariables>(CheckAnswerDocument, options);
-      }
-export type CheckAnswerMutationHookResult = ReturnType<typeof useCheckAnswerMutation>;
-export type CheckAnswerMutationResult = Apollo.MutationResult<CheckAnswerMutation>;
-export type CheckAnswerMutationOptions = Apollo.BaseMutationOptions<CheckAnswerMutation, CheckAnswerMutationVariables>;
 export const DeleteCommentDocument = gql`
     mutation DeleteComment($quizId: String!, $commentId: String!) {
   deleteComment(quizId: $quizId, commentId: $commentId)
@@ -1090,8 +1087,8 @@ export type PublishQuizMutationHookResult = ReturnType<typeof usePublishQuizMuta
 export type PublishQuizMutationResult = Apollo.MutationResult<PublishQuizMutation>;
 export type PublishQuizMutationOptions = Apollo.BaseMutationOptions<PublishQuizMutation, PublishQuizMutationVariables>;
 export const SaveQuizDocument = gql`
-    mutation SaveQuiz($quizInput: QuizInput!, $quizId: String) {
-  saveQuiz(quizInput: $quizInput, quizId: $quizId) {
+    mutation SaveQuiz($input: QuizInput!, $quizId: String) {
+  saveQuiz(input: $input, quizId: $quizId) {
     id
     title
     description
@@ -1125,7 +1122,7 @@ export type SaveQuizMutationFn = Apollo.MutationFunction<SaveQuizMutation, SaveQ
  * @example
  * const [saveQuizMutation, { data, loading, error }] = useSaveQuizMutation({
  *   variables: {
- *      quizInput: // value for 'quizInput'
+ *      input: // value for 'input'
  *      quizId: // value for 'quizId'
  *   },
  * });
@@ -1203,6 +1200,41 @@ export function useSignUpMutation(baseOptions?: Apollo.MutationHookOptions<SignU
 export type SignUpMutationHookResult = ReturnType<typeof useSignUpMutation>;
 export type SignUpMutationResult = Apollo.MutationResult<SignUpMutation>;
 export type SignUpMutationOptions = Apollo.BaseMutationOptions<SignUpMutation, SignUpMutationVariables>;
+export const SubmitAnswersDocument = gql`
+    mutation SubmitAnswers($input: SubmitAnswersInput!) {
+  submitAnswers(input: $input) {
+    score
+    totalItems
+    answered
+  }
+}
+    `;
+export type SubmitAnswersMutationFn = Apollo.MutationFunction<SubmitAnswersMutation, SubmitAnswersMutationVariables>;
+
+/**
+ * __useSubmitAnswersMutation__
+ *
+ * To run a mutation, you first call `useSubmitAnswersMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useSubmitAnswersMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [submitAnswersMutation, { data, loading, error }] = useSubmitAnswersMutation({
+ *   variables: {
+ *      input: // value for 'input'
+ *   },
+ * });
+ */
+export function useSubmitAnswersMutation(baseOptions?: Apollo.MutationHookOptions<SubmitAnswersMutation, SubmitAnswersMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<SubmitAnswersMutation, SubmitAnswersMutationVariables>(SubmitAnswersDocument, options);
+      }
+export type SubmitAnswersMutationHookResult = ReturnType<typeof useSubmitAnswersMutation>;
+export type SubmitAnswersMutationResult = Apollo.MutationResult<SubmitAnswersMutation>;
+export type SubmitAnswersMutationOptions = Apollo.BaseMutationOptions<SubmitAnswersMutation, SubmitAnswersMutationVariables>;
 export const ToggleBookmarkDocument = gql`
     mutation ToggleBookmark($quizId: String!) {
   toggleBookmark(quizId: $quizId) {
@@ -1367,6 +1399,7 @@ export const GetQuizDocument = gql`
     questionCount @skip(if: $isInput)
     likeCount @skip(if: $isInput)
     commentCount @skip(if: $isInput)
+    takerCount @skip(if: $isInput)
     isPublished @skip(if: $isInput)
     authorId @skip(if: $isInput)
     author @skip(if: $isInput) {

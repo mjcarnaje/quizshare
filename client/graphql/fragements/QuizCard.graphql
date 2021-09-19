@@ -10,6 +10,7 @@ fragment QuizCard on Quiz {
   likeCount
   bookmarkCount
   commentCount
+  takerCount
   isLiked
   isBookmarked
   authorId

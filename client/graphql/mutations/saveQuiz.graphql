@@ -1,5 +1,5 @@
-mutation SaveQuiz($quizInput: QuizInput!, $quizId: String) {
-  saveQuiz(quizInput: $quizInput, quizId: $quizId) {
+mutation SaveQuiz($input: QuizInput!, $quizId: String) {
+  saveQuiz(input: $input, quizId: $quizId) {
     id
     title
     description

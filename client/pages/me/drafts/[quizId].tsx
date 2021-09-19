@@ -15,20 +15,15 @@ import { FormProvider, useForm } from "react-hook-form";
 import { useAppDispatch } from "store";
 import { showAlert } from "store/alert";
 
-import ImageHolder from "../../../components/ImageHolder";
-import Input from "../../../components/inputs/Input";
-import TextareaAutoResize from "../../../components/inputs/TextareaAutoResize";
-import QuizTabs from "../../../components/quizzes/QuizTabs";
-import ResultInputs from "../../../components/quizzes/ResultInputs";
-import {
-  useGetQuizQuery,
-  usePublishQuizMutation,
-} from "../../../generated/graphql";
-import errorMapper from "../../../utils/errorMapper";
+import ImageHolder from "@components/ImageHolder";
+import Input from "@components/inputs/Input";
+import TextareaAutoResize from "@components/inputs/TextareaAutoResize";
+import QuizTabs from "@components/quizzes/QuizTabs";
+import ResultInputs from "@components/quizzes/ResultInputs";
+import { useGetQuizQuery, usePublishQuizMutation } from "@generated/graphql";
+import errorMapper from "@utils/errorMapper";
 
-interface Props {}
-
-const DraftEditQuizPage: React.FC<Props> = () => {
+const DraftEditQuizPage: React.FC = () => {
   const dispatch = useAppDispatch();
   const router = useRouter();
   const quizId = router.query.quizId as string;
@@ -69,7 +64,7 @@ const DraftEditQuizPage: React.FC<Props> = () => {
   const onSubmit = async (data: QuizInput) => {
     try {
       const { data: quizData } = await saveQuiz({
-        variables: { quizInput: data, quizId },
+        variables: { input: data, quizId },
         update: (cache) => {
           cache.evict({ fieldName: "quizzes" });
         },

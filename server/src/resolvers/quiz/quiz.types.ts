@@ -1,5 +1,5 @@
-import { Field, Float, Int, ObjectType } from "type-graphql";
-import { Quiz } from "../../entity";
+import { Field, ObjectType } from "type-graphql";
+import { Quiz, Score } from "../../entity";
 import { PageInfo } from "../../types";
 
 @ObjectType()
@@ -10,12 +10,11 @@ export class PaginatedQuizzes {
   @Field(() => PageInfo)
   pageInfo: PageInfo;
 }
-
 @ObjectType()
-export class CheckAnswerResult {
-  @Field(() => Int)
-  score: number;
+export class PaginatedTakers {
+  @Field(() => [Score])
+  takers: Score[];
 
-  @Field(() => Float)
-  percentage: number;
+  @Field(() => PageInfo)
+  pageInfo: PageInfo;
 }

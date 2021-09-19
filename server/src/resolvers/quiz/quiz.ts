@@ -15,11 +15,16 @@ import {
   UseMiddleware,
 } from "type-graphql";
 import { Brackets, getConnection } from "typeorm";
-import { Bookmark, Like, Quiz, User } from "../../entity";
+import { Bookmark, Like, Quiz, User, Score } from "../../entity";
 import { isAuthenticated } from "../../middleware";
 import { IContext } from "../../types";
-import { CheckAnswerInput, QuizInput, QuizzesInput } from "./quiz.inputs";
-import { CheckAnswerResult, PaginatedQuizzes } from "./quiz.types";
+import {
+  SubmitAnswersInput,
+  GetTakersInput,
+  QuizInput,
+  QuizzesInput,
+} from "./quiz.inputs";
+import { PaginatedQuizzes, PaginatedTakers } from "./quiz.types";
 
 @Resolver(Quiz)
 export class QuizResolver implements ResolverInterface<Quiz> {
@@ -106,25 +111,21 @@ export class QuizResolver implements ResolverInterface<Quiz> {
   @UseMiddleware(isAuthenticated)
   @Mutation(() => Quiz)
   async saveQuiz(
-    @Arg("quizInput") quizInput: QuizInput,
+    @Arg("input") input: QuizInput,
     @Ctx() ctx: IContext,
     @Arg("quizId", { nullable: true }) quizId?: string
   ): Promise<Quiz> {
+    const authorId = ctx.req.session.userId;
+    const questionCount = input.questions.length;
+
     let newQuiz: Quiz;
 
     if (quizId) {
-      const toUpdate = await Quiz.findOne({ id: quizId });
-      let updated = Object.assign(toUpdate, {
-        ...quizInput,
-        questionCount: quizInput.questions.length,
-      });
+      const quiz = await Quiz.findOne({ id: quizId });
+      let updated = Object.assign(quiz, { ...input, questionCount });
       newQuiz = await Quiz.save(updated);
     } else {
-      newQuiz = await Quiz.create({
-        ...quizInput,
-        questionCount: quizInput.questions.length,
-        authorId: ctx.req.session.userId,
-      }).save();
+      newQuiz = await Quiz.create({ ...input, questionCount, authorId }).save();
     }
 
     return newQuiz;
@@ -266,11 +267,13 @@ export class QuizResolver implements ResolverInterface<Quiz> {
   }
 
   @UseMiddleware(isAuthenticated)
-  @Mutation(() => CheckAnswerResult)
-  async checkAnswer(
-    @Arg("checkAnswerInput") checkAnswerInput: CheckAnswerInput
-  ): Promise<CheckAnswerResult> {
-    const { quizId, answers } = checkAnswerInput;
+  @Mutation(() => Score)
+  async submitAnswers(
+    @Arg("input") input: SubmitAnswersInput,
+    @Ctx() ctx: IContext
+  ): Promise<Score> {
+    const takerId = ctx.req.session.userId;
+    const { quizId, answers } = input;
 
     const quiz = await Quiz.findOne(quizId, { relations: ["questions"] });
 
@@ -278,17 +281,86 @@ export class QuizResolver implements ResolverInterface<Quiz> {
       throw new Error("There is an error.");
     }
 
-    const score = quiz.questions.reduce((total, question) => {
+    const { questions, questionCount } = quiz;
+
+    const answeredCorrect = questions.reduce((total, question) => {
       if (question.answer === answers[question.id]) {
         return (total += 1);
       }
       return total;
     }, 0);
 
-    const percentage = (score / quiz.questionCount) * 100;
+    const score = await Score.create({
+      takerId,
+      quizId,
+      totalItems: questionCount,
+      score: answeredCorrect,
+      quizAuthorId: quiz.authorId,
+    }).save();
 
-    console.log({ score, percentage });
+    quiz.takerCount++;
 
-    return { score, percentage };
+    quiz.save();
+
+    return score;
+  }
+
+  @Query(() => PaginatedTakers)
+  async getTakers(
+    @Arg("input") input: GetTakersInput,
+    @Arg("quizId") quizId: string,
+    @Ctx() ctx: IContext
+  ): Promise<PaginatedTakers> {
+    const authorId = ctx.req.session.userId;
+
+    const { limit, search, cursor } = input;
+    const limitPlusOne = limit + 1;
+
+    let takers = await getConnection()
+      .getRepository(Score)
+      .createQueryBuilder("score")
+      .leftJoinAndSelect("score.taker", "taker")
+      .where("score.quizId = :quizId", { quizId })
+      .andWhere("score.quizAuthorId = :authorId", { authorId });
+
+    if (search) {
+      takers = takers.andWhere(
+        new Brackets((qb) => {
+          qb.where("taker.firstName ilike :search", {
+            search: `%${search}%`,
+          })
+            .orWhere("taker.lastName ilike :search", {
+              search: `%${search}%`,
+            })
+            .orWhere("taker.username ilike :search", {
+              search: `%${search}%`,
+            })
+            .orWhere("taker.email ilike :search", {
+              search: `%${search}%`,
+            });
+        })
+      );
+    }
+
+    if (cursor) {
+      takers = takers.andWhere("score.answered < :cursor", {
+        cursor: new Date(Number(cursor) - 1),
+      });
+    }
+
+    const results = await takers
+      .orderBy("score.answered", "DESC")
+      .take(limitPlusOne)
+      .getMany();
+
+    const takersRes = results.slice(0, limit);
+
+    return {
+      takers: takersRes,
+      pageInfo: {
+        endCursor: takersRes[takersRes.length - 1].answered,
+        hasNextPage: results.length === limitPlusOne,
+      },
+    };
   }
 }

@@ -13,10 +13,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/router";
 
-import {
-  QuizCardFragment,
-  useDeleteQuizMutation,
-} from "../../generated/graphql";
+import { QuizCardFragment, useDeleteQuizMutation } from "@generated/graphql";
 import BookmarkButton from "../buttons/BookmarkButton";
 import CommentButton from "../buttons/CommentButton";
 import FollowButton from "../buttons/FollowButton";
@@ -46,6 +43,7 @@ export const QuizCard: React.FC<Props> = ({
   type,
   likeCount,
   commentCount,
+  takerCount,
   isMine,
   isLiked,
   isBookmarked,
@@ -101,7 +99,8 @@ export const QuizCard: React.FC<Props> = ({
               {formatDate(createdAt)}
             </span>
             <span className="flex items-center text-sm font-medium text-gray-700">
-              <EyeIcon className="w-4 h-4 mr-1" />0 Submitted
+              <EyeIcon className="w-4 h-4 mr-1" />
+              {`${takerCount} Submitted`}
             </span>
             <span className="flex items-center text-sm font-medium text-gray-700">
               <CollectionIcon className="w-4 h-4 mr-1" />

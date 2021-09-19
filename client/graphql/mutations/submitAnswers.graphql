@@ -1,0 +1,7 @@
+mutation SubmitAnswers($input: SubmitAnswersInput!) {
+  submitAnswers(input: $input) {
+    score
+    totalItems
+    answered
+  }
+}

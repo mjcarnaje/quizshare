@@ -98,6 +98,7 @@ const QuizLanding: React.FC<Props> = () => {
     questionCount,
     likeCount,
     isBookmarked,
+    takerCount,
     authorId,
   } = data.getQuiz;
 
@@ -130,7 +131,8 @@ const QuizLanding: React.FC<Props> = () => {
             {questionCount}
           </div>
           <div className="inline-flex items-center px-3 py-2 text-base font-medium leading-4 text-gray-500 hover:text-purple-500 rounded-2xl hover:bg-gray-100">
-            <EyeIcon className="-ml-0.5 mr-2 h-6 w-6" aria-hidden="true" />0
+            <EyeIcon className="-ml-0.5 mr-2 h-6 w-6" aria-hidden="true" />
+            {takerCount}
           </div>
         </div>
         <div className="flex justify-end space-x-2 2xl:space-x-0">

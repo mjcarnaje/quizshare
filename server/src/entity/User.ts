@@ -93,8 +93,8 @@ export class User extends BaseEntity {
   @OneToMany(() => Quiz, (quiz) => quiz.author)
   quizzes: Quiz[];
 
-  @OneToMany(() => Score, (score) => score.user)
-  scores: Score[];
+  @OneToMany(() => Score, (score) => score.taker)
+  takers: Score[];
 
   @OneToMany(() => Like, (like) => like.user)
   likes: Like[];
