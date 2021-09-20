@@ -2,18 +2,21 @@ import React from "react";
 
 import ImageHolder from "@components/ImageHolder";
 import { QuestionFragment } from "@generated/graphql";
+import { CheckIcon, XIcon } from "@heroicons/react/solid";
 
-import { IUserAnswer } from "../../pages/take/[quizId]";
+import { IUserAnswer } from "../../types/global-types";
 import { classNames } from "../../utils/index";
 
 interface Props {
   question: QuestionFragment;
   questionIdx: number;
   questionCount: number;
-  questionRefs: React.MutableRefObject<(HTMLLIElement | null)[]>;
-  selectAnswer: (questionId: string, choiceId: string) => void;
-  scrollToNextQuestion: (questionIdx: number) => void;
   answers: IUserAnswer;
+  questionRefs?: React.MutableRefObject<(HTMLLIElement | null)[]>;
+  selectAnswer?: (questionId: string, choiceId: string) => void;
+  scrollToNextQuestion?: (questionIdx: number) => void;
+  showAnswers?: boolean;
+  showCorrectAnswers?: boolean;
 }
 
 const QuestionCard: React.FC<Props> = ({
@@ -24,12 +27,18 @@ const QuestionCard: React.FC<Props> = ({
   answers,
   selectAnswer,
   scrollToNextQuestion,
+  showAnswers,
+  showCorrectAnswers,
 }) => {
   return (
     <li
       className="p-4 rounded"
       key={question.id}
-      ref={(refEl) => (questionRefs.current[questionIdx] = refEl)}
+      ref={(refEl) => {
+        if (questionRefs) {
+          return (questionRefs.current[questionIdx] = refEl);
+        }
+      }}
     >
       {question.questionPhoto && (
         <div className="w-2/3 mx-auto mb-6">
@@ -48,20 +57,51 @@ const QuestionCard: React.FC<Props> = ({
           </div>
           <p className="text-xl font-medium ">{question.question}</p>
         </div>
-        <div className="grid grid-cols-2 gap-2">
+        <div className="grid grid-cols-2 gap-3">
           {question.choices.map((choice) => {
             const isSelected = answers[question.id] === choice.id;
+
+            let isCorrect: boolean | null = null;
+            let isWrong: boolean | null = null;
+            let correctAnswer: boolean | null = null;
+
+            if (showAnswers) {
+              if (showCorrectAnswers) {
+                correctAnswer = choice.id === question.answer;
+              }
+              if (
+                answers[question.id] === question.answer &&
+                answers[question.id] === choice.id
+              ) {
+                isCorrect = true;
+              } else if (
+                answers[question.id] !== question.answer &&
+                answers[question.id] === choice.id
+              ) {
+                isWrong = true;
+              }
+            }
 
             return (
               <div key={choice.id}>
                 <div
                   onClick={() => {
-                    selectAnswer(question.id, choice.id);
-                    scrollToNextQuestion(questionIdx);
+                    if (selectAnswer && scrollToNextQuestion) {
+                      selectAnswer(question.id, choice.id);
+                      scrollToNextQuestion(questionIdx);
+                    }
                   }}
                   className={classNames(
-                    isSelected ? "bg-gray-200 shadow ring-2 ring-gray-400" : "",
-                    "p-2 transform active:scale-[.98] border text-center rounded cursor-pointer hover:bg-gray-100 transition"
+                    !showAnswers && isSelected
+                      ? "bg-gray-200 shadow ring-2 ring-gray-400"
+                      : isCorrect || correctAnswer
+                      ? "bg-[#68AF15] shadow ring-2 ring-[#68AF15] bg-opacity-20"
+                      : isWrong
+                      ? "bg-[#D30000] shadow ring-2 ring-[#D30000] bg-opacity-20"
+                      : !showAnswers
+                      ? "transform active:scale-[.98] cursor-pointer hover:bg-gray-100 transition"
+                      : "",
+                    "p-2 border text-center rounded"
                   )}
                 >
                   {choice.choicePhoto && (
@@ -69,8 +109,19 @@ const QuestionCard: React.FC<Props> = ({
                       <ImageHolder image={choice.choicePhoto} />
                     </div>
                   )}
-                  <div>
-                    <p className="break-all">{choice.text}</p>
+                  <div className="relative">
+                    <div>
+                      <p className="break-all">{choice.text}</p>
+                    </div>
+                    {(isCorrect || isWrong) && (
+                      <div className="absolute right-0 top-1/2 transform -translate-y-1/2">
+                        {isCorrect ? (
+                          <CheckIcon className="w-5  h-5 text-[#68AF15]" />
+                        ) : isWrong ? (
+                          <XIcon className="w-5 h-5 text-[#D30000]" />
+                        ) : null}
+                      </div>
+                    )}
                   </div>
                 </div>
               </div>

@@ -145,8 +145,8 @@ const TakeQuiz: React.FC = () => {
               question={question}
               questionIdx={questionIdx}
               questionCount={questionCount!}
-              questionRefs={questionRefs}
               answers={answers}
+              questionRefs={questionRefs}
               selectAnswer={selectAnswer}
               scrollToNextQuestion={scrollToNextQuestion}
             />
