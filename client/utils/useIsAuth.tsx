@@ -5,7 +5,7 @@ import { useRouter } from "next/dist/client/router";
 import { useMeQuery, MeQuery } from "../generated/graphql";
 
 export const useIsAuth = (): MeQuery => {
-  const { data, loading } = useMeQuery();
+  const { data, loading } = useMeQuery({ fetchPolicy: "cache-first" });
   const router = useRouter();
 
   useEffect(() => {

@@ -1,15 +1,15 @@
 import React from "react";
 
 import CommentCard from "@components/comments/CommentCard";
+import { useGetCommentsQuery } from "@generated/graphql";
 import Image from "next/image";
 
-import { useGetCommentsQuery } from "@generated/graphql";
 import { useAppSelector } from "../../store";
 import CommentCardSkeleton from "./CommentCardSkeleton";
 
 interface Props {
   quizId: string;
-  authorId: string;
+  authorId?: string;
 }
 
 const Comments: React.FC<Props> = ({ quizId, authorId }) => {

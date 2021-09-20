@@ -9,6 +9,7 @@ import {
   useSignInMutation,
 } from "@generated/graphql";
 import errorMapper from "@utils/errorMapper";
+import { useGetQuery } from "@utils/useGetQuery";
 import withApollo from "@utils/withApollo";
 import { useRouter } from "next/dist/client/router";
 import Link from "next/link";
@@ -18,6 +19,8 @@ import { FormErrors } from "../constant/index";
 
 const LoginPage = () => {
   const router = useRouter();
+  const next = useGetQuery("next");
+
   const [signIn, { loading }] = useSignInMutation();
 
   const {
@@ -43,8 +46,8 @@ const LoginPage = () => {
       });
 
       if (data?.signIn) {
-        if (router.query?.next) {
-          router.push(router.query.next as string);
+        if (next) {
+          router.push(next);
         } else {
           router.push("/");
         }

@@ -10,9 +10,9 @@ import Container from "@components/ui/Container";
 import MainContainer from "@components/ui/MainContainer";
 import { useGetQuizQuery } from "@generated/graphql";
 import { CollectionIcon, EyeIcon } from "@heroicons/react/outline";
+import { useGetQuery } from "@utils/useGetQuery";
 import { useIsAuth } from "@utils/useIsAuth";
 import withApollo from "@utils/withApollo";
-import { useRouter } from "next/router";
 import Skeleton from "react-loading-skeleton";
 
 const Wrapper: React.FC<{ title: string }> = ({ title, children }) => {
@@ -31,13 +31,11 @@ const Wrapper: React.FC<{ title: string }> = ({ title, children }) => {
   );
 };
 
-interface Props { }
+interface Props {}
 
 const QuizLanding: React.FC<Props> = () => {
   const me = useIsAuth();
-  const router = useRouter();
-
-  const quizId = router.query.quizId as string;
+  const quizId = useGetQuery("quizId");
 
   const { data, loading, error } = useGetQuizQuery({
     variables: {

@@ -9,25 +9,30 @@ import QuizTabs from "@components/quizzes/QuizTabs";
 import ResultInputs from "@components/quizzes/ResultInputs";
 import Container from "@components/ui/Container";
 import MainContainer from "@components/ui/MainContainer";
-import { QuizInput, useSaveQuizMutation } from "@generated/graphql";
-import { useGetQuizQuery, usePublishQuizMutation } from "@generated/graphql";
+import {
+  QuizInput,
+  useGetQuizQuery,
+  usePublishQuizMutation,
+  useSaveQuizMutation,
+} from "@generated/graphql";
 import { PaperAirplaneIcon, SaveAsIcon } from "@heroicons/react/outline";
+import { showAlert } from "@store/alert";
+import { useAppDispatch } from "@store/index";
 import errorMapper from "@utils/errorMapper";
 import { classNames, cleanTypeName } from "@utils/index";
+import { useGetQuery } from "@utils/useGetQuery";
 import { useUploadPhoto } from "@utils/useUploadImage";
 import withApollo from "@utils/withApollo";
 import { isEqual } from "lodash";
 import { useRouter } from "next/router";
 import { FormProvider, useForm } from "react-hook-form";
-import { useAppDispatch } from "store";
-import { showAlert } from "store/alert";
-
 
 const DraftEditQuizPage: React.FC = () => {
   const dispatch = useAppDispatch();
   const router = useRouter();
-  const quizId = router.query.quizId as string;
-  const tab = router.query.tab as string;
+  const quizId = useGetQuery("quizId");
+  const tab = useGetQuery("tab");
+
   const isQuestionsTab = tab === "questions" || tab == null;
   const isResultsTab = tab === "results";
 

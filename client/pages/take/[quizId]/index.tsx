@@ -6,12 +6,12 @@ import MainContainer from "@components/ui/MainContainer";
 import { useSubmitAnswersMutation, useGetQuizQuery } from "@generated/graphql";
 import { useAppDispatch } from "@store/index";
 import { setUserAnswer } from "@store/userAnswer";
+import { useGetQuery } from "@utils/useGetQuery";
 import withApollo from "@utils/withApollo";
 import { useRouter } from "next/router";
 
 import { AVATAR_FALLBACK_IMG } from "../../../constant";
 import { IUserAnswer } from "../../../types/global-types";
-
 
 const Wrapper: React.FC<{ title: string }> = ({ title, children }) => {
   return (
@@ -31,11 +31,10 @@ const Wrapper: React.FC<{ title: string }> = ({ title, children }) => {
   );
 };
 
-
 const TakeQuiz: React.FC = () => {
   const router = useRouter();
-  const quizId = router.query.quizId as string;
-  const dispatch = useAppDispatch()
+  const quizId = useGetQuery("quizId");
+  const dispatch = useAppDispatch();
 
   const [answers, setAnswers] = useState<IUserAnswer>({});
   const [OK, setOK] = useState(false);
@@ -89,7 +88,7 @@ const TakeQuiz: React.FC = () => {
             },
           },
         });
-        dispatch(setUserAnswer(answers))
+        dispatch(setUserAnswer(answers));
         router.replace(`/take/${quizId}/result`);
       } catch (err) {
         console.error(err);

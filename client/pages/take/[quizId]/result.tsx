@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from "react";
 
 import { useApolloClient } from "@apollo/client";
+import CommentInput from "@components/comments/CommentInput";
+import Comments from "@components/comments/Comments";
 import ImageHolder from "@components/ImageHolder";
 import QuestionCard from "@components/take/QuestionCard";
 import Container from "@components/ui/Container";
@@ -13,16 +15,18 @@ import {
 import { ChevronDownIcon, ChevronUpIcon } from "@heroicons/react/solid";
 import { useAppSelector } from "@store/index";
 import { selectUserAnswer } from "@store/userAnswer";
+import { useGetQuery } from "@utils/useGetQuery";
+import { useIsAuth } from "@utils/useIsAuth";
 import withApollo from "@utils/withApollo";
 import { AVATAR_FALLBACK_IMG } from "constant";
 import { useRouter } from "next/router";
 
 const Result: React.FC = () => {
+  const me = useIsAuth();
   const router = useRouter();
+  const quizId = useGetQuery("quizId");
   const client = useApolloClient();
   const { userAnswers } = useAppSelector(selectUserAnswer);
-
-  const quizId = router.query.quizId as string;
 
   const [showCorrectAnswers] = useState(false);
   const [showAnswers, setShowAnswers] = useState(false);
@@ -124,6 +128,12 @@ const Result: React.FC = () => {
                     </ul>
                   )}
                 </div>
+                <CommentInput
+                  quizId={quizId}
+                  me={me}
+                  commentCount={data.getQuiz.commentCount}
+                />
+                <Comments quizId={quizId} authorId={me.me?.id} />
               </div>
             </div>
           </div>

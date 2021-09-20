@@ -12,15 +12,15 @@ import MainContainer from "@components/ui/MainContainer";
 import { QuizInput, useSaveQuizMutation } from "@generated/graphql";
 import { SaveAsIcon } from "@heroicons/react/outline";
 import errorMapper from "@utils/errorMapper";
+import { useGetQuery } from "@utils/useGetQuery";
 import { useUploadPhoto } from "@utils/useUploadImage";
 import withApollo from "@utils/withApollo";
 import { useRouter } from "next/router";
 import { FormProvider, useForm } from "react-hook-form";
 
-
 const CreateQuiz: React.FC = () => {
   const router = useRouter();
-  const tab = router.query.tab as string;
+  const tab = useGetQuery("tab");
   const isQuestionsTab = tab === "questions" || tab == null;
   const isResultsTab = tab === "results";
 
