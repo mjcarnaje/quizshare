@@ -68,7 +68,7 @@ export type Mutation = {
   publishQuiz: Quiz;
   toggleLike: Quiz;
   toggleBookmark: Quiz;
-  submitAnswers: Score;
+  submitAnswers: ScoreResult;
   changeRole: User;
   toggleSubscription: User;
 };
@@ -272,6 +272,7 @@ export type QuizInput = {
 export type Result = {
   __typename?: 'Result';
   id: Scalars['String'];
+  quizId: Scalars['String'];
   title: Scalars['String'];
   description: Scalars['String'];
   resultPhoto?: Maybe<Scalars['String']>;
@@ -295,6 +296,29 @@ export type Score = {
   taker: User;
   totalItems: Scalars['Int'];
   score: Scalars['Int'];
+  percentage: Scalars['Float'];
+  answered: Scalars['String'];
+};
+
+export type ScoreResult = {
+  __typename?: 'ScoreResult';
+  id: Scalars['String'];
+  score: ScoreResultScore;
+  result: ScoreResultResult;
+};
+
+export type ScoreResultResult = {
+  __typename?: 'ScoreResultResult';
+  title: Scalars['String'];
+  description: Scalars['String'];
+  resultPhoto?: Maybe<Scalars['String']>;
+  minimumPercent: Scalars['Int'];
+};
+
+export type ScoreResultScore = {
+  __typename?: 'ScoreResultScore';
+  score: Scalars['Int'];
+  totalItems: Scalars['Int'];
   percentage: Scalars['Float'];
   answered: Scalars['String'];
 };
@@ -440,9 +464,16 @@ export type ResultFragment = (
   & Pick<Result, 'id' | 'title' | 'description' | 'resultPhoto' | 'minimumPercent'>
 );
 
-export type ScoreFragment = (
-  { __typename?: 'Score' }
-  & Pick<Score, 'id' | 'score' | 'totalItems' | 'answered'>
+export type ScoreResultFragment = (
+  { __typename?: 'ScoreResult' }
+  & Pick<ScoreResult, 'id'>
+  & { score: (
+    { __typename?: 'ScoreResultScore' }
+    & Pick<ScoreResultScore, 'score' | 'totalItems' | 'percentage' | 'answered'>
+  ), result: (
+    { __typename?: 'ScoreResultResult' }
+    & Pick<ScoreResultResult, 'title' | 'description' | 'resultPhoto' | 'minimumPercent'>
+  ) }
 );
 
 export type UserFragment = (
@@ -592,8 +623,8 @@ export type SubmitAnswersMutationVariables = Exact<{
 export type SubmitAnswersMutation = (
   { __typename?: 'Mutation' }
   & { submitAnswers: (
-    { __typename?: 'Score' }
-    & ScoreFragment
+    { __typename?: 'ScoreResult' }
+    & ScoreResultFragment
   ) }
 );
 
@@ -853,13 +884,21 @@ export const QuizCardFragmentDoc = gql`
   }
 }
     ${AuthorFragmentDoc}`;
-export const ScoreFragmentDoc = gql`
-    fragment Score on Score {
+export const ScoreResultFragmentDoc = gql`
+    fragment ScoreResult on ScoreResult {
   id
-  score
-  totalItems
-  answered
-  answered
+  score {
+    score
+    totalItems
+    percentage
+    answered
+  }
+  result {
+    title
+    description
+    resultPhoto
+    minimumPercent
+  }
 }
     `;
 export const UserFragmentDoc = gql`
@@ -1220,10 +1259,10 @@ export type SignUpMutationOptions = Apollo.BaseMutationOptions<SignUpMutation, S
 export const SubmitAnswersDocument = gql`
     mutation SubmitAnswers($input: SubmitAnswersInput!) {
   submitAnswers(input: $input) {
-    ...Score
+    ...ScoreResult
   }
 }
-    ${ScoreFragmentDoc}`;
+    ${ScoreResultFragmentDoc}`;
 export type SubmitAnswersMutationFn = Apollo.MutationFunction<SubmitAnswersMutation, SubmitAnswersMutationVariables>;
 
 /**
@@ -1406,7 +1445,7 @@ export const GetQuizDocument = gql`
       id
       name
     }
-    results @skip(if: $isLanding) {
+    results @include(if: $isInput) {
       ...Result
     }
     isLiked @skip(if: $isInput)

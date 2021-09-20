@@ -10,3 +10,5 @@ export type INavigation = {
   icon: (Props: SVGProps<SVGSVGElement>) => JSX.Element;
   activeIcon: (Props: SVGProps<SVGSVGElement>) => JSX.Element;
 }[];
+
+export type IUserAnswer = Record<string, string | null>;

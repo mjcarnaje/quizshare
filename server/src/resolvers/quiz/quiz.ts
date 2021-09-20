@@ -20,7 +20,7 @@ import {
   QuizInput,
   GetQuizzesInput,
 } from "./quiz.inputs";
-import { PaginatedQuizzes, PaginatedTakers } from "./quiz.types";
+import { PaginatedQuizzes, PaginatedTakers, ScoreResult } from "./quiz.types";
 
 @Resolver(Quiz)
 export class QuizResolver implements ResolverInterface<Quiz> {
@@ -140,11 +140,15 @@ export class QuizResolver implements ResolverInterface<Quiz> {
       .createQueryBuilder("quiz")
       .leftJoinAndSelect("quiz.tags", "tags");
 
-    if (isInput || isTake) {
+    if (isInput) {
       quiz = quiz
         .leftJoinAndSelect("quiz.questions", "questions")
         .leftJoinAndSelect("quiz.results", "results")
         .andWhere("quiz.authorId = :authorId", { authorId });
+    }
+
+    if (isTake) {
+      quiz = quiz.leftJoinAndSelect("quiz.questions", "questions");
     }
 
     const result = await quiz
@@ -265,15 +269,17 @@ export class QuizResolver implements ResolverInterface<Quiz> {
   }
 
   @UseMiddleware(isAuthenticated)
-  @Mutation(() => Score)
+  @Mutation(() => ScoreResult)
   async submitAnswers(
     @Arg("input") input: SubmitAnswersInput,
     @Ctx() ctx: IContext
-  ): Promise<Score> {
+  ): Promise<ScoreResult> {
     const takerId = ctx.req.session.userId;
     const { quizId, answers } = input;
 
-    const quiz = await Quiz.findOne(quizId, { relations: ["questions"] });
+    const quiz = await Quiz.findOne(quizId, {
+      relations: ["questions", "results"],
+    });
 
     if (!quiz) {
       throw new Error("There is an error.");
@@ -296,11 +302,15 @@ export class QuizResolver implements ResolverInterface<Quiz> {
       quizAuthorId: quiz.authorId,
     }).save();
 
+    const result = quiz.results.filter((res) => {
+      return score.percentage >= res.minimumPercent;
+    })[0];
+
     quiz.takerCount++;
 
-    quiz.save();
+    await quiz.save();
 
-    return score;
+    return { id: quizId, score, result };
   }
 
   @Query(() => PaginatedTakers)

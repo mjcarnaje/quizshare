@@ -16,6 +16,10 @@ export class Result extends BaseEntity {
   @PrimaryGeneratedColumn("uuid")
   id: string;
 
+  @Field() 
+  @Column()
+  quizId: string;
+  
   @ManyToOne(() => Quiz, (quiz) => quiz.questions, {
     onDelete: "CASCADE",
     onUpdate: "CASCADE",

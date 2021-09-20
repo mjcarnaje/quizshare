@@ -1,8 +1,8 @@
 import React from "react";
 
+import BookmarkButton from "@components/buttons/BookmarkButton";
 import LikeButton from "@components/buttons/LikeButton";
 import TakeButton from "@components/buttons/TakeButton";
-import BookmarkButton from "@components/buttons/BookmarkButton";
 import CommentInput from "@components/comments/CommentInput";
 import Comments from "@components/comments/Comments";
 import ImageHolder from "@components/ImageHolder";
@@ -31,7 +31,7 @@ const Wrapper: React.FC<{ title: string }> = ({ title, children }) => {
   );
 };
 
-interface Props {}
+interface Props { }
 
 const QuizLanding: React.FC<Props> = () => {
   const me = useIsAuth();

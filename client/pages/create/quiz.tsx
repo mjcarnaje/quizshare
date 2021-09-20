@@ -1,22 +1,22 @@
 import React, { useEffect } from "react";
 
 import AddCoverPhotoButton from "@components/buttons/AddCoverPhotoButton";
+import ImageHolder from "@components/ImageHolder";
+import Input from "@components/inputs/Input";
+import TextareaAutoResize from "@components/inputs/TextareaAutoResize";
 import QuestionInputs from "@components/quizzes/QuestionInputs";
+import QuizTabs from "@components/quizzes/QuizTabs";
+import ResultInputs from "@components/quizzes/ResultInputs";
 import Container from "@components/ui/Container";
 import MainContainer from "@components/ui/MainContainer";
 import { QuizInput, useSaveQuizMutation } from "@generated/graphql";
 import { SaveAsIcon } from "@heroicons/react/outline";
+import errorMapper from "@utils/errorMapper";
+import { useUploadPhoto } from "@utils/useUploadImage";
 import withApollo from "@utils/withApollo";
 import { useRouter } from "next/router";
 import { FormProvider, useForm } from "react-hook-form";
 
-import ImageHolder from "@components/ImageHolder";
-import Input from "@components/inputs/Input";
-import TextareaAutoResize from "@components/inputs/TextareaAutoResize";
-import QuizTabs from "@components/quizzes/QuizTabs";
-import ResultInputs from "@components/quizzes/ResultInputs";
-import errorMapper from "@utils/errorMapper";
-import { useUploadPhoto } from "@utils/useUploadImage";
 
 const CreateQuiz: React.FC = () => {
   const router = useRouter();

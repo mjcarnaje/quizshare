@@ -73,7 +73,7 @@ const PersonItem: React.FC<PersonItemProps> = ({ person }) => {
           }
         },
       });
-    } catch (err) {
+    } catch (err: any) {
       console.error(err.message);
     }
   };
@@ -193,7 +193,7 @@ const PersonItem: React.FC<PersonItemProps> = ({ person }) => {
   );
 };
 
-interface ChangeRolesProps {}
+interface ChangeRolesProps { }
 
 const ChangeRoles: React.FC<ChangeRolesProps> = () => {
   const [search, setSearch] = useState("");

@@ -3,11 +3,15 @@ import React, { useEffect, useRef, useState } from "react";
 import QuestionCard from "@components/take/QuestionCard";
 import Container from "@components/ui/Container";
 import MainContainer from "@components/ui/MainContainer";
+import { useSubmitAnswersMutation, useGetQuizQuery } from "@generated/graphql";
+import { useAppDispatch } from "@store/index";
+import { setUserAnswer } from "@store/userAnswer";
 import withApollo from "@utils/withApollo";
 import { useRouter } from "next/router";
 
 import { AVATAR_FALLBACK_IMG } from "../../../constant";
-import { useSubmitAnswersMutation, useGetQuizQuery } from "@generated/graphql";
+import { IUserAnswer } from "../../../types/global-types";
+
 
 const Wrapper: React.FC<{ title: string }> = ({ title, children }) => {
   return (
@@ -27,11 +31,11 @@ const Wrapper: React.FC<{ title: string }> = ({ title, children }) => {
   );
 };
 
-export type IUserAnswer = Record<string, string | null>;
 
 const TakeQuiz: React.FC = () => {
   const router = useRouter();
   const quizId = router.query.quizId as string;
+  const dispatch = useAppDispatch()
 
   const [answers, setAnswers] = useState<IUserAnswer>({});
   const [OK, setOK] = useState(false);
@@ -85,6 +89,7 @@ const TakeQuiz: React.FC = () => {
             },
           },
         });
+        dispatch(setUserAnswer(answers))
         router.replace(`/take/${quizId}/result`);
       } catch (err) {
         console.error(err);

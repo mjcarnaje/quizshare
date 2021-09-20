@@ -48,7 +48,7 @@ export class Score extends BaseEntity {
   score: number;
 
   @Field(() => Float)
-  @Column({ default: 0 })
+  @Column("float", { default: 0 })
   percentage: number;
 
   @Field(() => String)
@@ -57,6 +57,6 @@ export class Score extends BaseEntity {
 
   @BeforeInsert()
   setPercentage() {
-    this.percentage = (this.totalItems / this.score) * 100;
+    this.percentage = (this.score / this.totalItems) * 100;
   }
 }

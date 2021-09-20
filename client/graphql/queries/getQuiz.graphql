@@ -16,7 +16,7 @@ query GetQuiz(
       id
       name
     }
-    results @skip(if: $isLanding) {
+    results @include(if: $isInput) {
       ...Result
     }
     isLiked @skip(if: $isInput)

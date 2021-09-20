@@ -1,5 +1,5 @@
 mutation SubmitAnswers($input: SubmitAnswersInput!) {
   submitAnswers(input: $input) {
-    ...Score
+    ...ScoreResult
   }
 }

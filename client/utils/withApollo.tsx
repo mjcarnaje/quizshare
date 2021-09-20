@@ -15,6 +15,9 @@ const apolloClient = (ctx?: NextPageContext) => {
     },
     cache: new InMemoryCache({
       typePolicies: {
+        Score: {
+          keyFields: ["quizId"]
+        },
         Query: {
           fields: {
             getQuizzes: {

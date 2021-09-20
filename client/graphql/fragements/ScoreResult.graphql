@@ -1,0 +1,15 @@
+fragment ScoreResult on ScoreResult {
+  id
+  score {
+    score
+    totalItems
+    percentage
+    answered
+  }
+  result {
+    title
+    description
+    resultPhoto
+    minimumPercent
+  }
+}
