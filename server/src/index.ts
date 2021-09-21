@@ -1,10 +1,9 @@
 import "dotenv/config";
 import cors from "cors";
 import { ApolloServer } from "apollo-server-express";
-import connectRedis from "connect-redis";
+import connectPgSimple from "connect-pg-simple";
 import express from "express";
 import session from "express-session";
-import Redis from "ioredis";
 import passport from "passport";
 import "reflect-metadata";
 import { buildSchema } from "type-graphql";
@@ -21,14 +20,9 @@ import {
 const main = async () => {
   try {
     await createConnection({
-      name: "default",
       type: "postgres",
-      host: "localhost",
-      port: 5432,
+      url: process.env.DATABASE_URL_DEV,
       // dropSchema: true,
-      username: process.env.DATABASE_USERNAME,
-      password: process.env.DATABASE_PASSWORD,
-      database: process.env.DATABASE,
       synchronize: true,
       logging: true,
       entities: ["src/entity/*.*"],
@@ -52,17 +46,15 @@ const main = async () => {
 
     const app = express();
 
-    const RedisStore = connectRedis(session);
-
-    const redis = new Redis();
+    const pgSession = connectPgSimple(session);
 
     const oneWeekInMs = 1000 * 60 * 60 * 24 * 7;
 
     app.use(
       session({
         name: process.env.SESSION_NAME,
-        store: new RedisStore({
-          client: redis,
+        store: new pgSession({
+          conString: process.env.DATABASE_URL_DEV,
         }),
         secret: process.env.SESSION_SECRET as string,
         resave: false,
