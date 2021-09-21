@@ -29,7 +29,7 @@ const Comments: React.FC<Props> = ({ quizId, authorId }) => {
 
   return (
     <>
-      <ul className="space-y-3 !list-none">
+      <ul className="space-y-1 !list-none">
         {!comments.length && loading && (
           <>
             {[...Array(3).keys()].map((idx) => (

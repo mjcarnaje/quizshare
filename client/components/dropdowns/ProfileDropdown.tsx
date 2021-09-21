@@ -19,7 +19,7 @@ const ProfileDropdown: React.FC = () => {
     return null;
   }
 
-  const { username, avatar } = data.me;
+  const { firstName, avatar } = data.me;
 
   const logout = async () => {
     await signOut();
@@ -42,7 +42,7 @@ const ProfileDropdown: React.FC = () => {
           <div>
             <Menu.Button className="flex items-center max-w-xs text-sm bg-white rounded-full focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
               <span className="sr-only">Open user menu</span>
-              <Avatar avatarUrl={avatar} size="sm" alt={username} />
+              <Avatar avatarUrl={avatar} size="sm" alt={firstName[0]} />
             </Menu.Button>
           </div>
           <Transition

@@ -54,7 +54,7 @@ const Avatar: React.FC<Props> = ({ avatarUrl, alt, size, loading }) => {
 
   return (
     <img
-      className={classNames(avatarSize, "rounded-full")}
+      className={classNames(avatarSize, "rounded-full bg-gray-200")}
       src={avatarUrl || AVATAR_FALLBACK_IMG}
       alt={alt}
     />

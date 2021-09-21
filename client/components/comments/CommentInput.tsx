@@ -116,7 +116,7 @@ const CommentInput: React.FC<Props> = ({ quizId, me, commentCount }) => {
     }
   };
 
-  const { avatar } = me.me;
+  const { firstName, avatar } = me.me;
 
   return (
     <>
@@ -136,8 +136,8 @@ const CommentInput: React.FC<Props> = ({ quizId, me, commentCount }) => {
 
       {showInput && (
         <div className="flex p-5 bg-white rounded-md shadow-md">
-          <Avatar avatarUrl={avatar} />
-          <div className="flex-1 ml-2">
+          <Avatar avatarUrl={avatar} alt={firstName[0]} />
+          <div className="flex-1 ml-4">
             <form onSubmit={handleSubmit(onSubmit)}>
               <TextareaAutoResizeWithRef<IText>
                 name="text"
@@ -166,7 +166,7 @@ const CommentInput: React.FC<Props> = ({ quizId, me, commentCount }) => {
                   type="submit"
                   disabled={commentText === watch().text}
                 >
-                  Submit
+                  Post
                 </button>
               </div>
             </form>

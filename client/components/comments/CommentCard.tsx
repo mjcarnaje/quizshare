@@ -5,7 +5,7 @@ import Avatar from "@components/ui/Avatar";
 import { CommentFragment } from "@generated/graphql";
 import { Menu } from "@headlessui/react";
 import { TrashIcon } from "@heroicons/react/outline";
-import { DotsVerticalIcon, PencilAltIcon } from "@heroicons/react/solid";
+import { DotsHorizontalIcon, PencilAltIcon } from "@heroicons/react/solid";
 import { formatDate } from "@utils/index";
 import { useDispatch } from "react-redux";
 import { setCommentInput } from "store/commentInput";
@@ -40,80 +40,83 @@ const CommentCard: React.FC<Props> = ({
     <li
       className={classNames(
         hideToEdit ? "hidden" : "",
-        "p-4 space-y-4 bg-white rounded-md shadow sm:px-6"
+        "w-full p-2 group flex"
       )}
     >
-      <div className="flex space-x-3">
-        <div className="flex-shrink-0">
-          <Avatar avatarUrl={avatar} alt="Your avatar" />
-        </div>
-        <div className="flex-1 min-w-0">
-          <p className="text-sm font-medium text-gray-900">
-            <a href="#" className="hover:underline">
-              {firstName + lastName}
-            </a>
-          </p>
-          <p className="text-sm text-gray-500">
-            <a href="#" className="hover:underline">
-              {formatDate(createdAt)}
-            </a>
-          </p>
-        </div>
-        <div className="flex self-center flex-shrink-0">
-          {isAuthor && (
-            <span className="mr-2 inline-flex items-center px-2.5 py-0.5 rounded-md text-sm font-medium bg-indigo-100 text-indigo-800">
-              Author
-            </span>
-          )}
-          {createdAt !== updatedAt && (
-            <span className="mr-2 inline-flex items-center px-2.5 py-0.5 rounded-md text-sm font-medium bg-blue-100 text-blue-800">
-              Edited
-            </span>
-          )}
-          {isMine && (
-            <MenuDropdown
-              anchor={
-                <Menu.Button className="flex items-center p-2 -m-2 text-gray-400 transition transform rounded-full active:scale-90 focus:outline-none active:bg-gray-200 hover:text-gray-600">
-                  <DotsVerticalIcon className="w-5 h-5" aria-hidden="true" />
-                </Menu.Button>
-              }
-              type="array"
-              options={[
-                {
-                  icon: PencilAltIcon,
-                  text: "Edit",
-                  onClick: () => {
-                    dispatch(setCommentInput({ commentId: id, text }));
-                  },
-                },
-                {
-                  icon: TrashIcon,
-                  text: "Delete",
-                  onClick: async () => {
-                    await deleteComment({
-                      variables: { quizId, commentId: id },
-                      update: (cache) => {
-                        cache.evict({
-                          id: `Comment:${id}`,
-                        });
-                        cache.modify({
-                          id: `Quiz:${quizId}`,
-                          fields: {
-                            commentCount: (old) => {
-                              return old - 1;
-                            },
+      <div className="mr-4">
+        <Avatar avatarUrl={avatar} alt={firstName[0]} />
+      </div>
+      <div className="flex-1">
+        <div className="flex justify-between items-center">
+          <div className="flex items-center">
+            <p className="font-bold text-lg text-gray-800">{`${firstName} ${lastName}`}</p>
+            {isAuthor && (
+              <>
+                <p className="mx-2 text-gray-700">&#8226;</p>
+                <p className="text-purple-500 font-medium">Author</p>
+              </>
+            )}
+          </div>
+          <div>
+            <div className="hidden group-hover:block">
+              {isMine ? (
+                <MenuDropdown
+                  anchor={
+                    <Menu.Button className="flex items-center p-2 -m-2 text-gray-400 transition transform rounded-full active:scale-90 focus:outline-none active:bg-gray-200 hover:text-gray-600">
+                      <DotsHorizontalIcon
+                        className="w-5 h-5"
+                        aria-hidden="true"
+                      />
+                    </Menu.Button>
+                  }
+                  type="array"
+                  options={[
+                    {
+                      icon: PencilAltIcon,
+                      text: "Edit",
+                      onClick: () => {
+                        dispatch(setCommentInput({ commentId: id, text }));
+                      },
+                    },
+                    {
+                      icon: TrashIcon,
+                      text: "Delete",
+                      onClick: async () => {
+                        await deleteComment({
+                          variables: { quizId, commentId: id },
+                          update: (cache) => {
+                            cache.evict({
+                              id: `Comment:${id}`,
+                            });
+                            cache.modify({
+                              id: `Quiz:${quizId}`,
+                              fields: {
+                                commentCount: (old) => {
+                                  return old - 1;
+                                },
+                              },
+                            });
                           },
                         });
                       },
-                    });
-                  },
-                },
-              ]}
-            />
-          )}
+                    },
+                  ]}
+                />
+              ) : null}
+            </div>
+          </div>
+        </div>
+        <div className="my-1">
+          <p className="break-words whitespace-pre-line">{text}</p>
+        </div>
+        <div className="flex items-center">
+          <p className="text-sm">
+            {`${formatDate(createdAt)}${
+              createdAt !== updatedAt ? " (edited)" : ""
+            }`}
+          </p>
         </div>
       </div>
-      <p className="break-words whitespace-pre-line">{text}</p>
     </li>
   );
 };

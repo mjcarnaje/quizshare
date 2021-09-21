@@ -6,7 +6,7 @@ import { Provider } from "react-redux";
 import store from "../store";
 
 import "../styles/nprogress.css";
-import "../styles/globals.css";
+import "tailwindcss/tailwind.css";
 
 NProgress.configure({
   showSpinner: false,

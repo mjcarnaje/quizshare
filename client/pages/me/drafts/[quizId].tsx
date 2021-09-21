@@ -188,7 +188,7 @@ const DraftEditQuizPage: React.FC = () => {
       >
         <main className="relative flex-1 min-h-screen overflow-y-auto focus:outline-none">
           <div className="py-6">
-            <div className="max-w-4xl px-4 mx-auto sm:px-6 md:px-8">
+            <div className="max-w-3xl px-4 mx-auto sm:px-6 md:px-8">
               <FormProvider {...methods}>
                 <form>
                   <AddCoverPhotoButton

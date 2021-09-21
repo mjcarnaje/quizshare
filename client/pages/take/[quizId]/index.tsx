@@ -19,7 +19,7 @@ const Wrapper: React.FC<{ title: string }> = ({ title, children }) => {
       <Container showSearchBar={false}>
         <main className="relative flex-1 overflow-y-auto focus:outline-none">
           <div className="py-6">
-            <div className="flex max-w-4xl px-4 mx-auto space-x-6 sm:px-6 md:px-8">
+            <div className="flex max-w-3xl px-4 mx-auto space-x-6 sm:px-6 md:px-8">
               <div className="flex-1 space-y-3">
                 <div className="p-2 bg-white rounded-md shadow">{children}</div>
               </div>
