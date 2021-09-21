@@ -1,14 +1,13 @@
 import React, { useEffect } from "react";
 
 import Quizzes from "@components/quizzes/Quizzes";
+import Container from "@components/ui/Container";
 import MainContainer from "@components/ui/MainContainer";
+import { QUIZZES_LIMIT } from "@constant/index";
+import { useGetQuizzesQuery } from "@generated/graphql";
 import { useIsAuth } from "@utils/useIsAuth";
+import withApollo from "@utils/withApollo";
 import { useRouter } from "next/router";
-
-import Container from "../components/ui/Container";
-import { QUIZZES_LIMIT } from "../constant/index";
-import { useGetQuizzesQuery } from "../generated/graphql";
-import withApollo from "../utils/withApollo";
 
 const IndexPage = () => {
   useIsAuth();

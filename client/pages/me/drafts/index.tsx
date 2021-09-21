@@ -1,15 +1,14 @@
 import React from "react";
 
 import Quizzes from "@components/quizzes/Quizzes";
+import Container from "@components/ui/Container";
 import MainContainer from "@components/ui/MainContainer";
+import { QUIZZES_LIMIT } from "@constant/index";
+import { useGetQuizzesQuery } from "@generated/graphql";
+import { useIsAuth } from "@utils/useIsAuth";
 import withApollo from "@utils/withApollo";
 import Image from "next/image";
 import { useRouter } from "next/router";
-
-import Container from "../../../components/ui/Container";
-import { QUIZZES_LIMIT } from "../../../constant/index";
-import { useGetQuizzesQuery } from "../../../generated/graphql";
-import { useIsAuth } from "../../../utils/useIsAuth";
 
 interface Props {}
 

@@ -1,8 +1,8 @@
 import React from "react";
 
+import { PageInfoFragment, QuizCardFragment } from "@generated/graphql";
 import Image from "next/image";
 
-import { PageInfoFragment, QuizCardFragment } from "../../generated/graphql";
 import { QuizCard } from "./QuizCard";
 import QuizCardSkeleton from "./QuizCardSkeleton";
 

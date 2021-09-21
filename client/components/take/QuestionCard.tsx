@@ -1,11 +1,10 @@
 import React from "react";
 
 import ImageHolder from "@components/ImageHolder";
+import { IUserAnswer } from "@customtypes/index";
 import { QuestionFragment } from "@generated/graphql";
 import { CheckIcon, XIcon } from "@heroicons/react/solid";
-
-import { IUserAnswer } from "../../types/global-types";
-import { classNames } from "../../utils/index";
+import { classNames } from "@utils/index";
 
 interface Props {
   question: QuestionFragment;

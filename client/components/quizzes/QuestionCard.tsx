@@ -2,19 +2,22 @@ import React, { useEffect } from "react";
 
 import { QuestionInput, QuizInput } from "@generated/graphql";
 import { RadioGroup } from "@headlessui/react";
-import { DocumentAddIcon, MenuIcon, TrashIcon } from "@heroicons/react/outline";
-import { PhotographIcon } from "@heroicons/react/outline";
+import {
+  DocumentAddIcon,
+  MenuIcon,
+  PhotographIcon,
+  TrashIcon,
+} from "@heroicons/react/outline";
 import { classNames } from "@utils/index";
 import { useUploadPhoto } from "@utils/useUploadImage";
 import { Draggable } from "react-beautiful-dnd";
 import {
   Controller,
-  DeepMap,
   FieldArrayMethodProps,
   FieldArrayWithId,
-  FieldError,
   useFieldArray,
   useFormContext,
+  FieldErrors,
 } from "react-hook-form";
 import { v4 as uuid } from "uuid";
 
@@ -26,8 +29,8 @@ interface Props {
   question: FieldArrayWithId<QuizInput, "questions", "id">;
   questionIdx: number;
   questionRemove: () => void;
-  errors?: DeepMap<QuestionInput, FieldError>;
   questions: FieldArrayWithId<QuizInput, "questions", "id">[];
+  errors?: FieldErrors<QuestionInput>;
 }
 
 const QuestionCard: React.FC<Props> = ({

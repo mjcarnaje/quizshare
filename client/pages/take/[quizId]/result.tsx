@@ -7,6 +7,7 @@ import ImageHolder from "@components/ImageHolder";
 import QuestionCard from "@components/take/QuestionCard";
 import Container from "@components/ui/Container";
 import MainContainer from "@components/ui/MainContainer";
+import { AVATAR_FALLBACK_IMG } from "@constant/index";
 import {
   ScoreResult,
   ScoreResultFragmentDoc,
@@ -18,7 +19,6 @@ import { selectUserAnswer } from "@store/userAnswer";
 import { useGetQuery } from "@utils/useGetQuery";
 import { useIsAuth } from "@utils/useIsAuth";
 import withApollo from "@utils/withApollo";
-import { AVATAR_FALLBACK_IMG } from "constant";
 import { useRouter } from "next/router";
 
 const Result: React.FC = () => {

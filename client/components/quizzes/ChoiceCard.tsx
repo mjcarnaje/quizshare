@@ -4,19 +4,14 @@ import { ChoiceInput, QuestionInput, QuizInput } from "@generated/graphql";
 import { RadioGroup } from "@headlessui/react";
 import {
   CheckCircleIcon as CheckCircleIconOutline,
+  PhotographIcon,
   TrashIcon,
 } from "@heroicons/react/outline";
-import { PhotographIcon } from "@heroicons/react/outline";
 import { CheckCircleIcon as CheckCircleIconSolid } from "@heroicons/react/solid";
 import { classNames } from "@utils/index";
-import {
-  DeepMap,
-  FieldArrayWithId,
-  FieldError,
-  useFormContext,
-} from "react-hook-form";
+import { useUploadPhoto } from "@utils/useUploadImage";
+import { FieldArrayWithId, FieldErrors, useFormContext } from "react-hook-form";
 
-import { useUploadPhoto } from "../../utils/useUploadImage";
 import ImageHolder from "../ImageHolder";
 import TextareaAutoResize from "../inputs/TextareaAutoResize";
 
@@ -27,7 +22,7 @@ interface Props {
   choiceIdx: number;
   isDisabled?: boolean;
   deleteChoice: () => void;
-  errors?: DeepMap<ChoiceInput, FieldError>;
+  errors?: FieldErrors<ChoiceInput>;
 }
 
 const ChoiceCard: React.FC<Props> = ({

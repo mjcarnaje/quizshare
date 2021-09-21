@@ -1,8 +1,7 @@
 import React, { Fragment } from "react";
 
 import { Menu, Transition } from "@headlessui/react";
-
-import { classNames } from "../../utils/index";
+import { classNames } from "@utils/index";
 
 type IOption = {
   icon?: (props: React.ComponentProps<"svg">) => JSX.Element;

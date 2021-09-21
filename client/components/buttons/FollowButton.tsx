@@ -1,9 +1,8 @@
 import React from "react";
 
+import { useToggleSubscriptionMutation } from "@generated/graphql";
 import { UserAddIcon } from "@heroicons/react/solid";
 import { classNames } from "@utils/index";
-
-import { useToggleSubscriptionMutation } from "../../generated/graphql";
 
 interface Props {
   userId: string;

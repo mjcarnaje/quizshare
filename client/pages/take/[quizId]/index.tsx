@@ -3,15 +3,14 @@ import React, { useEffect, useRef, useState } from "react";
 import QuestionCard from "@components/take/QuestionCard";
 import Container from "@components/ui/Container";
 import MainContainer from "@components/ui/MainContainer";
+import { AVATAR_FALLBACK_IMG } from "@constant/index";
+import { IUserAnswer } from "@customtypes/index";
 import { useSubmitAnswersMutation, useGetQuizQuery } from "@generated/graphql";
 import { useAppDispatch } from "@store/index";
 import { setUserAnswer } from "@store/userAnswer";
 import { useGetQuery } from "@utils/useGetQuery";
 import withApollo from "@utils/withApollo";
 import { useRouter } from "next/router";
-
-import { AVATAR_FALLBACK_IMG } from "../../../constant";
-import { IUserAnswer } from "../../../types/global-types";
 
 const Wrapper: React.FC<{ title: string }> = ({ title, children }) => {
   return (

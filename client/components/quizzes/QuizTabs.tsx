@@ -1,8 +1,7 @@
 import React from "react";
 
+import { classNames } from "@utils/index";
 import Link from "next/link";
-
-import { classNames } from "../../utils/index";
 
 interface Props {
   currentTab: string;

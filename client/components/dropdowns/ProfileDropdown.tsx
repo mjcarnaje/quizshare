@@ -2,11 +2,10 @@ import React, { Fragment } from "react";
 
 import { useApolloClient } from "@apollo/client";
 import Avatar from "@components/ui/Avatar";
+import { useMeQuery, useSignOutMutation } from "@generated/graphql";
 import { Menu, Transition } from "@headlessui/react";
 import { classNames } from "@utils/index";
 import { useRouter } from "next/dist/client/router";
-
-import { useSignOutMutation, useMeQuery } from "../../generated/graphql";
 
 const ProfileDropdown: React.FC = () => {
   const router = useRouter();

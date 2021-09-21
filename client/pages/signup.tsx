@@ -1,6 +1,7 @@
 import React from "react";
 
 import Input from "@components/inputs/Input";
+import Select from "@components/inputs/Select";
 import MainContainer from "@components/ui/MainContainer";
 import {
   MeDocument,
@@ -8,13 +9,11 @@ import {
   SignUpInput,
   useSignUpMutation,
 } from "@generated/graphql";
+import errorMapper from "@utils/errorMapper";
 import withApollo from "@utils/withApollo";
 import { useRouter } from "next/dist/client/router";
 import Link from "next/link";
 import { useForm } from "react-hook-form";
-
-import Select from "../components/inputs/Select";
-import errorMapper from "../utils/errorMapper";
 
 const SignUpPage = () => {
   const router = useRouter();

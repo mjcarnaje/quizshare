@@ -6,14 +6,8 @@ import {
   ExclamationCircleIcon,
 } from "@heroicons/react/outline";
 import { XIcon } from "@heroicons/react/solid";
-
-import {
-  IAlert,
-  removeAlert,
-  selectAlerts,
-  unShowAlert,
-} from "../../store/alert";
-import { useAppDispatch, useAppSelector } from "../../store/index";
+import { IAlert, removeAlert, selectAlerts, unShowAlert } from "@store/alert";
+import { useAppDispatch, useAppSelector } from "@store/index";
 
 interface IAlertItemProps {
   alert: IAlert;

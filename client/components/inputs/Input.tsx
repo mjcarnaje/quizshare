@@ -1,10 +1,9 @@
 import React from "react";
 
 import { ExclamationCircleIcon } from "@heroicons/react/solid";
+import { errorStringFormatter } from "@utils/errorStringFormatter";
 import { classNames } from "@utils/index";
 import { FieldError, Path, UseFormRegister } from "react-hook-form";
-
-import { errorStringFormatter } from "../../utils/errorStringFormatter";
 
 type InputProps<T> = {
   type?: string;

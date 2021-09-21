@@ -1,23 +1,22 @@
 import React, { Fragment, useCallback, useState } from "react";
 
-import { Listbox, Transition } from "@headlessui/react";
-import { CheckIcon, SelectorIcon } from "@heroicons/react/solid";
-import { classNames } from "@utils/index";
-import withApollo from "@utils/withApollo";
-import { AVATAR_FALLBACK_IMG } from "constant";
-import { debounce } from "lodash";
-import Image from "next/image";
-import Skeleton from "react-loading-skeleton";
-
-import Container from "../components/ui/Container";
-import MainContainer from "../components/ui/MainContainer";
+import Container from "@components/ui/Container";
+import MainContainer from "@components/ui/MainContainer";
+import { AVATAR_FALLBACK_IMG } from "@constant/index";
 import {
   useChangeRoleMutation,
   useGetUsersQuery,
   UserFragment,
   UserRole,
-} from "../generated/graphql";
-import { capitalize, toConsantFormat } from "../utils/stringFormatter";
+} from "@generated/graphql";
+import { Listbox, Transition } from "@headlessui/react";
+import { CheckIcon, SelectorIcon } from "@heroicons/react/solid";
+import { classNames } from "@utils/index";
+import { capitalize, toConsantFormat } from "@utils/stringFormatter";
+import withApollo from "@utils/withApollo";
+import { debounce } from "lodash";
+import Image from "next/image";
+import Skeleton from "react-loading-skeleton";
 
 const PersonItemSkeleton: React.FC = () => {
   return (
@@ -193,7 +192,7 @@ const PersonItem: React.FC<PersonItemProps> = ({ person }) => {
   );
 };
 
-interface ChangeRolesProps { }
+interface ChangeRolesProps {}
 
 const ChangeRoles: React.FC<ChangeRolesProps> = () => {
   const [search, setSearch] = useState("");

@@ -2,9 +2,9 @@ import React from "react";
 
 import CommentCard from "@components/comments/CommentCard";
 import { useGetCommentsQuery } from "@generated/graphql";
+import { useAppSelector } from "@store/index";
 import Image from "next/image";
 
-import { useAppSelector } from "../../store";
 import CommentCardSkeleton from "./CommentCardSkeleton";
 
 interface Props {

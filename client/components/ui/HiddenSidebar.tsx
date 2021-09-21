@@ -1,12 +1,11 @@
 import React, { Dispatch, SetStateAction } from "react";
 import { Fragment } from "react";
 
+import { INavigation } from "@customtypes/index";
 import { Transition, Dialog } from "@headlessui/react";
 import { XIcon } from "@heroicons/react/outline";
 import { classNames } from "@utils/index";
 import { useRouter } from "next/dist/client/router";
-
-import { INavigation } from "../../types/global-types";
 
 interface Props {
   sidebarOpen: boolean;

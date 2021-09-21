@@ -1,8 +1,7 @@
 import React from "react";
 
+import { useToggleBookmarkMutation } from "@generated/graphql";
 import { classNames } from "@utils/index";
-
-import { useToggleBookmarkMutation } from "../../generated/graphql";
 
 interface Props {
   quizId: string;

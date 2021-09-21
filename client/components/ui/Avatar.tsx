@@ -1,9 +1,8 @@
 import React from "react";
 
+import { AVATAR_FALLBACK_IMG } from "@constant/index";
 import { classNames } from "@utils/index";
 import Skeleton from "react-loading-skeleton";
-
-import { AVATAR_FALLBACK_IMG } from "../../constant/index";
 
 interface Props {
   avatarUrl?: string | null;

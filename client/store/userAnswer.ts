@@ -1,7 +1,7 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
 import { RootState } from ".";
-import { IUserAnswer } from "../types/global-types";
+import { IUserAnswer } from "../types";
 
 type IUserAnswerState = {
   userAnswers: IUserAnswer;

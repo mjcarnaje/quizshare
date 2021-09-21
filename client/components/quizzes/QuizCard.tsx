@@ -1,6 +1,7 @@
 import React, { useRef, useState } from "react";
 
 import LikeButton from "@components/buttons/LikeButton";
+import { QuizCardFragment, useDeleteQuizMutation } from "@generated/graphql";
 import {
   CalendarIcon,
   CollectionIcon,
@@ -13,7 +14,6 @@ import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/router";
 
-import { QuizCardFragment, useDeleteQuizMutation } from "@generated/graphql";
 import BookmarkButton from "../buttons/BookmarkButton";
 import CommentButton from "../buttons/CommentButton";
 import FollowButton from "../buttons/FollowButton";

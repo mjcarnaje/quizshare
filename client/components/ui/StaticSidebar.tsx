@@ -1,9 +1,8 @@
 import React from "react";
 
+import { INavigation } from "@customtypes/index";
+import { classNames } from "@utils/index";
 import { useRouter } from "next/dist/client/router";
-import { INavigation } from "types/global-types";
-
-import { classNames } from "../../utils/index";
 
 interface Props {
   navigation: INavigation;

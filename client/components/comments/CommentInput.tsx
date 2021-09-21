@@ -1,21 +1,17 @@
 import React, { useEffect, useRef, useState } from "react";
 
-import { MeQuery } from "@generated/graphql";
-import errorMapper from "@utils/errorMapper";
-import { useForm } from "react-hook-form";
-import Skeleton from "react-loading-skeleton";
-import { useAppSelector } from "store";
-
 import {
+  MeQuery,
   useAddCommentMutation,
   useEditCommentMutation,
-} from "../../generated/graphql";
-import {
-  resetCommentInput,
-  selectCommentInput,
-} from "../../store/commentInput";
-import { useAppDispatch } from "../../store/index";
-import { classNames } from "../../utils/index";
+} from "@generated/graphql";
+import { resetCommentInput, selectCommentInput } from "@store/commentInput";
+import { useAppDispatch, useAppSelector } from "@store/index";
+import errorMapper from "@utils/errorMapper";
+import { classNames } from "@utils/index";
+import { useForm } from "react-hook-form";
+import Skeleton from "react-loading-skeleton";
+
 import TextareaAutoResizeWithRef from "../inputs/TextareaAutoResizeWithRef";
 import Avatar from "../ui/Avatar";
 

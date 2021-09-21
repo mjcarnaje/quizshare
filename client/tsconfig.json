@@ -23,7 +23,9 @@
       "@lib/*": ["lib/*"],
       "@utils/*": ["utils/*"],
       "@generated/*": ["generated/*"],
-      "@store/*": ["store/*"]
+      "@store/*": ["store/*"],
+      "@customtypes/*": ["types/*"],
+      "@constant/*": ["constant/*"]
     }
   },
   "exclude": ["node_modules"],

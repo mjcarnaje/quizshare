@@ -1,9 +1,8 @@
 import React from "react";
 
+import { useToggleLikeMutation } from "@generated/graphql";
 import { HeartIcon } from "@heroicons/react/solid";
 import { classNames } from "@utils/index";
-
-import { useToggleLikeMutation } from "../../generated/graphql";
 
 interface Props {
   quizId: string;

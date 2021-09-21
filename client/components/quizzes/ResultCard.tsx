@@ -5,25 +5,23 @@ import TextareaAutoResize from "@components/inputs/TextareaAutoResize";
 import { QuizInput, ResultInput } from "@generated/graphql";
 import { PhotographIcon, TrashIcon } from "@heroicons/react/outline";
 import { MenuIcon } from "@heroicons/react/solid";
+import { classNames } from "@utils/index";
 import { useUploadPhoto } from "@utils/useUploadImage";
 import { Draggable } from "react-beautiful-dnd";
 import {
   Controller,
-  DeepMap,
   FieldArrayWithId,
-  FieldError,
+  FieldErrors,
   useFormContext,
 } from "react-hook-form";
 import ReactSlider from "react-slider";
-
-import { classNames } from "../../utils/index";
 
 interface Props {
   result: FieldArrayWithId<QuizInput, "results", "id">;
   resultIdx: number;
   resultRemove: () => void;
-  errors?: DeepMap<ResultInput, FieldError>;
   results: FieldArrayWithId<QuizInput, "results", "id">[];
+  errors?: FieldErrors<ResultInput>;
 }
 
 const ResultCard: React.FC<Props> = ({
@@ -31,7 +29,6 @@ const ResultCard: React.FC<Props> = ({
   resultIdx,
   resultRemove,
   errors,
-  results,
 }) => {
   const [uploadImage, { data, loading }] = useUploadPhoto();
 
