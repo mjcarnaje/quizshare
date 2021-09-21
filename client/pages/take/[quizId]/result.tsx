@@ -56,7 +56,7 @@ const Result: React.FC = () => {
     return null;
   }
 
-  const { title: quizTitle, author, questions } = data.getQuiz;
+  const { title: quizTitle, authorId, author, questions } = data.getQuiz;
   const { avatar, firstName, lastName } = author!;
   const { score: _score, result } = scoreResult;
   const { score, totalItems, percentage } = _score;
@@ -68,7 +68,7 @@ const Result: React.FC = () => {
         <main className="relative flex-1 overflow-y-auto focus:outline-none">
           <div className="py-6">
             <div className="flex max-w-3xl px-4 mx-auto space-x-6 sm:px-6 md:px-8">
-              <div className="flex-1 space-y-3">
+              <div className="flex-1">
                 <div className="p-6 bg-white rounded-md shadow">
                   <div className="px-4 text-center">
                     <h1 className="text-2xl font-semibold text-gray-800">
@@ -133,7 +133,7 @@ const Result: React.FC = () => {
                   me={me}
                   commentCount={data.getQuiz.commentCount}
                 />
-                <Comments quizId={quizId} authorId={me.me?.id} />
+                <Comments quizId={quizId} authorId={authorId!} />
               </div>
             </div>
           </div>

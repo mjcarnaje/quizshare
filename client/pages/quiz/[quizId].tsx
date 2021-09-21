@@ -22,7 +22,7 @@ const Wrapper: React.FC<{ title: string }> = ({ title, children }) => {
         <main className="relative flex-1 overflow-y-auto focus:outline-none">
           <div className="py-6">
             <div className="flex max-w-3xl px-4 mx-auto space-x-6 sm:px-6 md:px-8">
-              <div className="flex-1 w-full space-y-3">{children}</div>
+              <div className="flex-1 w-full">{children}</div>
             </div>
           </div>
         </main>
@@ -113,7 +113,7 @@ const QuizLanding: React.FC<Props> = () => {
           <p className="break-words whitespace-pre-line">{description}</p>
         </div>
       </div>
-      <div className="flex items-center justify-between w-full px-4 py-3 bg-white rounded-md shadow 2xl:flex-col 2xl:justify-around 2xl:px-1 2xl:py-4 2xl:w-20 2xl:flex 2xl:fixed 2xl:bottom-24 2xl:top-24 2xl:right-8">
+      <div className="flex items-center justify-between w-full my-3 px-4 py-3 bg-white rounded-md shadow 2xl:flex-col 2xl:justify-around 2xl:px-1 2xl:py-4 2xl:w-20 2xl:flex 2xl:fixed 2xl:bottom-24 2xl:top-24 2xl:right-8">
         <div className="hidden 2xl:block">
           <BookmarkButton quizId={quizId} isBookmarked={isBookmarked!} />
         </div>

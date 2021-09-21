@@ -1,7 +1,6 @@
 import React, { useEffect, useRef, useState } from "react";
 
 import { MeQuery } from "@generated/graphql";
-import { PencilIcon } from "@heroicons/react/outline";
 import errorMapper from "@utils/errorMapper";
 import { useForm } from "react-hook-form";
 import Skeleton from "react-loading-skeleton";
@@ -33,8 +32,9 @@ type IText = {
 const CommentInput: React.FC<Props> = ({ quizId, me, commentCount }) => {
   const dispatch = useAppDispatch();
   const { commentId, text: commentText } = useAppSelector(selectCommentInput);
-  const [showInput, setShowInput] = useState(false);
+
   const commentInputRef = useRef<HTMLTextAreaElement>(null);
+  const [isFocused, setIsFocused] = useState(false);
 
   const [addComment] = useAddCommentMutation();
   const [editComment] = useEditCommentMutation();
@@ -94,64 +94,54 @@ const CommentInput: React.FC<Props> = ({ quizId, me, commentCount }) => {
     }
   };
 
-  useEffect(() => {
-    if (commentText) {
-      setShowInput(true);
-      reset({ text: commentText });
-    }
-  }, [commentText]);
+  const cancelComment = () => {
+    setValue("text", "");
+    setIsFocused(false);
+    dispatch(resetCommentInput());
+  };
 
   useEffect(() => {
-    if (showInput) commentInputRef?.current?.focus();
-  }, [showInput, commentInputRef]);
+    if (commentText) {
+      reset({ text: commentText });
+      commentInputRef.current?.focus();
+    }
+  }, [commentText]);
 
   if (!me?.me) {
     return null;
   }
 
-  const toggleInput = () => {
-    setShowInput(!showInput);
-    if (showInput && commentId) {
-      dispatch(resetCommentInput());
-    }
-  };
-
   const { firstName, avatar } = me.me;
 
   return (
-    <>
-      <div className="flex items-center justify-between px-3 py-4 bg-white rounded-md shadow">
+    <div className="mb-8">
+      <div className="flex items-center justify-between my-4">
         <p className="inline-block text-base">
-          Comments {`(${commentCount})` ?? <Skeleton width={24} />}
+          {`${commentCount} Comments` ?? <Skeleton width={24} />}
         </p>
-
-        <button
-          className="flex px-3 py-1 text-green-500 transition transform border border-green-500 rounded-md active:scale-95 focus:outline-none hover:bg-gray-50 "
-          onClick={toggleInput}
-        >
-          <PencilIcon className="-ml-0.5 mr-2 h-6 w-6" aria-hidden="true" />
-          Add Comment
-        </button>
       </div>
-
-      {showInput && (
-        <div className="flex p-5 bg-white rounded-md shadow-md">
+      <div className="flex mb-4">
+        <div className="mt-1 mr-4">
           <Avatar avatarUrl={avatar} alt={firstName[0]} />
-          <div className="flex-1 ml-4">
-            <form onSubmit={handleSubmit(onSubmit)}>
-              <TextareaAutoResizeWithRef<IText>
-                name="text"
-                placeholder="Type your comment"
-                minRows={3}
-                error={errors.text}
-                register={register}
-                required
-                ref={commentInputRef}
-              />
-              <div className="pt-4 space-x-2 text-right">
+        </div>
+        <div className="flex-1">
+          <form onSubmit={handleSubmit(onSubmit)}>
+            <TextareaAutoResizeWithRef<IText>
+              name="text"
+              placeholder="Add a comment"
+              minRows={isFocused ? 3 : 1}
+              error={errors.text}
+              register={register}
+              required
+              ref={commentInputRef}
+              onFocus={() => setIsFocused(true)}
+              onBlur={() => console.log("UNFOCUSED")}
+            />
+            {isFocused && (
+              <div className="space-x-2 text-right mt-4">
                 <button
                   className="px-3 py-1 transition transform rounded-md active:scale-95 hover:bg-gray-50 focus:outline-none"
-                  onClick={toggleInput}
+                  onClick={cancelComment}
                   type="button"
                 >
                   Cancel
@@ -169,11 +159,11 @@ const CommentInput: React.FC<Props> = ({ quizId, me, commentCount }) => {
                   Post
                 </button>
               </div>
-            </form>
-          </div>
+            )}
+          </form>
         </div>
-      )}
-    </>
+      </div>
+    </div>
   );
 };
 
