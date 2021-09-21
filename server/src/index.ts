@@ -25,8 +25,9 @@ const main = async () => {
       url: __PROD__
         ? process.env.DATABASE_URL_PROD
         : process.env.DATABASE_URL_DEV,
+      ssl: __PROD__ ? { rejectUnauthorized: false } : false,
       synchronize: true,
-      logging: true,
+      logging: __PROD__ ? false : true,
       entities: [__dirname + "/entity/**/*.ts"],
     });
 
