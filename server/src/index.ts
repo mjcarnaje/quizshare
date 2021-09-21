@@ -1,11 +1,11 @@
+import "reflect-metadata";
 import "dotenv/config";
 import cors from "cors";
-import { ApolloServer } from "apollo-server-express";
-import connectPgSimple from "connect-pg-simple";
 import express from "express";
 import session from "express-session";
 import passport from "passport";
-import "reflect-metadata";
+import connectPgSimple from "connect-pg-simple";
+import { ApolloServer } from "apollo-server-express";
 import { buildSchema } from "type-graphql";
 import { createConnection } from "typeorm";
 import { facebookPassport } from "./resolvers/auth/facebook";
@@ -15,17 +15,19 @@ import {
   createBookmarkLoader,
   createLikeLoader,
   createSubscriptionLoader,
+  __PROD__,
 } from "./utils";
 
 const main = async () => {
   try {
     await createConnection({
       type: "postgres",
-      url: process.env.DATABASE_URL_DEV,
-      // dropSchema: true,
+      url: __PROD__
+        ? process.env.DATABASE_URL_PROD
+        : process.env.DATABASE_URL_DEV,
       synchronize: true,
       logging: true,
-      entities: ["src/entity/*.*"],
+      entities: [__dirname + "/entity/**/*.ts"],
     });
 
     const apolloServer = await new ApolloServer({
@@ -54,14 +56,16 @@ const main = async () => {
       session({
         name: process.env.SESSION_NAME,
         store: new pgSession({
-          conString: process.env.DATABASE_URL_DEV,
+          conString: __PROD__
+            ? process.env.DATABASE_URL_PROD
+            : process.env.DATABASE_URL_DEV,
         }),
         secret: process.env.SESSION_SECRET as string,
         resave: false,
         saveUninitialized: false,
         cookie: {
           httpOnly: true,
-          secure: process.env.NODE_ENV === "production",
+          secure: __PROD__,
           maxAge: oneWeekInMs,
         },
       })
