@@ -14,7 +14,7 @@ export const googlePassport = (app: core.Express) => {
         clientSecret: process.env.GOOGLE_CLIENT_SERCRET as string,
         callbackURL: __PROD__
           ? (process.env.GOOGLE_CALLBACK as string)
-          : "http://localhost:4000/auth/google/callback",
+          : "https://api-quizshare.herokuapp.com/auth/google/callback",
       },
       async (_accessToken, _refreshToken, profile, done) => {
         const { id, displayName, name, emails, photos } = profile;

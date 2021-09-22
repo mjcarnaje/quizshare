@@ -132,7 +132,7 @@ const SignUpPage = () => {
               <hr className="flex-grow " />
             </div>
             <div className="flex space-x-2">
-              <Link href="http://localhost:4000/auth/google">
+              <Link href="https://api-quizshare.herokuapp.com/auth/google">
                 <a className="flex items-center justify-center w-full px-3 py-2 bg-white rounded-lg shadow-md">
                   <img
                     className="w-6 h-6"
@@ -141,7 +141,7 @@ const SignUpPage = () => {
                   />
                 </a>
               </Link>
-              <Link href="http://localhost:4000/auth/facebook">
+              <Link href="https://api-quizshare.herokuapp.com/auth/facebook">
                 <a className="flex items-center justify-center w-full px-3 py-2 bg-[#4267B2] rounded-lg shadow-md">
                   <img
                     className="w-6 h-6"

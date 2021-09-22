@@ -5,7 +5,7 @@ import { withApollo } from "next-apollo";
 
 const apolloClient = (ctx?: NextPageContext) => {
   const apollo = new ApolloClient({
-    uri: "http://localhost:4000/graphql",
+    uri: "https://api-quizshare.herokuapp.com/graphql",
     credentials: "include",
     headers: {
       cookie:
@@ -16,7 +16,7 @@ const apolloClient = (ctx?: NextPageContext) => {
     cache: new InMemoryCache({
       typePolicies: {
         Score: {
-          keyFields: ["quizId"]
+          keyFields: ["quizId"],
         },
         Query: {
           fields: {
