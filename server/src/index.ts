@@ -25,13 +25,12 @@ const main = async () => {
       url: __PROD__
         ? process.env.DATABASE_URL_PROD
         : process.env.DATABASE_URL_DEV,
-      ssl: __PROD__ ? { rejectUnauthorized: false } : false,
       synchronize: true,
       logging: __PROD__ ? false : true,
       entities: [__dirname + "/entity/**/*.ts"],
     });
 
-    const apolloServer = await new ApolloServer({
+    const apolloServer = new ApolloServer({
       schema: await buildSchema({
         resolvers: [__dirname + "/resolvers/**/*.ts"],
       }),
@@ -53,6 +52,15 @@ const main = async () => {
 
     const oneWeekInMs = 1000 * 60 * 60 * 24 * 7;
 
+    app.set("trust proxy", 1);
+
+    app.use(
+      cors({
+        credentials: true,
+        origin: process.env.CORS_ORIGIN,
+      })
+    );
+
     app.use(
       session({
         name: process.env.SESSION_NAME,
@@ -72,13 +80,6 @@ const main = async () => {
       })
     );
 
-    app.use(
-      cors({
-        credentials: true,
-        origin: process.env.CORS_ORIGIN,
-      })
-    );
-
     app.use(passport.initialize());
 
     googlePassport(app);
@@ -86,11 +87,11 @@ const main = async () => {
 
     apolloServer.applyMiddleware({ app, cors: false });
 
-    app.listen(process.env.PORT, () =>
-      console.log(
-        `Server running on http://localhost:${process.env.PORT}/graphql 🚀`
-      )
-    );
+    const port = process.env.PORT || 4000;
+
+    app.listen(port, () => {
+      console.log(`Server running at ${port}`);
+    });
   } catch (e) {
     console.error(e);
     process.exit(1);
