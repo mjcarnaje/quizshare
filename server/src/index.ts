@@ -82,6 +82,8 @@ const main = async () => {
           res,
         };
       },
+      playground: true,
+      introspection: __PROD__,
     });
 
     const app = express();

@@ -14,7 +14,7 @@ export const facebookPassport = (app: core.Express) => {
         clientSecret: process.env.FACEBOOK_APP_SECRET as string,
         callbackURL: __PROD__
           ? (process.env.FACEBOOK_CALLBACK as string)
-          : "http://localhost:4000/auth/facebook/callback",
+          : "https://api-quizshare.herokuapp.com/auth/facebook/callback",
         profileFields: ["id", "displayName", "name", "photos", "email"],
       },
       async (_accessToken, _refreshToken, profile, done) => {
