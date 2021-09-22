@@ -3,7 +3,7 @@ import passport from "passport";
 import { getConnection } from "typeorm";
 import { User } from "../../entity";
 import { Request } from "../../types";
-import { getRole } from "../../utils";
+import { getRole, __PROD__ } from "../../utils";
 import { Strategy } from "passport-facebook";
 
 export const facebookPassport = (app: core.Express) => {
@@ -12,7 +12,9 @@ export const facebookPassport = (app: core.Express) => {
       {
         clientID: process.env.FACEBOOK_APP_ID as string,
         clientSecret: process.env.FACEBOOK_APP_SECRET as string,
-        callbackURL: "http://localhost:4000/auth/facebook/callback",
+        callbackURL: __PROD__
+          ? (process.env.FACEBOOK_CALLBACK as string)
+          : "http://localhost:4000/auth/facebook/callback",
         profileFields: ["id", "displayName", "name", "photos", "email"],
       },
       async (_accessToken, _refreshToken, profile, done) => {

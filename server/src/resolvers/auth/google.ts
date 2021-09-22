@@ -3,7 +3,7 @@ import passport from "passport";
 import { getConnection } from "typeorm";
 import { User } from "../../entity";
 import { Request } from "../../types";
-import { getRole } from "../../utils";
+import { getRole, __PROD__ } from "../../utils";
 import { Strategy } from "passport-google-oauth20";
 
 export const googlePassport = (app: core.Express) => {
@@ -12,7 +12,9 @@ export const googlePassport = (app: core.Express) => {
       {
         clientID: process.env.GOOGLE_CLIENT_ID as string,
         clientSecret: process.env.GOOGLE_CLIENT_SERCRET as string,
-        callbackURL: "http://localhost:4000/auth/google/callback",
+        callbackURL: __PROD__
+          ? (process.env.GOOGLE_CALLBACK as string)
+          : "http://localhost:4000/auth/google/callback",
       },
       async (_accessToken, _refreshToken, profile, done) => {
         const { id, displayName, name, emails, photos } = profile;
