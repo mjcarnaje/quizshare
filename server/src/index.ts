@@ -17,6 +17,23 @@ import {
   createSubscriptionLoader,
   __PROD__,
 } from "./utils";
+import {
+  Bookmark,
+  Comment,
+  Like,
+  Question,
+  Quiz,
+  Result,
+  Score,
+  Subscription,
+  Tag,
+  User,
+} from "./entity";
+import { AuthResolver } from "./resolvers/auth/auth";
+import { CommentResolver } from "./resolvers/comment/comment";
+import { QuizResolver } from "./resolvers/quiz/quiz";
+import { UserResolver } from "./resolvers/user/user";
+import { TagResolver } from "./resolvers/tag/tag";
 
 const main = async () => {
   try {
@@ -27,12 +44,29 @@ const main = async () => {
         : process.env.DATABASE_URL_DEV,
       synchronize: true,
       logging: __PROD__ ? false : true,
-      entities: [__dirname + "/entity/**/*.ts"],
+      entities: [
+        Bookmark,
+        Comment,
+        Like,
+        Question,
+        Quiz,
+        Result,
+        Score,
+        Subscription,
+        Tag,
+        User,
+      ],
     });
 
     const apolloServer = new ApolloServer({
       schema: await buildSchema({
-        resolvers: [__dirname + "/resolvers/**/*.ts"],
+        resolvers: [
+          AuthResolver,
+          CommentResolver,
+          QuizResolver,
+          TagResolver,
+          UserResolver,
+        ],
       }),
       context: ({ req, res }) => {
         return {
