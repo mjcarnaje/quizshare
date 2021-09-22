@@ -3,11 +3,10 @@ import React, { useEffect } from "react";
 import { ChoiceInput, QuestionInput, QuizInput } from "@generated/graphql";
 import { RadioGroup } from "@headlessui/react";
 import {
-  CheckCircleIcon as CheckCircleIconOutline,
+  CheckCircleIcon,
   PhotographIcon,
   TrashIcon,
-} from "@heroicons/react/outline";
-import { CheckCircleIcon as CheckCircleIconSolid } from "@heroicons/react/solid";
+} from "@heroicons/react/solid";
 import { classNames } from "@utils/index";
 import { useUploadPhoto } from "@utils/useUploadImage";
 import { FieldArrayWithId, FieldErrors, useFormContext } from "react-hook-form";
@@ -50,7 +49,7 @@ const ChoiceCard: React.FC<Props> = ({
 
   return (
     <li className="col-span-1 ">
-      <div className="overflow-hidden bg-white divide-y divide-gray-100 rounded-md shadow">
+      <div className="overflow-hidden bg-white rounded-md shadow-sm border">
         <input
           type="hidden"
           defaultValue={choice.id}
@@ -69,7 +68,7 @@ const ChoiceCard: React.FC<Props> = ({
           />
           <TextareaAutoResize<QuizInput>
             name={`questions.${questionIdx}.choices.${choiceIdx}.text`}
-            placeholder="Type your choice"
+            placeholder={`Answer option ${choiceIdx + 1}`}
             error={errors?.text}
             register={register}
             required
@@ -86,16 +85,16 @@ const ChoiceCard: React.FC<Props> = ({
           >
             {({ checked }) => (
               <>
-                {checked ? (
-                  <CheckCircleIconSolid className="w-5 h-5 text-green-600" />
-                ) : (
-                  <CheckCircleIconOutline className="w-5 h-5 text-gray-500" />
-                )}
+                <CheckCircleIcon
+                  className={classNames(
+                    checked ? "text-green-600" : "text-gray-400",
+                    "w-5 h-5"
+                  )}
+                />
                 <p
                   className={classNames(
-                    checked
-                      ? "font-semibold ml-1 text-green-600"
-                      : "ml-1 text-gray-500"
+                    checked ? "font-medium text-green-600" : "text-gray-400",
+                    "ml-1 text-sm"
                   )}
                 >
                   Correct Answer
@@ -107,7 +106,7 @@ const ChoiceCard: React.FC<Props> = ({
             <button
               type="button"
               onClick={uploadImage}
-              className="p-1 rounded focus:outline-none hover:bg-gray-100 active:bg-gray-200"
+              className="p-1 rounded focus:outline-none text-gray-400 hover:bg-gray-100 hover:text-gray-800 active:text-gray-900"
             >
               <PhotographIcon className="w-5 h-5" />
             </button>
@@ -115,12 +114,13 @@ const ChoiceCard: React.FC<Props> = ({
               type="button"
               disabled={isDisabled}
               onClick={deleteChoice}
-              className="p-1 rounded focus:outline-none hover:bg-gray-100 active:bg-gray-200"
+              className="p-1 rounded focus:outline-none text-gray-400 hover:bg-gray-100 hover:text-gray-800 active:text-gray-900"
             >
               <TrashIcon
-                className={` h-5 w-5 ${classNames(
-                  isDisabled ? "opacity-30" : ""
-                )}`}
+                className={classNames(
+                  isDisabled ? "opacity-30" : "",
+                  "h-5 w-5"
+                )}
               />
             </button>
           </div>

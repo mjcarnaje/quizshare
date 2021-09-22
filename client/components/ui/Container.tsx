@@ -1,8 +1,7 @@
 import React, { useState } from "react";
 
 import ContentHeader from "@components/ui/ContentHeader";
-import HiddenSidebar from "@components/ui/HiddenSidebar";
-import StaticSidebar from "@components/ui/StaticSidebar";
+import SideBar from "@components/ui/SideBar";
 import { useMeQuery } from "@generated/graphql";
 import {
   HomeIcon,
@@ -71,7 +70,7 @@ interface Props {
   header?: JSX.Element;
 }
 
-const Container: React.FC<Props> = ({ children, showSearchBar, header }) => {
+const Container: React.FC<Props> = ({ showSearchBar, header, children }) => {
   const [sidebarOpen, setSidebarOpen] = useState(false);
 
   const { data } = useMeQuery();
@@ -82,12 +81,11 @@ const Container: React.FC<Props> = ({ children, showSearchBar, header }) => {
 
   return (
     <>
-      <HiddenSidebar
+      <SideBar
         sidebarOpen={sidebarOpen}
         setSidebarOpen={setSidebarOpen}
         navigation={navs}
       />
-      <StaticSidebar navigation={navs} />
       <div className="flex flex-col flex-1 w-0 overflow-hidden">
         <ContentHeader
           setSidebarOpen={setSidebarOpen}

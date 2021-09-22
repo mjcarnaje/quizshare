@@ -108,7 +108,7 @@ const QuestionCard: React.FC<Props> = ({
               </div>
               <TextareaAutoResize<QuizInput>
                 name={`questions.${questionIdx}.question`}
-                placeholder="Type your question"
+                placeholder="Write your question here"
                 error={errors?.question}
                 register={register}
                 required
@@ -150,7 +150,7 @@ const QuestionCard: React.FC<Props> = ({
               )}
             </div>
           </div>
-          <div className="absolute flex flex-col space-y-1 left-full">
+          <div className="flex flex-col space-y-1">
             <button
               type="button"
               className="flex items-center justify-center w-8 h-8 bg-white rounded-md shadow focus:outline-none hover:bg-gray-50 active:bg-gray-200"
