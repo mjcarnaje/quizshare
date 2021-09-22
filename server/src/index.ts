@@ -43,8 +43,8 @@ const main = async () => {
       url: __PROD__
         ? process.env.DATABASE_URL_PROD
         : process.env.DATABASE_URL_DEV,
-      synchronize: __PROD__,
-      logging: __PROD__ ? false : true,
+      synchronize: !__PROD__,
+      logging: !__PROD__,
       entities: [
         Bookmark,
         Comment,
@@ -82,6 +82,7 @@ const main = async () => {
           res,
         };
       },
+      playground: true,
     });
 
     const app = express();
