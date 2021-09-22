@@ -1,4 +1,4 @@
-import React, { Fragment, useCallback, useState } from "react";
+import React, { useCallback, useState } from "react";
 
 import Container from "@components/ui/Container";
 import MainContainer from "@components/ui/MainContainer";
@@ -10,7 +10,7 @@ import {
   UserRole,
 } from "@generated/graphql";
 import { Listbox, Transition } from "@headlessui/react";
-import { CheckIcon, SelectorIcon } from "@heroicons/react/solid";
+import { CheckIcon, MailIcon, SelectorIcon } from "@heroicons/react/solid";
 import { classNames } from "@utils/index";
 import { capitalize, toConsantFormat } from "@utils/stringFormatter";
 import withApollo from "@utils/withApollo";
@@ -78,117 +78,141 @@ const PersonItem: React.FC<PersonItemProps> = ({ person }) => {
   };
 
   return (
-    <tr>
-      <td className="px-6 py-4 whitespace-nowrap">
-        <div className="flex items-center">
-          <div className="flex-shrink-0 w-10 h-10">
+    <li className="!list-none" key={person.id}>
+      <div className="flex items-center px-4 py-4 sm:px-6">
+        <div className="min-w-0 flex-1 flex items-center">
+          <div className="flex-shrink-0">
             <img
-              className="w-10 h-10 rounded-full"
+              className="h-12 w-12 rounded-full"
               src={person.avatar ?? AVATAR_FALLBACK_IMG}
               alt=""
             />
           </div>
-          <div className="ml-4">
-            <div className="text-sm font-medium text-gray-900">
-              {`${person.firstName} ${person.lastName}`}
+          <div className="min-w-0 flex-1 items-center px-4 md:grid md:grid-cols-2 md:gap-4">
+            <div>
+              <p className="text-sm font-medium text-indigo-600 truncate">
+                {person.firstName + person.lastName}
+              </p>
+              <p className="mt-2 flex items-center text-sm text-gray-500">
+                <MailIcon
+                  className="flex-shrink-0 mr-1.5 h-5 w-5 text-gray-400"
+                  aria-hidden="true"
+                />
+                <span className="truncate">{person.email}</span>
+              </p>
             </div>
-            <div className="text-sm text-gray-500">{person.email}</div>
+            <div className="hidden md:block">
+              {editMode ? (
+                <Listbox value={selected} onChange={setSelected}>
+                  {({ open }) => (
+                    <>
+                      <div className="relative inline-block w-44">
+                        <Listbox.Button className="relative w-full py-2 pl-3 pr-10 text-left bg-white border border-gray-300 rounded-md shadow-sm cursor-default focus:outline-none focus:ring-1 focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
+                          <span className="block truncate">{selected}</span>
+                          <span className="absolute inset-y-0 right-0 flex items-center pr-2 pointer-events-none">
+                            <SelectorIcon
+                              className="w-5 h-5 text-gray-400"
+                              aria-hidden="true"
+                            />
+                          </span>
+                        </Listbox.Button>
+
+                        <Transition
+                          show={open}
+                          enter="transition duration-100 ease-out"
+                          enterFrom="transform scale-95 opacity-0"
+                          enterTo="transform scale-100 opacity-100"
+                          leave="transition duration-75 ease-out"
+                          leaveFrom="transform scale-100 opacity-100"
+                          leaveTo="transform scale-95 opacity-0"
+                        >
+                          <Listbox.Options
+                            static
+                            className="absolute z-10 w-full py-1 mt-1 text-base bg-white rounded-md shadow-lg max-h-60 ring-1 ring-black ring-opacity-5 focus:outline-none sm:text-sm"
+                          >
+                            {roles.map((role) => (
+                              <Listbox.Option
+                                key={role.name}
+                                className={({ active }) =>
+                                  classNames(
+                                    active
+                                      ? "text-white bg-indigo-600"
+                                      : "text-gray-900",
+                                    "cursor-default select-none relative py-2 pl-3 pr-9"
+                                  )
+                                }
+                                value={role.name}
+                              >
+                                {({ selected, active }) => (
+                                  <>
+                                    <span
+                                      className={classNames(
+                                        selected
+                                          ? "font-semibold"
+                                          : "font-normal",
+                                        "block truncate"
+                                      )}
+                                    >
+                                      {role.name}
+                                    </span>
+
+                                    {selected ? (
+                                      <span
+                                        className={classNames(
+                                          active
+                                            ? "text-white"
+                                            : "text-indigo-600",
+                                          "absolute inset-y-0 right-0 flex items-center pr-4"
+                                        )}
+                                      >
+                                        <CheckIcon
+                                          className="w-5 h-5"
+                                          aria-hidden="true"
+                                        />
+                                      </span>
+                                    ) : null}
+                                  </>
+                                )}
+                              </Listbox.Option>
+                            ))}
+                          </Listbox.Options>
+                        </Transition>
+                      </div>
+                    </>
+                  )}
+                </Listbox>
+              ) : (
+                <p className="text-sm text-gray-800">
+                  {capitalize(person.role, "_")}
+                </p>
+              )}
+            </div>
           </div>
         </div>
-      </td>
-      <td className="px-6 py-4 text-sm text-gray-500 whitespace-nowrap">
-        {editMode ? (
-          <Listbox value={selected} onChange={setSelected}>
-            {({ open }) => (
-              <>
-                <div className="relative mt-1">
-                  <Listbox.Button className="relative w-full py-2 pl-3 pr-10 text-left bg-white border border-gray-300 rounded-md shadow-sm cursor-default focus:outline-none focus:ring-1 focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
-                    <span className="block truncate">{selected}</span>
-                    <span className="absolute inset-y-0 right-0 flex items-center pr-2 pointer-events-none">
-                      <SelectorIcon
-                        className="w-5 h-5 text-gray-400"
-                        aria-hidden="true"
-                      />
-                    </span>
-                  </Listbox.Button>
-
-                  <Transition
-                    show={open}
-                    as={Fragment}
-                    leave="transition ease-in duration-100"
-                    leaveFrom="opacity-100"
-                    leaveTo="opacity-0"
-                  >
-                    <Listbox.Options
-                      static
-                      className="absolute z-10 w-full py-1 mt-1 overflow-auto text-base bg-white rounded-md shadow-lg max-h-60 ring-1 ring-black ring-opacity-5 focus:outline-none sm:text-sm"
-                    >
-                      {roles.map((role) => (
-                        <Listbox.Option
-                          key={role.name}
-                          className={({ active }) =>
-                            classNames(
-                              active
-                                ? "text-white bg-indigo-600"
-                                : "text-gray-900",
-                              "cursor-default select-none relative py-2 pl-3 pr-9"
-                            )
-                          }
-                          value={role.name}
-                        >
-                          {({ selected, active }) => (
-                            <>
-                              <span
-                                className={classNames(
-                                  selected ? "font-semibold" : "font-normal",
-                                  "block truncate"
-                                )}
-                              >
-                                {role.name}
-                              </span>
-
-                              {selected ? (
-                                <span
-                                  className={classNames(
-                                    active ? "text-white" : "text-indigo-600",
-                                    "absolute inset-y-0 right-0 flex items-center pr-4"
-                                  )}
-                                >
-                                  <CheckIcon
-                                    className="w-5 h-5"
-                                    aria-hidden="true"
-                                  />
-                                </span>
-                              ) : null}
-                            </>
-                          )}
-                        </Listbox.Option>
-                      ))}
-                    </Listbox.Options>
-                  </Transition>
-                </div>
-              </>
-            )}
-          </Listbox>
-        ) : (
-          capitalize(person.role, "_")
-        )}
-      </td>
-      <td className="px-6 py-4 text-sm font-medium text-right whitespace-nowrap">
-        <button
-          onClick={() => {
-            if (editMode) {
-              saveChanges();
-            } else {
-              setEditMode(true);
-            }
-          }}
-          className="text-indigo-600 hover:text-indigo-900"
-        >
-          {editMode ? "Save" : "Edit"}
-        </button>
-      </td>
-    </tr>
+        <div className="flex space-x-3">
+          {editMode && (
+            <button
+              onClick={() => setEditMode(false)}
+              className="text-sm text-gray-800"
+            >
+              Cancel
+            </button>
+          )}
+          <button
+            onClick={() => {
+              if (editMode) {
+                saveChanges();
+              } else {
+                setEditMode(true);
+              }
+            }}
+            className="text-sm text-indigo-600 hover:text-indigo-900"
+          >
+            {editMode ? "Save" : "Edit"}
+          </button>
+        </div>
+      </div>
+    </li>
   );
 };
 
@@ -229,76 +253,55 @@ const ChangeRoles: React.FC<ChangeRolesProps> = () => {
                 onChange={(e) => handleSearch(e.target.value)}
                 type="text"
               />
-              <div className="max-w-3xl overflow-hidden bg-white shadow sm:rounded-md">
-                <div className="overflow-hidden border-b border-gray-200 shadow sm:rounded-lg">
-                  <table className="min-w-full divide-y divide-gray-200">
-                    <thead className="bg-gray-50">
-                      <tr>
-                        <th
-                          scope="col"
-                          className="px-6 py-3 text-xs font-medium tracking-wider text-left text-gray-500 uppercase"
-                        >
-                          Name
-                        </th>
-
-                        <th
-                          scope="col"
-                          className="px-6 py-3 text-xs font-medium tracking-wider text-left text-gray-500 uppercase"
-                        >
-                          Role
-                        </th>
-                        <th scope="col" className="relative px-6 py-3">
-                          <span className="sr-only">Edit</span>
-                        </th>
-                      </tr>
-                    </thead>
-                    <tbody className="bg-white divide-y divide-gray-200">
-                      {!users.length && loading && (
-                        <>
-                          {[...Array(3).keys()].map((idx) => (
-                            <PersonItemSkeleton key={idx} />
-                          ))}
-                        </>
-                      )}
-                      {users.map((person) => (
-                        <PersonItem key={person.id} person={person} />
-                      ))}
-                      {users.length > 0 && loading && (
-                        <>
-                          {[...Array(3).keys()].map((idx) => (
-                            <PersonItemSkeleton key={idx} />
-                          ))}
-                        </>
-                      )}
-                      {pageInfo?.hasNextPage && (
-                        <button
-                          type="button"
-                          className="flex px-4 py-2 mx-auto my-2 text-base font-medium leading-4 rounded-md active:bg-gray-50 focus:outline-none"
-                          onClick={() => {
-                            fetchMore({
-                              variables: {
-                                usersInput: {
-                                  ...variables?.usersInput,
-                                  cursor: pageInfo.endCursor,
-                                },
-                              },
-                            });
-                          }}
-                        >
-                          {loading ? "Loading.." : "Load more"}
-                        </button>
-                      )}
-                    </tbody>
-                  </table>
-                  {!users.length && !loading && (
-                    <div className="flex flex-col items-center justify-center h-64 max-w-3xl p-10 mt-10 text-center md:h-80 lg:h-96">
-                      <div className="relative w-full h-full">
-                        <Image src="/empty.svg" layout="fill" />
-                      </div>
-                      <p className="mt-4 lg:mt-12">No members found.</p>
-                    </div>
+              <div className="max-w-3xl">
+                <div className="bg-white shadow sm:rounded-md">
+                  <ul className="divide-y divide-gray-200">
+                    {users.map((person) => (
+                      <PersonItem key={person.id} person={person} />
+                    ))}
+                    {!users.length && loading && (
+                      <>
+                        {[...Array(3).keys()].map((idx) => (
+                          <PersonItemSkeleton key={idx} />
+                        ))}
+                      </>
+                    )}
+                    {users.length > 0 && loading && (
+                      <>
+                        {[...Array(3).keys()].map((idx) => (
+                          <PersonItemSkeleton key={idx} />
+                        ))}
+                      </>
+                    )}
+                  </ul>
+                  {pageInfo?.hasNextPage && (
+                    <button
+                      type="button"
+                      className="flex px-4 py-2 mx-auto my-2 text-base font-medium leading-4 rounded-md active:bg-gray-50 focus:outline-none"
+                      onClick={() => {
+                        fetchMore({
+                          variables: {
+                            usersInput: {
+                              ...variables?.usersInput,
+                              cursor: pageInfo.endCursor,
+                            },
+                          },
+                        });
+                      }}
+                    >
+                      {loading ? "Loading.." : "Load more"}
+                    </button>
                   )}
                 </div>
+
+                {!users.length && !loading && (
+                  <div className="flex flex-col items-center justify-center h-64 max-w-3xl p-10 mt-10 text-center md:h-80 lg:h-96">
+                    <div className="relative w-full h-full">
+                      <Image src="/empty.svg" layout="fill" />
+                    </div>
+                    <p className="mt-4 lg:mt-12">No members found.</p>
+                  </div>
+                )}
               </div>
             </div>
           </div>

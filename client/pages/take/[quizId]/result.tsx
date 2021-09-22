@@ -84,7 +84,7 @@ const Result: React.FC = () => {
                     </div>
                   </div>
                   <div className="text-center my-8">
-                    <h3 className="font-inter font-bold text-2xl">
+                    <h3 className="font-bold text-2xl">
                       {`${percentage.toFixed(2)}%`}
                     </h3>
                     <h2 className="font-medium text-lg">{`You answered ${score} out of ${totalItems} correctly.`}</h2>
