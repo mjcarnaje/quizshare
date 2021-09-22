@@ -1,0 +1,10 @@
+{
+  "type": "postgres",
+  "url": "postgresql://postgres:password@localhost:5432/quizshare",
+  "entities": ["dist/entity/**/*{.js,.ts}"],
+  "migrations": ["dist/migration/**/*{.js,.ts}"],
+  "cli": {
+    "entitiesDir": "src/entity",
+    "migrationsDir": "src/migration"
+  }
+}

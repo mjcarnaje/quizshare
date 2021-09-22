@@ -34,15 +34,16 @@ import { CommentResolver } from "./resolvers/comment/comment";
 import { QuizResolver } from "./resolvers/quiz/quiz";
 import { UserResolver } from "./resolvers/user/user";
 import { TagResolver } from "./resolvers/tag/tag";
+import path from "path";
 
 const main = async () => {
   try {
-    await createConnection({
+    const connection = await createConnection({
       type: "postgres",
       url: __PROD__
         ? process.env.DATABASE_URL_PROD
         : process.env.DATABASE_URL_DEV,
-      synchronize: true,
+      synchronize: __PROD__,
       logging: __PROD__ ? false : true,
       entities: [
         Bookmark,
@@ -56,7 +57,10 @@ const main = async () => {
         Tag,
         User,
       ],
+      migrations: [path.join(__dirname, "./migration/*")],
     });
+
+    await connection.runMigrations();
 
     const apolloServer = new ApolloServer({
       schema: await buildSchema({
