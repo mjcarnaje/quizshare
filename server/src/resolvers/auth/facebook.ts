@@ -72,7 +72,9 @@ export const facebookPassport = (app: core.Express) => {
 
       req.session.userId = user.id;
 
-      res.redirect("http://localhost:3000/");
+      res.redirect(
+        __PROD__ ? process.env.CORS_ORIGIN : process.env.CORS_ORIGIN_DEV
+      );
     }
   );
 };
