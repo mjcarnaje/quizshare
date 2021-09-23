@@ -79,7 +79,7 @@ const DraftEditQuizPage: React.FC = () => {
 
       if (quizData?.saveQuiz) {
         const { id, ...rest } = quizData.saveQuiz;
-        setQuizInput(rest);
+        setQuizInput(rest as QuizInput);
         reset(cleanTypeName(rest));
         checkIfDirty(cleanTypeName(rest), watchValues);
         setIsDirty(true);

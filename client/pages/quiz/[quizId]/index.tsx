@@ -7,7 +7,12 @@ import QuestionInputs from "@components/quizzes/QuestionInputs";
 import ResultInputs from "@components/quizzes/ResultInputs";
 import Container from "@components/ui/Container";
 import MainContainer from "@components/ui/MainContainer";
-import { QuizInput, useSaveQuizMutation } from "@generated/graphql";
+import {
+  QuizInput,
+  useGetQuizQuery,
+  usePublishQuizMutation,
+  useSaveQuizMutation,
+} from "@generated/graphql";
 import {
   AnnotationIcon,
   CogIcon,
@@ -16,22 +21,34 @@ import {
   UploadIcon,
 } from "@heroicons/react/outline";
 import errorMapper from "@utils/errorMapper";
-import { classNames } from "@utils/index";
+import { classNames, cleanTypeName } from "@utils/index";
+import { useGetQuery } from "@utils/useGetQuery";
 import { useUploadPhoto } from "@utils/useUploadImage";
 import withApollo from "@utils/withApollo";
 import { useRouter } from "next/router";
-import { FormProvider, useForm } from "react-hook-form";
+import { FormProvider, SubmitHandler, useForm } from "react-hook-form";
 
 type IActiveNav = "settings" | "questions" | "results";
 
 const Testing: React.FC = () => {
   const router = useRouter();
+  const quizId = useGetQuery("quizId");
 
   const [activeNav, setActiveNav] = useState<IActiveNav>("settings");
 
-  const [saveQuiz, { loading: savingQuiz }] = useSaveQuizMutation();
   const [uploadImage, { data: quizPhoto, loading: quizPhotoLoading }] =
     useUploadPhoto();
+
+  const [saveQuiz] = useSaveQuizMutation();
+  const [publishQuiz] = usePublishQuizMutation();
+  const { data } = useGetQuizQuery({
+    variables: {
+      quizId,
+      isInput: true,
+      isTake: false,
+      isLanding: false,
+    },
+  });
 
   const methods = useForm<QuizInput>({
     defaultValues: {
@@ -48,22 +65,26 @@ const Testing: React.FC = () => {
     register,
     handleSubmit,
     setError,
+    reset,
     setValue,
-    formState: { errors },
+    formState: {
+      isDirty,
+      isSubmitted,
+      isSubmitSuccessful,
+      submitCount,
+      touchedFields,
+      isSubmitting,
+      isValidating,
+      isValid,
+      errors,
+    },
   } = methods;
 
-  const onSubmit = async (data: QuizInput) => {
+  const onSubmit: SubmitHandler<QuizInput> = async (data) => {
     try {
-      const { data: quizData } = await saveQuiz({
-        variables: { input: data },
-        update: (cache) => {
-          cache.evict({ fieldName: "quizzes" });
-        },
+      await saveQuiz({
+        variables: { quizId, input: data },
       });
-
-      if (quizData?.saveQuiz.id) {
-        router.replace(`/me/drafts/${quizData.saveQuiz.id}`);
-      }
     } catch (err) {
       errorMapper(err, setError);
     }
@@ -92,10 +113,43 @@ const Testing: React.FC = () => {
       },
     ],
     [
-      { name: "Save draft & exit", icon: SaveIcon, onClick: () => {} },
-      { name: "Publish", icon: UploadIcon, onClick: () => {} },
+      {
+        name: "Save draft & exit",
+        icon: SaveIcon,
+        onClick: async () => {
+          try {
+            await handleSubmit(onSubmit)();
+            // router.push("/me/drafts");
+          } catch (err) {
+            console.error(err);
+          }
+        },
+      },
+      {
+        name: "Publish",
+        icon: UploadIcon,
+        onClick: async () => {
+          try {
+            await handleSubmit(onSubmit)();
+            const { errors } = await publishQuiz({
+              variables: { quizId },
+            });
+            // if (!errors) {
+            //   router.push("/");
+            // }
+          } catch (err) {
+            console.error(err);
+          }
+        },
+      },
     ],
   ];
+
+  useEffect(() => {
+    if (data) {
+      reset(cleanTypeName<QuizInput>(data.getQuiz));
+    }
+  }, [data]);
 
   return (
     <MainContainer title="Testing">
@@ -107,6 +161,16 @@ const Testing: React.FC = () => {
                 <aside className="py-6 lg:col-span-3">
                   <nav>
                     <div className="space-y-1">
+                      <p>{`isDirty: ${JSON.stringify(isDirty)}`}</p>
+                      <p>{`isSubmitted: ${JSON.stringify(isSubmitted)}`}</p>
+                      <p>{`isSubmitSuccessful: ${JSON.stringify(
+                        isSubmitSuccessful
+                      )}`}</p>
+                      <p>{`submitCount: ${JSON.stringify(submitCount)}`}</p>
+                      <p>{`touchedFields: ${JSON.stringify(touchedFields)}`}</p>
+                      <p>{`isSubmitting: ${JSON.stringify(isSubmitting)}`}</p>
+                      <p>{`isValidating: ${JSON.stringify(isValidating)}`}</p>
+                      <p>{`isValid: ${JSON.stringify(isValid)}`}</p>
                       {subNavigation[0].map((item) => (
                         <button
                           key={item.name}
@@ -156,39 +220,42 @@ const Testing: React.FC = () => {
                             <label className="block text-sm font-medium text-gray-700">
                               Cover photo
                             </label>
-                            <div className="mt-1 flex justify-center px-6 pt-5 pb-6 border-2 border-gray-300 border-dashed rounded-md">
-                              <div className="space-y-1 text-center">
-                                <svg
-                                  className="mx-auto h-12 w-12 text-gray-400"
-                                  stroke="currentColor"
-                                  fill="none"
-                                  viewBox="0 0 48 48"
-                                  aria-hidden="true"
-                                >
-                                  <path
-                                    d="M28 8H12a4 4 0 00-4 4v20m32-12v8m0 0v8a4 4 0 01-4 4H12a4 4 0 01-4-4v-4m32-4l-3.172-3.172a4 4 0 00-5.656 0L28 28M8 32l9.172-9.172a4 4 0 015.656 0L28 28m0 0l4 4m4-24h8m-4-4v8m-12 4h.02"
-                                    strokeWidth={2}
-                                    strokeLinecap="round"
-                                    strokeLinejoin="round"
-                                  />
-                                </svg>
-                                <button
-                                  onClick={uploadImage}
-                                  className="text-sm rounded-md font-medium text-indigo-600 hover:text-indigo-500 focus-within:outline-none focus-within:ring-2 focus-within:ring-offset-2 focus-within:ring-indigo-500"
-                                >
-                                  Upload image
-                                </button>
-                                <p className="text-xs text-gray-500">
-                                  PNG, JPG up to 1MB
-                                </p>
+                            {quizPhoto || data?.getQuiz.quizPhoto ? (
+                              <ImageHolder
+                                image={quizPhoto || data?.getQuiz.quizPhoto}
+                                loading={quizPhotoLoading}
+                              />
+                            ) : (
+                              <div className="mt-1 flex justify-center px-6 pt-5 pb-6 border-2 border-gray-300 border-dashed rounded-md">
+                                <div className="space-y-1 text-center">
+                                  <svg
+                                    className="mx-auto h-12 w-12 text-gray-400"
+                                    stroke="currentColor"
+                                    fill="none"
+                                    viewBox="0 0 48 48"
+                                    aria-hidden="true"
+                                  >
+                                    <path
+                                      d="M28 8H12a4 4 0 00-4 4v20m32-12v8m0 0v8a4 4 0 01-4 4H12a4 4 0 01-4-4v-4m32-4l-3.172-3.172a4 4 0 00-5.656 0L28 28M8 32l9.172-9.172a4 4 0 015.656 0L28 28m0 0l4 4m4-24h8m-4-4v8m-12 4h.02"
+                                      strokeWidth={2}
+                                      strokeLinecap="round"
+                                      strokeLinejoin="round"
+                                    />
+                                  </svg>
+                                  <button
+                                    onClick={uploadImage}
+                                    className="text-sm rounded-md font-medium text-indigo-600 hover:text-indigo-500 focus-within:outline-none focus-within:ring-2 focus-within:ring-offset-2 focus-within:ring-indigo-500"
+                                  >
+                                    Upload image
+                                  </button>
+                                  <p className="text-xs text-gray-500">
+                                    PNG, JPG up to 1MB
+                                  </p>
+                                </div>
                               </div>
-                            </div>
+                            )}
                           </div>
                           <input type="hidden" {...register("quizPhoto")} />
-                          <ImageHolder
-                            image={quizPhoto}
-                            loading={quizPhotoLoading}
-                          />
                           <Input<QuizInput>
                             type="text"
                             name="title"

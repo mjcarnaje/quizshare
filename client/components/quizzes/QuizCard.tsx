@@ -20,7 +20,9 @@ import FollowButton from "../buttons/FollowButton";
 import DeleteQuizModal from "../modals/DeleteQuizModal";
 import Avatar from "../ui/Avatar";
 
-function truncateText(text: string, len: number = 320): string {
+function truncateText(text?: string | null, len: number = 320): string {
+  if (!text) return "No description.";
+
   if (text.length > len) {
     return `${text.slice(0, len)}...`;
   }
@@ -114,7 +116,7 @@ export const QuizCard: React.FC<Props> = ({
           </Link>
         </div>
         {quizPhoto && (
-          <Link href={`/quiz/${id}`}>
+          <Link href={`/quiz/${id}/view`}>
             <div className="self-start flex-shrink-0 ml-6">
               <div className="w-full overflow-hidden bg-gray-100 rounded-md md:w-64">
                 <div className="relative w-full pb-[56.25%]">
@@ -153,7 +155,7 @@ export const QuizCard: React.FC<Props> = ({
             </button>
 
             <button
-              onClick={() => router.push(`/me/drafts/${id}`)}
+              onClick={() => router.push(`/quiz/${id}`)}
               className="inline-flex items-center px-3 py-1.5 font-medium border border-gray-600 hover:bg-gray-200  rounded-md focus:outline-none"
             >
               <PencilIcon className="w-5 h-5 mr-1 -ml-1 text-gray-600" />

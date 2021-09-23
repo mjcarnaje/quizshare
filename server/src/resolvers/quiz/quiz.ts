@@ -62,6 +62,10 @@ export class QuizResolver implements ResolverInterface<Quiz> {
       .leftJoinAndSelect("quiz.tags", "tags")
       .where("quiz.isPublished = :isPublished", { isPublished });
 
+    if (isPublished) {
+      quizzes = quizzes.andWhere("quiz.description is not null");
+    }
+
     if (search) {
       quizzes = quizzes.andWhere(
         new Brackets((qb) => {
@@ -104,25 +108,32 @@ export class QuizResolver implements ResolverInterface<Quiz> {
 
   @UseMiddleware(isAuthenticated)
   @Mutation(() => Quiz)
+  async createQuiz(
+    @Arg("title") title: string,
+    @Ctx() ctx: IContext
+  ): Promise<Quiz> {
+    const authorId = ctx.req.session.userId;
+
+    const quiz = await Quiz.create({ title, authorId }).save();
+
+    return quiz;
+  }
+
+  @UseMiddleware(isAuthenticated)
+  @Mutation(() => Quiz)
   async saveQuiz(
+    @Arg("quizId") quizId: string,
     @Arg("input") input: QuizInput,
-    @Ctx() ctx: IContext,
-    @Arg("quizId", { nullable: true }) quizId?: string
+    @Ctx() ctx: IContext
   ): Promise<Quiz> {
     const authorId = ctx.req.session.userId;
     const questionCount = input.questions.length;
 
-    let newQuiz: Quiz;
+    let quiz = await Quiz.findOne({ id: quizId, authorId });
+    const updatedQuiz = Object.assign(quiz, { ...input, questionCount });
+    quiz = await Quiz.save(updatedQuiz);
 
-    if (quizId) {
-      const quiz = await Quiz.findOne({ id: quizId });
-      let updated = Object.assign(quiz, { ...input, questionCount });
-      newQuiz = await Quiz.save(updated);
-    } else {
-      newQuiz = await Quiz.create({ ...input, questionCount, authorId }).save();
-    }
-
-    return newQuiz;
+    return quiz;
   }
 
   @UseMiddleware(isAuthenticated)

@@ -51,7 +51,7 @@ const navigation = [
   },
   {
     name: "Create Quiz",
-    href: "/create/quiz",
+    href: "/quiz/new",
     icon: PlusCircleIcon,
     activeIcon: PlusCircleIconSolid,
     for: "ALL",

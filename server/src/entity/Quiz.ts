@@ -35,10 +35,10 @@ export class Quiz extends BaseEntity {
   @Column()
   title: string;
 
-  @Field()
+  @Field(() => String, { nullable: true })
   @Index({ fulltext: true })
-  @Column()
-  description: string;
+  @Column("text", { nullable: true })
+  description?: string;
 
   @Field(() => String, { nullable: true })
   @Column("text", { nullable: true })

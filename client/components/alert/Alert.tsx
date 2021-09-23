@@ -82,9 +82,9 @@ const Alert: React.FC = () => {
   return (
     <div
       aria-live="assertive"
-      className="fixed inset-0 z-50 flex items-end px-4 py-6 pointer-events-none sm:p-6 sm:items-start"
+      className="fixed inset-0 z-50 max-h-screen flex items-end px-4 py-6 pointer-events-none sm:p-6 sm:items-start"
     >
-      <div className="flex flex-col items-center w-full space-y-4 sm:items-end">
+      <div className="flex mt-auto flex-col-reverse items-center w-full space-y-reverse space-y-4 sm:items-end">
         {alerts.map((alert) => {
           return <AlertItem alert={alert} />;
         })}

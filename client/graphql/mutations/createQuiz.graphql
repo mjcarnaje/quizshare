@@ -1,0 +1,5 @@
+mutation CreateQuiz($title: String!) {
+  createQuiz(title: $title) {
+    id
+  }
+}
