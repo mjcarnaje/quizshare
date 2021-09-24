@@ -1,6 +1,7 @@
 import React, { Dispatch, SetStateAction, Fragment } from "react";
 
 import { INavigation } from "@customtypes/index";
+import { UserRole } from "@generated/graphql";
 import { Transition, Dialog } from "@headlessui/react";
 import { XIcon } from "@heroicons/react/outline";
 import { classNames } from "@utils/index";
@@ -33,9 +34,17 @@ const SideBar: React.FC<Props> = ({
             const active = router.pathname === item.href;
 
             return (
-              <a
-                key={item.name}
-                href={item.href}
+              <button
+                onClick={() => {
+                  if (
+                    item.for === UserRole.All &&
+                    item.name === "Create Quiz"
+                  ) {
+                    router.push("/login");
+                  } else {
+                    router.push(item.href);
+                  }
+                }}
                 className={classNames(
                   active
                     ? "bg-gray-900 text-white"
@@ -45,7 +54,7 @@ const SideBar: React.FC<Props> = ({
               >
                 <span className="sr-only">{item.name}</span>
                 <item.icon className="h-6 w-6" aria-hidden="true" />
-              </a>
+              </button>
             );
           })}
         </div>

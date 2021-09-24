@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React from "react";
 
 import Quizzes from "@components/quizzes/Quizzes";
 import Container from "@components/ui/Container";
@@ -10,14 +10,11 @@ import withApollo from "@utils/withApollo";
 import { useRouter } from "next/router";
 
 const IndexPage = () => {
-  useIsAuth();
-
+  useIsAuth({ explore: true });
   const router = useRouter();
 
   const { data, loading, fetchMore, variables } = useGetQuizzesQuery({
     variables: {
-      isMine: false,
-      isPublished: true,
       input: {
         limit: QUIZZES_LIMIT,
         cursor: null,
@@ -26,28 +23,8 @@ const IndexPage = () => {
     },
   });
 
-  const quizzes = (data?.getQuizzes.quizzes || []).filter(
-    (quiz) => quiz.author.isFollowed || quiz.isMine
-  );
+  const quizzes = data?.getQuizzes.quizzes || [];
   const pageInfo = data?.getQuizzes.pageInfo;
-
-  useEffect(() => {
-    if (
-      data &&
-      pageInfo?.hasNextPage &&
-      data.getQuizzes.quizzes.length > quizzes.length
-    ) {
-      fetchMore({
-        variables: {
-          ...variables,
-          input: {
-            ...variables?.input,
-            cursor: pageInfo?.endCursor,
-          },
-        },
-      });
-    }
-  }, [pageInfo, quizzes, data]);
 
   return (
     <MainContainer title="Home">

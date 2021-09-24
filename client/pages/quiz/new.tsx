@@ -3,6 +3,7 @@ import React, { Fragment, useEffect, useState } from "react";
 import Input from "@components/inputs/Input";
 import { useCreateQuizMutation } from "@generated/graphql";
 import { Dialog, Transition } from "@headlessui/react";
+import { useIsAuth } from "@utils/useIsAuth";
 import withApollo from "@utils/withApollo";
 import { useRouter } from "next/dist/client/router";
 import Image from "next/image";
@@ -11,6 +12,7 @@ import { useForm, SubmitHandler } from "react-hook-form";
 type ITitle = { title: string };
 
 const NewQuiz: React.FC = () => {
+  useIsAuth();
   const router = useRouter();
   const [open, setOpen] = useState(false);
 

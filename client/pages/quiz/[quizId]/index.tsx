@@ -23,6 +23,7 @@ import {
 import errorMapper from "@utils/errorMapper";
 import { classNames, cleanTypeName } from "@utils/index";
 import { useGetQuery } from "@utils/useGetQuery";
+import { useIsAuth } from "@utils/useIsAuth";
 import { useUploadPhoto } from "@utils/useUploadImage";
 import withApollo from "@utils/withApollo";
 import { useRouter } from "next/router";
@@ -30,7 +31,8 @@ import { FormProvider, SubmitHandler, useForm } from "react-hook-form";
 
 type IActiveNav = "settings" | "questions" | "results";
 
-const Testing: React.FC = () => {
+const EditQuiz: React.FC = () => {
+  useIsAuth();
   const router = useRouter();
   const quizId = useGetQuery("quizId");
 
@@ -134,9 +136,9 @@ const Testing: React.FC = () => {
             const { errors } = await publishQuiz({
               variables: { quizId },
             });
-            // if (!errors) {
-            //   router.push("/");
-            // }
+            if (!errors) {
+              router.push("/");
+            }
           } catch (err) {
             console.error(err);
           }
@@ -147,12 +149,13 @@ const Testing: React.FC = () => {
 
   useEffect(() => {
     if (data) {
+      // @ts-ignore
       reset(cleanTypeName<QuizInput>(data.getQuiz));
     }
   }, [data]);
 
   return (
-    <MainContainer title="Testing">
+    <MainContainer title="Edit Quiz">
       <Container showSearchBar={false}>
         <main className="py-6">
           <div className="max-w-screen-xl mx-auto pb-6 px-4 sm:px-6 lg:pb-16 lg:px-8">
@@ -290,4 +293,4 @@ const Testing: React.FC = () => {
   );
 };
 
-export default withApollo({ ssr: true })(Testing);
+export default withApollo({ ssr: true })(EditQuiz);

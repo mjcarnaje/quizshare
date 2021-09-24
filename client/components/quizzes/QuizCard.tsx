@@ -30,7 +30,7 @@ function truncateText(text?: string | null, len: number = 320): string {
 }
 
 interface Props extends QuizCardFragment {
-  type: "timeline" | "draft" | "published";
+  type: "timeline" | "me";
 }
 
 export const QuizCard: React.FC<Props> = ({
@@ -49,6 +49,7 @@ export const QuizCard: React.FC<Props> = ({
   isMine,
   isLiked,
   isBookmarked,
+  isPublished,
 }) => {
   const router = useRouter();
 
@@ -159,7 +160,7 @@ export const QuizCard: React.FC<Props> = ({
               className="inline-flex items-center px-3 py-1.5 font-medium border border-gray-600 hover:bg-gray-200  rounded-md focus:outline-none"
             >
               <PencilIcon className="w-5 h-5 mr-1 -ml-1 text-gray-600" />
-              {type === "draft" ? "Continue" : "Edit"}
+              {!isPublished ? "Continue" : "Edit"}
             </button>
           </div>
         )}

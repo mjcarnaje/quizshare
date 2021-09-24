@@ -11,7 +11,7 @@ interface Props {
   pageInfo?: PageInfoFragment;
   loading: boolean;
   onLoadMore: () => void;
-  type: "timeline" | "draft" | "published";
+  type: "timeline" | "me";
 }
 
 const Quizzes: React.FC<Props> = ({

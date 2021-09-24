@@ -1,5 +1,5 @@
-query GetQuizzes($input: GetQuizzesInput!) {
-  getQuizzes(input: $input) {
+query GetMeQuizzes($input: GetQuizzesInput!) {
+  getMeQuizzes(input: $input) {
     quizzes {
       ...QuizCard
     }

@@ -4,7 +4,7 @@ import Quizzes from "@components/quizzes/Quizzes";
 import Container from "@components/ui/Container";
 import MainContainer from "@components/ui/MainContainer";
 import { QUIZZES_LIMIT } from "@constant/index";
-import { useGetQuizzesQuery } from "@generated/graphql";
+import { useGetMeQuizzesQuery } from "@generated/graphql";
 import { useIsAuth } from "@utils/useIsAuth";
 import withApollo from "@utils/withApollo";
 import { useRouter } from "next/router";
@@ -16,10 +16,8 @@ const PublishedPage: React.FC<Props> = () => {
 
   const router = useRouter();
 
-  const { data, loading, fetchMore, variables } = useGetQuizzesQuery({
+  const { data, loading, fetchMore, variables } = useGetMeQuizzesQuery({
     variables: {
-      isMine: true,
-      isPublished: true,
       input: {
         limit: QUIZZES_LIMIT,
         ...router.query,
@@ -27,8 +25,8 @@ const PublishedPage: React.FC<Props> = () => {
     },
   });
 
-  const quizzes = data?.getQuizzes.quizzes;
-  const pageInfo = data?.getQuizzes.pageInfo;
+  const quizzes = data?.getMeQuizzes.quizzes;
+  const pageInfo = data?.getMeQuizzes.pageInfo;
 
   return (
     <MainContainer title="Home">
@@ -38,7 +36,7 @@ const PublishedPage: React.FC<Props> = () => {
             <div className="px-4 mx-auto mt-3 max-w-7xl sm:px-6 md:px-8">
               <div className="max-w-3xl overflow-hidden bg-white shadow sm:rounded-md">
                 <Quizzes
-                  type="published"
+                  type="me"
                   quizzes={quizzes}
                   pageInfo={pageInfo}
                   loading={loading}

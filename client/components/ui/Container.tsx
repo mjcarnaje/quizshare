@@ -2,12 +2,11 @@ import React, { useState } from "react";
 
 import ContentHeader from "@components/ui/ContentHeader";
 import SideBar from "@components/ui/SideBar";
-import { useMeQuery } from "@generated/graphql";
+import { useMeQuery, UserRole } from "@generated/graphql";
 import {
   HomeIcon,
   PlusCircleIcon,
   CollectionIcon,
-  ArchiveIcon,
   HashtagIcon,
   UserAddIcon,
 } from "@heroicons/react/outline";
@@ -15,7 +14,6 @@ import {
   HomeIcon as HomeIconSolid,
   PlusCircleIcon as PlusCircleIconSolid,
   CollectionIcon as CollectionIconSolid,
-  ArchiveIcon as ArchiveIconSolid,
   HashtagIcon as HashtagIconSolid,
   UserAddIcon as UserAddIconSolid,
 } from "@heroicons/react/solid";
@@ -26,42 +24,35 @@ const navigation = [
     href: "/",
     icon: HomeIcon,
     activeIcon: HomeIconSolid,
-    for: "ALL",
+    for: UserRole.User,
   },
   {
     name: "Explore",
     href: "/explore",
     icon: HashtagIcon,
     activeIcon: HashtagIconSolid,
-    for: "ALL",
-  },
-  {
-    name: "Drafts",
-    href: "/me/drafts",
-    icon: ArchiveIcon,
-    activeIcon: ArchiveIconSolid,
-    for: "ALL",
+    for: UserRole.All,
   },
   {
     name: "Published",
     href: "/me/published",
     icon: CollectionIcon,
     activeIcon: CollectionIconSolid,
-    for: "ALL",
+    for: UserRole.User,
   },
   {
     name: "Create Quiz",
     href: "/quiz/new",
     icon: PlusCircleIcon,
     activeIcon: PlusCircleIconSolid,
-    for: "ALL",
+    for: UserRole.All,
   },
   {
     name: "Change Roles",
     href: "/change-roles",
     icon: UserAddIcon,
     activeIcon: UserAddIconSolid,
-    for: "SUPER_ADMIN",
+    for: UserRole.Admin,
   },
 ];
 

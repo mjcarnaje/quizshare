@@ -4,14 +4,20 @@ import { useRouter } from "next/dist/client/router";
 
 import { useMeQuery, MeQuery } from "../generated/graphql";
 
-export const useIsAuth = (): MeQuery => {
+type IUseIsAuth = { explore: boolean };
+
+export const useIsAuth = (props?: IUseIsAuth): MeQuery => {
   const { data, loading } = useMeQuery({ fetchPolicy: "cache-first" });
   const router = useRouter();
 
   useEffect(() => {
     // if there is no session id or user not found
     if (!loading && !data?.me) {
-      router.replace("/login?next=" + router.pathname);
+      if (props?.explore) {
+        router.replace("/explore");
+      } else {
+        router.replace("/login?next=" + router.pathname);
+      }
     }
   }, [loading, data, router]);
 

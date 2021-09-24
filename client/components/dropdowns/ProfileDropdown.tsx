@@ -15,7 +15,22 @@ const ProfileDropdown: React.FC = () => {
   const [signOut] = useSignOutMutation();
 
   if (!data?.me) {
-    return null;
+    return (
+      <div className="flex space-x-3">
+        <button
+          onClick={() => router.push("/login")}
+          className="px-2 py-1 text-gray-800 hover:text-gray-500"
+        >
+          Sign in
+        </button>
+        <button
+          onClick={() => router.push("/signup")}
+          className="px-2 py-1 border border-gray-800 hover:text-gray-500 hover:border-gray-500 rounded"
+        >
+          Sign up
+        </button>
+      </div>
+    );
   }
 
   const { firstName, avatar } = data.me;

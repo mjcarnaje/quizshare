@@ -46,13 +46,13 @@ export class QuizResolver implements ResolverInterface<Quiz> {
     return ctx.authorLoader.load(quiz.authorId);
   }
 
+  @UseMiddleware(isAuthenticated)
   @Query(() => PaginatedQuizzes)
-  async getQuizzes(
+  async getMeQuizzes(
     @Arg("input") input: GetQuizzesInput,
-    @Arg("isPublished") isPublished: Boolean,
-    @Arg("isMine") isMine: Boolean,
-    @Ctx() ctx: IContext
+    @Ctx() { req }: IContext
   ): Promise<PaginatedQuizzes> {
+    const authorId = req.session.userId;
     const { limit, search, cursor } = input;
     const limitPlusOne = limit + 1;
 
@@ -60,11 +60,7 @@ export class QuizResolver implements ResolverInterface<Quiz> {
       .getRepository(Quiz)
       .createQueryBuilder("quiz")
       .leftJoinAndSelect("quiz.tags", "tags")
-      .where("quiz.isPublished = :isPublished", { isPublished });
-
-    if (isPublished) {
-      quizzes = quizzes.andWhere("quiz.description is not null");
-    }
+      .where("quiz.authorId = :authorId", { authorId });
 
     if (search) {
       quizzes = quizzes.andWhere(
@@ -78,10 +74,52 @@ export class QuizResolver implements ResolverInterface<Quiz> {
       );
     }
 
-    if (isMine) {
-      quizzes = quizzes.andWhere("quiz.authorId = :authorId", {
-        authorId: ctx.req.session.userId,
+    if (cursor) {
+      quizzes = quizzes.andWhere("quiz.createdAt < :cursor", {
+        cursor: new Date(Number(cursor) - 1),
       });
+    }
+
+    const results = await quizzes
+      .orderBy("quiz.createdAt", "DESC")
+      .take(limitPlusOne)
+      .getMany();
+
+    const quizzesRes = results.slice(0, limit);
+
+    return {
+      quizzes: quizzesRes,
+      pageInfo: {
+        endCursor: quizzesRes[quizzesRes.length - 1].createdAt,
+        hasNextPage: results.length === limitPlusOne,
+      },
+    };
+  }
+
+  @Query(() => PaginatedQuizzes)
+  async getQuizzes(
+    @Arg("input") input: GetQuizzesInput
+  ): Promise<PaginatedQuizzes> {
+    const { limit, search, cursor } = input;
+    const limitPlusOne = limit + 1;
+
+    let quizzes = await getConnection()
+      .getRepository(Quiz)
+      .createQueryBuilder("quiz")
+      .leftJoinAndSelect("quiz.tags", "tags")
+      .where("quiz.isPublished = :isPublished", { isPublished: true })
+      .andWhere("quiz.description is not null");
+
+    if (search) {
+      quizzes = quizzes.andWhere(
+        new Brackets((qb) => {
+          qb.where("quiz.title ilike :search", {
+            search: `%${search}%`,
+          }).orWhere("quiz.description ilike :search", {
+            search: `%${search}%`,
+          });
+        })
+      );
     }
 
     if (cursor) {

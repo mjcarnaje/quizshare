@@ -5,19 +5,14 @@ import Container from "@components/ui/Container";
 import MainContainer from "@components/ui/MainContainer";
 import { QUIZZES_LIMIT } from "@constant/index";
 import { useGetQuizzesQuery } from "@generated/graphql";
-import { useIsAuth } from "@utils/useIsAuth";
 import withApollo from "@utils/withApollo";
 import { useRouter } from "next/router";
 
 const Explore = () => {
-  useIsAuth();
-
   const router = useRouter();
 
   const { data, loading, fetchMore, variables } = useGetQuizzesQuery({
     variables: {
-      isMine: false,
-      isPublished: true,
       input: {
         limit: QUIZZES_LIMIT,
         cursor: null,
