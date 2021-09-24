@@ -118,6 +118,7 @@ const main = async () => {
           httpOnly: true,
           secure: __PROD__,
           maxAge: oneWeekInMs,
+          domain: __PROD__ ? ".quizshare.me" : undefined,
         },
       })
     );
