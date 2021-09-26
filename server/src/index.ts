@@ -116,7 +116,7 @@ const main = async () => {
         saveUninitialized: false,
         cookie: {
           httpOnly: true,
-          secure: __PROD__,
+          // secure: __PROD__,
           maxAge: oneWeekInMs,
           domain: __PROD__ ? ".quizshare.me" : undefined,
         },
