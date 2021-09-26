@@ -6,6 +6,7 @@ import { XIcon } from "@heroicons/react/outline";
 import { useAppSelector, useAppDispatch } from "@store/index";
 import { setIsSideBarOpen } from "@store/ui";
 import { classNames } from "@utils/index";
+import { useUser } from "@utils/useUser";
 import { useRouter } from "next/dist/client/router";
 
 import { Logo } from "./Logo";
@@ -15,6 +16,8 @@ interface Props {
 }
 
 const SideBar: React.FC<Props> = ({ navigation }) => {
+  const { user } = useUser({ noRedirect: true });
+
   const dispatch = useAppDispatch();
   const { isSideBarOpen } = useAppSelector((state) => state.ui);
   const router = useRouter();
@@ -34,7 +37,7 @@ const SideBar: React.FC<Props> = ({ navigation }) => {
               <button
                 key={itemIdx}
                 onClick={() => {
-                  if (item.name === "Create Quiz") {
+                  if (!user && item.name === "Create Quiz") {
                     router.push("/login");
                   } else {
                     router.push(item.href);

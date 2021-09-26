@@ -130,8 +130,10 @@ const EditQuiz: React.FC = () => {
 
   useEffect(() => {
     if (data) {
-      // @ts-ignore
-      reset(cleanTypeName<QuizInput>(data.getQuiz));
+      // Description is possible null from api
+      // Description is required for input
+      // @ts-expect-error
+      reset(cleanTypeName(data?.getQuizInput));
     }
   }, [data]);
 
@@ -146,7 +148,7 @@ const EditQuiz: React.FC = () => {
   }
 
   return (
-    <Layout title="Edit Quiz">
+    <Layout title="Edit quiz">
       <NestedLayout showSearchBar={false}>
         <div className="max-w-screen-xl mx-auto pb-6 px-4 sm:px-6 lg:pb-16 lg:px-8">
           <div className="bg-white rounded-lg shadow overflow-hidden">
@@ -154,7 +156,7 @@ const EditQuiz: React.FC = () => {
               <aside className="py-6 lg:col-span-3">
                 <nav>
                   <div className="space-y-1">
-                    <pre>{JSON.stringify(formState, null, 2)}</pre>
+                    {/* <pre>{JSON.stringify(formState, null, 2)}</pre> */}
                     {subNavigation[0].map((item) => (
                       <button
                         key={item.name}

@@ -116,7 +116,7 @@ const main = async () => {
           httpOnly: true,
           secure: __PROD__,
           maxAge: 1000 * 60 * 60 * 24 * 7,
-          domain: ".api-quizshare.herokuapp.com",
+          domain: __PROD__ ? ".quizshare.me" : undefined,
         },
       })
     );
