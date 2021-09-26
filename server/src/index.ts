@@ -90,8 +90,6 @@ const main = async () => {
 
     const pgSession = connectPgSimple(session);
 
-    const oneWeekInMs = 1000 * 60 * 60 * 24 * 7;
-
     app.set("trust proxy", 1);
 
     app.use(
@@ -117,8 +115,7 @@ const main = async () => {
         cookie: {
           httpOnly: true,
           secure: __PROD__,
-          maxAge: oneWeekInMs,
-          sameSite: "none",
+          maxAge: 1000 * 60 * 60 * 24 * 7,
           domain: ".api-quizshare.herokuapp.com",
         },
       })
