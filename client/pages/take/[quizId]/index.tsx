@@ -1,8 +1,8 @@
 import React, { useEffect, useRef, useState } from "react";
 
 import QuestionCard from "@components/take/QuestionCard";
-import Container from "@components/ui/Container";
-import MainContainer from "@components/ui/MainContainer";
+import Layout from "@components/ui/Layout";
+import NestedLayout from "@components/ui/NestedLayout";
 import { AVATAR_FALLBACK_IMG } from "@constant/index";
 import { IUserAnswer } from "@customtypes/index";
 import {
@@ -17,19 +17,15 @@ import { useRouter } from "next/router";
 
 const Wrapper: React.FC<{ title: string }> = ({ title, children }) => {
   return (
-    <MainContainer title={`Take | ${title}`}>
-      <Container showSearchBar={false}>
-        <main className="relative flex-1 overflow-y-auto focus:outline-none">
-          <div className="py-6">
-            <div className="flex max-w-3xl px-4 mx-auto space-x-6 sm:px-6 md:px-8">
-              <div className="flex-1 space-y-3">
-                <div className="p-2 bg-white rounded-md shadow">{children}</div>
-              </div>
-            </div>
+    <Layout title={`Take | ${title}`}>
+      <NestedLayout showSearchBar={false}>
+        <div className="flex max-w-3xl px-4 mx-auto space-x-6 sm:px-6 md:px-8">
+          <div className="flex-1 space-y-3">
+            <div className="p-2 bg-white rounded-md shadow">{children}</div>
           </div>
-        </main>
-      </Container>
-    </MainContainer>
+        </div>
+      </NestedLayout>
+    </Layout>
   );
 };
 

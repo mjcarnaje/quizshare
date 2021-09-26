@@ -1,23 +1,27 @@
-import React, { useState } from "react";
+import React, { ReactNode } from "react";
 
-import ContentHeader from "@components/ui/ContentHeader";
-import SideBar from "@components/ui/SideBar";
+import Alert from "@components/alert/Alert";
 import { INavigation } from "@customtypes/index";
-import { useMeQuery, UserRole } from "@generated/graphql";
+import { UserRole } from "@generated/graphql";
 import {
-  HomeIcon,
-  PlusCircleIcon,
   CollectionIcon,
   HashtagIcon,
+  HomeIcon,
+  PlusCircleIcon,
   UserAddIcon,
 } from "@heroicons/react/outline";
 import {
-  HomeIcon as HomeIconSolid,
-  PlusCircleIcon as PlusCircleIconSolid,
   CollectionIcon as CollectionIconSolid,
   HashtagIcon as HashtagIconSolid,
+  HomeIcon as HomeIconSolid,
+  PlusCircleIcon as PlusCircleIconSolid,
   UserAddIcon as UserAddIconSolid,
 } from "@heroicons/react/solid";
+import { useUser } from "@utils/useUser";
+import { CloudinaryContext } from "cloudinary-react";
+import Head from "next/head";
+
+import SideBar from "./SideBar";
 
 const navigation: INavigation = [
   {
@@ -68,38 +72,42 @@ const navigation: INavigation = [
 ];
 
 interface Props {
-  showSearchBar?: boolean;
-  header?: JSX.Element;
+  children?: ReactNode;
+  title?: string;
+  hideSideBar?: boolean;
 }
 
-const Container: React.FC<Props> = ({ showSearchBar, header, children }) => {
-  const [sidebarOpen, setSidebarOpen] = useState(false);
-
-  const { data } = useMeQuery();
+const Layout: React.FC<Props> = ({
+  children,
+  title = "QuizShare",
+  hideSideBar = false,
+}) => {
+  const { user } = useUser({ noRedirect: true });
 
   const navs = navigation.filter((nav) =>
     nav.canAccess.some(
-      (role) => role === data?.me?.role || role === UserRole.Visitor
+      (role) => role === user?.role || role === UserRole.Visitor
     )
   );
 
   return (
-    <>
-      <SideBar
-        sidebarOpen={sidebarOpen}
-        setSidebarOpen={setSidebarOpen}
-        navigation={navs}
-      />
-      <div className="flex flex-col flex-1 w-0 overflow-hidden">
-        <ContentHeader
-          setSidebarOpen={setSidebarOpen}
-          showSearchBar={showSearchBar}
-          header={header}
-        />
-        {children}
-      </div>
-    </>
+    <div>
+      <Head>
+        <title>{title}</title>
+        <meta charSet="utf-8" />
+        <meta name="viewport" content="initial-scale=1.0, width=device-width" />
+      </Head>
+      <CloudinaryContext
+        cloudName={process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME}
+      >
+        <div className="relative flex min-h-screen mx-auto overflow-hidden bg-gray-100">
+          <Alert />
+          {!hideSideBar && <SideBar navigation={navs} />}
+          {children}
+        </div>
+      </CloudinaryContext>
+    </div>
   );
 };
 
-export default Container;
+export default Layout;

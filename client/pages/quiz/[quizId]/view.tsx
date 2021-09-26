@@ -6,8 +6,8 @@ import TakeButton from "@components/buttons/TakeButton";
 import CommentInput from "@components/comments/CommentInput";
 import Comments from "@components/comments/Comments";
 import ImageHolder from "@components/ImageHolder";
-import Container from "@components/ui/Container";
-import MainContainer from "@components/ui/MainContainer";
+import Layout from "@components/ui/Layout";
+import NestedLayout from "@components/ui/NestedLayout";
 import { useGetQuizQuery } from "@generated/graphql";
 import { CollectionIcon, EyeIcon } from "@heroicons/react/outline";
 import { useGetQuery } from "@utils/useGetQuery";
@@ -17,17 +17,13 @@ import Skeleton from "react-loading-skeleton";
 
 const Wrapper: React.FC<{ title: string }> = ({ title, children }) => {
   return (
-    <MainContainer title={`Quiz | ${title}`}>
-      <Container showSearchBar={false}>
-        <main className="relative flex-1 overflow-y-auto focus:outline-none">
-          <div className="py-6">
-            <div className="flex max-w-3xl px-4 mx-auto space-x-6 sm:px-6 md:px-8">
-              <div className="flex-1 w-full">{children}</div>
-            </div>
-          </div>
-        </main>
-      </Container>
-    </MainContainer>
+    <Layout title={`Quiz | ${title}`}>
+      <NestedLayout showSearchBar={false}>
+        <div className="flex max-w-3xl px-4 mx-auto space-x-6 sm:px-6 md:px-8">
+          <div className="flex-1 w-full">{children}</div>
+        </div>
+      </NestedLayout>
+    </Layout>
   );
 };
 

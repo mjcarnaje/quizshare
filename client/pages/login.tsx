@@ -1,7 +1,7 @@
 import React from "react";
 
 import Input from "@components/inputs/Input";
-import MainContainer from "@components/ui/MainContainer";
+import Layout from "@components/ui/Layout";
 import {
   MeDocument,
   MeQuery,
@@ -58,7 +58,7 @@ const LoginPage = () => {
   };
 
   return (
-    <MainContainer title="Login">
+    <Layout hideSideBar title="Login">
       <div className="flex items-center justify-center w-full min-h-screen px-4 py-12 sm:px-6 lg:px-8">
         <div className="flex-1 max-w-md mx-auto space-y-8">
           <h2 className="text-4xl font-extrabold text-center text-gray-900 md:text-5xl ">
@@ -140,7 +140,7 @@ const LoginPage = () => {
           </div>
         </div>
       </div>
-    </MainContainer>
+    </Layout>
   );
 };
 

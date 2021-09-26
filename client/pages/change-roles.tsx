@@ -1,7 +1,7 @@
 import React, { useCallback, useState } from "react";
 
-import Container from "@components/ui/Container";
-import MainContainer from "@components/ui/MainContainer";
+import Layout from "@components/ui/Layout";
+import NestedLayout from "@components/ui/NestedLayout";
 import { AVATAR_FALLBACK_IMG } from "@constant/index";
 import {
   useChangeRoleMutation,
@@ -242,72 +242,68 @@ const ChangeRoles: React.FC<ChangeRolesProps> = () => {
   const pageInfo = data?.users.pageInfo;
 
   return (
-    <MainContainer title="Home">
-      <Container showSearchBar={false}>
-        <main className="relative flex-1 overflow-y-auto">
-          <div className="py-6">
-            <div className="px-4 mx-auto mt-3 max-w-7xl sm:px-6 md:px-8">
-              <input
-                className="block mb-4 border-gray-300 rounded-md shadow-sm w-80 focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
-                placeholder="Search user"
-                onChange={(e) => handleSearch(e.target.value)}
-                type="text"
-              />
-              <div className="max-w-3xl">
-                <div className="bg-white shadow sm:rounded-md">
-                  <ul className="divide-y divide-gray-200">
-                    {users.map((person) => (
-                      <PersonItem key={person.id} person={person} />
+    <Layout title="Home">
+      <NestedLayout showSearchBar={false}>
+        <div className="px-4 mx-auto mt-3 max-w-7xl sm:px-6 md:px-8">
+          <input
+            className="block mb-4 border-gray-300 rounded-md shadow-sm w-80 focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+            placeholder="Search user"
+            onChange={(e) => handleSearch(e.target.value)}
+            type="text"
+          />
+          <div className="max-w-3xl">
+            <div className="bg-white shadow sm:rounded-md">
+              <ul className="divide-y divide-gray-200">
+                {users.map((person) => (
+                  <PersonItem key={person.id} person={person} />
+                ))}
+                {!users.length && loading && (
+                  <>
+                    {[...Array(3).keys()].map((idx) => (
+                      <PersonItemSkeleton key={idx} />
                     ))}
-                    {!users.length && loading && (
-                      <>
-                        {[...Array(3).keys()].map((idx) => (
-                          <PersonItemSkeleton key={idx} />
-                        ))}
-                      </>
-                    )}
-                    {users.length > 0 && loading && (
-                      <>
-                        {[...Array(3).keys()].map((idx) => (
-                          <PersonItemSkeleton key={idx} />
-                        ))}
-                      </>
-                    )}
-                  </ul>
-                  {pageInfo?.hasNextPage && (
-                    <button
-                      type="button"
-                      className="flex px-4 py-2 mx-auto my-2 text-base font-medium leading-4 rounded-md active:bg-gray-50 focus:outline-none"
-                      onClick={() => {
-                        fetchMore({
-                          variables: {
-                            usersInput: {
-                              ...variables?.usersInput,
-                              cursor: pageInfo.endCursor,
-                            },
-                          },
-                        });
-                      }}
-                    >
-                      {loading ? "Loading.." : "Load more"}
-                    </button>
-                  )}
-                </div>
-
-                {!users.length && !loading && (
-                  <div className="flex flex-col items-center justify-center h-64 max-w-3xl p-10 mt-10 text-center md:h-80 lg:h-96">
-                    <div className="relative w-full h-full">
-                      <Image src="/empty.svg" layout="fill" />
-                    </div>
-                    <p className="mt-4 lg:mt-12">No members found.</p>
-                  </div>
+                  </>
                 )}
-              </div>
+                {users.length > 0 && loading && (
+                  <>
+                    {[...Array(3).keys()].map((idx) => (
+                      <PersonItemSkeleton key={idx} />
+                    ))}
+                  </>
+                )}
+              </ul>
+              {pageInfo?.hasNextPage && (
+                <button
+                  type="button"
+                  className="flex px-4 py-2 mx-auto my-2 text-base font-medium leading-4 rounded-md active:bg-gray-50 focus:outline-none"
+                  onClick={() => {
+                    fetchMore({
+                      variables: {
+                        usersInput: {
+                          ...variables?.usersInput,
+                          cursor: pageInfo.endCursor,
+                        },
+                      },
+                    });
+                  }}
+                >
+                  {loading ? "Loading.." : "Load more"}
+                </button>
+              )}
             </div>
+
+            {!users.length && !loading && (
+              <div className="flex flex-col items-center justify-center h-64 max-w-3xl p-10 mt-10 text-center md:h-80 lg:h-96">
+                <div className="relative w-full h-full">
+                  <Image src="/empty.svg" layout="fill" />
+                </div>
+                <p className="mt-4 lg:mt-12">No members found.</p>
+              </div>
+            )}
           </div>
-        </main>
-      </Container>
-    </MainContainer>
+        </div>
+      </NestedLayout>
+    </Layout>
   );
 };
 

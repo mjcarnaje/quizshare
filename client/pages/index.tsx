@@ -1,8 +1,8 @@
 import React from "react";
 
 import Quizzes from "@components/quizzes/Quizzes";
-import Container from "@components/ui/Container";
-import MainContainer from "@components/ui/MainContainer";
+import Layout from "@components/ui/Layout";
+import NestedLayout from "@components/ui/NestedLayout";
 import { QUIZZES_LIMIT } from "@constant/index";
 import { useGetQuizzesQuery } from "@generated/graphql";
 import { useUser } from "@utils/useUser";
@@ -25,11 +25,11 @@ const IndexPage = () => {
 
   if (!user) {
     return (
-      <MainContainer>
-        <Container>
+      <Layout>
+        <NestedLayout>
           <p>Loading...</p>
-        </Container>
-      </MainContainer>
+        </NestedLayout>
+      </Layout>
     );
   }
 
@@ -37,35 +37,31 @@ const IndexPage = () => {
   const pageInfo = data?.getQuizzes.pageInfo;
 
   return (
-    <MainContainer title="Home">
-      <Container>
-        <main className="relative flex-1 overflow-y-auto">
-          <div className="py-6">
-            <div className="px-4 mx-auto mt-3 max-w-7xl sm:px-6 md:px-8">
-              <div className="max-w-3xl overflow-hidden bg-white shadow sm:rounded-md">
-                <Quizzes
-                  type="timeline"
-                  quizzes={quizzes}
-                  pageInfo={pageInfo}
-                  loading={loading}
-                  onLoadMore={() =>
-                    fetchMore({
-                      variables: {
-                        ...variables,
-                        input: {
-                          ...variables?.input,
-                          cursor: pageInfo?.endCursor,
-                        },
-                      },
-                    })
-                  }
-                />
-              </div>
-            </div>
+    <Layout title="Home">
+      <NestedLayout>
+        <div className="px-4 mx-auto mt-3 max-w-7xl sm:px-6 md:px-8">
+          <div className="max-w-3xl overflow-hidden bg-white shadow sm:rounded-md">
+            <Quizzes
+              type="timeline"
+              quizzes={quizzes}
+              pageInfo={pageInfo}
+              loading={loading}
+              onLoadMore={() =>
+                fetchMore({
+                  variables: {
+                    ...variables,
+                    input: {
+                      ...variables?.input,
+                      cursor: pageInfo?.endCursor,
+                    },
+                  },
+                })
+              }
+            />
           </div>
-        </main>
-      </Container>
-    </MainContainer>
+        </div>
+      </NestedLayout>
+    </Layout>
   );
 };
 

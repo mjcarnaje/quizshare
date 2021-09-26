@@ -4,20 +4,22 @@ import MenuButton from "@components/buttons/MenuButton";
 import ProfileDropdown from "@components/dropdowns/ProfileDropdown";
 import SearchBarInput from "@components/SearchBarInput";
 import { ChevronRightIcon, HomeIcon } from "@heroicons/react/solid";
+import { useAppDispatch, useAppSelector } from "@store/index";
+import { setIsSideBarOpen } from "@store/ui";
 
 interface Props {
-  setSidebarOpen: React.Dispatch<React.SetStateAction<boolean>>;
   showSearchBar?: boolean;
-  header?: JSX.Element;
 }
 
-const ContentHeader: React.FC<Props> = ({
-  setSidebarOpen,
-  showSearchBar = true,
-}) => {
+const ContentHeader: React.FC<Props> = ({ showSearchBar = true }) => {
+  const { isSideBarOpen } = useAppSelector((state) => state.ui);
+  const dispatch = useAppDispatch();
+
   return (
     <div className="relative z-10 flex flex-shrink-0 h-16 bg-white shadow">
-      <MenuButton setSidebarOpen={setSidebarOpen} />
+      <MenuButton
+        setIsSideBarOpen={() => dispatch(setIsSideBarOpen(!isSideBarOpen))}
+      />
       <div className="flex items-center justify-between flex-1 px-4">
         {showSearchBar ? (
           <div className="w-80">

@@ -2,7 +2,7 @@ import React from "react";
 
 import Input from "@components/inputs/Input";
 import Select from "@components/inputs/Select";
-import MainContainer from "@components/ui/MainContainer";
+import Layout from "@components/ui/Layout";
 import {
   MeDocument,
   MeQuery,
@@ -48,7 +48,7 @@ const SignUpPage = () => {
   };
 
   return (
-    <MainContainer title="Sign Up">
+    <Layout hideSideBar title="Sign Up">
       <div className="flex items-center justify-center w-full px-4 py-12 sm:px-6 lg:px-8">
         <div className="flex-1 max-w-md mx-auto space-y-8">
           <h2 className="text-4xl font-extrabold text-center text-gray-900 md:text-5xl ">
@@ -162,7 +162,7 @@ const SignUpPage = () => {
           </div>
         </div>
       </div>
-    </MainContainer>
+    </Layout>
   );
 };
 

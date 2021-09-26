@@ -1,24 +1,22 @@
-import React, { Dispatch, SetStateAction, Fragment } from "react";
+import React, { Fragment } from "react";
 
 import { INavigation } from "@customtypes/index";
-import { Transition, Dialog } from "@headlessui/react";
+import { Dialog, Transition } from "@headlessui/react";
 import { XIcon } from "@heroicons/react/outline";
+import { useAppSelector, useAppDispatch } from "@store/index";
+import { setIsSideBarOpen } from "@store/ui";
 import { classNames } from "@utils/index";
 import { useRouter } from "next/dist/client/router";
 
 import { Logo } from "./Logo";
 
 interface Props {
-  sidebarOpen: boolean;
-  setSidebarOpen: Dispatch<SetStateAction<boolean>>;
   navigation: INavigation;
 }
 
-const SideBar: React.FC<Props> = ({
-  sidebarOpen,
-  setSidebarOpen,
-  navigation,
-}) => {
+const SideBar: React.FC<Props> = ({ navigation }) => {
+  const dispatch = useAppDispatch();
+  const { isSideBarOpen } = useAppSelector((state) => state.ui);
   const router = useRouter();
 
   return (
@@ -56,13 +54,13 @@ const SideBar: React.FC<Props> = ({
           })}
         </div>
       </nav>
-      <Transition.Root show={sidebarOpen} as={Fragment}>
+      <Transition.Root show={isSideBarOpen} as={Fragment}>
         <Dialog
           as="div"
           static
           className="fixed inset-0 z-40 flex md:hidden"
-          open={sidebarOpen}
-          onClose={setSidebarOpen}
+          open={isSideBarOpen}
+          onClose={() => dispatch(setIsSideBarOpen(false))}
         >
           <Transition.Child
             as={Fragment}
@@ -97,7 +95,7 @@ const SideBar: React.FC<Props> = ({
                 <div className="absolute top-0 right-0 pt-2 -mr-12">
                   <button
                     className="flex items-center justify-center w-10 h-10 ml-1 rounded-full focus:outline-none focus:ring-2 focus:ring-inset focus:ring-white"
-                    onClick={() => setSidebarOpen(false)}
+                    onClick={() => dispatch(setIsSideBarOpen(false))}
                   >
                     <span className="sr-only">Close sidebar</span>
                     <XIcon className="w-6 h-6 text-white" aria-hidden="true" />

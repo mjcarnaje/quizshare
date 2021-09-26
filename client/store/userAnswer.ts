@@ -4,11 +4,11 @@ import { RootState } from ".";
 import { IUserAnswer } from "../types";
 
 type IUserAnswerState = {
-  userAnswers: IUserAnswer;
+  userAnswer: IUserAnswer;
 };
 
 const initialState: IUserAnswerState = {
-  userAnswers: {},
+  userAnswer: {},
 };
 
 export const userAnswer = createSlice({
@@ -16,13 +16,13 @@ export const userAnswer = createSlice({
   initialState,
   reducers: {
     setUserAnswer: (state, { payload }: PayloadAction<IUserAnswer>) => {
-      state.userAnswers = payload;
+      state.userAnswer = payload;
     },
   },
 });
 
 export const { setUserAnswer } = userAnswer.actions;
 
-export const selectUserAnswer = (state: RootState) => state.userAnswers;
+export const selectUserAnswer = (state: RootState) => state.userAnswer;
 
 export default userAnswer.reducer;

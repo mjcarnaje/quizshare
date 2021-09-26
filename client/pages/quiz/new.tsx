@@ -1,8 +1,8 @@
 import React, { Fragment, useEffect, useState } from "react";
 
 import Input from "@components/inputs/Input";
-import Container from "@components/ui/Container";
-import MainContainer from "@components/ui/MainContainer";
+import Layout from "@components/ui/Layout";
+import NestedLayout from "@components/ui/NestedLayout";
 import { useCreateQuizMutation } from "@generated/graphql";
 import { Dialog, Transition } from "@headlessui/react";
 import { useUser } from "@utils/useUser";
@@ -47,11 +47,11 @@ const NewQuiz: React.FC = () => {
 
   if (!user) {
     return (
-      <MainContainer>
-        <Container>
+      <Layout>
+        <NestedLayout>
           <p>Loading...</p>
-        </Container>
-      </MainContainer>
+        </NestedLayout>
+      </Layout>
     );
   }
 
