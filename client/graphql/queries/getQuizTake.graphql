@@ -1,20 +1,18 @@
-query GetQuiz($quizId: String!) {
-  getQuiz(quizId: $quizId) {
+query GetQuizTake($quizId: String!) {
+  getQuizTake(quizId: $quizId) {
     id
     title
     description
     quizPhoto
+    questions {
+      ...Question
+    }
     tags {
       id
       name
     }
-    isLiked
-    isBookmarked
-    questionCount
-    likeCount
     commentCount
-    takerCount
-    isPublished
+    questionCount
     authorId
     author {
       ...Author

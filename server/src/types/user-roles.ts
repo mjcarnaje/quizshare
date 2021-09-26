@@ -4,7 +4,7 @@ export enum UserRole {
   SUPER_ADMIN = "SUPER_ADMIN",
   ADMIN = "ADMIN",
   USER = "USER",
-  ALL = "ALL",
+  VISITOR = "VISITOR",
 }
 
 registerEnumType(UserRole, {

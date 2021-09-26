@@ -1,8 +1,9 @@
 import React from "react";
 
-import { useToggleSubscriptionMutation } from "@generated/graphql";
+import { useMeQuery, useToggleSubscriptionMutation } from "@generated/graphql";
 import { UserAddIcon } from "@heroicons/react/solid";
 import { classNames } from "@utils/index";
+import { useRouter } from "next/router";
 
 interface Props {
   userId: string;
@@ -11,6 +12,9 @@ interface Props {
 }
 
 const FollowButton: React.FC<Props> = ({ userId, isFollowed, isMine }) => {
+  const router = useRouter();
+  const { data } = useMeQuery({ fetchPolicy: "cache-only" });
+
   const [toggleSubscription] = useToggleSubscriptionMutation();
 
   if (isMine) {
@@ -21,9 +25,13 @@ const FollowButton: React.FC<Props> = ({ userId, isFollowed, isMine }) => {
     <button
       type="button"
       onClick={async () => {
-        await toggleSubscription({
-          variables: { userId },
-        });
+        if (data) {
+          await toggleSubscription({
+            variables: { userId },
+          });
+        } else {
+          router.push("/login");
+        }
       }}
       className={classNames(
         isFollowed ? "text-indigo-500" : "text-gray-500",

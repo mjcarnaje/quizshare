@@ -11,6 +11,7 @@ import { useRouter } from "next/router";
 
 const IndexPage = () => {
   useIsAuth({ explore: true });
+
   const router = useRouter();
 
   const { data, loading, fetchMore, variables } = useGetQuizzesQuery({

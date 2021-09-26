@@ -1,5 +1,6 @@
 import React from "react";
 
+import { useMeQuery } from "@generated/graphql";
 import { useRouter } from "next/router";
 
 interface Props {
@@ -8,10 +9,17 @@ interface Props {
 
 const TakeButton: React.FC<Props> = ({ quizId }) => {
   const router = useRouter();
+  const { data } = useMeQuery({ fetchPolicy: "cache-only" });
 
   return (
     <button
-      onClick={() => router.push(`/take/${quizId}`)}
+      onClick={() => {
+        if (data) {
+          router.push(`/take/${quizId}`);
+        } else {
+          router.push("/login");
+        }
+      }}
       type="button"
       className="inline-flex items-center justify-center p-2 text-base font-medium leading-4 text-gray-500 transform border border-transparent  active:scale-95 hover:text-blue-500 rounded-2xl hover:bg-gray-100 focus:outline-none"
     >

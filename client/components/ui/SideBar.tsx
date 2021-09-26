@@ -1,7 +1,6 @@
 import React, { Dispatch, SetStateAction, Fragment } from "react";
 
 import { INavigation } from "@customtypes/index";
-import { UserRole } from "@generated/graphql";
 import { Transition, Dialog } from "@headlessui/react";
 import { XIcon } from "@heroicons/react/outline";
 import { classNames } from "@utils/index";
@@ -30,16 +29,14 @@ const SideBar: React.FC<Props> = ({
       >
         <Logo version="initial" />
         <div className="relative w-20 flex flex-col p-3 space-y-3">
-          {navigation.map((item) => {
+          {navigation.map((item, itemIdx) => {
             const active = router.pathname === item.href;
 
             return (
               <button
+                key={itemIdx}
                 onClick={() => {
-                  if (
-                    item.for === UserRole.All &&
-                    item.name === "Create Quiz"
-                  ) {
+                  if (item.name === "Create Quiz") {
                     router.push("/login");
                   } else {
                     router.push(item.href);

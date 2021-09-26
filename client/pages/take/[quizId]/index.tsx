@@ -5,7 +5,10 @@ import Container from "@components/ui/Container";
 import MainContainer from "@components/ui/MainContainer";
 import { AVATAR_FALLBACK_IMG } from "@constant/index";
 import { IUserAnswer } from "@customtypes/index";
-import { useSubmitAnswersMutation, useGetQuizQuery } from "@generated/graphql";
+import {
+  useSubmitAnswersMutation,
+  useGetQuizTakeQuery,
+} from "@generated/graphql";
 import { useAppDispatch } from "@store/index";
 import { setUserAnswer } from "@store/userAnswer";
 import { useGetQuery } from "@utils/useGetQuery";
@@ -39,13 +42,8 @@ const TakeQuiz: React.FC = () => {
   const [OK, setOK] = useState(false);
   const questionRefs = useRef<Array<HTMLLIElement | null>>([]);
 
-  const { data, loading, error } = useGetQuizQuery({
-    variables: {
-      quizId,
-      isInput: false,
-      isTake: true,
-      isLanding: false,
-    },
+  const { data, loading, error } = useGetQuizTakeQuery({
+    variables: { quizId },
   });
   const [submitAnswers] = useSubmitAnswersMutation();
 
@@ -67,8 +65,10 @@ const TakeQuiz: React.FC = () => {
   };
 
   const scrollToNextQuestion = (questionIdx: number) => {
-    if (questionRefs && questionRefs.current.length > questionIdx + 1) {
-      questionRefs.current?.[questionIdx + 1]?.scrollIntoView({
+    const idx = questionIdx + 1;
+
+    if (questionRefs && questionRefs.current.length > idx) {
+      questionRefs.current?.[idx]?.scrollIntoView({
         behavior: "smooth",
       });
     }
@@ -81,10 +81,7 @@ const TakeQuiz: React.FC = () => {
       try {
         await submitAnswers({
           variables: {
-            input: {
-              quizId,
-              answers,
-            },
+            input: { quizId, answers },
           },
         });
         dispatch(setUserAnswer(answers));
@@ -96,7 +93,7 @@ const TakeQuiz: React.FC = () => {
   };
 
   useEffect(() => {
-    const questions = data?.getQuiz.questions;
+    const questions = data?.getQuizTake.questions;
 
     if (questions) {
       const initialize = questions.reduce((answers: IUserAnswer, question) => {
@@ -118,9 +115,9 @@ const TakeQuiz: React.FC = () => {
     );
   }
 
-  const { title, author, questions, questionCount } = data.getQuiz;
+  const { title, author, questions, questionCount } = data.getQuizTake;
 
-  const { avatar, firstName, lastName } = author!;
+  const { avatar, firstName, lastName } = author;
 
   return (
     <Wrapper title={title}>
@@ -137,12 +134,12 @@ const TakeQuiz: React.FC = () => {
       </div>
       <div className="px-4 pb-4">
         <ul className="py-8 space-y-10">
-          {questions!.map((question, questionIdx) => (
+          {questions.map((question, questionIdx) => (
             <QuestionCard
               key={question.id}
               question={question}
               questionIdx={questionIdx}
-              questionCount={questionCount!}
+              questionCount={questionCount}
               answers={answers}
               questionRefs={questionRefs}
               selectAnswer={selectAnswer}

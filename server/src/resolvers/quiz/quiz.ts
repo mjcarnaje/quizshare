@@ -174,41 +174,63 @@ export class QuizResolver implements ResolverInterface<Quiz> {
     return quiz;
   }
 
+  @Query(() => Quiz)
+  async getQuiz(@Arg("quizId") quizId: string): Promise<Quiz> {
+    const quiz = await getConnection()
+      .getRepository(Quiz)
+      .createQueryBuilder("quiz")
+      .leftJoinAndSelect("quiz.tags", "tags")
+      .andWhere("quiz.id = :quizId", { quizId })
+      .getOne();
+
+    if (!quiz) {
+      throw new UserInputError("There is an error.");
+    }
+
+    return quiz;
+  }
+
   @UseMiddleware(isAuthenticated)
   @Query(() => Quiz)
-  async getQuiz(
+  async getQuizInput(
     @Arg("quizId") quizId: string,
-    @Arg("isInput") isInput: boolean,
-    @Arg("isTake") isTake: boolean,
     @Ctx() ctx: IContext
   ): Promise<Quiz> {
     const authorId = ctx.req.session.userId;
 
-    let quiz = await getConnection()
+    const quiz = await getConnection()
       .getRepository(Quiz)
       .createQueryBuilder("quiz")
-      .leftJoinAndSelect("quiz.tags", "tags");
-
-    if (isInput) {
-      quiz = quiz
-        .leftJoinAndSelect("quiz.questions", "questions")
-        .leftJoinAndSelect("quiz.results", "results")
-        .andWhere("quiz.authorId = :authorId", { authorId });
-    }
-
-    if (isTake) {
-      quiz = quiz.leftJoinAndSelect("quiz.questions", "questions");
-    }
-
-    const result = await quiz
+      .leftJoinAndSelect("quiz.tags", "tags")
+      .leftJoinAndSelect("quiz.questions", "questions")
+      .leftJoinAndSelect("quiz.results", "results")
+      .where("quiz.authorId = :authorId", { authorId })
       .andWhere("quiz.id = :quizId", { quizId })
       .getOne();
 
-    if (!result) {
-      throw new UserInputError("There is an error.");
+    if (!quiz) {
+      throw new AuthenticationError("Quiz not yours");
     }
 
-    return result;
+    return quiz;
+  }
+
+  @UseMiddleware(isAuthenticated)
+  @Query(() => Quiz)
+  async getQuizTake(@Arg("quizId") quizId: string): Promise<Quiz> {
+    const quiz = await getConnection()
+      .getRepository(Quiz)
+      .createQueryBuilder("quiz")
+      .leftJoinAndSelect("quiz.tags", "tags")
+      .leftJoinAndSelect("quiz.questions", "questions")
+      .where("quiz.id = :quizId", { quizId })
+      .getOne();
+
+    if (!quiz) {
+      throw new Error("There is an error.");
+    }
+
+    return quiz;
   }
 
   @UseMiddleware(isAuthenticated)

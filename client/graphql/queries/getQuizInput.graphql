@@ -1,0 +1,18 @@
+query GetQuizInput($quizId: String!) {
+  getQuizInput(quizId: $quizId) {
+    id
+    title
+    description
+    quizPhoto
+    questions {
+      ...Question
+    }
+    tags {
+      id
+      name
+    }
+    results {
+      ...Result
+    }
+  }
+}

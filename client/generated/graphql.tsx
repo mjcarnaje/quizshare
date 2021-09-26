@@ -185,6 +185,8 @@ export type Query = {
   getMeQuizzes: PaginatedQuizzes;
   getQuizzes: PaginatedQuizzes;
   getQuiz: Quiz;
+  getQuizInput: Quiz;
+  getQuizTake: Quiz;
   getTakers: PaginatedTakers;
   users: PaginatedUsers;
   me?: Maybe<User>;
@@ -209,8 +211,16 @@ export type QueryGetQuizzesArgs = {
 
 
 export type QueryGetQuizArgs = {
-  isTake: Scalars['Boolean'];
-  isInput: Scalars['Boolean'];
+  quizId: Scalars['String'];
+};
+
+
+export type QueryGetQuizInputArgs = {
+  quizId: Scalars['String'];
+};
+
+
+export type QueryGetQuizTakeArgs = {
   quizId: Scalars['String'];
 };
 
@@ -396,7 +406,7 @@ export enum UserRole {
   SuperAdmin = 'SUPER_ADMIN',
   Admin = 'ADMIN',
   User = 'USER',
-  All = 'ALL'
+  Visitor = 'VISITOR'
 }
 
 export type UsersInput = {
@@ -724,9 +734,6 @@ export type GetMeQuizzesQuery = (
 
 export type GetQuizQueryVariables = Exact<{
   quizId: Scalars['String'];
-  isInput: Scalars['Boolean'];
-  isTake: Scalars['Boolean'];
-  isLanding: Scalars['Boolean'];
 }>;
 
 
@@ -734,20 +741,60 @@ export type GetQuizQuery = (
   { __typename?: 'Query' }
   & { getQuiz: (
     { __typename?: 'Quiz' }
-    & MakeOptional<Pick<Quiz, 'id' | 'title' | 'description' | 'quizPhoto' | 'isLiked' | 'isBookmarked' | 'questionCount' | 'likeCount' | 'commentCount' | 'takerCount' | 'isPublished' | 'authorId' | 'createdAt' | 'updatedAt'>, 'id' | 'isLiked' | 'isBookmarked' | 'questionCount' | 'likeCount' | 'commentCount' | 'takerCount' | 'isPublished' | 'authorId' | 'createdAt' | 'updatedAt'>
-    & { questions?: Maybe<Array<(
-      { __typename?: 'Question' }
-      & QuestionFragment
-    )>>, tags: Array<(
+    & Pick<Quiz, 'id' | 'title' | 'description' | 'quizPhoto' | 'isLiked' | 'isBookmarked' | 'questionCount' | 'likeCount' | 'commentCount' | 'takerCount' | 'isPublished' | 'authorId' | 'createdAt' | 'updatedAt'>
+    & { tags: Array<(
       { __typename?: 'Tag' }
       & Pick<Tag, 'id' | 'name'>
-    )>, results?: Maybe<Array<(
-      { __typename?: 'Result' }
-      & ResultFragment
-    )>>, author?: Maybe<(
+    )>, author: (
       { __typename?: 'User' }
       & AuthorFragment
+    ) }
+  ) }
+);
+
+export type GetQuizInputQueryVariables = Exact<{
+  quizId: Scalars['String'];
+}>;
+
+
+export type GetQuizInputQuery = (
+  { __typename?: 'Query' }
+  & { getQuizInput: (
+    { __typename?: 'Quiz' }
+    & Pick<Quiz, 'id' | 'title' | 'description' | 'quizPhoto'>
+    & { questions: Array<(
+      { __typename?: 'Question' }
+      & QuestionFragment
+    )>, tags: Array<(
+      { __typename?: 'Tag' }
+      & Pick<Tag, 'id' | 'name'>
+    )>, results: Array<(
+      { __typename?: 'Result' }
+      & ResultFragment
     )> }
+  ) }
+);
+
+export type GetQuizTakeQueryVariables = Exact<{
+  quizId: Scalars['String'];
+}>;
+
+
+export type GetQuizTakeQuery = (
+  { __typename?: 'Query' }
+  & { getQuizTake: (
+    { __typename?: 'Quiz' }
+    & Pick<Quiz, 'id' | 'title' | 'description' | 'quizPhoto' | 'commentCount' | 'questionCount' | 'authorId' | 'createdAt' | 'updatedAt'>
+    & { questions: Array<(
+      { __typename?: 'Question' }
+      & QuestionFragment
+    )>, tags: Array<(
+      { __typename?: 'Tag' }
+      & Pick<Tag, 'id' | 'name'>
+    )>, author: (
+      { __typename?: 'User' }
+      & AuthorFragment
+    ) }
   ) }
 );
 
@@ -1538,40 +1585,32 @@ export type GetMeQuizzesQueryHookResult = ReturnType<typeof useGetMeQuizzesQuery
 export type GetMeQuizzesLazyQueryHookResult = ReturnType<typeof useGetMeQuizzesLazyQuery>;
 export type GetMeQuizzesQueryResult = Apollo.QueryResult<GetMeQuizzesQuery, GetMeQuizzesQueryVariables>;
 export const GetQuizDocument = gql`
-    query GetQuiz($quizId: String!, $isInput: Boolean!, $isTake: Boolean!, $isLanding: Boolean!) {
-  getQuiz(quizId: $quizId, isInput: $isInput, isTake: $isTake) {
-    id @skip(if: $isInput)
+    query GetQuiz($quizId: String!) {
+  getQuiz(quizId: $quizId) {
+    id
     title
     description
     quizPhoto
-    questions @skip(if: $isLanding) {
-      ...Question
-    }
     tags {
       id
       name
     }
-    results @include(if: $isInput) {
-      ...Result
-    }
-    isLiked @skip(if: $isInput)
-    isBookmarked @skip(if: $isInput)
-    questionCount @skip(if: $isInput)
-    likeCount @skip(if: $isInput)
-    commentCount @skip(if: $isInput)
-    takerCount @skip(if: $isInput)
-    isPublished @skip(if: $isInput)
-    authorId @skip(if: $isInput)
-    author @skip(if: $isInput) {
+    isLiked
+    isBookmarked
+    questionCount
+    likeCount
+    commentCount
+    takerCount
+    isPublished
+    authorId
+    author {
       ...Author
     }
-    createdAt @skip(if: $isInput)
-    updatedAt @skip(if: $isInput)
+    createdAt
+    updatedAt
   }
 }
-    ${QuestionFragmentDoc}
-${ResultFragmentDoc}
-${AuthorFragmentDoc}`;
+    ${AuthorFragmentDoc}`;
 
 /**
  * __useGetQuizQuery__
@@ -1586,9 +1625,6 @@ ${AuthorFragmentDoc}`;
  * const { data, loading, error } = useGetQuizQuery({
  *   variables: {
  *      quizId: // value for 'quizId'
- *      isInput: // value for 'isInput'
- *      isTake: // value for 'isTake'
- *      isLanding: // value for 'isLanding'
  *   },
  * });
  */
@@ -1603,6 +1639,109 @@ export function useGetQuizLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<Ge
 export type GetQuizQueryHookResult = ReturnType<typeof useGetQuizQuery>;
 export type GetQuizLazyQueryHookResult = ReturnType<typeof useGetQuizLazyQuery>;
 export type GetQuizQueryResult = Apollo.QueryResult<GetQuizQuery, GetQuizQueryVariables>;
+export const GetQuizInputDocument = gql`
+    query GetQuizInput($quizId: String!) {
+  getQuizInput(quizId: $quizId) {
+    id
+    title
+    description
+    quizPhoto
+    questions {
+      ...Question
+    }
+    tags {
+      id
+      name
+    }
+    results {
+      ...Result
+    }
+  }
+}
+    ${QuestionFragmentDoc}
+${ResultFragmentDoc}`;
+
+/**
+ * __useGetQuizInputQuery__
+ *
+ * To run a query within a React component, call `useGetQuizInputQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetQuizInputQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetQuizInputQuery({
+ *   variables: {
+ *      quizId: // value for 'quizId'
+ *   },
+ * });
+ */
+export function useGetQuizInputQuery(baseOptions: Apollo.QueryHookOptions<GetQuizInputQuery, GetQuizInputQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<GetQuizInputQuery, GetQuizInputQueryVariables>(GetQuizInputDocument, options);
+      }
+export function useGetQuizInputLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetQuizInputQuery, GetQuizInputQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<GetQuizInputQuery, GetQuizInputQueryVariables>(GetQuizInputDocument, options);
+        }
+export type GetQuizInputQueryHookResult = ReturnType<typeof useGetQuizInputQuery>;
+export type GetQuizInputLazyQueryHookResult = ReturnType<typeof useGetQuizInputLazyQuery>;
+export type GetQuizInputQueryResult = Apollo.QueryResult<GetQuizInputQuery, GetQuizInputQueryVariables>;
+export const GetQuizTakeDocument = gql`
+    query GetQuizTake($quizId: String!) {
+  getQuizTake(quizId: $quizId) {
+    id
+    title
+    description
+    quizPhoto
+    questions {
+      ...Question
+    }
+    tags {
+      id
+      name
+    }
+    commentCount
+    questionCount
+    authorId
+    author {
+      ...Author
+    }
+    createdAt
+    updatedAt
+  }
+}
+    ${QuestionFragmentDoc}
+${AuthorFragmentDoc}`;
+
+/**
+ * __useGetQuizTakeQuery__
+ *
+ * To run a query within a React component, call `useGetQuizTakeQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetQuizTakeQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetQuizTakeQuery({
+ *   variables: {
+ *      quizId: // value for 'quizId'
+ *   },
+ * });
+ */
+export function useGetQuizTakeQuery(baseOptions: Apollo.QueryHookOptions<GetQuizTakeQuery, GetQuizTakeQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<GetQuizTakeQuery, GetQuizTakeQueryVariables>(GetQuizTakeDocument, options);
+      }
+export function useGetQuizTakeLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetQuizTakeQuery, GetQuizTakeQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<GetQuizTakeQuery, GetQuizTakeQueryVariables>(GetQuizTakeDocument, options);
+        }
+export type GetQuizTakeQueryHookResult = ReturnType<typeof useGetQuizTakeQuery>;
+export type GetQuizTakeLazyQueryHookResult = ReturnType<typeof useGetQuizTakeLazyQuery>;
+export type GetQuizTakeQueryResult = Apollo.QueryResult<GetQuizTakeQuery, GetQuizTakeQueryVariables>;
 export const GetQuizzesDocument = gql`
     query GetQuizzes($input: GetQuizzesInput!) {
   getQuizzes(input: $input) {

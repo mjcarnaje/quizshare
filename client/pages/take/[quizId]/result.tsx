@@ -11,7 +11,7 @@ import { AVATAR_FALLBACK_IMG } from "@constant/index";
 import {
   ScoreResult,
   ScoreResultFragmentDoc,
-  useGetQuizQuery,
+  useGetQuizTakeQuery,
 } from "@generated/graphql";
 import { ChevronDownIcon, ChevronUpIcon } from "@heroicons/react/solid";
 import { useAppSelector } from "@store/index";
@@ -31,13 +31,8 @@ const Result: React.FC = () => {
   const [showCorrectAnswers] = useState(false);
   const [showAnswers, setShowAnswers] = useState(false);
 
-  const { data } = useGetQuizQuery({
-    variables: {
-      quizId,
-      isInput: false,
-      isTake: true,
-      isLanding: false,
-    },
+  const { data } = useGetQuizTakeQuery({
+    variables: { quizId },
     fetchPolicy: "cache-only",
   });
 
@@ -56,8 +51,8 @@ const Result: React.FC = () => {
     return null;
   }
 
-  const { title: quizTitle, authorId, author, questions } = data.getQuiz;
-  const { avatar, firstName, lastName } = author!;
+  const { title: quizTitle, authorId, author, questions } = data.getQuizTake;
+  const { avatar, firstName, lastName } = author;
   const { score: _score, result } = scoreResult;
   const { score, totalItems, percentage } = _score;
   const { title: resultTitle, description, resultPhoto } = result;
@@ -114,7 +109,7 @@ const Result: React.FC = () => {
                   </div>
                   {!!showAnswers && (
                     <ul className="py-8 space-y-10">
-                      {questions!.map((question, questionIdx) => (
+                      {questions.map((question, questionIdx) => (
                         <QuestionCard
                           key={question.id}
                           question={question}
@@ -131,9 +126,9 @@ const Result: React.FC = () => {
                 <CommentInput
                   quizId={quizId}
                   me={me}
-                  commentCount={data.getQuiz.commentCount}
+                  commentCount={data.getQuizTake.commentCount}
                 />
-                <Comments quizId={quizId} authorId={authorId!} />
+                <Comments quizId={quizId} authorId={authorId} />
               </div>
             </div>
           </div>

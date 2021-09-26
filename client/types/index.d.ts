@@ -11,7 +11,7 @@ export type INavigation = {
   href: string;
   icon: (Props: SVGProps<SVGSVGElement>) => JSX.Element;
   activeIcon: (Props: SVGProps<SVGSVGElement>) => JSX.Element;
-  for: UserRole;
+  canAccess: UserRole[];
 }[];
 
 export type IUserAnswer = Record<string, string | null>;

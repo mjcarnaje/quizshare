@@ -1,8 +1,9 @@
 import React from "react";
 
-import { useToggleLikeMutation } from "@generated/graphql";
+import { useMeQuery, useToggleLikeMutation } from "@generated/graphql";
 import { HeartIcon } from "@heroicons/react/solid";
 import { classNames } from "@utils/index";
+import { useRouter } from "next/router";
 
 interface Props {
   quizId: string;
@@ -11,15 +12,22 @@ interface Props {
 }
 
 const LikeButton: React.FC<Props> = ({ quizId, isLiked, likeCount }) => {
+  const router = useRouter();
+  const { data } = useMeQuery({ fetchPolicy: "cache-only" });
+
   const [toggleLike] = useToggleLikeMutation();
 
   return (
     <button
       type="button"
       onClick={async () => {
-        await toggleLike({
-          variables: { quizId },
-        });
+        if (data) {
+          await toggleLike({
+            variables: { quizId },
+          });
+        } else {
+          router.push("/login");
+        }
       }}
       className={classNames(
         isLiked ? "text-red-500" : "text-gray-500",

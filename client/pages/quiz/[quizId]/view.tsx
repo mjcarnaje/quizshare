@@ -8,10 +8,9 @@ import Comments from "@components/comments/Comments";
 import ImageHolder from "@components/ImageHolder";
 import Container from "@components/ui/Container";
 import MainContainer from "@components/ui/MainContainer";
-import { useGetQuizQuery } from "@generated/graphql";
+import { useGetQuizQuery, useMeQuery } from "@generated/graphql";
 import { CollectionIcon, EyeIcon } from "@heroicons/react/outline";
 import { useGetQuery } from "@utils/useGetQuery";
-import { useIsAuth } from "@utils/useIsAuth";
 import withApollo from "@utils/withApollo";
 import Skeleton from "react-loading-skeleton";
 
@@ -34,17 +33,13 @@ const Wrapper: React.FC<{ title: string }> = ({ title, children }) => {
 interface Props {}
 
 const QuizLanding: React.FC<Props> = () => {
-  const me = useIsAuth();
   const quizId = useGetQuery("quizId");
 
   const { data, loading, error } = useGetQuizQuery({
-    variables: {
-      quizId,
-      isInput: false,
-      isTake: false,
-      isLanding: true,
-    },
+    variables: { quizId },
   });
+
+  const { data: meData } = useMeQuery();
 
   if (!data) {
     return (
@@ -115,14 +110,10 @@ const QuizLanding: React.FC<Props> = () => {
       </div>
       <div className="flex items-center justify-between w-full my-3 px-4 py-3 bg-white rounded-md shadow 2xl:flex-col 2xl:justify-around 2xl:px-1 2xl:py-4 2xl:w-20 2xl:flex 2xl:fixed 2xl:bottom-24 2xl:top-24 2xl:right-8">
         <div className="hidden 2xl:block">
-          <BookmarkButton quizId={quizId} isBookmarked={isBookmarked!} />
+          <BookmarkButton quizId={quizId} isBookmarked={isBookmarked} />
         </div>
         <div className="space-x-2 text-center 2xl:space-y-4 2xl:space-x-0">
-          <LikeButton
-            quizId={quizId}
-            isLiked={isLiked!}
-            likeCount={likeCount!}
-          />
+          <LikeButton quizId={quizId} isLiked={isLiked} likeCount={likeCount} />
           <div className="inline-flex items-center px-3 py-2 text-base font-medium leading-4 text-gray-500 hover:text-yellow-500 rounded-2xl hover:bg-gray-100">
             <CollectionIcon
               className="-ml-0.5 mr-2 h-6 w-6"
@@ -137,13 +128,13 @@ const QuizLanding: React.FC<Props> = () => {
         </div>
         <div className="flex justify-end space-x-2 2xl:space-x-0">
           <div className="block 2xl:hidden">
-            <BookmarkButton quizId={quizId} isBookmarked={isBookmarked!} />
+            <BookmarkButton quizId={quizId} isBookmarked={isBookmarked} />
           </div>
           <TakeButton quizId={quizId} />
         </div>
       </div>
-      <CommentInput quizId={quizId} me={me} commentCount={commentCount} />
-      <Comments quizId={quizId} authorId={authorId!} />
+      <CommentInput quizId={quizId} me={meData} commentCount={commentCount} />
+      <Comments quizId={quizId} authorId={authorId} />
     </Wrapper>
   );
 };

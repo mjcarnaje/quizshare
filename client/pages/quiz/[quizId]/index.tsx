@@ -9,7 +9,7 @@ import Container from "@components/ui/Container";
 import MainContainer from "@components/ui/MainContainer";
 import {
   QuizInput,
-  useGetQuizQuery,
+  useGetQuizInputQuery,
   usePublishQuizMutation,
   useSaveQuizMutation,
 } from "@generated/graphql";
@@ -43,13 +43,8 @@ const EditQuiz: React.FC = () => {
 
   const [saveQuiz] = useSaveQuizMutation();
   const [publishQuiz] = usePublishQuizMutation();
-  const { data } = useGetQuizQuery({
-    variables: {
-      quizId,
-      isInput: true,
-      isTake: false,
-      isLanding: false,
-    },
+  const { data } = useGetQuizInputQuery({
+    variables: { quizId },
   });
 
   const methods = useForm<QuizInput>({
@@ -63,24 +58,10 @@ const EditQuiz: React.FC = () => {
     },
   });
 
-  const {
-    register,
-    handleSubmit,
-    setError,
-    reset,
-    setValue,
-    formState: {
-      isDirty,
-      isSubmitted,
-      isSubmitSuccessful,
-      submitCount,
-      touchedFields,
-      isSubmitting,
-      isValidating,
-      isValid,
-      errors,
-    },
-  } = methods;
+  const { register, handleSubmit, setError, reset, setValue, formState } =
+    methods;
+
+  const { errors } = formState;
 
   const onSubmit: SubmitHandler<QuizInput> = async (data) => {
     try {
@@ -164,16 +145,7 @@ const EditQuiz: React.FC = () => {
                 <aside className="py-6 lg:col-span-3">
                   <nav>
                     <div className="space-y-1">
-                      <p>{`isDirty: ${JSON.stringify(isDirty)}`}</p>
-                      <p>{`isSubmitted: ${JSON.stringify(isSubmitted)}`}</p>
-                      <p>{`isSubmitSuccessful: ${JSON.stringify(
-                        isSubmitSuccessful
-                      )}`}</p>
-                      <p>{`submitCount: ${JSON.stringify(submitCount)}`}</p>
-                      <p>{`touchedFields: ${JSON.stringify(touchedFields)}`}</p>
-                      <p>{`isSubmitting: ${JSON.stringify(isSubmitting)}`}</p>
-                      <p>{`isValidating: ${JSON.stringify(isValidating)}`}</p>
-                      <p>{`isValid: ${JSON.stringify(isValid)}`}</p>
+                      <pre>{JSON.stringify(formState, null, 2)}</pre>
                       {subNavigation[0].map((item) => (
                         <button
                           key={item.name}
@@ -223,9 +195,11 @@ const EditQuiz: React.FC = () => {
                             <label className="block text-sm font-medium text-gray-700">
                               Cover photo
                             </label>
-                            {quizPhoto || data?.getQuiz.quizPhoto ? (
+                            {quizPhoto || data?.getQuizInput.quizPhoto ? (
                               <ImageHolder
-                                image={quizPhoto || data?.getQuiz.quizPhoto}
+                                image={
+                                  quizPhoto || data?.getQuizInput.quizPhoto
+                                }
                                 loading={quizPhotoLoading}
                               />
                             ) : (

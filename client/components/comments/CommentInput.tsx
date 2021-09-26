@@ -18,7 +18,7 @@ import Avatar from "../ui/Avatar";
 interface Props {
   quizId: string;
   commentCount?: number | null;
-  me: MeQuery;
+  me?: MeQuery;
 }
 
 type IText = {

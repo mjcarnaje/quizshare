@@ -21,7 +21,7 @@ const ProfileDropdown: React.FC = () => {
           onClick={() => router.push("/login")}
           className="px-2 py-1 text-gray-800 hover:text-gray-500"
         >
-          Sign in
+          Login
         </button>
         <button
           onClick={() => router.push("/signup")}
@@ -36,8 +36,8 @@ const ProfileDropdown: React.FC = () => {
   const { firstName, avatar } = data.me;
 
   const logout = async () => {
+    await apolloClient.resetStore();
     await signOut();
-    await apolloClient.clearStore();
     router.push("/login");
   };
 

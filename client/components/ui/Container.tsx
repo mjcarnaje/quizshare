@@ -2,6 +2,7 @@ import React, { useState } from "react";
 
 import ContentHeader from "@components/ui/ContentHeader";
 import SideBar from "@components/ui/SideBar";
+import { INavigation } from "@customtypes/index";
 import { useMeQuery, UserRole } from "@generated/graphql";
 import {
   HomeIcon,
@@ -18,41 +19,51 @@ import {
   UserAddIcon as UserAddIconSolid,
 } from "@heroicons/react/solid";
 
-const navigation = [
+const navigation: INavigation = [
   {
     name: "Home",
     href: "/",
     icon: HomeIcon,
     activeIcon: HomeIconSolid,
-    for: UserRole.User,
+    canAccess: [UserRole.Admin, UserRole.SuperAdmin, UserRole.User],
   },
   {
     name: "Explore",
     href: "/explore",
     icon: HashtagIcon,
     activeIcon: HashtagIconSolid,
-    for: UserRole.All,
+    canAccess: [
+      UserRole.Visitor,
+      UserRole.Admin,
+      UserRole.SuperAdmin,
+      UserRole.User,
+    ],
   },
   {
     name: "Published",
     href: "/me/published",
     icon: CollectionIcon,
     activeIcon: CollectionIconSolid,
-    for: UserRole.User,
+    canAccess: [UserRole.Admin, UserRole.SuperAdmin, UserRole.User],
   },
   {
     name: "Create Quiz",
     href: "/quiz/new",
     icon: PlusCircleIcon,
     activeIcon: PlusCircleIconSolid,
-    for: UserRole.All,
+    canAccess: [
+      UserRole.Visitor,
+      UserRole.Admin,
+      UserRole.SuperAdmin,
+      UserRole.User,
+    ],
   },
   {
     name: "Change Roles",
     href: "/change-roles",
     icon: UserAddIcon,
     activeIcon: UserAddIconSolid,
-    for: UserRole.Admin,
+    canAccess: [UserRole.SuperAdmin],
   },
 ];
 
@@ -66,8 +77,10 @@ const Container: React.FC<Props> = ({ showSearchBar, header, children }) => {
 
   const { data } = useMeQuery();
 
-  let navs: typeof navigation = navigation.filter(
-    (nav) => nav.for === "ALL" || nav.for === data?.me?.role
+  const navs = navigation.filter((nav) =>
+    nav.canAccess.some(
+      (role) => role === data?.me?.role || role === UserRole.Visitor
+    )
   );
 
   return (

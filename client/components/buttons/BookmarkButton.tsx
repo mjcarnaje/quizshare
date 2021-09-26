@@ -1,7 +1,8 @@
 import React from "react";
 
-import { useToggleBookmarkMutation } from "@generated/graphql";
+import { useMeQuery, useToggleBookmarkMutation } from "@generated/graphql";
 import { classNames } from "@utils/index";
+import { useRouter } from "next/router";
 
 interface Props {
   quizId: string;
@@ -9,15 +10,22 @@ interface Props {
 }
 
 const BookmarkButton: React.FC<Props> = ({ quizId, isBookmarked }) => {
+  const router = useRouter();
+  const { data } = useMeQuery({ fetchPolicy: "cache-only" });
+
   const [toggleBookmark] = useToggleBookmarkMutation();
 
   return (
     <button
       type="button"
       onClick={async () => {
-        await toggleBookmark({
-          variables: { quizId },
-        });
+        if (data) {
+          await toggleBookmark({
+            variables: { quizId },
+          });
+        } else {
+          router.push("/login");
+        }
       }}
       className={classNames(
         isBookmarked ? "text-blue-500" : "text-gray-500",
