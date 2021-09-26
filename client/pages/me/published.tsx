@@ -5,14 +5,14 @@ import Container from "@components/ui/Container";
 import MainContainer from "@components/ui/MainContainer";
 import { QUIZZES_LIMIT } from "@constant/index";
 import { useGetMeQuizzesQuery } from "@generated/graphql";
-import { useIsAuth } from "@utils/useIsAuth";
+import { useUser } from "@utils/useUser";
 import withApollo from "@utils/withApollo";
 import { useRouter } from "next/router";
 
 interface Props {}
 
 const PublishedPage: React.FC<Props> = () => {
-  useIsAuth();
+  const { user } = useUser();
 
   const router = useRouter();
 
@@ -24,6 +24,16 @@ const PublishedPage: React.FC<Props> = () => {
       },
     },
   });
+
+  if (!user) {
+    return (
+      <MainContainer>
+        <Container>
+          <p>Loading...</p>
+        </Container>
+      </MainContainer>
+    );
+  }
 
   const quizzes = data?.getMeQuizzes.quizzes;
   const pageInfo = data?.getMeQuizzes.pageInfo;

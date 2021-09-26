@@ -17,12 +17,12 @@ import { ChevronDownIcon, ChevronUpIcon } from "@heroicons/react/solid";
 import { useAppSelector } from "@store/index";
 import { selectUserAnswer } from "@store/userAnswer";
 import { useGetQuery } from "@utils/useGetQuery";
-import { useIsAuth } from "@utils/useIsAuth";
+import { useUser } from "@utils/useUser";
 import withApollo from "@utils/withApollo";
 import { useRouter } from "next/router";
 
 const Result: React.FC = () => {
-  const me = useIsAuth();
+  const { user } = useUser();
   const router = useRouter();
   const quizId = useGetQuery("quizId");
   const client = useApolloClient();
@@ -49,6 +49,16 @@ const Result: React.FC = () => {
 
   if (!data || !scoreResult || !userAnswers) {
     return null;
+  }
+
+  if (!user) {
+    return (
+      <MainContainer>
+        <Container>
+          <p>Loading...</p>
+        </Container>
+      </MainContainer>
+    );
   }
 
   const { title: quizTitle, authorId, author, questions } = data.getQuizTake;
@@ -125,7 +135,7 @@ const Result: React.FC = () => {
                 </div>
                 <CommentInput
                   quizId={quizId}
-                  me={me}
+                  userInfo={user}
                   commentCount={data.getQuizTake.commentCount}
                 />
                 <Comments quizId={quizId} authorId={authorId} />

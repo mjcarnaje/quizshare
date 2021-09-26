@@ -5,14 +5,13 @@ import Container from "@components/ui/Container";
 import MainContainer from "@components/ui/MainContainer";
 import { QUIZZES_LIMIT } from "@constant/index";
 import { useGetQuizzesQuery } from "@generated/graphql";
-import { useIsAuth } from "@utils/useIsAuth";
+import { useUser } from "@utils/useUser";
 import withApollo from "@utils/withApollo";
 import { useRouter } from "next/router";
 
 const IndexPage = () => {
-  useIsAuth({ explore: true });
-
   const router = useRouter();
+  const { user } = useUser({ redirectTo: "/explore" });
 
   const { data, loading, fetchMore, variables } = useGetQuizzesQuery({
     variables: {
@@ -23,6 +22,16 @@ const IndexPage = () => {
       },
     },
   });
+
+  if (!user) {
+    return (
+      <MainContainer>
+        <Container>
+          <p>Loading...</p>
+        </Container>
+      </MainContainer>
+    );
+  }
 
   const quizzes = data?.getQuizzes.quizzes || [];
   const pageInfo = data?.getQuizzes.pageInfo;

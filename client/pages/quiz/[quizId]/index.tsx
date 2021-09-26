@@ -23,8 +23,8 @@ import {
 import errorMapper from "@utils/errorMapper";
 import { classNames, cleanTypeName } from "@utils/index";
 import { useGetQuery } from "@utils/useGetQuery";
-import { useIsAuth } from "@utils/useIsAuth";
 import { useUploadPhoto } from "@utils/useUploadImage";
+import { useUser } from "@utils/useUser";
 import withApollo from "@utils/withApollo";
 import { useRouter } from "next/router";
 import { FormProvider, SubmitHandler, useForm } from "react-hook-form";
@@ -32,7 +32,7 @@ import { FormProvider, SubmitHandler, useForm } from "react-hook-form";
 type IActiveNav = "settings" | "questions" | "results";
 
 const EditQuiz: React.FC = () => {
-  useIsAuth();
+  const { user } = useUser();
   const router = useRouter();
   const quizId = useGetQuery("quizId");
 
@@ -63,6 +63,10 @@ const EditQuiz: React.FC = () => {
 
   const { errors } = formState;
 
+  useEffect(() => {
+    setValue("quizPhoto", quizPhoto);
+  }, [quizPhoto]);
+
   const onSubmit: SubmitHandler<QuizInput> = async (data) => {
     try {
       await saveQuiz({
@@ -72,10 +76,6 @@ const EditQuiz: React.FC = () => {
       errorMapper(err, setError);
     }
   };
-
-  useEffect(() => {
-    setValue("quizPhoto", quizPhoto);
-  }, [quizPhoto]);
 
   const subNavigation = [
     [
@@ -134,6 +134,16 @@ const EditQuiz: React.FC = () => {
       reset(cleanTypeName<QuizInput>(data.getQuiz));
     }
   }, [data]);
+
+  if (!user) {
+    return (
+      <MainContainer>
+        <Container>
+          <p>Loading...</p>
+        </Container>
+      </MainContainer>
+    );
+  }
 
   return (
     <MainContainer title="Edit Quiz">

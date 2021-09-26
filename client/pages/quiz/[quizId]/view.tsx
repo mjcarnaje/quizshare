@@ -8,9 +8,10 @@ import Comments from "@components/comments/Comments";
 import ImageHolder from "@components/ImageHolder";
 import Container from "@components/ui/Container";
 import MainContainer from "@components/ui/MainContainer";
-import { useGetQuizQuery, useMeQuery } from "@generated/graphql";
+import { useGetQuizQuery } from "@generated/graphql";
 import { CollectionIcon, EyeIcon } from "@heroicons/react/outline";
 import { useGetQuery } from "@utils/useGetQuery";
+import { useUser } from "@utils/useUser";
 import withApollo from "@utils/withApollo";
 import Skeleton from "react-loading-skeleton";
 
@@ -35,11 +36,11 @@ interface Props {}
 const QuizLanding: React.FC<Props> = () => {
   const quizId = useGetQuery("quizId");
 
+  const { user } = useUser({ noRedirect: true });
+
   const { data, loading, error } = useGetQuizQuery({
     variables: { quizId },
   });
-
-  const { data: meData } = useMeQuery();
 
   if (!data) {
     return (
@@ -133,7 +134,11 @@ const QuizLanding: React.FC<Props> = () => {
           <TakeButton quizId={quizId} />
         </div>
       </div>
-      <CommentInput quizId={quizId} me={meData} commentCount={commentCount} />
+      <CommentInput
+        quizId={quizId}
+        userInfo={user}
+        commentCount={commentCount}
+      />
       <Comments quizId={quizId} authorId={authorId} />
     </Wrapper>
   );

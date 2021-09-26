@@ -10,10 +10,7 @@ interface Props {
   header?: boolean;
 }
 
-const MainContainer: React.FC<Props> = ({
-  children,
-  title = "This is the default title",
-}) => {
+const MainContainer: React.FC<Props> = ({ children, title = "QuizShare" }) => {
   return (
     <div>
       <Head>

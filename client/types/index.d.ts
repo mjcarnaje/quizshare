@@ -16,3 +16,5 @@ export type INavigation = {
 
 export type IUserAnswer = Record<string, string | null>;
 export type Possible<T> = T | undefined;
+
+export type IUser = { __typename?: "User" } & MeFragment;

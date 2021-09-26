@@ -1,9 +1,11 @@
 import React, { Fragment, useEffect, useState } from "react";
 
 import Input from "@components/inputs/Input";
+import Container from "@components/ui/Container";
+import MainContainer from "@components/ui/MainContainer";
 import { useCreateQuizMutation } from "@generated/graphql";
 import { Dialog, Transition } from "@headlessui/react";
-import { useIsAuth } from "@utils/useIsAuth";
+import { useUser } from "@utils/useUser";
 import withApollo from "@utils/withApollo";
 import { useRouter } from "next/dist/client/router";
 import Image from "next/image";
@@ -12,7 +14,7 @@ import { useForm, SubmitHandler } from "react-hook-form";
 type ITitle = { title: string };
 
 const NewQuiz: React.FC = () => {
-  useIsAuth();
+  const { user } = useUser();
   const router = useRouter();
   const [open, setOpen] = useState(false);
 
@@ -42,6 +44,16 @@ const NewQuiz: React.FC = () => {
   useEffect(() => {
     setOpen(true);
   }, []);
+
+  if (!user) {
+    return (
+      <MainContainer>
+        <Container>
+          <p>Loading...</p>
+        </Container>
+      </MainContainer>
+    );
+  }
 
   return (
     <Transition.Root show={open} as={Fragment}>

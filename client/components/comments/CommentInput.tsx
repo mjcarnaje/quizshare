@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState } from "react";
 
+import { IUser } from "@customtypes/index";
 import {
-  MeQuery,
   useAddCommentMutation,
   useEditCommentMutation,
 } from "@generated/graphql";
@@ -18,14 +18,14 @@ import Avatar from "../ui/Avatar";
 interface Props {
   quizId: string;
   commentCount?: number | null;
-  me?: MeQuery;
+  userInfo?: IUser | null;
 }
 
 type IText = {
   text: string;
 };
 
-const CommentInput: React.FC<Props> = ({ quizId, me, commentCount }) => {
+const CommentInput: React.FC<Props> = ({ quizId, userInfo, commentCount }) => {
   const dispatch = useAppDispatch();
   const { commentId, text: commentText } = useAppSelector(selectCommentInput);
 
@@ -103,11 +103,11 @@ const CommentInput: React.FC<Props> = ({ quizId, me, commentCount }) => {
     }
   }, [commentText]);
 
-  if (!me?.me) {
+  if (!userInfo) {
     return null;
   }
 
-  const { firstName, avatar } = me.me;
+  const { firstName, avatar } = userInfo;
 
   return (
     <div className="mb-8">
