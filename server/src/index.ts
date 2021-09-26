@@ -118,6 +118,7 @@ const main = async () => {
           httpOnly: true,
           secure: __PROD__,
           maxAge: oneWeekInMs,
+          sameSite: "none",
           domain: ".api-quizshare.herokuapp.com",
         },
       })
