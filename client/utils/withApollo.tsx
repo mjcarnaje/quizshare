@@ -21,7 +21,19 @@ const apolloClient = (ctx?: NextPageContext) => {
         Query: {
           fields: {
             getQuizzes: {
-              keyArgs: ["isPublished", "isMine", "quizzesInput", ["search"]],
+              keyArgs: ["input", ["search"]],
+              merge(
+                existing: PaginatedQuizzes,
+                incoming: PaginatedQuizzes
+              ): PaginatedQuizzes {
+                return {
+                  pageInfo: incoming.pageInfo,
+                  quizzes: [...(existing?.quizzes ?? []), ...incoming.quizzes],
+                };
+              },
+            },
+            getMeQuizzes: {
+              keyArgs: ["input", ["search"]],
               merge(
                 existing: PaginatedQuizzes,
                 incoming: PaginatedQuizzes
