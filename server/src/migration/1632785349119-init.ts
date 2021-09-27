@@ -1,16 +1,16 @@
 import {MigrationInterface, QueryRunner} from "typeorm";
 
-export class migrationNameHere1632283517664 implements MigrationInterface {
-    name = 'migrationNameHere1632283517664'
+export class init1632785349119 implements MigrationInterface {
+    name = 'init1632785349119'
 
     public async up(queryRunner: QueryRunner): Promise<void> {
-        await queryRunner.query(`CREATE TABLE "quiz" ("id" uuid NOT NULL DEFAULT uuid_generate_v4(), "authorId" uuid NOT NULL, "title" character varying NOT NULL, "description" character varying NOT NULL, "quizPhoto" text, "questionCount" integer NOT NULL DEFAULT '0', "isPublished" boolean NOT NULL DEFAULT false, "likeCount" integer NOT NULL DEFAULT '0', "commentCount" integer NOT NULL DEFAULT '0', "bookmarkCount" integer NOT NULL DEFAULT '0', "takerCount" integer NOT NULL DEFAULT '0', "createdAt" TIMESTAMP NOT NULL DEFAULT now(), "updatedAt" TIMESTAMP NOT NULL DEFAULT now(), CONSTRAINT "PK_422d974e7217414e029b3e641d0" PRIMARY KEY ("id"))`);
+        await queryRunner.query(`CREATE TABLE "quiz" ("id" uuid NOT NULL DEFAULT uuid_generate_v4(), "authorId" uuid NOT NULL, "title" character varying NOT NULL, "description" text, "quizPhoto" text, "questionCount" integer NOT NULL DEFAULT '0', "isPublished" boolean NOT NULL DEFAULT false, "likeCount" integer NOT NULL DEFAULT '0', "commentCount" integer NOT NULL DEFAULT '0', "bookmarkCount" integer NOT NULL DEFAULT '0', "takerCount" integer NOT NULL DEFAULT '0', "createdAt" TIMESTAMP NOT NULL DEFAULT now(), "updatedAt" TIMESTAMP NOT NULL DEFAULT now(), CONSTRAINT "PK_422d974e7217414e029b3e641d0" PRIMARY KEY ("id"))`);
         await queryRunner.query(`CREATE INDEX "IDX_91b3636bd5cc303c7409c55088" ON "quiz" ("title") `);
         await queryRunner.query(`CREATE INDEX "IDX_764b168daba5f280d75441869b" ON "quiz" ("description") `);
         await queryRunner.query(`CREATE TABLE "question" ("id" character varying NOT NULL, "question" character varying NOT NULL, "questionPhoto" text, "choices" jsonb NOT NULL, "answer" character varying NOT NULL, "explanation" text, "hint" text, "quizId" uuid, CONSTRAINT "PK_21e5786aa0ea704ae185a79b2d5" PRIMARY KEY ("id"))`);
         await queryRunner.query(`CREATE TABLE "subscription" ("followedId" uuid NOT NULL, "followerId" uuid NOT NULL, "createdAt" TIMESTAMP NOT NULL DEFAULT now(), CONSTRAINT "PK_4bf76a98eca580a63e0e199585b" PRIMARY KEY ("followedId"))`);
         await queryRunner.query(`CREATE TABLE "score" ("id" uuid NOT NULL DEFAULT uuid_generate_v4(), "quizAuthorId" character varying NOT NULL, "quizId" uuid NOT NULL, "takerId" uuid NOT NULL, "totalItems" integer NOT NULL, "score" integer NOT NULL, "percentage" double precision NOT NULL DEFAULT '0', "answered" TIMESTAMP NOT NULL DEFAULT now(), CONSTRAINT "PK_1770f42c61451103f5514134078" PRIMARY KEY ("id"))`);
-        await queryRunner.query(`CREATE TYPE "user_role_enum" AS ENUM('SUPER_ADMIN', 'ADMIN', 'USER')`);
+        await queryRunner.query(`CREATE TYPE "user_role_enum" AS ENUM('SUPER_ADMIN', 'ADMIN', 'USER', 'VISITOR')`);
         await queryRunner.query(`CREATE TABLE "user" ("id" uuid NOT NULL DEFAULT uuid_generate_v4(), "googleId" text, "facebookId" text, "username" text NOT NULL, "email" text NOT NULL, "password" text, "avatar" text, "coverPhoto" text, "firstName" text NOT NULL, "lastName" text, "birthday" date, "gender" text, "country" text, "bio" text, "social" jsonb, "role" "user_role_enum" NOT NULL, "followedCount" integer NOT NULL DEFAULT '0', "followerCount" integer NOT NULL DEFAULT '0', "createdAt" TIMESTAMP NOT NULL DEFAULT now(), "updatedAt" TIMESTAMP NOT NULL DEFAULT now(), CONSTRAINT "UQ_78a916df40e02a9deb1c4b75edb" UNIQUE ("username"), CONSTRAINT "UQ_e12875dfb3b1d92d7d7c5377e22" UNIQUE ("email"), CONSTRAINT "PK_cace4a159ff9f2512dd42373760" PRIMARY KEY ("id"))`);
         await queryRunner.query(`CREATE INDEX "IDX_78a916df40e02a9deb1c4b75ed" ON "user" ("username") `);
         await queryRunner.query(`CREATE INDEX "IDX_e12875dfb3b1d92d7d7c5377e2" ON "user" ("email") `);
@@ -37,8 +37,8 @@ export class migrationNameHere1632283517664 implements MigrationInterface {
         await queryRunner.query(`ALTER TABLE "comment" ADD CONSTRAINT "FK_276779da446413a0d79598d4fbd" FOREIGN KEY ("authorId") REFERENCES "user"("id") ON DELETE NO ACTION ON UPDATE NO ACTION`);
         await queryRunner.query(`ALTER TABLE "bookmark" ADD CONSTRAINT "FK_1348b7d6180038afc8e5c0639d7" FOREIGN KEY ("quizId") REFERENCES "quiz"("id") ON DELETE NO ACTION ON UPDATE NO ACTION`);
         await queryRunner.query(`ALTER TABLE "bookmark" ADD CONSTRAINT "FK_e389fc192c59bdce0847ef9ef8b" FOREIGN KEY ("userId") REFERENCES "user"("id") ON DELETE NO ACTION ON UPDATE NO ACTION`);
-        await queryRunner.query(`ALTER TABLE "quiz_tags_tag" ADD CONSTRAINT "FK_967a66c52a31d3fdef7d8600a49" FOREIGN KEY ("quizId") REFERENCES "quiz"("id") ON DELETE CASCADE ON UPDATE NO ACTION`);
-        await queryRunner.query(`ALTER TABLE "quiz_tags_tag" ADD CONSTRAINT "FK_39656912e32038fc8ec251f24a3" FOREIGN KEY ("tagId") REFERENCES "tag"("id") ON DELETE CASCADE ON UPDATE NO ACTION`);
+        await queryRunner.query(`ALTER TABLE "quiz_tags_tag" ADD CONSTRAINT "FK_967a66c52a31d3fdef7d8600a49" FOREIGN KEY ("quizId") REFERENCES "quiz"("id") ON DELETE CASCADE ON UPDATE CASCADE`);
+        await queryRunner.query(`ALTER TABLE "quiz_tags_tag" ADD CONSTRAINT "FK_39656912e32038fc8ec251f24a3" FOREIGN KEY ("tagId") REFERENCES "tag"("id") ON DELETE NO ACTION ON UPDATE NO ACTION`);
     }
 
     public async down(queryRunner: QueryRunner): Promise<void> {
