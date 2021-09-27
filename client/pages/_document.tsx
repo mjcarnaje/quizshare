@@ -12,6 +12,10 @@ export default class Document extends NextDocument {
             src="https://upload-widget.cloudinary.com/global/all.js"
             type="text/javascript"
           ></script>
+          <meta
+            http-equiv="Content-Security-Policy"
+            content="upgrade-insecure-requests"
+          />
         </Head>
         <body>
           <Main />
