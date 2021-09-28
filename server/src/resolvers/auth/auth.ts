@@ -29,7 +29,7 @@ export class AuthResolver {
         password: hashedPassword,
         firstName,
         lastName,
-        birthday,
+        birthday: new Date(birthday).toISOString(),
         gender,
         role: getRole(email),
       })
