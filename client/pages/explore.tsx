@@ -1,8 +1,8 @@
 import React from "react";
 
+import Layout from "@components/layout/Layout";
+import NestedLayout from "@components/layout/NestedLayout";
 import Quizzes from "@components/quizzes/Quizzes";
-import Layout from "@components/ui/Layout";
-import NestedLayout from "@components/ui/NestedLayout";
 import { QUIZZES_LIMIT } from "@constant/index";
 import { useGetQuizzesQuery } from "@generated/graphql";
 import withApollo from "@utils/withApollo";

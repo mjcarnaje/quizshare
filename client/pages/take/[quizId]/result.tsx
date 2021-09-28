@@ -4,9 +4,9 @@ import { useApolloClient } from "@apollo/client";
 import CommentInput from "@components/comments/CommentInput";
 import Comments from "@components/comments/Comments";
 import ImageHolder from "@components/ImageHolder";
+import Layout from "@components/layout/Layout";
+import NestedLayout from "@components/layout/NestedLayout";
 import QuestionCard from "@components/take/QuestionCard";
-import Layout from "@components/ui/Layout";
-import NestedLayout from "@components/ui/NestedLayout";
 import { AVATAR_FALLBACK_IMG } from "@constant/index";
 import {
   ScoreResult,

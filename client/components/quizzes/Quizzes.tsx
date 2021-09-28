@@ -10,7 +10,7 @@ interface Props {
   quizzes?: QuizCardFragment[];
   pageInfo?: PageInfoFragment;
   loading: boolean;
-  onLoadMore: () => void;
+  onLoadMore?: () => void;
   type: "timeline" | "me";
 }
 
@@ -57,7 +57,7 @@ const Quizzes: React.FC<Props> = ({
           <div className="relative w-full h-full">
             <Image src="/empty.svg" layout="fill" />
           </div>
-          <p className="mt-4 lg:mt-12">No quizzes found.</p>
+          <p className="mt-4 lg:mt-12 font-mono">No quizzes found.</p>
         </div>
       )}
     </>

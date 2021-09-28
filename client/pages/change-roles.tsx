@@ -1,7 +1,7 @@
 import React, { useCallback, useState } from "react";
 
-import Layout from "@components/ui/Layout";
-import NestedLayout from "@components/ui/NestedLayout";
+import Layout from "@components/layout/Layout";
+import NestedLayout from "@components/layout/NestedLayout";
 import { AVATAR_FALLBACK_IMG } from "@constant/index";
 import {
   useChangeRoleMutation,

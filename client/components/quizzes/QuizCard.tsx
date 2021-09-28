@@ -14,11 +14,11 @@ import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/router";
 
+import Avatar from "../Avatar";
 import BookmarkButton from "../buttons/BookmarkButton";
 import CommentButton from "../buttons/CommentButton";
 import FollowButton from "../buttons/FollowButton";
 import DeleteQuizModal from "../modals/DeleteQuizModal";
-import Avatar from "../ui/Avatar";
 
 function truncateText(text?: string | null, len: number = 320): string {
   if (!text) return "No description.";

@@ -2,7 +2,7 @@ import React from "react";
 
 import Input from "@components/inputs/Input";
 import Select from "@components/inputs/Select";
-import Layout from "@components/ui/Layout";
+import Layout from "@components/layout/Layout";
 import {
   MeDocument,
   MeQuery,

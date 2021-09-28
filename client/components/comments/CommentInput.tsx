@@ -12,8 +12,8 @@ import { classNames } from "@utils/index";
 import { useForm } from "react-hook-form";
 import Skeleton from "react-loading-skeleton";
 
+import Avatar from "../Avatar";
 import TextareaAutoResizeWithRef from "../inputs/TextareaAutoResizeWithRef";
-import Avatar from "../ui/Avatar";
 
 interface Props {
   quizId: string;

@@ -1,6 +1,6 @@
 import React from "react";
 
-import Avatar from "@components/ui/Avatar";
+import Avatar from "@components/Avatar";
 import Skeleton from "react-loading-skeleton";
 
 interface Props {}

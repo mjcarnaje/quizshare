@@ -3,10 +3,10 @@ import React, { useEffect, useState } from "react";
 import ImageHolder from "@components/ImageHolder";
 import Input from "@components/inputs/Input";
 import TextareaAutoResize from "@components/inputs/TextareaAutoResize";
+import Layout from "@components/layout/Layout";
+import NestedLayout from "@components/layout/NestedLayout";
 import QuestionInputs from "@components/quizzes/QuestionInputs";
 import ResultInputs from "@components/quizzes/ResultInputs";
-import Layout from "@components/ui/Layout";
-import NestedLayout from "@components/ui/NestedLayout";
 import {
   QuizInput,
   useGetQuizInputQuery,

@@ -9,7 +9,7 @@ import { classNames } from "@utils/index";
 import { useUser } from "@utils/useUser";
 import { useRouter } from "next/dist/client/router";
 
-import { Logo } from "./Logo";
+import { Logo } from "../Logo";
 
 interface Props {
   navigation: INavigation;

@@ -1,11 +1,12 @@
-import "reflect-metadata";
-import "dotenv/config";
+import { ApolloServer } from "apollo-server-express";
+import connectPgSimple from "connect-pg-simple";
 import cors from "cors";
+import "dotenv/config";
 import express from "express";
 import session from "express-session";
 import passport from "passport";
-import connectPgSimple from "connect-pg-simple";
-import { ApolloServer } from "apollo-server-express";
+import path from "path";
+import "reflect-metadata";
 import { buildSchema } from "type-graphql";
 import { createConnection } from "typeorm";
 import { facebookPassport } from "./resolvers/auth/facebook";
@@ -17,24 +18,6 @@ import {
   createSubscriptionLoader,
   __PROD__,
 } from "./utils";
-import {
-  Bookmark,
-  Comment,
-  Like,
-  Question,
-  Quiz,
-  Result,
-  Score,
-  Subscription,
-  Tag,
-  User,
-} from "./entity";
-import { AuthResolver } from "./resolvers/auth/auth";
-import { CommentResolver } from "./resolvers/comment/comment";
-import { QuizResolver } from "./resolvers/quiz/quiz";
-import { UserResolver } from "./resolvers/user/user";
-import { TagResolver } from "./resolvers/tag/tag";
-import path from "path";
 
 const main = async () => {
   try {
@@ -45,32 +28,15 @@ const main = async () => {
         : process.env.DATABASE_URL_DEV,
       synchronize: !__PROD__,
       logging: !__PROD__,
-      entities: [
-        Bookmark,
-        Comment,
-        Like,
-        Question,
-        Quiz,
-        Result,
-        Score,
-        Subscription,
-        Tag,
-        User,
-      ],
-      migrations: [path.join(__dirname, "./migration/*")],
+      entities: [path.join(__dirname, "./entity/*.ts")],
+      migrations: [path.join(__dirname, "./migration/*.ts")],
     });
 
     await connection.runMigrations();
 
     const apolloServer = new ApolloServer({
       schema: await buildSchema({
-        resolvers: [
-          AuthResolver,
-          CommentResolver,
-          QuizResolver,
-          TagResolver,
-          UserResolver,
-        ],
+        resolvers: [path.join(__dirname, "./resolvers/*.ts")],
       }),
       context: ({ req, res }) => {
         return {

@@ -1,8 +1,8 @@
 import React, { Fragment, useEffect, useState } from "react";
 
 import Input from "@components/inputs/Input";
-import Layout from "@components/ui/Layout";
-import NestedLayout from "@components/ui/NestedLayout";
+import Layout from "@components/layout/Layout";
+import NestedLayout from "@components/layout/NestedLayout";
 import { useCreateQuizMutation } from "@generated/graphql";
 import { Dialog, Transition } from "@headlessui/react";
 import { useUser } from "@utils/useUser";

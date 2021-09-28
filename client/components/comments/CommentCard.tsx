@@ -1,7 +1,7 @@
 import React from "react";
 
+import Avatar from "@components/Avatar";
 import MenuDropdown from "@components/dropdowns/MenuDropdown";
-import Avatar from "@components/ui/Avatar";
 import { CommentFragment, useDeleteCommentMutation } from "@generated/graphql";
 import { Menu } from "@headlessui/react";
 import { TrashIcon } from "@heroicons/react/outline";

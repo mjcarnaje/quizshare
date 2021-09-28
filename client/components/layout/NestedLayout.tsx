@@ -1,6 +1,6 @@
 import React from "react";
 
-import ContentHeader from "@components/ui/ContentHeader";
+import ContentHeader from "@components/layout/ContentHeader";
 
 interface Props {
   showSearchBar?: boolean;

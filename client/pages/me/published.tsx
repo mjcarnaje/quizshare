@@ -1,8 +1,8 @@
 import React from "react";
 
+import Layout from "@components/layout/Layout";
+import NestedLayout from "@components/layout/NestedLayout";
 import Quizzes from "@components/quizzes/Quizzes";
-import Layout from "@components/ui/Layout";
-import NestedLayout from "@components/ui/NestedLayout";
 import { QUIZZES_LIMIT } from "@constant/index";
 import { useGetMeQuizzesQuery } from "@generated/graphql";
 import { useUser } from "@utils/useUser";
@@ -29,7 +29,11 @@ const PublishedPage: React.FC<Props> = () => {
     return (
       <Layout>
         <NestedLayout>
-          <p>Loading...</p>
+          <div className="px-4 mx-auto mt-3 max-w-7xl sm:px-6 md:px-8">
+            <div className="max-w-3xl overflow-hidden bg-white shadow sm:rounded-md">
+              <Quizzes type="timeline" loading={loading} />
+            </div>
+          </div>
         </NestedLayout>
       </Layout>
     );
