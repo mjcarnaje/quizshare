@@ -6,8 +6,8 @@ export const createFollowLoader = () =>
   new DataLoader(async (authorIds) => {
     const follows = await getConnection()
       .getRepository(Follow)
-      .createQueryBuilder("subscription")
-      .where("subscription.followedId IN (:...ids)", { ids: authorIds })
+      .createQueryBuilder("follow")
+      .where("follow.followedId IN (:...ids)", { ids: authorIds })
       .getMany();
 
     const followsMap: Record<string, Follow> = {};

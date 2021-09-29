@@ -105,10 +105,10 @@ export class User extends BaseEntity {
   @OneToMany(() => Comment, (comment) => comment.quiz)
   comments: Comment[];
 
-  @OneToMany(() => Follow, (subscription) => subscription.followed)
+  @OneToMany(() => Follow, (follow) => follow.followed)
   followed: Follow[];
 
-  @OneToMany(() => Follow, (subscription) => subscription.follower)
+  @OneToMany(() => Follow, (follow) => follow.follower)
   followers: Follow[];
 
   @Field(() => Int)

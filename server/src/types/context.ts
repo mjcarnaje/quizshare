@@ -12,7 +12,7 @@ export type IContext = {
   likeLoader: DataLoader<unknown, Like, unknown>;
   bookmarkLoader: DataLoader<unknown, Bookmark, unknown>;
   authorLoader: DataLoader<unknown, User, unknown>;
-  subscriptionLoader: DataLoader<unknown, Follow, unknown>;
+  followLoader: DataLoader<unknown, Follow, unknown>;
   req: Request;
   res: Response;
 };

@@ -15,7 +15,7 @@ const FollowButton: React.FC<Props> = ({ userId, isFollowed, isMine }) => {
   const router = useRouter();
   const { data } = useMeQuery({ fetchPolicy: "cache-only" });
 
-  const [toggleSubscription] = useToggleFollowMutation();
+  const [toggleFollow] = useToggleFollowMutation();
 
   if (isMine) {
     return null;
@@ -26,7 +26,7 @@ const FollowButton: React.FC<Props> = ({ userId, isFollowed, isMine }) => {
       type="button"
       onClick={async () => {
         if (data) {
-          await toggleSubscription({
+          await toggleFollow({
             variables: { userId },
           });
         } else {

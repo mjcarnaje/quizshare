@@ -107,7 +107,7 @@ export class UserResolver {
 
   @FieldResolver(() => Boolean)
   async isFollowed(@Root() user: User, @Ctx() ctx: IContext) {
-    const status = await ctx.subscriptionLoader.load(user.id);
+    const status = await ctx.followLoader.load(user.id);
     return user.id === status?.followedId;
   }
 
