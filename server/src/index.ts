@@ -94,6 +94,7 @@ const main = async () => {
           secure: __PROD__,
           maxAge: 1000 * 60 * 60 * 24 * 7,
           domain: __PROD__ ? ".quizshare.me" : undefined,
+          sameSite: "none",
         },
       })
     );
