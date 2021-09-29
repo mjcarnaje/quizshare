@@ -67,16 +67,14 @@ const main = async () => {
 
     app.set("trust proxy", 1);
 
-    const pgSession = connectPgSimple(session);
-
     app.use(
       cors({
         credentials: true,
-        origin: __PROD__
-          ? process.env.CORS_ORIGIN
-          : process.env.CORS_ORIGIN_DEV,
+        origin: __PROD__ ? "https://www.quizshare.me" : "http://localhost:3000",
       })
     );
+
+    const pgSession = connectPgSimple(session);
 
     app.use(
       session({
@@ -91,10 +89,9 @@ const main = async () => {
         saveUninitialized: false,
         cookie: {
           httpOnly: true,
-          secure: __PROD__,
-          maxAge: 1000 * 60 * 60 * 24 * 7,
+          secure: __PROD__, // only works in https
+          maxAge: 1000 * 60 * 60 * 24 * 7, // 7 days
           domain: __PROD__ ? ".quizshare.me" : undefined,
-          sameSite: "none",
         },
       })
     );

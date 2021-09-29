@@ -1,18 +1,25 @@
-import { ApolloClient, InMemoryCache } from "@apollo/client";
+import { ApolloClient, HttpLink, InMemoryCache } from "@apollo/client";
 import { PaginatedComment, PaginatedQuizzes } from "@generated/graphql";
 import { NextPageContext } from "next";
 import { withApollo } from "next-apollo";
 
 const apolloClient = (ctx?: NextPageContext) => {
+  console.log("NEXT.JS COOKIE HEADER", ctx?.req?.headers.cookie);
+
   const apollo = new ApolloClient({
-    uri: `${process.env.NEXT_PUBLIC_API_URL}/graphql`,
-    credentials: "include",
-    headers: {
-      cookie:
-        (typeof window === "undefined"
-          ? ctx?.req?.headers.cookie
-          : undefined) ?? "",
-    },
+    link: new HttpLink({
+      uri:
+        process.env.NODE_ENV === "production"
+          ? "https://api.quizshare.me/graphql"
+          : "http://localhost:4000/graphql",
+      credentials: "include",
+      headers: {
+        cookie:
+          (typeof window === "undefined"
+            ? ctx?.req?.headers.cookie
+            : undefined) ?? "",
+      },
+    }),
     cache: new InMemoryCache({
       typePolicies: {
         Score: {
