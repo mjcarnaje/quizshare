@@ -20,6 +20,8 @@ import {
   SaveIcon,
   UploadIcon,
 } from "@heroicons/react/outline";
+import { showAlert } from "@store/alert";
+import { useAppDispatch } from "@store/index";
 import errorMapper from "@utils/errorMapper";
 import { classNames, cleanTypeName } from "@utils/index";
 import { useGetQuery } from "@utils/useGetQuery";
@@ -33,6 +35,7 @@ type IActiveNav = "settings" | "questions" | "results";
 
 const EditQuiz: React.FC = () => {
   const { user } = useUser();
+  const dipatch = useAppDispatch();
   const router = useRouter();
   const quizId = useGetQuery("quizId");
 
@@ -69,11 +72,33 @@ const EditQuiz: React.FC = () => {
 
   const onSubmit: SubmitHandler<QuizInput> = async (data) => {
     try {
-      await saveQuiz({
+      const { errors } = await saveQuiz({
         variables: { quizId, input: data },
       });
+      if (!errors) {
+        dipatch(
+          showAlert({
+            title: "Saved quiz",
+            description: "Sucessfuly saved the quiz.",
+            duration: 3000,
+            isClosable: true,
+            status: "success",
+            withUndo: false,
+          })
+        );
+      }
     } catch (err) {
       errorMapper(err, setError);
+      dipatch(
+        showAlert({
+          title: "Cannot save.",
+          description: "Check all your input.",
+          duration: 3000,
+          isClosable: true,
+          status: "success",
+          withUndo: false,
+        })
+      );
     }
   };
 
@@ -113,11 +138,20 @@ const EditQuiz: React.FC = () => {
         icon: UploadIcon,
         onClick: async () => {
           try {
-            await handleSubmit(onSubmit)();
             const { errors } = await publishQuiz({
               variables: { quizId },
             });
             if (!errors) {
+              dipatch(
+                showAlert({
+                  title: "Published quiz",
+                  description: "Successfuly published quiz",
+                  duration: 3000,
+                  isClosable: true,
+                  status: "success",
+                  withUndo: false,
+                })
+              );
               router.push("/");
             }
           } catch (err) {

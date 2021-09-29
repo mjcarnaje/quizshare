@@ -54,11 +54,8 @@ const QuizLanding: React.FC<Props> = () => {
                 </p>
               </div>
             </div>
-            <div className="flex items-center justify-between w-full px-4 py-3 bg-white rounded-md shadow xl:flex-col xl:justify-around xl:px-1 xl:py-4 xl:w-20 xl:flex xl:fixed xl:bottom-24 xl:top-24 xl:right-8">
-              <div className="hidden xl:block">
-                <Skeleton circle height={28} width={28} />
-              </div>
-              <div className="space-x-2 text-center xl:space-y-4 xl:space-x-0">
+            <div className="flex items-center justify-between w-full my-3 px-4 py-3 bg-white rounded-md shadow">
+              <div className="space-x-2 text-center">
                 <Skeleton circle height={28} width={28} />
                 <div className="inline-flex items-center px-3 py-2 text-base font-medium leading-4 text-gray-500 hover:text-yellow-500 rounded-2xl hover:bg-gray-100">
                   <Skeleton circle height={28} width={28} />
@@ -67,8 +64,8 @@ const QuizLanding: React.FC<Props> = () => {
                   <Skeleton circle height={28} width={28} />
                 </div>
               </div>
-              <div className="flex justify-end space-x-2 xl:space-x-0">
-                <div className="block xl:hidden">
+              <div className="flex justify-end space-x-2">
+                <div className="block">
                   <Skeleton circle height={28} width={28} />
                 </div>
                 <Skeleton circle height={28} width={28} />
@@ -106,9 +103,6 @@ const QuizLanding: React.FC<Props> = () => {
         </div>
       </div>
       <div className="flex items-center justify-between w-full my-3 px-4 py-3 bg-white rounded-md shadow">
-        <div className="hidden">
-          <BookmarkButton quizId={quizId} isBookmarked={isBookmarked} />
-        </div>
         <div className="space-x-2 text-center">
           <LikeButton quizId={quizId} isLiked={isLiked} likeCount={likeCount} />
           <div className="inline-flex items-center px-3 py-2 text-base font-medium leading-4 text-gray-500 hover:text-yellow-500 rounded-2xl hover:bg-gray-100">

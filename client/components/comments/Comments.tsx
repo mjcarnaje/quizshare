@@ -30,7 +30,7 @@ const Comments: React.FC<Props> = ({ quizId, authorId }) => {
   return (
     <>
       <ul className="space-y-1 !list-none">
-        {!comments.length && loading && (
+        {!comments.length && !loading && (
           <>
             {[...Array(3).keys()].map((idx) => (
               <CommentCardSkeleton key={idx} />

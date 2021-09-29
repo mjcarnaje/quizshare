@@ -91,11 +91,28 @@ export const QuizCard: React.FC<Props> = ({
       )}
       <div className="w-full p-2 rounded-md cursor-pointer group md:flex ">
         <div className="w-full">
-          <Link href={`/quiz/${id}`}>
-            <h2 className="text-3xl font-bold leading-tight tracking-tight break-all">
-              {title}
-            </h2>
-          </Link>
+          <div className="flex justify-between">
+            <Link href={`/quiz/${id}/view`}>
+              <h2 className="text-3xl font-bold leading-tight tracking-tight break-all">
+                {title}
+              </h2>
+            </Link>
+            <div>
+              {type === "me" && (
+                <>
+                  {isPublished ? (
+                    <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">
+                      Published
+                    </span>
+                  ) : (
+                    <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-yellow-100 text-yellow-800">
+                      Drafted
+                    </span>
+                  )}
+                </>
+              )}
+            </div>
+          </div>
           <div className="flex gap-4 mt-1 mb-4">
             <span className="flex items-center text-sm font-medium text-gray-700">
               <CalendarIcon className="w-4 h-4 mr-1" />
