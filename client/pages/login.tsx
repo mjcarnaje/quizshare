@@ -80,7 +80,7 @@ const LoginPage = () => {
                 required
               />
               <Input<SignInInput>
-                type="text"
+                type="password"
                 label="Password"
                 name="password"
                 error={errors.usernameOrEmail}

@@ -63,36 +63,11 @@ const main = async () => {
 
     await connection.runMigrations();
 
-    const apolloServer = new ApolloServer({
-      schema: await buildSchema({
-        resolvers: [
-          AuthResolver,
-          CommentResolver,
-          QuizResolver,
-          TagResolver,
-          UserResolver,
-        ],
-        dateScalarMode: "timestamp",
-      }),
-      context: ({ req, res }) => {
-        return {
-          likeLoader: createLikeLoader(),
-          bookmarkLoader: createBookmarkLoader(),
-          authorLoader: createAuthorLoader(),
-          subscriptionLoader: createFollowLoader(),
-          req,
-          res,
-        };
-      },
-      playground: true,
-      introspection: true,
-    });
-
     const app = express();
 
-    const pgSession = connectPgSimple(session);
-
     app.set("trust proxy", 1);
+
+    const pgSession = connectPgSimple(session);
 
     app.use(
       cors({
@@ -127,6 +102,31 @@ const main = async () => {
 
     googlePassport(app);
     facebookPassport(app);
+
+    const apolloServer = new ApolloServer({
+      schema: await buildSchema({
+        resolvers: [
+          AuthResolver,
+          CommentResolver,
+          QuizResolver,
+          TagResolver,
+          UserResolver,
+        ],
+        dateScalarMode: "timestamp",
+      }),
+      context: ({ req, res }) => {
+        return {
+          likeLoader: createLikeLoader(),
+          bookmarkLoader: createBookmarkLoader(),
+          authorLoader: createAuthorLoader(),
+          subscriptionLoader: createFollowLoader(),
+          req,
+          res,
+        };
+      },
+      playground: true,
+      introspection: true,
+    });
 
     apolloServer.applyMiddleware({ app, cors: false });
 
