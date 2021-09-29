@@ -89,7 +89,7 @@ const main = async () => {
         saveUninitialized: false,
         cookie: {
           httpOnly: true,
-          secure: __PROD__, // only works in https
+          secure: false, // only works in https
           maxAge: 1000 * 60 * 60 * 24 * 7, // 7 days
           domain: __PROD__ ? "api.quizshare.me" : undefined,
         },
