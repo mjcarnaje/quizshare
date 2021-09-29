@@ -1,30 +1,14 @@
-import { Field, Int, ObjectType } from "type-graphql";
-import {
-  BaseEntity,
-  Column,
-  Entity,
-  ManyToOne,
-  PrimaryGeneratedColumn,
-} from "typeorm";
+import { Field, ID, Int, ObjectType } from "type-graphql";
+import { BaseEntity, Column, Entity, ManyToOne, PrimaryColumn } from "typeorm";
 import { Quiz } from ".";
 import { Maybe } from "../types";
 
 @ObjectType()
 @Entity()
 export class Result extends BaseEntity {
-  @Field(() => String)
-  @PrimaryGeneratedColumn("uuid")
+  @Field(() => ID)
+  @PrimaryColumn("uuid")
   id: string;
-
-  @Field() 
-  @Column()
-  quizId: string;
-  
-  @ManyToOne(() => Quiz, (quiz) => quiz.questions, {
-    onDelete: "CASCADE",
-    onUpdate: "CASCADE",
-  })
-  quiz: Quiz;
 
   @Field()
   @Column()
@@ -39,6 +23,12 @@ export class Result extends BaseEntity {
   resultPhoto: Maybe<string>;
 
   @Field(() => Int)
-  @Column()
+  @Column("int")
   minimumPercent: number;
+
+  @ManyToOne(() => Quiz, (quiz) => quiz.questions, {
+    onDelete: "CASCADE",
+    onUpdate: "CASCADE",
+  })
+  quiz: Quiz;
 }

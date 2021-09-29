@@ -130,10 +130,11 @@ const EditQuiz: React.FC = () => {
 
   useEffect(() => {
     if (data) {
+      const { id, ...quizInput } = data?.getQuizInput;
       // Description is possible null from api
       // Description is required for input
       // @ts-expect-error
-      reset(cleanTypeName(data?.getQuizInput));
+      reset(cleanTypeName(quizInput));
     }
   }, [data]);
 
@@ -156,7 +157,6 @@ const EditQuiz: React.FC = () => {
               <aside className="py-6 lg:col-span-3">
                 <nav>
                   <div className="space-y-1">
-                    {/* <pre>{JSON.stringify(formState, null, 2)}</pre> */}
                     {subNavigation[0].map((item) => (
                       <button
                         key={item.name}
@@ -234,6 +234,7 @@ const EditQuiz: React.FC = () => {
                                 >
                                   Upload image
                                 </button>
+
                                 <p className="text-xs text-gray-500">
                                   PNG, JPG up to 1MB
                                 </p>

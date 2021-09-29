@@ -1,9 +1,9 @@
 import { Field, ObjectType } from "type-graphql";
 import {
   BaseEntity,
-  Column,
   CreateDateColumn,
   Entity,
+  JoinColumn,
   ManyToOne,
   PrimaryColumn,
 } from "typeorm";
@@ -11,24 +11,24 @@ import { User } from ".";
 
 @ObjectType()
 @Entity()
-export class Subscription extends BaseEntity {
-  @Field(() => String)
+export class Follow extends BaseEntity {
+  @Field()
   @PrimaryColumn()
   followedId: string;
 
-  @Field(() => String)
-  @Column()
-  followerId: string;
-
-  @Field(() => User)
-  @ManyToOne(() => User, (user) => user.followers, { cascade: true })
-  follower: User;
-
-  @Field(() => User)
   @ManyToOne(() => User, (user) => user.followed, { cascade: true })
+  @JoinColumn()
   followed: User;
 
-  @Field(() => String)
+  @Field()
+  @PrimaryColumn()
+  followerId: string;
+
+  @ManyToOne(() => User, (user) => user.followers, { cascade: true })
+  @JoinColumn()
+  follower: User;
+
+  @Field()
   @CreateDateColumn()
   createdAt: Date;
 }

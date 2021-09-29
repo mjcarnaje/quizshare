@@ -1,10 +1,11 @@
-import { Field, ObjectType, Int, Float } from "type-graphql";
+import { Field, ObjectType, Int, Float, ID } from "type-graphql";
 import {
   BaseEntity,
   BeforeInsert,
   Column,
   CreateDateColumn,
   Entity,
+  JoinColumn,
   ManyToOne,
   PrimaryGeneratedColumn,
 } from "typeorm";
@@ -13,13 +14,29 @@ import { Quiz, User } from ".";
 @ObjectType()
 @Entity()
 export class Score extends BaseEntity {
-  @Field(() => String)
+  @Field(() => ID)
   @PrimaryGeneratedColumn("uuid")
   id: string;
 
+  @Field(() => Int)
+  @Column("int")
+  totalItems: number;
+
+  @Field(() => Int)
+  @Column("int")
+  score: number;
+
+  @Field(() => Float)
+  @Column("float", { default: 0 })
+  percentage: number;
+
+  @Field()
+  @CreateDateColumn()
+  answered: Date;
+
   @Field()
   @Column()
-  quizAuthorId: string;
+  authorId: string;
 
   @Field()
   @Column()
@@ -27,8 +44,8 @@ export class Score extends BaseEntity {
 
   @ManyToOne(() => Quiz, (quiz) => quiz.takers, {
     onDelete: "CASCADE",
-    onUpdate: "CASCADE",
   })
+  @JoinColumn()
   quiz: Quiz;
 
   @Field()
@@ -37,23 +54,8 @@ export class Score extends BaseEntity {
 
   @Field(() => User)
   @ManyToOne(() => User, (user) => user.takers)
+  @JoinColumn()
   taker: User;
-
-  @Field(() => Int)
-  @Column()
-  totalItems: number;
-
-  @Field(() => Int)
-  @Column()
-  score: number;
-
-  @Field(() => Float)
-  @Column("float", { default: 0 })
-  percentage: number;
-
-  @Field(() => String)
-  @CreateDateColumn()
-  answered: Date;
 
   @BeforeInsert()
   setPercentage() {

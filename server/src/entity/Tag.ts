@@ -1,4 +1,4 @@
-import { Field, ObjectType } from "type-graphql";
+import { Field, ID, ObjectType } from "type-graphql";
 import {
   BaseEntity,
   Column,
@@ -12,15 +12,15 @@ import { Maybe } from "../types/index";
 @ObjectType()
 @Entity()
 export class Tag extends BaseEntity {
-  @Field(() => String)
+  @Field(() => ID)
   @PrimaryGeneratedColumn("uuid")
   id: string;
 
-  @Field(() => String)
+  @Field()
   @Column("text", { unique: true })
   name: string;
 
-  @Field(() => String)
+  @Field()
   @Column()
   description: string;
 

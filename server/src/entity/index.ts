@@ -6,5 +6,5 @@ export { Bookmark } from "./Bookmark";
 export { Tag } from "./Tag";
 export { Result } from "./Result";
 export { Comment } from "./Comment";
-export { Subscription } from "./Subscription";
+export { Follow } from "./Follow";
 export { Score } from "./Score";

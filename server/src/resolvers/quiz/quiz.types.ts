@@ -58,6 +58,6 @@ export class ScoreResult {
   @Field(() => ScoreResultScore)
   score: ScoreResultScore;
 
-  @Field(() => ScoreResultResult)
-  result: ScoreResultResult;
+  @Field(() => ScoreResultResult, { nullable: true })
+  result?: ScoreResultResult;
 }

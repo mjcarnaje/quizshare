@@ -1,5 +1,5 @@
 import { GraphQLJSONObject } from "graphql-type-json";
-import { Field, ObjectType } from "type-graphql";
+import { Field, ID, ObjectType } from "type-graphql";
 import { BaseEntity, Column, Entity, ManyToOne, PrimaryColumn } from "typeorm";
 import { Quiz } from ".";
 import { Maybe } from "../types";
@@ -7,15 +7,9 @@ import { Maybe } from "../types";
 @ObjectType()
 @Entity()
 export class Question extends BaseEntity {
-  @Field(() => String)
-  @PrimaryColumn()
+  @Field(() => ID)
+  @PrimaryColumn("uuid")
   id: string;
-
-  @ManyToOne(() => Quiz, (quiz) => quiz.questions, {
-    onUpdate: "CASCADE",
-    onDelete: "CASCADE",
-  })
-  quiz: Quiz;
 
   @Field()
   @Column()
@@ -40,4 +34,10 @@ export class Question extends BaseEntity {
   @Field(() => String, { nullable: true })
   @Column("text", { nullable: true })
   hint: Maybe<string>;
+
+  @ManyToOne(() => Quiz, (quiz) => quiz.questions, {
+    onDelete: "CASCADE",
+    onUpdate: "CASCADE",
+  })
+  quiz: Quiz;
 }

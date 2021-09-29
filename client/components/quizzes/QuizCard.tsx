@@ -110,7 +110,7 @@ export const QuizCard: React.FC<Props> = ({
               {`${questionCount} Questions`}
             </span>
           </div>
-          <Link href={`/quiz/${id}`}>
+          <Link href={`/quiz/${id}/view`}>
             <p className="mt-1 text-lg leading-snug tracking-tight break-words">
               {truncateText(description)}
             </p>

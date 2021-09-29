@@ -12,10 +12,10 @@ export type Scalars = {
   Boolean: boolean;
   Int: number;
   Float: number;
-  /** The javascript `Date` as string. Type represents date and time as the ISO Date string. */
-  DateTime: any;
   /** The `JSONObject` scalar type represents JSON objects as specified by [ECMA-404](http://www.ecma-international.org/publications/files/ECMA-ST/ECMA-404.pdf). */
   JSONObject: any;
+  /** The javascript `Date` as integer. Type represents date and time as number of milliseconds from start of UNIX epoch. */
+  Timestamp: any;
 };
 
 export type ChangeRoleInput = {
@@ -32,15 +32,14 @@ export type ChoiceInput = {
 export type Comment = {
   __typename?: 'Comment';
   id: Scalars['String'];
+  text: Scalars['String'];
+  createdAt: Scalars['String'];
+  updatedAt: Scalars['String'];
   quizId: Scalars['String'];
   authorId: Scalars['String'];
   author: User;
-  text: Scalars['String'];
   isMine: Scalars['Boolean'];
-  createdAt: Scalars['String'];
-  updatedAt: Scalars['String'];
 };
-
 
 export type GetQuizzesInput = {
   search?: Maybe<Scalars['String']>;
@@ -71,7 +70,7 @@ export type Mutation = {
   toggleBookmark: Quiz;
   submitAnswers: ScoreResult;
   changeRole: User;
-  toggleSubscription: User;
+  toggleFollow: User;
 };
 
 
@@ -145,13 +144,13 @@ export type MutationChangeRoleArgs = {
 };
 
 
-export type MutationToggleSubscriptionArgs = {
+export type MutationToggleFollowArgs = {
   userId: Scalars['String'];
 };
 
 export type PageInfo = {
   __typename?: 'PageInfo';
-  endCursor: Scalars['String'];
+  endCursor?: Maybe<Scalars['String']>;
   hasNextPage: Scalars['Boolean'];
 };
 
@@ -232,12 +231,12 @@ export type QueryGetTakersArgs = {
 
 
 export type QueryUsersArgs = {
-  usersInput: UsersInput;
+  input: UsersInput;
 };
 
 export type Question = {
   __typename?: 'Question';
-  id: Scalars['String'];
+  id: Scalars['ID'];
   question: Scalars['String'];
   questionPhoto?: Maybe<Scalars['String']>;
   choices: Array<Scalars['JSONObject']>;
@@ -291,8 +290,7 @@ export type QuizInput = {
 
 export type Result = {
   __typename?: 'Result';
-  id: Scalars['String'];
-  quizId: Scalars['String'];
+  id: Scalars['ID'];
   title: Scalars['String'];
   description: Scalars['String'];
   resultPhoto?: Maybe<Scalars['String']>;
@@ -309,15 +307,15 @@ export type ResultInput = {
 
 export type Score = {
   __typename?: 'Score';
-  id: Scalars['String'];
-  quizAuthorId: Scalars['String'];
-  quizId: Scalars['String'];
-  takerId: Scalars['String'];
-  taker: User;
+  id: Scalars['ID'];
   totalItems: Scalars['Int'];
   score: Scalars['Int'];
   percentage: Scalars['Float'];
-  answered: Scalars['String'];
+  answered: Scalars['Timestamp'];
+  authorId: Scalars['String'];
+  quizId: Scalars['String'];
+  takerId: Scalars['String'];
+  taker: User;
 };
 
 export type ScoreResult = {
@@ -367,7 +365,7 @@ export type SubmitAnswersInput = {
 
 export type Tag = {
   __typename?: 'Tag';
-  id: Scalars['String'];
+  id: Scalars['ID'];
   name: Scalars['String'];
   description: Scalars['String'];
   tagPhoto?: Maybe<Scalars['String']>;
@@ -377,6 +375,7 @@ export type TagInput = {
   id: Scalars['String'];
   name: Scalars['String'];
 };
+
 
 export type User = {
   __typename?: 'User';
@@ -389,7 +388,7 @@ export type User = {
   coverPhoto?: Maybe<Scalars['String']>;
   firstName: Scalars['String'];
   lastName?: Maybe<Scalars['String']>;
-  birthday?: Maybe<Scalars['DateTime']>;
+  birthday?: Maybe<Scalars['String']>;
   gender?: Maybe<Scalars['String']>;
   country?: Maybe<Scalars['String']>;
   bio?: Maybe<Scalars['String']>;
@@ -397,9 +396,9 @@ export type User = {
   role: UserRole;
   followedCount: Scalars['Int'];
   followerCount: Scalars['Int'];
+  createdAt: Scalars['Timestamp'];
+  updatedAt: Scalars['Timestamp'];
   isFollowed: Scalars['Boolean'];
-  createdAt: Scalars['String'];
-  updatedAt: Scalars['String'];
 };
 
 export enum UserRole {
@@ -666,6 +665,19 @@ export type ToggleBookmarkMutation = (
   ) }
 );
 
+export type ToggleFollowMutationVariables = Exact<{
+  userId: Scalars['String'];
+}>;
+
+
+export type ToggleFollowMutation = (
+  { __typename?: 'Mutation' }
+  & { toggleFollow: (
+    { __typename?: 'User' }
+    & AuthorFragment
+  ) }
+);
+
 export type ToggleLikeMutationVariables = Exact<{
   quizId: Scalars['String'];
 }>;
@@ -676,19 +688,6 @@ export type ToggleLikeMutation = (
   & { toggleLike: (
     { __typename?: 'Quiz' }
     & QuizCardFragment
-  ) }
-);
-
-export type ToggleSubscriptionMutationVariables = Exact<{
-  userId: Scalars['String'];
-}>;
-
-
-export type ToggleSubscriptionMutation = (
-  { __typename?: 'Mutation' }
-  & { toggleSubscription: (
-    { __typename?: 'User' }
-    & AuthorFragment
   ) }
 );
 
@@ -818,7 +817,7 @@ export type GetQuizzesQuery = (
 );
 
 export type GetUsersQueryVariables = Exact<{
-  usersInput: UsersInput;
+  input: UsersInput;
 }>;
 
 
@@ -1434,6 +1433,39 @@ export function useToggleBookmarkMutation(baseOptions?: Apollo.MutationHookOptio
 export type ToggleBookmarkMutationHookResult = ReturnType<typeof useToggleBookmarkMutation>;
 export type ToggleBookmarkMutationResult = Apollo.MutationResult<ToggleBookmarkMutation>;
 export type ToggleBookmarkMutationOptions = Apollo.BaseMutationOptions<ToggleBookmarkMutation, ToggleBookmarkMutationVariables>;
+export const ToggleFollowDocument = gql`
+    mutation ToggleFollow($userId: String!) {
+  toggleFollow(userId: $userId) {
+    ...Author
+  }
+}
+    ${AuthorFragmentDoc}`;
+export type ToggleFollowMutationFn = Apollo.MutationFunction<ToggleFollowMutation, ToggleFollowMutationVariables>;
+
+/**
+ * __useToggleFollowMutation__
+ *
+ * To run a mutation, you first call `useToggleFollowMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useToggleFollowMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [toggleFollowMutation, { data, loading, error }] = useToggleFollowMutation({
+ *   variables: {
+ *      userId: // value for 'userId'
+ *   },
+ * });
+ */
+export function useToggleFollowMutation(baseOptions?: Apollo.MutationHookOptions<ToggleFollowMutation, ToggleFollowMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<ToggleFollowMutation, ToggleFollowMutationVariables>(ToggleFollowDocument, options);
+      }
+export type ToggleFollowMutationHookResult = ReturnType<typeof useToggleFollowMutation>;
+export type ToggleFollowMutationResult = Apollo.MutationResult<ToggleFollowMutation>;
+export type ToggleFollowMutationOptions = Apollo.BaseMutationOptions<ToggleFollowMutation, ToggleFollowMutationVariables>;
 export const ToggleLikeDocument = gql`
     mutation ToggleLike($quizId: String!) {
   toggleLike(quizId: $quizId) {
@@ -1467,39 +1499,6 @@ export function useToggleLikeMutation(baseOptions?: Apollo.MutationHookOptions<T
 export type ToggleLikeMutationHookResult = ReturnType<typeof useToggleLikeMutation>;
 export type ToggleLikeMutationResult = Apollo.MutationResult<ToggleLikeMutation>;
 export type ToggleLikeMutationOptions = Apollo.BaseMutationOptions<ToggleLikeMutation, ToggleLikeMutationVariables>;
-export const ToggleSubscriptionDocument = gql`
-    mutation ToggleSubscription($userId: String!) {
-  toggleSubscription(userId: $userId) {
-    ...Author
-  }
-}
-    ${AuthorFragmentDoc}`;
-export type ToggleSubscriptionMutationFn = Apollo.MutationFunction<ToggleSubscriptionMutation, ToggleSubscriptionMutationVariables>;
-
-/**
- * __useToggleSubscriptionMutation__
- *
- * To run a mutation, you first call `useToggleSubscriptionMutation` within a React component and pass it any options that fit your needs.
- * When your component renders, `useToggleSubscriptionMutation` returns a tuple that includes:
- * - A mutate function that you can call at any time to execute the mutation
- * - An object with fields that represent the current status of the mutation's execution
- *
- * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
- *
- * @example
- * const [toggleSubscriptionMutation, { data, loading, error }] = useToggleSubscriptionMutation({
- *   variables: {
- *      userId: // value for 'userId'
- *   },
- * });
- */
-export function useToggleSubscriptionMutation(baseOptions?: Apollo.MutationHookOptions<ToggleSubscriptionMutation, ToggleSubscriptionMutationVariables>) {
-        const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useMutation<ToggleSubscriptionMutation, ToggleSubscriptionMutationVariables>(ToggleSubscriptionDocument, options);
-      }
-export type ToggleSubscriptionMutationHookResult = ReturnType<typeof useToggleSubscriptionMutation>;
-export type ToggleSubscriptionMutationResult = Apollo.MutationResult<ToggleSubscriptionMutation>;
-export type ToggleSubscriptionMutationOptions = Apollo.BaseMutationOptions<ToggleSubscriptionMutation, ToggleSubscriptionMutationVariables>;
 export const GetCommentsDocument = gql`
     query GetComments($quizId: String!, $limit: Float!, $cursor: String) {
   getComments(quizId: $quizId, limit: $limit, cursor: $cursor) {
@@ -1784,8 +1783,8 @@ export type GetQuizzesQueryHookResult = ReturnType<typeof useGetQuizzesQuery>;
 export type GetQuizzesLazyQueryHookResult = ReturnType<typeof useGetQuizzesLazyQuery>;
 export type GetQuizzesQueryResult = Apollo.QueryResult<GetQuizzesQuery, GetQuizzesQueryVariables>;
 export const GetUsersDocument = gql`
-    query getUsers($usersInput: UsersInput!) {
-  users(usersInput: $usersInput) {
+    query getUsers($input: UsersInput!) {
+  users(input: $input) {
     users {
       ...User
     }
@@ -1809,7 +1808,7 @@ ${PageInfoFragmentDoc}`;
  * @example
  * const { data, loading, error } = useGetUsersQuery({
  *   variables: {
- *      usersInput: // value for 'usersInput'
+ *      input: // value for 'input'
  *   },
  * });
  */

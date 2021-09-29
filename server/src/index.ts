@@ -9,13 +9,30 @@ import path from "path";
 import "reflect-metadata";
 import { buildSchema } from "type-graphql";
 import { createConnection } from "typeorm";
+import {
+  Bookmark,
+  Comment,
+  Question,
+  Quiz,
+  Like,
+  Result,
+  Score,
+  Tag,
+  User,
+  Follow,
+} from "./entity";
+import { AuthResolver } from "./resolvers/auth/auth";
 import { facebookPassport } from "./resolvers/auth/facebook";
 import { googlePassport } from "./resolvers/auth/google";
+import { CommentResolver } from "./resolvers/comment/comment";
+import { QuizResolver } from "./resolvers/quiz/quiz";
+import { TagResolver } from "./resolvers/tag/tag";
+import { UserResolver } from "./resolvers/user/user";
 import {
   createAuthorLoader,
   createBookmarkLoader,
   createLikeLoader,
-  createSubscriptionLoader,
+  createFollowLoader,
   __PROD__,
 } from "./utils";
 
@@ -26,9 +43,21 @@ const main = async () => {
       url: __PROD__
         ? process.env.DATABASE_URL_PROD
         : process.env.DATABASE_URL_DEV,
-      synchronize: !__PROD__,
+      synchronize: false,
       logging: !__PROD__,
-      entities: [path.join(__dirname, "./entity/*.ts")],
+      entities: [
+        Bookmark,
+        Comment,
+        Like,
+        Question,
+        Quiz,
+        Result,
+        Score,
+        Follow,
+        Tag,
+        User,
+      ],
+      dropSchema: false,
       migrations: [path.join(__dirname, "./migration/*.ts")],
     });
 
@@ -36,14 +65,21 @@ const main = async () => {
 
     const apolloServer = new ApolloServer({
       schema: await buildSchema({
-        resolvers: [path.join(__dirname, "./resolvers/*.ts")],
+        resolvers: [
+          AuthResolver,
+          CommentResolver,
+          QuizResolver,
+          TagResolver,
+          UserResolver,
+        ],
+        dateScalarMode: "timestamp",
       }),
       context: ({ req, res }) => {
         return {
           likeLoader: createLikeLoader(),
           bookmarkLoader: createBookmarkLoader(),
           authorLoader: createAuthorLoader(),
-          subscriptionLoader: createSubscriptionLoader(),
+          subscriptionLoader: createFollowLoader(),
           req,
           res,
         };
@@ -83,7 +119,6 @@ const main = async () => {
           secure: __PROD__,
           maxAge: 1000 * 60 * 60 * 24 * 7,
           domain: __PROD__ ? ".quizshare.me" : undefined,
-          sameSite: "none",
         },
       })
     );

@@ -1,6 +1,6 @@
 import React from "react";
 
-import { useMeQuery, useToggleSubscriptionMutation } from "@generated/graphql";
+import { useMeQuery, useToggleFollowMutation } from "@generated/graphql";
 import { UserAddIcon } from "@heroicons/react/solid";
 import { classNames } from "@utils/index";
 import { useRouter } from "next/router";
@@ -15,7 +15,7 @@ const FollowButton: React.FC<Props> = ({ userId, isFollowed, isMine }) => {
   const router = useRouter();
   const { data } = useMeQuery({ fetchPolicy: "cache-only" });
 
-  const [toggleSubscription] = useToggleSubscriptionMutation();
+  const [toggleSubscription] = useToggleFollowMutation();
 
   if (isMine) {
     return null;

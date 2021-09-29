@@ -230,7 +230,7 @@ const ChangeRoles: React.FC<ChangeRolesProps> = () => {
 
   const { data, loading, variables, fetchMore } = useGetUsersQuery({
     variables: {
-      usersInput: {
+      input: {
         limit: 20,
         cursor: null,
         search,
@@ -280,7 +280,7 @@ const ChangeRoles: React.FC<ChangeRolesProps> = () => {
                     fetchMore({
                       variables: {
                         usersInput: {
-                          ...variables?.usersInput,
+                          ...variables?.input,
                           cursor: pageInfo.endCursor,
                         },
                       },

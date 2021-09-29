@@ -1,29 +1,28 @@
+import { Field } from "type-graphql";
 import {
   BaseEntity,
   Entity,
+  JoinColumn,
   ManyToOne,
-  PrimaryGeneratedColumn,
-  Column,
+  PrimaryColumn,
 } from "typeorm";
 import { Quiz, User } from ".";
-import { Field } from "type-graphql";
 
 @Entity()
 export class Like extends BaseEntity {
-  @PrimaryGeneratedColumn("uuid")
-  id: string;
-
   @Field()
-  @Column()
+  @PrimaryColumn()
   quizId: string;
 
   @ManyToOne(() => Quiz, (quiz) => quiz.likes, { onDelete: "CASCADE" })
+  @JoinColumn()
   quiz: Quiz;
 
   @Field()
-  @Column()
+  @PrimaryColumn()
   userId: string;
 
   @ManyToOne(() => User, (user) => user.likes)
+  @JoinColumn()
   user: User;
 }

@@ -105,11 +105,11 @@ const QuizLanding: React.FC<Props> = () => {
           <p className="break-words whitespace-pre-line">{description}</p>
         </div>
       </div>
-      <div className="flex items-center justify-between w-full my-3 px-4 py-3 bg-white rounded-md shadow 2xl:flex-col 2xl:justify-around 2xl:px-1 2xl:py-4 2xl:w-20 2xl:flex 2xl:fixed 2xl:bottom-24 2xl:top-24 2xl:right-8">
-        <div className="hidden 2xl:block">
+      <div className="flex items-center justify-between w-full my-3 px-4 py-3 bg-white rounded-md shadow">
+        <div className="hidden">
           <BookmarkButton quizId={quizId} isBookmarked={isBookmarked} />
         </div>
-        <div className="space-x-2 text-center 2xl:space-y-4 2xl:space-x-0">
+        <div className="space-x-2 text-center">
           <LikeButton quizId={quizId} isLiked={isLiked} likeCount={likeCount} />
           <div className="inline-flex items-center px-3 py-2 text-base font-medium leading-4 text-gray-500 hover:text-yellow-500 rounded-2xl hover:bg-gray-100">
             <CollectionIcon
@@ -123,8 +123,8 @@ const QuizLanding: React.FC<Props> = () => {
             {takerCount}
           </div>
         </div>
-        <div className="flex justify-end space-x-2 2xl:space-x-0">
-          <div className="block 2xl:hidden">
+        <div className="flex justify-end space-x-2">
+          <div className="block">
             <BookmarkButton quizId={quizId} isBookmarked={isBookmarked} />
           </div>
           <TakeButton quizId={quizId} />

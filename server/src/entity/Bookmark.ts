@@ -1,29 +1,25 @@
 import {
-  Entity,
   BaseEntity,
+  Entity,
+  JoinColumn,
   ManyToOne,
-  PrimaryGeneratedColumn,
-  Column,
+  PrimaryColumn,
 } from "typeorm";
-import { User, Quiz } from ".";
-import { Field } from "type-graphql";
+import { Quiz, User } from ".";
 
 @Entity()
 export class Bookmark extends BaseEntity {
-  @PrimaryGeneratedColumn("uuid")
-  id: string;
-
-  @Field()
-  @Column()
+  @PrimaryColumn()
   quizId: string;
 
-  @Field()
-  @Column()
-  userId: string;
-
-  @ManyToOne(() => Quiz, (quiz) => quiz.likes, { cascade: true })
+  @ManyToOne(() => Quiz, (quiz) => quiz.likes, { onDelete: "CASCADE" })
+  @JoinColumn()
   quiz: Quiz;
 
-  @ManyToOne(() => User, (user) => user.likes, { cascade: true })
+  @PrimaryColumn()
+  userId: string;
+
+  @ManyToOne(() => User, (user) => user.likes)
+  @JoinColumn()
   user: User;
 }

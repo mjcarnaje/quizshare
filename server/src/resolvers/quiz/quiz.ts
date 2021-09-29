@@ -90,7 +90,7 @@ export class QuizResolver implements ResolverInterface<Quiz> {
     return {
       quizzes: quizzesRes,
       pageInfo: {
-        endCursor: quizzesRes[quizzesRes.length - 1].createdAt,
+        endCursor: quizzesRes[quizzesRes.length - 1]?.createdAt,
         hasNextPage: results.length === limitPlusOne,
       },
     };
@@ -138,7 +138,7 @@ export class QuizResolver implements ResolverInterface<Quiz> {
     return {
       quizzes: quizzesRes,
       pageInfo: {
-        endCursor: quizzesRes[quizzesRes.length - 1].createdAt,
+        endCursor: quizzesRes[quizzesRes.length - 1]?.createdAt,
         hasNextPage: results.length === limitPlusOne,
       },
     };
@@ -370,12 +370,12 @@ export class QuizResolver implements ResolverInterface<Quiz> {
       quizId,
       totalItems: questionCount,
       score: answeredCorrect,
-      quizAuthorId: quiz.authorId,
+      authorId: quiz.authorId,
     }).save();
 
-    const result = quiz.results.filter((res) => {
-      return score.percentage >= res.minimumPercent;
-    })[0];
+    const result = quiz.results?.filter((res) => {
+      return score.percentage >= res?.minimumPercent;
+    })?.[0];
 
     quiz.takerCount++;
 

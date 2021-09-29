@@ -567,7 +567,7 @@ apollo-server-core@^2.22.2:
     loglevel "^1.6.7"
     lru-cache "^6.0.0"
     sha.js "^2.4.11"
-    subscriptions-transport-ws "^0.9.11"
+    follows-transport-ws "^0.9.11"
     uuid "^8.0.0"
     ws "^6.0.0"
 
@@ -601,10 +601,10 @@ apollo-server-express@^2.22.2:
     body-parser "^1.18.3"
     cors "^2.8.4"
     express "^4.17.1"
-    graphql-subscriptions "^1.0.0"
+    graphql-follows "^1.0.0"
     graphql-tools "^4.0.8"
     parseurl "^1.3.2"
-    subscriptions-transport-ws "^0.9.16"
+    follows-transport-ws "^0.9.16"
     type-is "^1.6.16"
 
 apollo-server-plugin-base@^0.11.0:
@@ -1471,6 +1471,11 @@ graceful-fs@^4.1.2:
   resolved "https://registry.yarnpkg.com/graceful-fs/-/graceful-fs-4.2.6.tgz#ff040b2b0853b23c3d31027523706f1885d76bee"
   integrity sha512-nTnJ528pbqxYanhpDYsi4Rd8MAeaBA67+RZ10CM1m3bTAVFEDcd5AuA4a6W5YkGZ1iNXHzZz8T6TBKLeBuNriQ==
 
+graphql-custom-types@^1.6.0:
+  version "1.6.0"
+  resolved "https://registry.yarnpkg.com/graphql-custom-types/-/graphql-custom-types-1.6.0.tgz#3f96c43f46a4d5371d006b6ac138450e99920da5"
+  integrity sha512-ZHbin5Y0Z9ziL8ITx/g+ycb4xbgfH2aXN63iuBGYSQvw1L4TwRgXZOFNDiO7xGDr70sS7EaNSN03Duwzy1dAUQ==
+
 graphql-extensions@^0.13.0:
   version "0.13.0"
   resolved "https://registry.yarnpkg.com/graphql-extensions/-/graphql-extensions-0.13.0.tgz#34d7f9c1bf49d09c4f1fa8b5d33e6c961a1889fb"
@@ -1487,9 +1492,9 @@ graphql-query-complexity@^0.7.0:
   dependencies:
     lodash.get "^4.4.2"
 
-graphql-subscriptions@^1.0.0, graphql-subscriptions@^1.1.0:
+graphql-follows@^1.0.0, graphql-follows@^1.1.0:
   version "1.2.1"
-  resolved "https://registry.yarnpkg.com/graphql-subscriptions/-/graphql-subscriptions-1.2.1.tgz#2142b2d729661ddf967b7388f7cf1dd4cf2e061d"
+  resolved "https://registry.yarnpkg.com/graphql-follows/-/graphql-follows-1.2.1.tgz#2142b2d729661ddf967b7388f7cf1dd4cf2e061d"
   integrity sha512-95yD/tKi24q8xYa7Q9rhQN16AYj5wPbrb8tmHGM3WRc9EBmWrG/0kkMl+tQG8wcEuE9ibR4zyOM31p5Sdr2v4g==
   dependencies:
     iterall "^1.3.0"
@@ -2826,9 +2831,9 @@ strip-json-comments@^2.0.0, strip-json-comments@~2.0.1:
   resolved "https://registry.yarnpkg.com/strip-json-comments/-/strip-json-comments-2.0.1.tgz#3c531942e908c2697c0ec344858c286c7ca0a60a"
   integrity sha1-PFMZQukIwml8DsNEhYwobHygpgo=
 
-subscriptions-transport-ws@^0.9.11, subscriptions-transport-ws@^0.9.16:
+follows-transport-ws@^0.9.11, follows-transport-ws@^0.9.16:
   version "0.9.18"
-  resolved "https://registry.yarnpkg.com/subscriptions-transport-ws/-/subscriptions-transport-ws-0.9.18.tgz#bcf02320c911fbadb054f7f928e51c6041a37b97"
+  resolved "https://registry.yarnpkg.com/follows-transport-ws/-/follows-transport-ws-0.9.18.tgz#bcf02320c911fbadb054f7f928e51c6041a37b97"
   integrity sha512-tztzcBTNoEbuErsVQpTN2xUNN/efAZXyCyL5m3x4t6SKrEiTL2N8SaKWBFWM4u56pL79ULif3zjyeq+oV+nOaA==
   dependencies:
     backo2 "^1.0.2"
@@ -2985,7 +2990,7 @@ type-graphql@^1.1.1:
     "@types/semver" "^7.3.3"
     glob "^7.1.6"
     graphql-query-complexity "^0.7.0"
-    graphql-subscriptions "^1.1.0"
+    graphql-follows "^1.1.0"
     semver "^7.3.2"
     tslib "^2.0.1"
 

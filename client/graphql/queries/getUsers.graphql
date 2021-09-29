@@ -1,5 +1,5 @@
-query getUsers($usersInput: UsersInput!) {
-  users(usersInput: $usersInput) {
+query getUsers($input: UsersInput!) {
+  users(input: $input) {
     users {
       ...User
     }

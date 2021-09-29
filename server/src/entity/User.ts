@@ -11,7 +11,7 @@ import {
   UpdateDateColumn,
 } from "typeorm";
 import { Quiz, Like, Bookmark, Comment } from ".";
-import { Subscription } from "./Subscription";
+import { Follow } from "./Follow";
 import { UserRole, Gender, Maybe } from "../types";
 import { Score } from "./Score";
 
@@ -51,17 +51,17 @@ export class User extends BaseEntity {
   @Column("text", { nullable: true })
   coverPhoto: Maybe<string>;
 
-  @Field(() => String)
   @Index({ fulltext: true })
+  @Field(() => String)
   @Column("text")
   firstName: string;
 
-  @Field(() => String, { nullable: true })
   @Index({ fulltext: true })
+  @Field(() => String, { nullable: true })
   @Column("text", { nullable: true })
   lastName: Maybe<string>;
 
-  @Field(() => Date, { nullable: true })
+  @Field(() => String, { nullable: true })
   @Column("date", { nullable: true })
   birthday: Date;
 
@@ -105,11 +105,11 @@ export class User extends BaseEntity {
   @OneToMany(() => Comment, (comment) => comment.quiz)
   comments: Comment[];
 
-  @OneToMany(() => Subscription, (subscription) => subscription.followed)
-  followed: Subscription[];
+  @OneToMany(() => Follow, (subscription) => subscription.followed)
+  followed: Follow[];
 
-  @OneToMany(() => Subscription, (subscription) => subscription.follower)
-  followers: Subscription[];
+  @OneToMany(() => Follow, (subscription) => subscription.follower)
+  followers: Follow[];
 
   @Field(() => Int)
   @Column({ default: 0 })
@@ -119,14 +119,14 @@ export class User extends BaseEntity {
   @Column({ default: 0 })
   followerCount: number;
 
-  @Field(() => Boolean)
-  isFollowed: boolean;
-
-  @Field(() => String)
+  @Field()
   @CreateDateColumn()
   createdAt: Date;
 
-  @Field(() => String)
+  @Field()
   @UpdateDateColumn()
   updatedAt: Date;
+
+  @Field(() => Boolean)
+  isFollowed: boolean;
 }

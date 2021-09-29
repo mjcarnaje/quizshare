@@ -9,7 +9,7 @@ import {
   UseMiddleware,
 } from "type-graphql";
 import { Brackets, getConnection } from "typeorm";
-import { Subscription, User } from "../../entity";
+import { Follow, User } from "../../entity";
 import { isAuthenticated, isSuperAdmin } from "../../middleware";
 import { IContext } from "../../types";
 import { ChangeRoleInput, UsersInput } from "./user.inputs";
@@ -19,10 +19,8 @@ import { PaginatedUsers } from "./user.types";
 export class UserResolver {
   @UseMiddleware(isAuthenticated)
   @Query(() => PaginatedUsers)
-  async users(
-    @Arg("usersInput") usersInput: UsersInput
-  ): Promise<PaginatedUsers> {
-    const { limit, search, cursor } = usersInput;
+  async users(@Arg("input") input: UsersInput): Promise<PaginatedUsers> {
+    const { limit, search, cursor } = input;
     const limitPlusOne = limit + 1;
 
     let users = await getConnection()
@@ -115,7 +113,7 @@ export class UserResolver {
 
   @UseMiddleware(isAuthenticated)
   @Mutation(() => User)
-  async toggleSubscription(
+  async toggleFollow(
     @Arg("userId") userId: string,
     @Ctx() ctx: IContext
   ): Promise<User> {
@@ -124,7 +122,7 @@ export class UserResolver {
     let user = await User.findOneOrFail(meUserId);
     let toFollow = await User.findOneOrFail(userId);
 
-    const followed = await Subscription.findOne({
+    const followed = await Follow.findOne({
       followerId: meUserId,
       followedId: userId,
     });
@@ -132,14 +130,14 @@ export class UserResolver {
     if (followed) {
       user.followedCount--;
       toFollow.followerCount--;
-      await Subscription.delete({
+      await Follow.delete({
         followerId: meUserId,
         followedId: userId,
       });
     } else {
       user.followedCount++;
       toFollow.followerCount++;
-      await Subscription.create({
+      await Follow.create({
         followerId: meUserId,
         followedId: userId,
       }).save();

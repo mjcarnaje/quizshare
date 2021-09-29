@@ -16,7 +16,7 @@ import TextareaAutoResize from "../inputs/TextareaAutoResize";
 
 interface Props {
   answer: string;
-  choice: FieldArrayWithId<QuestionInput, "choices", "id">;
+  choice: FieldArrayWithId<QuestionInput, "choices", "keyId">;
   questionIdx: number;
   choiceIdx: number;
   isDisabled?: boolean;

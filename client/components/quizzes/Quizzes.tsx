@@ -10,7 +10,7 @@ interface Props {
   quizzes?: QuizCardFragment[];
   pageInfo?: PageInfoFragment;
   loading: boolean;
-  onLoadMore?: () => void;
+  fetchMore?: () => void;
   type: "timeline" | "me";
 }
 
@@ -18,7 +18,7 @@ const Quizzes: React.FC<Props> = ({
   quizzes = [],
   pageInfo,
   loading,
-  onLoadMore,
+  fetchMore,
   type,
 }) => {
   return (
@@ -46,7 +46,7 @@ const Quizzes: React.FC<Props> = ({
         <button
           type="button"
           className="flex px-4 py-2 mx-auto my-2 text-base font-medium leading-4 rounded-md active:bg-gray-50 focus:outline-none"
-          onClick={onLoadMore}
+          onClick={fetchMore}
         >
           {loading ? "Loading.." : "Load more"}
         </button>

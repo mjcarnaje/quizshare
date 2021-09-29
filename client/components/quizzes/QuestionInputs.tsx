@@ -28,6 +28,7 @@ const QuestionInputs: React.FC<Props> = () => {
   } = useFieldArray({
     control,
     name: "questions",
+    keyName: "keyId",
   });
 
   const addQuestion = (options?: FieldArrayMethodProps) => {
@@ -48,7 +49,7 @@ const QuestionInputs: React.FC<Props> = () => {
     if (questions.length === 0) {
       addQuestion({ shouldFocus: false });
     }
-  }, []);
+  }, [questions]);
 
   return (
     <>

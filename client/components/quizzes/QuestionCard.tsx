@@ -24,12 +24,11 @@ import { v4 as uuid } from "uuid";
 import ImageHolder from "../ImageHolder";
 import TextareaAutoResize from "../inputs/TextareaAutoResize";
 import ChoiceCard from "./ChoiceCard";
-
 interface Props {
-  question: FieldArrayWithId<QuizInput, "questions", "id">;
+  question: FieldArrayWithId<QuizInput, "questions", "keyId">;
   questionIdx: number;
   questionRemove: () => void;
-  questions: FieldArrayWithId<QuizInput, "questions", "id">[];
+  questions: FieldArrayWithId<QuizInput, "questions", "keyId">[];
   errors?: FieldErrors<QuestionInput>;
 }
 
@@ -51,6 +50,7 @@ const QuestionCard: React.FC<Props> = ({
   } = useFieldArray({
     control,
     name: `questions.${questionIdx}.choices`,
+    keyName: "keyId",
   });
 
   const addChoice = (options?: FieldArrayMethodProps) => {
@@ -58,17 +58,17 @@ const QuestionCard: React.FC<Props> = ({
       {
         id: uuid(),
         text: "",
+        choicePhoto: null,
       },
       options
     );
   };
 
   useEffect(() => {
-    if (choiceFields.length < 1) {
-      addChoice({ shouldFocus: false });
+    if (choiceFields.length === 0) {
       addChoice({ shouldFocus: false });
     }
-  }, []);
+  }, [choiceFields]);
 
   useEffect(() => {
     if (questionPhoto) {
@@ -77,7 +77,7 @@ const QuestionCard: React.FC<Props> = ({
   }, [questionPhoto]);
 
   return (
-    <Draggable key={question.id} draggableId={question.id} index={questionIdx}>
+    <Draggable draggableId={question.id} index={questionIdx}>
       {(provided, { isDragging }) => (
         <div
           ref={provided.innerRef}
@@ -123,8 +123,10 @@ const QuestionCard: React.FC<Props> = ({
                     <ul className="grid grid-cols-1 gap-4 px-4 mt-4 md:px-0 lg:grid-cols-2">
                       {choiceFields.map((choice, choiceIdx) => (
                         <ChoiceCard
-                          key={choice.id}
-                          {...{ choice, questionIdx, choiceIdx }}
+                          key={choice.keyId}
+                          choice={choice}
+                          questionIdx={questionIdx}
+                          choiceIdx={choiceIdx}
                           answer={value}
                           isDisabled={choiceFields.length < 2}
                           deleteChoice={() => {

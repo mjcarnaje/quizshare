@@ -34,7 +34,7 @@ const Explore = () => {
               quizzes={quizzes}
               pageInfo={pageInfo}
               loading={loading}
-              onLoadMore={() =>
+              fetchMore={() =>
                 fetchMore({
                   variables: {
                     ...variables,

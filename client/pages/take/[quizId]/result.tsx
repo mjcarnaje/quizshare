@@ -65,7 +65,6 @@ const Result: React.FC = () => {
   const { avatar, firstName, lastName } = author;
   const { score: _score, result } = scoreResult;
   const { score, totalItems, percentage } = _score;
-  const { title: resultTitle, description, resultPhoto } = result;
 
   return (
     <Layout title={`Result | ${quizTitle}`}>
@@ -91,15 +90,17 @@ const Result: React.FC = () => {
                   {`${percentage.toFixed(2)}%`}
                 </h3>
                 <h2 className="font-medium text-lg">{`You answered ${score} out of ${totalItems} correctly.`}</h2>
-                <div className="my-3">
-                  <h4 className="font-medium text-base">{resultTitle}</h4>
-                  {!!resultPhoto && (
-                    <div className="my-2">
-                      <ImageHolder image={resultPhoto} />
-                    </div>
-                  )}
-                  <p className="text-base">{description}</p>
-                </div>
+                {!!result && (
+                  <div className="my-3">
+                    <h4 className="font-medium text-base">{result.title}</h4>
+                    {!!result?.resultPhoto && (
+                      <div className="my-2">
+                        <ImageHolder image={result.resultPhoto} />
+                      </div>
+                    )}
+                    <p className="text-base">{result.description}</p>
+                  </div>
+                )}
               </div>
               <div className="flex justify-center">
                 <button
