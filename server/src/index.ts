@@ -91,7 +91,7 @@ const main = async () => {
           httpOnly: true,
           secure: __PROD__, // only works in https
           maxAge: 1000 * 60 * 60 * 24 * 7, // 7 days
-          domain: __PROD__ ? ".quizshare.me" : undefined,
+          domain: __PROD__ ? "api.quizshare.me" : undefined,
         },
       })
     );
