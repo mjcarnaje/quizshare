@@ -38,12 +38,12 @@ import {
 
 const main = async () => {
   try {
-    const connection = await createConnection({
+    await createConnection({
       type: "postgres",
       url: __PROD__
         ? process.env.DATABASE_URL_PROD
         : process.env.DATABASE_URL_DEV,
-      synchronize: false,
+      synchronize: true,
       logging: !__PROD__,
       entities: [
         Bookmark,
@@ -61,7 +61,7 @@ const main = async () => {
       migrations: [path.join(__dirname, "./migration/*.ts")],
     });
 
-    await connection.runMigrations();
+    // await connection.runMigrations();
 
     const app = express();
 
