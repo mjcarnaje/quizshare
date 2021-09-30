@@ -271,6 +271,10 @@ export class QuizResolver implements ResolverInterface<Quiz> {
       throw new AuthenticationError("You are not the author of this quiz");
     }
 
+    if (!quiz.description) {
+      throw new Error("Cannot published if description");
+    }
+
     if (quiz.questions.length === 0) {
       throw new Error("Cannot published if there is no question");
     }

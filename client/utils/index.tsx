@@ -62,3 +62,7 @@ export const getKeyArgs = (str: string, key: string) => {
 
   return JSON.parse(stringObj);
 };
+
+export const randomBetweenNum = (min: number, max: number): number => {
+  return Math.floor(Math.random() * (max - min + 1) + min);
+};

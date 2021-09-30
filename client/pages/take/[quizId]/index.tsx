@@ -22,6 +22,7 @@ const TakeQuiz: React.FC = () => {
 
   const [answers, setAnswers] = useState<IUserAnswer>({});
   const [OK, setOK] = useState(false);
+  const [isChecking, setIsChecking] = useState(false);
   const questionRefs = useRef<Array<HTMLLIElement | null>>([]);
 
   const { data, loading, error } = useGetQuizTakeQuery({
@@ -64,6 +65,7 @@ const TakeQuiz: React.FC = () => {
       alert("Are you sure?");
     } else {
       try {
+        setIsChecking(true);
         await submitAnswers({
           variables: {
             input: { quizId, answers },
@@ -71,7 +73,9 @@ const TakeQuiz: React.FC = () => {
         });
         dispatch(setUserAnswer(answers));
         router.replace(`/take/${quizId}/result`);
+        setIsChecking(false);
       } catch (err) {
+        setIsChecking(false);
         console.error(err);
       }
     }
@@ -153,7 +157,7 @@ const TakeQuiz: React.FC = () => {
                     onClick={_submitAnswers}
                     className="inline-flex justify-center w-1/3 px-4 py-2 text-base font-medium text-white transition transform bg-indigo-600 border border-transparent rounded-md shadow-sm active:scale-95 hover:bg-indigo-700 focus:outline-none sm:col-start-2 sm:text-sm"
                   >
-                    Submit
+                    {isChecking ? "Checking" : "Submit"}
                   </button>
                 </div>
               </div>

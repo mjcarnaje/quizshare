@@ -11,7 +11,7 @@ import {
 } from "@generated/graphql";
 import { Listbox, Transition } from "@headlessui/react";
 import { CheckIcon, MailIcon, SelectorIcon } from "@heroicons/react/solid";
-import { classNames } from "@utils/index";
+import { classNames, randomBetweenNum } from "@utils/index";
 import { capitalize, toConsantFormat } from "@utils/stringFormatter";
 import withApollo from "@utils/withApollo";
 import { debounce } from "lodash";
@@ -20,22 +20,23 @@ import Skeleton from "react-loading-skeleton";
 
 const PersonItemSkeleton: React.FC = () => {
   return (
-    <tr>
-      <td className="px-6 py-4 whitespace-nowrap">
-        <div className="flex items-center">
-          <div className="flex-shrink-0 w-10 h-10">
-            <Skeleton circle={true} height={40} width={40} />
-          </div>
-          <Skeleton />
+    <li className="!list-none flex items-center justify-between">
+      <div className="px-4 py-4 flex sm:px-6">
+        <div className="flex-shrink-0 w-10 h-10 mr-6">
+          <Skeleton circle={true} height={48} width={48} />
         </div>
-      </td>
-      <td className="px-6 py-4 text-sm text-gray-500 whitespace-nowrap">
-        <Skeleton />
-      </td>
-      <td className="px-6 py-4 text-sm font-medium text-right whitespace-nowrap">
-        <Skeleton />
-      </td>
-    </tr>
+        <div className="flex flex-col">
+          <Skeleton height={10} width={randomBetweenNum(32, 48)} />
+          <Skeleton height={8} width={randomBetweenNum(70, 90)} />
+        </div>
+      </div>
+      <div className="px-4 py-4 flex sm:px-6">
+        <Skeleton height={10} width={randomBetweenNum(40, 56)} />
+      </div>
+      <div className="px-4 py-4 flex sm:px-6">
+        <Skeleton height={10} width={40} />
+      </div>
+    </li>
   );
 };
 
@@ -78,7 +79,7 @@ const PersonItem: React.FC<PersonItemProps> = ({ person }) => {
   };
 
   return (
-    <li className="!list-none" key={person.id}>
+    <li className="!list-none">
       <div className="flex items-center px-4 py-4 sm:px-6">
         <div className="min-w-0 flex-1 flex items-center">
           <div className="flex-shrink-0">
@@ -254,9 +255,6 @@ const ChangeRoles: React.FC<ChangeRolesProps> = () => {
           <div className="max-w-3xl">
             <div className="bg-white shadow sm:rounded-md">
               <ul className="divide-y divide-gray-200">
-                {users.map((person) => (
-                  <PersonItem key={person.id} person={person} />
-                ))}
                 {!users.length && loading && (
                   <>
                     {[...Array(3).keys()].map((idx) => (
@@ -264,6 +262,9 @@ const ChangeRoles: React.FC<ChangeRolesProps> = () => {
                     ))}
                   </>
                 )}
+                {users.map((person) => (
+                  <PersonItem key={person.id} person={person} />
+                ))}
                 {users.length > 0 && loading && (
                   <>
                     {[...Array(3).keys()].map((idx) => (

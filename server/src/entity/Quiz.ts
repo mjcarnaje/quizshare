@@ -50,10 +50,6 @@ export class Quiz extends BaseEntity {
   @OneToMany(() => Question, (question) => question.quiz, { cascade: true })
   questions: Question[];
 
-  @Field(() => Int)
-  @Column({ default: 0 })
-  questionCount: number;
-
   @Field(() => [Result])
   @OneToMany(() => Result, (result) => result.quiz, { cascade: true })
   results: Result[];
@@ -78,6 +74,10 @@ export class Quiz extends BaseEntity {
 
   @OneToMany(() => Score, (score) => score.quiz)
   takers: Score[];
+
+  @Field(() => Int)
+  @Column({ default: 0 })
+  questionCount: number;
 
   @Field(() => Int)
   @Column({ default: 0 })

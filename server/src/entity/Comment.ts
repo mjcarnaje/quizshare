@@ -34,7 +34,7 @@ export class Comment extends BaseEntity {
   @Column()
   quizId: string;
 
-  @ManyToOne(() => Quiz, (quiz) => quiz.comments, { cascade: ["remove"] })
+  @ManyToOne(() => Quiz, (quiz) => quiz.comments, { onDelete: "CASCADE" })
   @JoinColumn()
   quiz: Quiz;
 

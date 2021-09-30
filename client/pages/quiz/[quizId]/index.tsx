@@ -44,9 +44,9 @@ const EditQuiz: React.FC = () => {
   const [uploadImage, { data: quizPhoto, loading: quizPhotoLoading }] =
     useUploadPhoto();
 
-  const [saveQuiz] = useSaveQuizMutation();
-  const [publishQuiz] = usePublishQuizMutation();
-  const { data } = useGetQuizInputQuery({
+  const [saveQuiz, { loading: saving }] = useSaveQuizMutation();
+  const [publishQuiz, { loading: publishing }] = usePublishQuizMutation();
+  const { data, loading: gettingInput } = useGetQuizInputQuery({
     variables: { quizId },
   });
 
@@ -72,33 +72,11 @@ const EditQuiz: React.FC = () => {
 
   const onSubmit: SubmitHandler<QuizInput> = async (data) => {
     try {
-      const { errors } = await saveQuiz({
+      await saveQuiz({
         variables: { quizId, input: data },
       });
-      if (!errors) {
-        dipatch(
-          showAlert({
-            title: "Saved quiz",
-            description: "Sucessfuly saved the quiz.",
-            duration: 3000,
-            isClosable: true,
-            status: "success",
-            withUndo: false,
-          })
-        );
-      }
     } catch (err) {
       errorMapper(err, setError);
-      dipatch(
-        showAlert({
-          title: "Cannot save.",
-          description: "Check all your input.",
-          duration: 3000,
-          isClosable: true,
-          status: "success",
-          withUndo: false,
-        })
-      );
     }
   };
 
@@ -127,9 +105,28 @@ const EditQuiz: React.FC = () => {
         onClick: async () => {
           try {
             await handleSubmit(onSubmit)();
-            // router.push("/me/drafts");
+            dipatch(
+              showAlert({
+                title: "Saved quiz",
+                description: "Sucessfuly saved the quiz.",
+                duration: 3000,
+                isClosable: true,
+                status: "success",
+                withUndo: false,
+              })
+            );
+            router.push("/me/published");
           } catch (err) {
-            console.error(err);
+            dipatch(
+              showAlert({
+                title: "Cannot save.",
+                description: "Check all your input.",
+                duration: 3000,
+                isClosable: true,
+                status: "success",
+                withUndo: false,
+              })
+            );
           }
         },
       },
@@ -138,6 +135,7 @@ const EditQuiz: React.FC = () => {
         icon: UploadIcon,
         onClick: async () => {
           try {
+            await handleSubmit(onSubmit)();
             const { errors } = await publishQuiz({
               variables: { quizId },
             });
@@ -152,10 +150,18 @@ const EditQuiz: React.FC = () => {
                   withUndo: false,
                 })
               );
-              router.push("/");
             }
           } catch (err) {
-            console.error(err);
+            dipatch(
+              showAlert({
+                title: "Cannot save.",
+                description: "Check all your input.",
+                duration: 3000,
+                isClosable: true,
+                status: "error",
+                withUndo: false,
+              })
+            );
           }
         },
       },
@@ -165,9 +171,6 @@ const EditQuiz: React.FC = () => {
   useEffect(() => {
     if (data) {
       const { id, ...quizInput } = data?.getQuizInput;
-      // Description is possible null from api
-      // Description is required for input
-      // @ts-expect-error
       reset(cleanTypeName(quizInput));
     }
   }, [data]);
@@ -197,7 +200,7 @@ const EditQuiz: React.FC = () => {
                         onClick={item.onClick}
                         className={classNames(
                           activeNav === item.name.toLowerCase()
-                            ? "bg-teal-50 border-teal-500 text-teal-700 hover:bg-teal-50 hover:text-teal-700"
+                            ? "bg-teal-50 border-gray-800 text-teal-700 hover:bg-teal-50 hover:text-teal-700"
                             : "border-transparent text-gray-900 hover:bg-gray-50 hover:text-gray-900",
                           "group w-full border-l-4 px-3 py-2 flex items-center text-sm font-medium"
                         )}
@@ -215,7 +218,7 @@ const EditQuiz: React.FC = () => {
                       </button>
                     ))}
                   </div>
-                  <div className="w-full border-t my-4 border-gray-300" />
+                  <div className="w-full border-t my-4 bg-gray-800" />
                   <div className="space-y-1">
                     {subNavigation[1].map((item) => (
                       <button
@@ -233,73 +236,81 @@ const EditQuiz: React.FC = () => {
 
               <div className="divide-y divide-gray-200 lg:col-span-9 min-h-full">
                 <div className="relative py-6 px-4 sm:p-6 lg:pb-8">
-                  <FormProvider {...methods}>
-                    {activeNav === "settings" && (
-                      <div className="space-y-4">
-                        <div>
-                          <label className="block text-sm font-medium text-gray-700">
-                            Cover photo
-                          </label>
-                          {quizPhoto || data?.getQuizInput.quizPhoto ? (
-                            <ImageHolder
-                              image={quizPhoto || data?.getQuizInput.quizPhoto}
-                              loading={quizPhotoLoading}
-                            />
-                          ) : (
-                            <div className="mt-1 flex justify-center px-6 pt-5 pb-6 border-2 border-gray-300 border-dashed rounded-md">
-                              <div className="space-y-1 text-center">
-                                <svg
-                                  className="mx-auto h-12 w-12 text-gray-400"
-                                  stroke="currentColor"
-                                  fill="none"
-                                  viewBox="0 0 48 48"
-                                  aria-hidden="true"
-                                >
-                                  <path
-                                    d="M28 8H12a4 4 0 00-4 4v20m32-12v8m0 0v8a4 4 0 01-4 4H12a4 4 0 01-4-4v-4m32-4l-3.172-3.172a4 4 0 00-5.656 0L28 28M8 32l9.172-9.172a4 4 0 015.656 0L28 28m0 0l4 4m4-24h8m-4-4v8m-12 4h.02"
-                                    strokeWidth={2}
-                                    strokeLinecap="round"
-                                    strokeLinejoin="round"
-                                  />
-                                </svg>
-                                <button
-                                  onClick={uploadImage}
-                                  className="text-sm rounded-md font-medium text-indigo-600 hover:text-indigo-500 focus-within:outline-none focus-within:ring-2 focus-within:ring-offset-2 focus-within:ring-indigo-500"
-                                >
-                                  Upload image
-                                </button>
+                  {publishing || saving || gettingInput ? (
+                    <div className="my-4">
+                      <p>Loading..</p>
+                    </div>
+                  ) : (
+                    <FormProvider {...methods}>
+                      {activeNav === "settings" && (
+                        <div className="space-y-4">
+                          <div>
+                            <label className="block text-sm font-medium text-gray-700">
+                              Cover photo
+                            </label>
+                            {quizPhoto || data?.getQuizInput.quizPhoto ? (
+                              <ImageHolder
+                                image={
+                                  quizPhoto || data?.getQuizInput.quizPhoto
+                                }
+                                loading={quizPhotoLoading}
+                              />
+                            ) : (
+                              <div className="mt-1 flex justify-center px-6 pt-5 pb-6 border-2 border-gray-300 border-dashed rounded-md">
+                                <div className="space-y-1 text-center">
+                                  <svg
+                                    className="mx-auto h-12 w-12 text-gray-400"
+                                    stroke="currentColor"
+                                    fill="none"
+                                    viewBox="0 0 48 48"
+                                    aria-hidden="true"
+                                  >
+                                    <path
+                                      d="M28 8H12a4 4 0 00-4 4v20m32-12v8m0 0v8a4 4 0 01-4 4H12a4 4 0 01-4-4v-4m32-4l-3.172-3.172a4 4 0 00-5.656 0L28 28M8 32l9.172-9.172a4 4 0 015.656 0L28 28m0 0l4 4m4-24h8m-4-4v8m-12 4h.02"
+                                      strokeWidth={2}
+                                      strokeLinecap="round"
+                                      strokeLinejoin="round"
+                                    />
+                                  </svg>
+                                  <button
+                                    onClick={uploadImage}
+                                    className="text-sm rounded-md font-medium text-indigo-600 hover:text-indigo-500 focus-within:outline-none focus-within:ring-2 focus-within:ring-offset-2 focus-within:ring-indigo-500"
+                                  >
+                                    Upload image
+                                  </button>
 
-                                <p className="text-xs text-gray-500">
-                                  PNG, JPG up to 1MB
-                                </p>
+                                  <p className="text-xs text-gray-500">
+                                    PNG, JPG up to 1MB
+                                  </p>
+                                </div>
                               </div>
-                            </div>
-                          )}
+                            )}
+                          </div>
+                          <input type="hidden" {...register("quizPhoto")} />
+                          <Input<QuizInput>
+                            type="text"
+                            name="title"
+                            label="Title"
+                            placeholder="title.."
+                            register={register}
+                            required
+                            error={errors.title}
+                          />
+                          <TextareaAutoResize<QuizInput>
+                            name="description"
+                            label="Description"
+                            placeholder="about.."
+                            register={register}
+                            required={false}
+                            minRows={3}
+                            error={errors.description}
+                          />
                         </div>
-                        <input type="hidden" {...register("quizPhoto")} />
-                        <Input<QuizInput>
-                          type="text"
-                          name="title"
-                          label="Title"
-                          placeholder="title.."
-                          register={register}
-                          required
-                          error={errors.title}
-                        />
-                        <TextareaAutoResize<QuizInput>
-                          name="description"
-                          label="Description"
-                          placeholder="about.."
-                          register={register}
-                          required
-                          minRows={3}
-                          error={errors.description}
-                        />
-                      </div>
-                    )}
-                    {activeNav === "questions" && <QuestionInputs />}
-                    {activeNav === "results" && <ResultInputs />}
-                  </FormProvider>
+                      )}
+                      {activeNav === "questions" && <QuestionInputs />}
+                      {activeNav === "results" && <ResultInputs />}
+                    </FormProvider>
+                  )}
                 </div>
               </div>
             </div>

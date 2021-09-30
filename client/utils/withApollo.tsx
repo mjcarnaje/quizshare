@@ -4,8 +4,6 @@ import { NextPageContext } from "next";
 import { withApollo } from "next-apollo";
 
 const apolloClient = (ctx?: NextPageContext) => {
-  console.log("NEXT.JS COOKIE HEADER", ctx?.req?.headers.cookie);
-
   const apollo = new ApolloClient({
     link: new HttpLink({
       uri:

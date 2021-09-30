@@ -264,10 +264,10 @@ export type Quiz = {
   description?: Maybe<Scalars['String']>;
   quizPhoto?: Maybe<Scalars['String']>;
   questions: Array<Question>;
-  questionCount: Scalars['Int'];
   results: Array<Result>;
   tags: Array<Tag>;
   isPublished: Scalars['Boolean'];
+  questionCount: Scalars['Int'];
   likeCount: Scalars['Int'];
   commentCount: Scalars['Int'];
   bookmarkCount: Scalars['Int'];
@@ -281,7 +281,7 @@ export type Quiz = {
 
 export type QuizInput = {
   title: Scalars['String'];
-  description: Scalars['String'];
+  description?: Maybe<Scalars['String']>;
   quizPhoto?: Maybe<Scalars['String']>;
   questions: Array<QuestionInput>;
   results: Array<ResultInput>;
@@ -322,7 +322,7 @@ export type ScoreResult = {
   __typename?: 'ScoreResult';
   id: Scalars['String'];
   score: ScoreResultScore;
-  result: ScoreResultResult;
+  result?: Maybe<ScoreResultResult>;
 };
 
 export type ScoreResultResult = {
@@ -481,10 +481,10 @@ export type ScoreResultFragment = (
   & { score: (
     { __typename?: 'ScoreResultScore' }
     & Pick<ScoreResultScore, 'score' | 'totalItems' | 'percentage' | 'answered'>
-  ), result: (
+  ), result?: Maybe<(
     { __typename?: 'ScoreResultResult' }
     & Pick<ScoreResultResult, 'title' | 'description' | 'resultPhoto' | 'minimumPercent'>
-  ) }
+  )> }
 );
 
 export type UserFragment = (
@@ -585,7 +585,7 @@ export type PublishQuizMutation = (
   { __typename?: 'Mutation' }
   & { publishQuiz: (
     { __typename?: 'Quiz' }
-    & Pick<Quiz, 'id'>
+    & Pick<Quiz, 'id' | 'isPublished'>
   ) }
 );
 
@@ -1224,6 +1224,7 @@ export const PublishQuizDocument = gql`
     mutation PublishQuiz($quizId: String!) {
   publishQuiz(quizId: $quizId) {
     id
+    isPublished
   }
 }
     `;

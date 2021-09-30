@@ -69,8 +69,8 @@ export class QuizInput {
   @Field()
   title: string;
 
-  @Field()
-  description: string;
+  @Field({ nullable: true })
+  description?: string;
 
   @Field({ nullable: true })
   quizPhoto?: string;

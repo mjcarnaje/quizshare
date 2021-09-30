@@ -124,11 +124,10 @@ const QuizLanding: React.FC<Props> = () => {
           <TakeButton quizId={quizId} />
         </div>
       </div>
-      <CommentInput
-        quizId={quizId}
-        userInfo={user}
-        commentCount={commentCount}
-      />
+      <div className="flex items-center justify-between my-4">
+        <p className="inline-block text-base">{`${commentCount} Comments`}</p>
+      </div>
+      <CommentInput quizId={quizId} userInfo={user} />
       <Comments quizId={quizId} authorId={authorId} />
     </Wrapper>
   );

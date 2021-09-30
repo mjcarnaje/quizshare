@@ -78,7 +78,7 @@ const NewQuiz: React.FC = () => {
                 onClick={() => router.push("/")}
                 disabled={isSubmitting}
               >
-                {isSubmitting ? "Loading" : "Create"}
+                Cancel
               </button>
               <button
                 type="button"

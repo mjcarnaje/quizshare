@@ -132,11 +132,12 @@ const Result: React.FC = () => {
                 </ul>
               )}
             </div>
-            <CommentInput
-              quizId={quizId}
-              userInfo={user}
-              commentCount={data.getQuizTake.commentCount}
-            />
+            <div className="flex items-center justify-between my-4">
+              <p className="inline-block text-base">
+                {`${data.getQuizTake.commentCount} Comments`}
+              </p>
+            </div>
+            <CommentInput quizId={quizId} userInfo={user} />
             <Comments quizId={quizId} authorId={authorId} />
           </div>
         </div>
