@@ -585,7 +585,7 @@ export type PublishQuizMutation = (
   { __typename?: 'Mutation' }
   & { publishQuiz: (
     { __typename?: 'Quiz' }
-    & Pick<Quiz, 'id' | 'isPublished'>
+    & Pick<Quiz, 'id' | 'questionCount' | 'isPublished'>
   ) }
 );
 
@@ -599,7 +599,7 @@ export type SaveQuizMutation = (
   { __typename?: 'Mutation' }
   & { saveQuiz: (
     { __typename?: 'Quiz' }
-    & Pick<Quiz, 'id' | 'title' | 'description' | 'quizPhoto'>
+    & Pick<Quiz, 'id' | 'title' | 'description' | 'quizPhoto' | 'questionCount' | 'isPublished'>
     & { questions: Array<(
       { __typename?: 'Question' }
       & QuestionFragment
@@ -1224,6 +1224,7 @@ export const PublishQuizDocument = gql`
     mutation PublishQuiz($quizId: String!) {
   publishQuiz(quizId: $quizId) {
     id
+    questionCount
     isPublished
   }
 }
@@ -1271,6 +1272,8 @@ export const SaveQuizDocument = gql`
     results {
       ...Result
     }
+    questionCount
+    isPublished
   }
 }
     ${QuestionFragmentDoc}

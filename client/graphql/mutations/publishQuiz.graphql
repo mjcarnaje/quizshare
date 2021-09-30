@@ -1,6 +1,7 @@
 mutation PublishQuiz($quizId: String!) {
   publishQuiz(quizId: $quizId) {
     id
+    questionCount
     isPublished
   }
 }

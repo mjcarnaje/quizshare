@@ -14,5 +14,7 @@ mutation SaveQuiz($input: QuizInput!, $quizId: String!) {
     results {
       ...Result
     }
+    questionCount
+    isPublished
   }
 }
