@@ -4,14 +4,14 @@ import Layout from "@components/layout/Layout";
 import NestedLayout from "@components/layout/NestedLayout";
 import Quizzes from "@components/quizzes/Quizzes";
 import { QUIZZES_LIMIT } from "@constant/index";
-import { useGetQuizzesQuery } from "@generated/graphql";
+import { useGetPublicQuizzesQuery } from "@generated/graphql";
 import withApollo from "@utils/withApollo";
 import { useRouter } from "next/router";
 
 const Explore = () => {
   const router = useRouter();
 
-  const { data, loading, fetchMore, variables } = useGetQuizzesQuery({
+  const { data, loading, fetchMore, variables } = useGetPublicQuizzesQuery({
     variables: {
       input: {
         limit: QUIZZES_LIMIT,
@@ -21,8 +21,8 @@ const Explore = () => {
     },
   });
 
-  const quizzes = data?.getQuizzes.quizzes;
-  const pageInfo = data?.getQuizzes.pageInfo;
+  const quizzes = data?.getPublicQuizzes.quizzes;
+  const pageInfo = data?.getPublicQuizzes.pageInfo;
 
   return (
     <Layout title="Home">

@@ -1,0 +1,10 @@
+query GetFollowedQuizzes($input: GetQuizzesInput!) {
+  getFollowedQuizzes(input: $input) {
+    quizzes {
+      ...QuizCard
+    }
+    pageInfo {
+      ...PageInfo
+    }
+  }
+}

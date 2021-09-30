@@ -103,7 +103,60 @@ export class QuizResolver implements ResolverInterface<Quiz> {
   }
 
   @Query(() => PaginatedQuizzes)
-  async getQuizzes(
+  async getFollowedQuizzes(
+    @Arg("input") input: GetQuizzesInput,
+    @Ctx() { req }: IContext
+  ): Promise<PaginatedQuizzes> {
+    const { limit, search, cursor } = input;
+    const limitPlusOne = limit + 1;
+
+    let quizzes = await getConnection()
+      .getRepository(Quiz)
+      .createQueryBuilder("quiz")
+      .leftJoinAndSelect("quiz.tags", "tags")
+      .where("quiz.isPublished = :isPublished", { isPublished: true })
+      .andWhere("quiz.description is not null")
+      .leftJoinAndSelect("follow", "f", "f.followedId = quiz.authorId")
+      .andWhere("f.followerId = :followerId", {
+        followerId: req.session.userId,
+      });
+
+    if (search) {
+      quizzes = quizzes.andWhere(
+        new Brackets((qb) => {
+          qb.where("quiz.title ilike :search", {
+            search: `%${search}%`,
+          }).orWhere("quiz.description ilike :search", {
+            search: `%${search}%`,
+          });
+        })
+      );
+    }
+
+    if (cursor) {
+      quizzes = quizzes.andWhere("quiz.createdAt < :cursor", {
+        cursor: new Date(Number(cursor) - 1),
+      });
+    }
+
+    const results = await quizzes
+      .orderBy("quiz.createdAt", "DESC")
+      .take(limitPlusOne)
+      .getMany();
+
+    const quizzesRes = results.slice(0, limit);
+
+    return {
+      quizzes: quizzesRes,
+      pageInfo: {
+        endCursor: quizzesRes[quizzesRes.length - 1]?.createdAt,
+        hasNextPage: results.length === limitPlusOne,
+      },
+    };
+  }
+
+  @Query(() => PaginatedQuizzes)
+  async getPublicQuizzes(
     @Arg("input") input: GetQuizzesInput
   ): Promise<PaginatedQuizzes> {
     const { limit, search, cursor } = input;

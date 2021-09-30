@@ -182,7 +182,8 @@ export type Query = {
   __typename?: 'Query';
   getComments: PaginatedComment;
   getMeQuizzes: PaginatedQuizzes;
-  getQuizzes: PaginatedQuizzes;
+  getFollowedQuizzes: PaginatedQuizzes;
+  getPublicQuizzes: PaginatedQuizzes;
   getQuiz: Quiz;
   getQuizInput: Quiz;
   getQuizTake: Quiz;
@@ -204,7 +205,12 @@ export type QueryGetMeQuizzesArgs = {
 };
 
 
-export type QueryGetQuizzesArgs = {
+export type QueryGetFollowedQuizzesArgs = {
+  input: GetQuizzesInput;
+};
+
+
+export type QueryGetPublicQuizzesArgs = {
   input: GetQuizzesInput;
 };
 
@@ -712,6 +718,25 @@ export type GetCommentsQuery = (
   ) }
 );
 
+export type GetFollowedQuizzesQueryVariables = Exact<{
+  input: GetQuizzesInput;
+}>;
+
+
+export type GetFollowedQuizzesQuery = (
+  { __typename?: 'Query' }
+  & { getFollowedQuizzes: (
+    { __typename?: 'PaginatedQuizzes' }
+    & { quizzes: Array<(
+      { __typename?: 'Quiz' }
+      & QuizCardFragment
+    )>, pageInfo: (
+      { __typename?: 'PageInfo' }
+      & PageInfoFragment
+    ) }
+  ) }
+);
+
 export type GetMeQuizzesQueryVariables = Exact<{
   input: GetQuizzesInput;
 }>;
@@ -720,6 +745,25 @@ export type GetMeQuizzesQueryVariables = Exact<{
 export type GetMeQuizzesQuery = (
   { __typename?: 'Query' }
   & { getMeQuizzes: (
+    { __typename?: 'PaginatedQuizzes' }
+    & { quizzes: Array<(
+      { __typename?: 'Quiz' }
+      & QuizCardFragment
+    )>, pageInfo: (
+      { __typename?: 'PageInfo' }
+      & PageInfoFragment
+    ) }
+  ) }
+);
+
+export type GetPublicQuizzesQueryVariables = Exact<{
+  input: GetQuizzesInput;
+}>;
+
+
+export type GetPublicQuizzesQuery = (
+  { __typename?: 'Query' }
+  & { getPublicQuizzes: (
     { __typename?: 'PaginatedQuizzes' }
     & { quizzes: Array<(
       { __typename?: 'Quiz' }
@@ -793,25 +837,6 @@ export type GetQuizTakeQuery = (
     )>, author: (
       { __typename?: 'User' }
       & AuthorFragment
-    ) }
-  ) }
-);
-
-export type GetQuizzesQueryVariables = Exact<{
-  input: GetQuizzesInput;
-}>;
-
-
-export type GetQuizzesQuery = (
-  { __typename?: 'Query' }
-  & { getQuizzes: (
-    { __typename?: 'PaginatedQuizzes' }
-    & { quizzes: Array<(
-      { __typename?: 'Quiz' }
-      & QuizCardFragment
-    )>, pageInfo: (
-      { __typename?: 'PageInfo' }
-      & PageInfoFragment
     ) }
   ) }
 );
@@ -1546,6 +1571,47 @@ export function useGetCommentsLazyQuery(baseOptions?: Apollo.LazyQueryHookOption
 export type GetCommentsQueryHookResult = ReturnType<typeof useGetCommentsQuery>;
 export type GetCommentsLazyQueryHookResult = ReturnType<typeof useGetCommentsLazyQuery>;
 export type GetCommentsQueryResult = Apollo.QueryResult<GetCommentsQuery, GetCommentsQueryVariables>;
+export const GetFollowedQuizzesDocument = gql`
+    query GetFollowedQuizzes($input: GetQuizzesInput!) {
+  getFollowedQuizzes(input: $input) {
+    quizzes {
+      ...QuizCard
+    }
+    pageInfo {
+      ...PageInfo
+    }
+  }
+}
+    ${QuizCardFragmentDoc}
+${PageInfoFragmentDoc}`;
+
+/**
+ * __useGetFollowedQuizzesQuery__
+ *
+ * To run a query within a React component, call `useGetFollowedQuizzesQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetFollowedQuizzesQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetFollowedQuizzesQuery({
+ *   variables: {
+ *      input: // value for 'input'
+ *   },
+ * });
+ */
+export function useGetFollowedQuizzesQuery(baseOptions: Apollo.QueryHookOptions<GetFollowedQuizzesQuery, GetFollowedQuizzesQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<GetFollowedQuizzesQuery, GetFollowedQuizzesQueryVariables>(GetFollowedQuizzesDocument, options);
+      }
+export function useGetFollowedQuizzesLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetFollowedQuizzesQuery, GetFollowedQuizzesQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<GetFollowedQuizzesQuery, GetFollowedQuizzesQueryVariables>(GetFollowedQuizzesDocument, options);
+        }
+export type GetFollowedQuizzesQueryHookResult = ReturnType<typeof useGetFollowedQuizzesQuery>;
+export type GetFollowedQuizzesLazyQueryHookResult = ReturnType<typeof useGetFollowedQuizzesLazyQuery>;
+export type GetFollowedQuizzesQueryResult = Apollo.QueryResult<GetFollowedQuizzesQuery, GetFollowedQuizzesQueryVariables>;
 export const GetMeQuizzesDocument = gql`
     query GetMeQuizzes($input: GetQuizzesInput!) {
   getMeQuizzes(input: $input) {
@@ -1587,6 +1653,47 @@ export function useGetMeQuizzesLazyQuery(baseOptions?: Apollo.LazyQueryHookOptio
 export type GetMeQuizzesQueryHookResult = ReturnType<typeof useGetMeQuizzesQuery>;
 export type GetMeQuizzesLazyQueryHookResult = ReturnType<typeof useGetMeQuizzesLazyQuery>;
 export type GetMeQuizzesQueryResult = Apollo.QueryResult<GetMeQuizzesQuery, GetMeQuizzesQueryVariables>;
+export const GetPublicQuizzesDocument = gql`
+    query GetPublicQuizzes($input: GetQuizzesInput!) {
+  getPublicQuizzes(input: $input) {
+    quizzes {
+      ...QuizCard
+    }
+    pageInfo {
+      ...PageInfo
+    }
+  }
+}
+    ${QuizCardFragmentDoc}
+${PageInfoFragmentDoc}`;
+
+/**
+ * __useGetPublicQuizzesQuery__
+ *
+ * To run a query within a React component, call `useGetPublicQuizzesQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetPublicQuizzesQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetPublicQuizzesQuery({
+ *   variables: {
+ *      input: // value for 'input'
+ *   },
+ * });
+ */
+export function useGetPublicQuizzesQuery(baseOptions: Apollo.QueryHookOptions<GetPublicQuizzesQuery, GetPublicQuizzesQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<GetPublicQuizzesQuery, GetPublicQuizzesQueryVariables>(GetPublicQuizzesDocument, options);
+      }
+export function useGetPublicQuizzesLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetPublicQuizzesQuery, GetPublicQuizzesQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<GetPublicQuizzesQuery, GetPublicQuizzesQueryVariables>(GetPublicQuizzesDocument, options);
+        }
+export type GetPublicQuizzesQueryHookResult = ReturnType<typeof useGetPublicQuizzesQuery>;
+export type GetPublicQuizzesLazyQueryHookResult = ReturnType<typeof useGetPublicQuizzesLazyQuery>;
+export type GetPublicQuizzesQueryResult = Apollo.QueryResult<GetPublicQuizzesQuery, GetPublicQuizzesQueryVariables>;
 export const GetQuizDocument = gql`
     query GetQuiz($quizId: String!) {
   getQuiz(quizId: $quizId) {
@@ -1745,47 +1852,6 @@ export function useGetQuizTakeLazyQuery(baseOptions?: Apollo.LazyQueryHookOption
 export type GetQuizTakeQueryHookResult = ReturnType<typeof useGetQuizTakeQuery>;
 export type GetQuizTakeLazyQueryHookResult = ReturnType<typeof useGetQuizTakeLazyQuery>;
 export type GetQuizTakeQueryResult = Apollo.QueryResult<GetQuizTakeQuery, GetQuizTakeQueryVariables>;
-export const GetQuizzesDocument = gql`
-    query GetQuizzes($input: GetQuizzesInput!) {
-  getQuizzes(input: $input) {
-    quizzes {
-      ...QuizCard
-    }
-    pageInfo {
-      ...PageInfo
-    }
-  }
-}
-    ${QuizCardFragmentDoc}
-${PageInfoFragmentDoc}`;
-
-/**
- * __useGetQuizzesQuery__
- *
- * To run a query within a React component, call `useGetQuizzesQuery` and pass it any options that fit your needs.
- * When your component renders, `useGetQuizzesQuery` returns an object from Apollo Client that contains loading, error, and data properties
- * you can use to render your UI.
- *
- * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
- *
- * @example
- * const { data, loading, error } = useGetQuizzesQuery({
- *   variables: {
- *      input: // value for 'input'
- *   },
- * });
- */
-export function useGetQuizzesQuery(baseOptions: Apollo.QueryHookOptions<GetQuizzesQuery, GetQuizzesQueryVariables>) {
-        const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useQuery<GetQuizzesQuery, GetQuizzesQueryVariables>(GetQuizzesDocument, options);
-      }
-export function useGetQuizzesLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetQuizzesQuery, GetQuizzesQueryVariables>) {
-          const options = {...defaultOptions, ...baseOptions}
-          return Apollo.useLazyQuery<GetQuizzesQuery, GetQuizzesQueryVariables>(GetQuizzesDocument, options);
-        }
-export type GetQuizzesQueryHookResult = ReturnType<typeof useGetQuizzesQuery>;
-export type GetQuizzesLazyQueryHookResult = ReturnType<typeof useGetQuizzesLazyQuery>;
-export type GetQuizzesQueryResult = Apollo.QueryResult<GetQuizzesQuery, GetQuizzesQueryVariables>;
 export const GetUsersDocument = gql`
     query getUsers($input: UsersInput!) {
   users(input: $input) {

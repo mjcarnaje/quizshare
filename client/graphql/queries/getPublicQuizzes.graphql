@@ -1,0 +1,10 @@
+query GetPublicQuizzes($input: GetQuizzesInput!) {
+  getPublicQuizzes(input: $input) {
+    quizzes {
+      ...QuizCard
+    }
+    pageInfo {
+      ...PageInfo
+    }
+  }
+}

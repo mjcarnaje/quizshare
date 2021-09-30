@@ -17,6 +17,15 @@ import { PaginatedUsers } from "./user.types";
 
 @Resolver(User)
 export class UserResolver {
+  @FieldResolver(() => Boolean)
+  async isFollowed(@Root() user: User, @Ctx() ctx: IContext) {
+    const follow = await ctx.followLoader.load(user.id);
+    return (
+      user.id === follow?.followedId &&
+      ctx.req.session.userId === follow?.followerId
+    );
+  }
+
   @UseMiddleware(isAuthenticated)
   @Query(() => PaginatedUsers)
   async users(@Arg("input") input: UsersInput): Promise<PaginatedUsers> {
@@ -103,12 +112,6 @@ export class UserResolver {
     } catch (err) {
       throw new Error("Sever Error");
     }
-  }
-
-  @FieldResolver(() => Boolean)
-  async isFollowed(@Root() user: User, @Ctx() ctx: IContext) {
-    const status = await ctx.followLoader.load(user.id);
-    return user.id === status?.followedId;
   }
 
   @UseMiddleware(isAuthenticated)

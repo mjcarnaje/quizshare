@@ -71,6 +71,8 @@ const QuizLanding: React.FC<Props> = () => {
                 <Skeleton circle height={28} width={28} />
               </div>
             </div>
+            <CommentInput quizId={quizId} userInfo={user} />
+            <Comments quizId={quizId} authorId={user.id} />
           </>
         )}
         {error && <p>{`Error: ${error?.message}`}</p>}
