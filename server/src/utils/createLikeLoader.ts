@@ -16,5 +16,5 @@ export const createLikeLoader = () =>
       likeMap[like.quizId] = like;
     });
 
-    return quizIds.map((userId) => likeMap[userId as keyof typeof likeMap]);
+    return quizIds.map((quizId) => likeMap[quizId as keyof typeof likeMap]);
   });

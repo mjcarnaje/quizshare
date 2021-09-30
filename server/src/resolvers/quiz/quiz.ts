@@ -32,13 +32,19 @@ export class QuizResolver implements ResolverInterface<Quiz> {
   @FieldResolver(() => Boolean)
   async isLiked(@Root() quiz: Quiz, @Ctx() ctx: IContext) {
     const likeStatus = await ctx.likeLoader.load(quiz.id);
-    return quiz.id === likeStatus?.quizId;
+    return (
+      quiz.id === likeStatus?.quizId &&
+      likeStatus.userId === ctx.req.session.userId
+    );
   }
 
   @FieldResolver(() => Boolean)
   async isBookmarked(@Root() quiz: Quiz, @Ctx() ctx: IContext) {
     const bookmarkStatus = await ctx.bookmarkLoader.load(quiz.id);
-    return quiz.id === bookmarkStatus?.quizId;
+    return (
+      quiz.id === bookmarkStatus?.quizId &&
+      bookmarkStatus.userId === ctx.req.session.userId
+    );
   }
 
   @FieldResolver(() => User)

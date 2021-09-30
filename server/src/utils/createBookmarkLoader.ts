@@ -17,6 +17,6 @@ export const createBookmarkLoader = () =>
     });
 
     return quizIds.map(
-      (userId) => bookmarkMap[userId as keyof typeof bookmarkMap]
+      (quizId) => bookmarkMap[quizId as keyof typeof bookmarkMap]
     );
   });
