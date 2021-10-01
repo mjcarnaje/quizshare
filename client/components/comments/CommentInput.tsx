@@ -1,5 +1,6 @@
 import React, { useEffect, useRef, useState } from "react";
 
+import { gql } from "@apollo/client";
 import { IUser } from "@customtypes/index";
 import {
   useAddCommentMutation,
@@ -30,8 +31,8 @@ const CommentInput: React.FC<Props> = ({ quizId, userInfo }) => {
   const commentInputRef = useRef<HTMLTextAreaElement>(null);
   const [isFocused, setIsFocused] = useState(false);
 
-  const [addComment] = useAddCommentMutation();
-  const [editComment] = useEditCommentMutation();
+  const [addComment, { loading: adding }] = useAddCommentMutation();
+  const [editComment, { loading: editing }] = useEditCommentMutation();
 
   const {
     handleSubmit,
@@ -65,26 +66,42 @@ const CommentInput: React.FC<Props> = ({ quizId, userInfo }) => {
             text: input.text,
           },
           update: (cache, { data }) => {
-            cache.modify({
-              id: `Quiz:${quizId}`,
-              fields: {
-                commentCount: (existingCommentCount) => {
-                  return existingCommentCount + 1;
+            if (data) {
+              cache.modify({
+                id: `Quiz:${quizId}`,
+                fields: {
+                  commentCount: (comCount) => {
+                    return comCount + 1;
+                  },
                 },
-              },
-            });
-            cache.modify({
-              id: "ROOT_QUERY",
-              fields: {
-                getComments: ({ pageInfo, comments }) => {
-                  if (comments.quizId !== data?.addComment.quizId) return;
-                  return {
-                    pageInfo,
-                    comments: [...comments, data?.addComment],
-                  };
+              });
+              cache.modify({
+                fields: {
+                  getComments(existing, { storeFieldName }) {
+                    if (!storeFieldName.includes(quizId)) return existing;
+
+                    const newCommentRef = cache.writeFragment({
+                      data: data?.addComment,
+                      fragment: gql`
+                        fragment NewComment on Comment {
+                          id
+                          quizId
+                          text
+                          isMine
+                          authorId
+                          createdAt
+                          updatedAt
+                        }
+                      `,
+                    });
+                    return {
+                      pageInfo: existing?.pageInfo,
+                      comments: [...(existing?.comments ?? []), newCommentRef],
+                    };
+                  },
                 },
-              },
-            });
+              });
+            }
           },
         });
         setValue("text", "");
@@ -150,7 +167,7 @@ const CommentInput: React.FC<Props> = ({ quizId, userInfo }) => {
                 type="submit"
                 disabled={commentText === watch().text}
               >
-                Post
+                {adding || editing ? "Posting.." : "Post"}
               </button>
             </div>
           )}

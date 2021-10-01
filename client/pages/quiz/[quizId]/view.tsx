@@ -71,7 +71,9 @@ const QuizLanding: React.FC<Props> = () => {
                 <Skeleton circle height={28} width={28} />
               </div>
             </div>
-            <Comments quizId={quizId} authorId={user?.id} />
+            <div className="mt-12">
+              <Comments quizId={quizId} authorId={user?.id} />
+            </div>
           </>
         )}
         {error && <p>{`Error: ${error?.message}`}</p>}
@@ -89,7 +91,6 @@ const QuizLanding: React.FC<Props> = () => {
     likeCount,
     isBookmarked,
     takerCount,
-    authorId,
   } = data.getQuiz;
 
   return (
@@ -129,7 +130,7 @@ const QuizLanding: React.FC<Props> = () => {
         <p className="inline-block text-base">{`${commentCount} Comments`}</p>
       </div>
       <CommentInput quizId={quizId} userInfo={user} />
-      <Comments quizId={quizId} authorId={authorId} />
+      <Comments quizId={quizId} authorId={user?.id} />
     </Wrapper>
   );
 };
