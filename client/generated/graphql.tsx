@@ -427,7 +427,7 @@ export type AuthorFragment = (
 
 export type CommentFragment = (
   { __typename?: 'Comment' }
-  & Pick<Comment, 'id' | 'text' | 'isMine' | 'authorId' | 'createdAt' | 'updatedAt'>
+  & Pick<Comment, 'id' | 'quizId' | 'text' | 'isMine' | 'authorId' | 'createdAt' | 'updatedAt'>
   & { author: (
     { __typename?: 'User' }
     & AuthorFragment
@@ -885,6 +885,7 @@ export const AuthorFragmentDoc = gql`
 export const CommentFragmentDoc = gql`
     fragment Comment on Comment {
   id
+  quizId
   text
   isMine
   authorId

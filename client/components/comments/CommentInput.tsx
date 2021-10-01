@@ -64,7 +64,7 @@ const CommentInput: React.FC<Props> = ({ quizId, userInfo }) => {
             quizId: quizId,
             text: input.text,
           },
-          update: (cache) => {
+          update: (cache, { data }) => {
             cache.modify({
               id: `Quiz:${quizId}`,
               fields: {
@@ -76,7 +76,13 @@ const CommentInput: React.FC<Props> = ({ quizId, userInfo }) => {
             cache.modify({
               id: "ROOT_QUERY",
               fields: {
-                getComments: () => {},
+                getComments: ({ pageInfo, comments }) => {
+                  if (comments.quizId !== data?.addComment.quizId) return;
+                  return {
+                    pageInfo,
+                    comments: [...comments, data?.addComment],
+                  };
+                },
               },
             });
           },

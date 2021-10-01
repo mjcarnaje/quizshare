@@ -1,5 +1,6 @@
 fragment Comment on Comment {
   id
+  quizId
   text
   isMine
   authorId

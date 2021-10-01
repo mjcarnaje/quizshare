@@ -117,9 +117,15 @@ export class QuizResolver implements ResolverInterface<Quiz> {
       .where("quiz.isPublished = :isPublished", { isPublished: true })
       .andWhere("quiz.description is not null")
       .leftJoinAndSelect("follow", "f", "f.followedId = quiz.authorId")
-      .andWhere("f.followerId = :followerId", {
-        followerId: req.session.userId,
-      });
+      .andWhere(
+        new Brackets((qb) => {
+          qb.where("f.followerId = :followerId", {
+            followerId: req.session.userId,
+          }).orWhere("quiz.authorId = :userId", {
+            userId: req.session.userId,
+          });
+        })
+      );
 
     if (search) {
       quizzes = quizzes.andWhere(

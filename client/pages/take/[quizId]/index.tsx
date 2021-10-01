@@ -157,7 +157,7 @@ const TakeQuiz: React.FC = () => {
                     onClick={_submitAnswers}
                     className="inline-flex justify-center w-1/3 px-4 py-2 text-base font-medium text-white transition transform bg-indigo-600 border border-transparent rounded-md shadow-sm active:scale-95 hover:bg-indigo-700 focus:outline-none sm:col-start-2 sm:text-sm"
                   >
-                    {isChecking ? "Checking" : "Submit"}
+                    {isChecking ? "Checking..." : "Submit"}
                   </button>
                 </div>
               </div>
