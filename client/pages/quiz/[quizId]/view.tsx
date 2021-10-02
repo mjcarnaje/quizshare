@@ -38,7 +38,9 @@ const QuizLanding: React.FC<Props> = () => {
     variables: { quizId },
   });
 
-  const comments = <Comments quizId={quizId} authorId={user?.id} />;
+  const comments = (
+    <Comments quizId={quizId} authorId={data?.getQuiz.authorId} />
+  );
 
   if (!data) {
     return (

@@ -46,8 +46,6 @@ const CommentInput: React.FC<Props> = ({ quizId, userInfo }) => {
 
   const onSubmit = async (input: IText) => {
     try {
-      setValue("text", "");
-
       if (commentText && commentId) {
         await editComment({
           variables: {
@@ -56,6 +54,7 @@ const CommentInput: React.FC<Props> = ({ quizId, userInfo }) => {
             text: input.text,
           },
           update: () => {
+            setValue("text", "");
             dispatch(resetCommentInput());
           },
         });
@@ -101,10 +100,10 @@ const CommentInput: React.FC<Props> = ({ quizId, userInfo }) => {
                   },
                 },
               });
+              setValue("text", "");
             }
           },
         });
-        setValue("text", "");
       }
     } catch (err) {
       errorMapper(err, setError);
@@ -154,6 +153,7 @@ const CommentInput: React.FC<Props> = ({ quizId, userInfo }) => {
                 className="px-3 py-1 transition transform rounded-md active:scale-95 hover:bg-gray-50 focus:outline-none"
                 onClick={cancelComment}
                 type="button"
+                disabled={adding || editing}
               >
                 Cancel
               </button>
@@ -165,7 +165,7 @@ const CommentInput: React.FC<Props> = ({ quizId, userInfo }) => {
                   "transform active:scale-95 transition px-3 py-1 rounded-md focus:outline-none hover:bg-gray-50 "
                 )}
                 type="submit"
-                disabled={commentText === watch().text}
+                disabled={commentText === watch().text || adding || editing}
               >
                 {adding || editing ? "Posting.." : "Post"}
               </button>
