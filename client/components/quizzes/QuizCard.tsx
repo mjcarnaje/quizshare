@@ -77,7 +77,7 @@ export const QuizCard: React.FC<Props> = ({
   return (
     <article
       onClick={() => router.push(`/quiz/${id}/view`)}
-      className="p-4 overflow-hidden bg-white hover:bg-gray-50"
+      className="p-4 overflow-hidden bg-white hover:bg-gray-100 cursor-pointer"
     >
       <DeleteQuizModal {...{ open, setOpen, deleteQuiz, cancelButtonRef }} />
       {type === "timeline" && (

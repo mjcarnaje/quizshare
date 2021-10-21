@@ -100,7 +100,7 @@ const Layout: React.FC<Props> = ({
       <CloudinaryContext
         cloudName={process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME}
       >
-        <div className="relative flex min-h-screen mx-auto overflow-hidden bg-gray-100">
+        <div className="relative flex min-h-screen mx-auto overflow-hidden bg-gray-50">
           <Alert />
           {!hideSideBar && <SideBar navigation={navs} />}
           {children}
