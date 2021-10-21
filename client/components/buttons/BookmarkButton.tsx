@@ -18,7 +18,8 @@ const BookmarkButton: React.FC<Props> = ({ quizId, isBookmarked }) => {
   return (
     <button
       type="button"
-      onClick={async () => {
+      onClick={async (e) => {
+        e.stopPropagation();
         if (data) {
           await toggleBookmark({
             variables: { quizId },

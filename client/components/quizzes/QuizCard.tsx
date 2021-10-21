@@ -75,12 +75,22 @@ export const QuizCard: React.FC<Props> = ({
   const { firstName, lastName, avatar, username, isFollowed } = author;
 
   return (
-    <li className="p-4 overflow-hidden bg-white ">
+    <article
+      onClick={() => router.push(`/quiz/${id}/view`)}
+      className="p-4 overflow-hidden bg-white hover:bg-gray-50"
+    >
       <DeleteQuizModal {...{ open, setOpen, deleteQuiz, cancelButtonRef }} />
       {type === "timeline" && (
         <div className="flex items-center mb-2">
-          <Avatar avatarUrl={avatar} alt={username} />
-          <p className="ml-2">{`${firstName} ${lastName}`}</p>
+          <Avatar userId={authorId} avatarUrl={avatar} alt={username} />
+          <Link href={`/user/${authorId}`} passHref>
+            <a
+              className="ml-2 hover:underline"
+              onClick={(e) => {
+                e.stopPropagation();
+              }}
+            >{`${firstName} ${lastName}`}</a>
+          </Link>
           <div className="mx-1"></div>
           <FollowButton
             userId={authorId}
@@ -92,11 +102,9 @@ export const QuizCard: React.FC<Props> = ({
       <div className="w-full p-2 rounded-md cursor-pointer group md:flex ">
         <div className="w-full">
           <div className="flex justify-between">
-            <Link href={`/quiz/${id}/view`}>
-              <h2 className="text-3xl font-bold leading-tight tracking-tight break-all">
-                {title}
-              </h2>
-            </Link>
+            <h2 className="text-3xl font-bold leading-tight tracking-tight break-all">
+              {title}
+            </h2>
             <div>
               {type === "me" && (
                 <>
@@ -127,11 +135,9 @@ export const QuizCard: React.FC<Props> = ({
               {`${questionCount} Questions`}
             </span>
           </div>
-          <Link href={`/quiz/${id}/view`}>
-            <p className="mt-1 text-lg leading-snug tracking-tight break-words">
-              {truncateText(description)}
-            </p>
-          </Link>
+          <p className="mt-1 text-lg leading-snug tracking-tight break-words">
+            {truncateText(description)}
+          </p>
         </div>
         {quizPhoto && (
           <Link href={`/quiz/${id}/view`}>
@@ -182,6 +188,6 @@ export const QuizCard: React.FC<Props> = ({
           </div>
         )}
       </div>
-    </li>
+    </article>
   );
 };

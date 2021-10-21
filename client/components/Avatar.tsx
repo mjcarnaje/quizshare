@@ -2,16 +2,18 @@ import React from "react";
 
 import { AVATAR_FALLBACK_IMG } from "@constant/index";
 import { classNames } from "@utils/index";
+import Link from "next/link";
 import Skeleton from "react-loading-skeleton";
 
 interface Props {
+  userId: string;
   avatarUrl?: string | null;
   alt?: string;
   size?: "xs" | "sm" | "base" | "md" | "lg" | "xl";
   loading?: boolean;
 }
 
-const Avatar: React.FC<Props> = ({ avatarUrl, alt, size, loading }) => {
+const Avatar: React.FC<Props> = ({ userId, avatarUrl, alt, size, loading }) => {
   let avatarSize, skeletonSize;
 
   switch (size) {
@@ -52,11 +54,18 @@ const Avatar: React.FC<Props> = ({ avatarUrl, alt, size, loading }) => {
   }
 
   return (
-    <img
-      className={classNames(avatarSize, "rounded-full bg-gray-200")}
-      src={avatarUrl || AVATAR_FALLBACK_IMG}
-      alt={alt}
-    />
+    <Link href={`/user/${userId}`}>
+      <a onClick={(e) => e.stopPropagation()}>
+        <img
+          className={classNames(
+            avatarSize,
+            "rounded-full bg-gray-200 hover:brightness-75 cursor-pointer"
+          )}
+          src={avatarUrl || AVATAR_FALLBACK_IMG}
+          alt={alt}
+        />
+      </a>
+    </Link>
   );
 };
 

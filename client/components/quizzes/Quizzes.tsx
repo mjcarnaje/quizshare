@@ -23,7 +23,7 @@ const Quizzes: React.FC<Props> = ({
 }) => {
   return (
     <>
-      <ul className="mx-auto divide-y divide-gray-200 ">
+      <div className="mx-auto divide-y divide-gray-200 ">
         {!quizzes.length && loading && (
           <>
             {[...Array(3).keys()].map((idx) => (
@@ -41,7 +41,7 @@ const Quizzes: React.FC<Props> = ({
             ))}
           </>
         )}
-      </ul>
+      </div>
       {pageInfo?.hasNextPage && (
         <button
           type="button"
