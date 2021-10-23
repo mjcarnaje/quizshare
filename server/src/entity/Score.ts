@@ -15,7 +15,7 @@ import { Quiz, User } from ".";
 @Entity()
 export class Score extends BaseEntity {
   @Field(() => ID)
-  @PrimaryGeneratedColumn("uuid")
+  @PrimaryGeneratedColumn()
   id: string;
 
   @Field(() => Int)

@@ -20,6 +20,7 @@ import {
   Tag,
   User,
   Follow,
+  Session,
 } from "./entity";
 import { AuthResolver } from "./resolvers/auth/auth";
 import { facebookPassport } from "./resolvers/auth/facebook";
@@ -56,6 +57,7 @@ const main = async () => {
         Follow,
         Tag,
         User,
+        Session,
       ],
       dropSchema: false,
       migrations: [path.join(__dirname, "./migration/*.ts")],

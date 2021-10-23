@@ -7,7 +7,7 @@ import { Maybe } from "../types";
 @Entity()
 export class Result extends BaseEntity {
   @Field(() => ID)
-  @PrimaryColumn("uuid")
+  @PrimaryColumn()
   id: string;
 
   @Field()

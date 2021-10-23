@@ -19,7 +19,7 @@ import { Score } from "./Score";
 @Entity()
 export class User extends BaseEntity {
   @Field(() => String)
-  @PrimaryGeneratedColumn("uuid")
+  @PrimaryGeneratedColumn()
   id: string;
 
   @Field(() => String, { nullable: true })

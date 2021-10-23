@@ -15,7 +15,7 @@ import { Quiz, User } from ".";
 @Entity()
 export class Comment extends BaseEntity {
   @Field(() => String)
-  @PrimaryGeneratedColumn("uuid")
+  @PrimaryGeneratedColumn()
   id: string;
 
   @Field(() => String)

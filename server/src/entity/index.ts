@@ -8,3 +8,4 @@ export { Result } from "./Result";
 export { Comment } from "./Comment";
 export { Follow } from "./Follow";
 export { Score } from "./Score";
+export { Session } from "./Session";

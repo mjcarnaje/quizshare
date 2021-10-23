@@ -20,7 +20,7 @@ import { Bookmark, Comment, Like, Question, Result, Tag, User, Score } from ".";
 @Entity()
 export class Quiz extends BaseEntity {
   @Field(() => String)
-  @PrimaryGeneratedColumn("uuid")
+  @PrimaryGeneratedColumn()
   id: string;
 
   @Field()

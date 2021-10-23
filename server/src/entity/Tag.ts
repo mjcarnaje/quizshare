@@ -13,7 +13,7 @@ import { Maybe } from "../types/index";
 @Entity()
 export class Tag extends BaseEntity {
   @Field(() => ID)
-  @PrimaryGeneratedColumn("uuid")
+  @PrimaryGeneratedColumn()
   id: string;
 
   @Field()
