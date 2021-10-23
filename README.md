@@ -10,7 +10,7 @@ A brief description of what this project does and who it's for
 
 **Client:** Next.js, TailwindCSS, React-hook-form, Apollo client
 
-**Server:** GraphQL API, Node, Express
+**Server:** NodeJS, Express, GraphQL, Apollo Server, Typeorm,
 
 **Database:** Postgresql
 
@@ -20,9 +20,8 @@ We have 3 apps inside the project:
 
 - **Web:** React.JS application.
 - **API:** NodeJS Express.JS application.
-- **Mobile:** Expo application
 
-## Running the API & Client
+## Running the server and client
 
 ### `yarn run dev`
 
