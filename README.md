@@ -1,26 +1,94 @@
-## Tech Stack - Framework
+<!-- Banner Image -->
 
-### Main
+<p align="center">
+  <a href="https://www.quizshare.me/">
+    <h1 align="center">Quizshare</h1>
+  </a>
+</p>
 
-- Typescript
-- Node.js
-- GraphQL
-- ESLint (Formatting)
+---
 
-### Frontend
+A brief description of what this project does and who it's for
 
-- Next.js (React Framework)
-- Redux Toolkit (State Management)
-- Apollo Client (State Management)
-- React Hook Form (Form Validation)
-- Tailwind CSS (Styling)
+## Tech Stack
 
-### Backend
+**Client:** Next.js, TailwindCSS, React-hook-form, Apollo client
 
-- Apollo Server Express (Express integration of Apollo Server)
-- PostgreSQL (Database)
-- Typeorm (ORM)
-- TypeGraphQL (GraphqQL Typescript)
-- Class-validator (Server Validation)
-- Express-session (Session Based Authentication)
-- Facebook & Google OAuth (Passport.js)
+**Server:** GraphQL API, Node, Express
+
+**Database:** Postgresql
+
+## Project structure
+
+We have 3 apps inside the project:
+
+- **Web:** React.JS application.
+- **API:** NodeJS Express.JS application.
+- **Mobile:** Expo application
+
+## Running the API & Client
+
+### `yarn run dev`
+
+Runs the api in development mode with nodemon enabled & nextjs
+
+## Environment Variables
+
+To run this project, you will need to add the following environment variables to your .env file
+
+- /server
+
+```
+PORT=
+CORS_ORIGIN_DEV=
+CORS_ORIGIN=
+SESSION_NAME=
+SESSION_SECRET=
+NODE_ENV=
+
+DATABASE=
+
+GOOGLE_CLIENT_ID=
+GOOGLE_CLIENT_SERCRET=
+GOOGLE_CALLBACK=
+
+DATABASE_URL_DEV=
+DATABASE_URL_PROD=
+
+FACEBOOK_APP_ID=
+FACEBOOK_APP_SECRET=
+FACEBOOK_CALLBACK=
+```
+
+- /client
+
+```
+NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME=
+NEXT_PUBLIC_CLOUDINARY_PRESET_NAME=
+NEXT_PUBLIC_CLOUDINARY_API_KEY=
+NEXT_PUBLIC_CLOUDINARY_API_SECRET=
+NEXT_PUBLIC_CLOUDINARY_API_CLOUDINARY_URL=
+NEXT_PUBLIC_API_URL=
+```
+
+---
+
+## Authors
+
+- [@mjcarnaje](https://github.com/mjcarnaje)
+
+## Badges
+
+Add badges from somewhere like: [shields.io](https://shields.io/)
+
+[![MIT License](https://img.shields.io/apm/l/atomic-design-ui.svg?)](https://github.com/tterb/atomic-design-ui/blob/master/LICENSEs)
+[![GPLv3 License](https://img.shields.io/badge/License-GPL%20v3-yellow.svg)](https://opensource.org/licenses/)
+[![AGPL License](https://img.shields.io/badge/license-AGPL-blue.svg)](http://www.gnu.org/licenses/agpl-3.0)
+
+## Appendix
+
+Any additional information goes here
+
+## License
+
+[MIT](https://choosealicense.com/licenses/mit/)
