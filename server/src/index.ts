@@ -41,9 +41,7 @@ const main = async () => {
   try {
     await createConnection({
       type: "postgres",
-      url: __PROD__
-        ? process.env.DATABASE_URL_PROD
-        : process.env.DATABASE_URL_DEV,
+      url: __PROD__ ? process.env.DATABASE_URL : process.env.DATABASE_URL_DEV,
       synchronize: true,
       logging: !__PROD__,
       entities: [
